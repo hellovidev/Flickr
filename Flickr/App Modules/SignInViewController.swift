@@ -7,13 +7,13 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class SignInViewController: UIViewController {
+    let networkService: NetworkService = .init()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        networkService.getOAuthToken()
     }
 
-
 }
-
