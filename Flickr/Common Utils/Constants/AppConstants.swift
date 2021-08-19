@@ -10,27 +10,11 @@ import Foundation
 // MARK: - App Constants
 enum Constant {
     
-}
-
-// MARK: - API URL requests
-enum HttpEndpoint {
-    
-    // MARK: - InternetProtocolType
-    enum InternetProtocolType: String {
-        case http = "http://"
-        case https = "https://"
-    }
-    
-    // MARK: - HostType
-    enum HostType: String {
-        case hostAPI = "www.flickr.com/"
-    }
-    
-    // MARK: - PathType
-    enum PathType: String {
-        case requestTokenOAuth = "services/oauth/request_token"
-        case accessTokenOAuth = "services/oauth/access_token"
-        case authorizeOAuth = "services/oauth/authorize"
+    // MARK: - Notification Names Identifiers
+    enum NotificationName: String {
+        case callbackAuthorization = "CallbackAuthorizationNotification"
+        case triggerBrowserTargetComplete = "BrowserTargetCompleteNotification"
+        case websiteСonfirmationRequired = "СonfirmationRequiredNotification"
     }
     
 }

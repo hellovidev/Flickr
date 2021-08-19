@@ -7,46 +7,62 @@
 
 import Foundation
 import CommonCrypto
-import UIKit
 
-// MARK: - HTTP method types
-enum HttpMethodType: String {
-    case get
-    case post
-    case delete
-    case put
-    case patch
-}
-
-// MARK: - Network Layer
-class NetworkService {
+// MARK: - Network Layer (Flickr API)
+class FlickrOAuth {
     
-    // MARK: - Request prepare methods
+    private var args: RequestArgumentsOAuth?
     
-    private func encodedUrl(_ value: String?) -> String? {
+    // MARK: - Storage For Responses
+    
+    // Structure to save request token response
+    private struct RequestTokenOAuth {
+        let token: String
+        let secretToken: String
+        let callbackConfirmed: String
+    }
+    
+    // Structure to build request arguments
+    private struct RequestArgumentsOAuth {
+        var token: String?
+        var secretToken: String?
+        var verifier: String?
+    }
+    
+    // Structure to save access token response
+    private struct AccessTokenOAuth {
+        let token: String
+        let secretToken: String
+        let userNSId: String
+        let username: String
+    }
+    
+    // MARK: - Request Prepare Methods
+    
+    private func encodedUrl(_ value: String) -> String {
         var charset: CharacterSet = .urlQueryAllowed
         charset.remove(charactersIn: "\n:#/?@!$&'()*+,;=")
-        return value?.addingPercentEncoding(withAllowedCharacters: charset)
+        return value.addingPercentEncoding(withAllowedCharacters: charset)!
     }
     
     private func prepareSignatureKey(consumerSecretKey: String, tokenSecretOAuth: String?) -> String {
-        guard let tokenSecretOAuth = encodedUrl(tokenSecretOAuth) else { return encodedUrl(consumerSecretKey)! + "&" }
-        return encodedUrl(consumerSecretKey)! + "&" + tokenSecretOAuth
+        guard let tokenSecretOAuth = tokenSecretOAuth else { return encodedUrl(consumerSecretKey) + "&" }
+        return encodedUrl(consumerSecretKey) + "&" + encodedUrl(tokenSecretOAuth)
     }
     
     private func prepareSignatureParameterString(parameters: [String: Any]) -> String {
         var result: [String] = []
         for parameter in parameters {
-            let key = encodedUrl(parameter.key)!
-            let val = encodedUrl("\(parameter.value)")!
-            result.append("\(String(describing: key))=\(String(describing: val))")
+            let key = encodedUrl(parameter.key)
+            let val = encodedUrl("\(parameter.value)")
+            result.append("\(key)=\(val)")
         }
         return result.sorted().joined(separator: "&")
     }
     
     private func prepareSignatureBaseString(httpMethod: String, url: String, parameters: [String: Any]) -> String {
         let parameterString = prepareSignatureParameterString(parameters: parameters)
-        return httpMethod + "&" + encodedUrl(url)! + "&" + encodedUrl(parameterString)!
+        return httpMethod + "&" + encodedUrl(url) + "&" + encodedUrl(parameterString)
     }
     
     private func hashMessageAuthenticationCodeSHA1(signingKey: String, baseSignature: String) -> String {
@@ -59,31 +75,46 @@ class NetworkService {
     private func signatureOAuth(httpMethod: String, url: String, parameters: [String: Any], consumerSecretKey: String = FlickrAPI.secretKey.rawValue, tokenSecretOAuth: String? = nil) -> String {
         // Initialization 'Signing Key'
         let signingKey = prepareSignatureKey(consumerSecretKey: consumerSecretKey, tokenSecretOAuth: tokenSecretOAuth)
-        
+
         // Initialization 'Signing Base'
         let signatureBase = prepareSignatureBaseString(httpMethod: httpMethod, url: url, parameters: parameters)
-        
+
         // Build 'Signature' using HMAC-SHA1
         let signature = hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: signatureBase)
-        
+
         return signature
     }
     
     private func encodeAuthorizationHeader(parameters: [String: Any]) -> String {
         var parts: [String] = []
         for parameter in parameters {
-            let key = encodedUrl(parameter.key)!
-            let val = encodedUrl("\(parameter.value)")!
-            parts.append("\(String(describing: key))=\"\(String(describing: val))\"")
+            let key = encodedUrl(parameter.key)
+            let val = encodedUrl("\(parameter.value)")
+            parts.append("\(key)=\"\(val)\"")
         }
         let header = "OAuth " + parts.sorted().joined(separator: ", ")
 
         return header
     }
     
+    private func requestTokenResponseParsing(_ response: String) -> Dictionary<String, String> {
+        // Breaks apart query string into a dictionary of values
+        var parameters: [String: String] = [:]
+        let items = response.split(separator: "&")
+        for item in items {
+            let combo = item.split(separator: "=")
+            if combo.count == 2 {
+                let key = "\(combo[0])"
+                let value = "\(combo[1])"
+                parameters[key] = value
+            }
+        }
+        return parameters
+    }
     
-    // MARK: - Base function where process request configuration
-    private func requestOAuth(args: (requestToken: String, requestSecretToken: String, verifierOAuth: String)? = nil, path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, Error>) -> Void) {
+    // MARK: - Base Function Where Process Request Configuration
+    
+    private func requestOAuth(args: RequestArgumentsOAuth? = nil, path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, Error>) -> Void) {
         // Build base URL with path as parameter
         let urlString = HttpEndpoint.InternetProtocolType.https.rawValue + HttpEndpoint.HostType.hostAPI.rawValue + path.rawValue
         
@@ -97,10 +128,10 @@ class NetworkService {
         urlRequest.httpMethod = method.rawValue.uppercased()
         
         // Generate valid parameetrs
-        let callback = "oauth-flickr://"//://oauth-callback/flickr" //://oauth_callback"//(args != nil ? nil : FlickrAPI.urlScheme.rawValue + "://success")
-        let tokenOAuth = args?.requestToken
-        let verifierOAuth = args?.verifierOAuth
-        let tokenSecretOAuth = (args != nil ? args?.requestSecretToken : nil)
+        let callback = (args != nil ? nil : FlickrAPI.urlScheme.rawValue)
+        let tokenOAuth = args?.token
+        let verifierOAuth = args?.verifier
+        let tokenSecretOAuth = (args != nil ? args?.secretToken : nil)
         
         var parameters: [String: Any] = [
             "oauth_callback" : callback ?? "",
@@ -138,134 +169,83 @@ class NetworkService {
         task.resume()
     }
     
-    struct RequestAccessTokenInput {
-        let consumerKey: String
-        let consumerSecret: String
-        let requestToken: String // = RequestOAuthTokenResponse.oauthToken
-        let requestTokenSecret: String // = RequestOAuthTokenResponse.oauthTokenSecret
-        let oauthVerifier: String
-    }
-    struct RequestAccessTokenResponse {
-        let accessToken: String
-        let accessTokenSecret: String
-        let userId: String
-        let screenName: String
-    }
-    struct RequestOAuthTokenInput {
-        let consumerKey: String
-        let consumerSecret: String
-        let callbackScheme: String
-    }
+    // MARK: - Special Requests Cases
     
-    struct RequestOAuthTokenResponse {
-        let oauthToken: String
-        let oauthTokenSecret: String
-        let oauthCallbackConfirmed: String
-    }
-
-    func requestTokenResponseParsing(_ response: String) -> Dictionary<String, String> {
-        // Breaks apart query string into a dictionary of values
-        var parameters: [String: String] = [:]
-        let items = response.split(separator: "&")
-        for item in items {
-            let combo = item.split(separator: "=")
-            if combo.count == 2 {
-                let key = "\(combo[0])"
-                let value = "\(combo[1])"
-                parameters[key] = value
-            }
-        }
-        return parameters
-    }
-    
-    private struct RequestTokenOAuth {
-        let token: String
-        let secretToken: String
-        let callbackConfirmed: String
-    }
-    
-    // MARK: - Special cases of requests
-    private func getOAuthRequestToken(complition: @escaping (Result<URL, Never>) -> Void) {
+    private func getOAuthRequestToken() {
         requestOAuth(path: .requestTokenOAuth, method: .post) { result in
             switch result {
             case .success(let data):
                 // Convert Data into String (Response: oauth_token=XXXX&oauth_token_secret=YYYY&oauth_callback_confirmed=true)
                 guard let dataString = String(data: data, encoding: .utf8) else { return }
-                print(dataString + "\n")
+
+                // Parse data response
                 let attributes = self.requestTokenResponseParsing(dataString)
                 let requestToken = RequestTokenOAuth(token: attributes["oauth_token"] ?? "", secretToken: attributes["oauth_token_secret"] ?? "", callbackConfirmed: attributes["oauth_callback_confirmed"] ?? "")
-                self.reqToken = requestToken
                 
-                // Start Step 2: User Flickr Login
+                // Build arguments for feature access token request
+                self.args = .init(token: requestToken.token, secretToken: requestToken.secretToken, verifier: nil)
+                
+                // Start User Flickr Login using 'Safari' (Step №2)
                 let urlString = "\(HttpEndpoint.InternetProtocolType.https.rawValue + HttpEndpoint.HostType.hostAPI.rawValue + HttpEndpoint.PathType.authorizeOAuth.rawValue)?oauth_token=\(requestToken.token)&perms=write"
                 guard let urlOAuth = URL(string: urlString) else { return }
-                NotificationCenter.default.addObserver(self, selector: #selector(self.safariLogin(_:)), name: Notification.Name("CallbackNotification"), object: nil)
-
-                complition(.success(urlOAuth))
+                
+                // Subscribe to callback data (verifier) after website confirmation
+                NotificationCenter.default.addObserver(self, selector: #selector(self.callbackSafariAuthorization(_:)), name: Notification.Name(Constant.NotificationName.callbackAuthorization.rawValue), object: nil)
+                
+                // Trigered function to open 'Safari'
+                NotificationCenter.default.post(name: Notification.Name(Constant.NotificationName.websiteСonfirmationRequired.rawValue), object: urlOAuth)
             case .failure(let error):
                 print("Get 'request_token' error: \(error.localizedDescription)")
             }
         }
     }
     
-    var verifier: String?
-    private var reqToken: RequestTokenOAuth?
-    
-    @objc
-    func safariLogin(_ notification: Notification) {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name("CallbackNotification"), object: nil)
-        
-        // Callback data after authorize
-        guard let url = notification.object as? URL else { return }
-
-        // URL parsing
-        let parameters = requestTokenResponseParsing(url.query!)
-        guard let verifier = parameters["oauth_verifier"] else { return }
-        self.verifier = verifier
-        
-        getOAuthAccessToken(args: reqToken!)
-                        /*
-                         url => flickrsdk://success?oauth_token=XXXX&oauth_verifier=ZZZZ
-                         url.query => oauth_token=XXXX&oauth_verifier=ZZZZ
-                         url.query?.urlQueryStringParameters => ["oauth_token": "XXXX", "oauth_verifier": "YYYY"]
-                         */
-
-    }
-    
-    private struct AccessTokenOAuth {
-        let token: String
-        let secretToken: String
-        let userNSId: String
-        let username: String
-    }
-    
-    private func getOAuthAccessToken(args: RequestTokenOAuth) {
-        requestOAuth(args: (requestToken: args.token, requestSecretToken: args.secretToken, verifierOAuth: self.verifier!), path: .accessTokenOAuth, method: .post) { result in
+    private func getOAuthAccessToken(args: RequestArgumentsOAuth) {
+        requestOAuth(args: args, path: .accessTokenOAuth, method: .post) { result in
             switch result {
             case .success(let data):
                 // Convert Data into String (Response: oauth_token=XXXX&oauth_token_secret=YYYY&user_nsid=CCC&username=NNN)
                 guard let dataString = String(data: data, encoding: .utf8) else { return }
-                print(dataString)
+                
+                // Parse data response
                 let attributes = self.requestTokenResponseParsing(dataString)
                 let accessToken = AccessTokenOAuth(token: attributes["oauth_token"] ?? "", secretToken: attributes["oauth_token_secret"] ?? "", userNSId: attributes["user_nsid"] ?? "", username: attributes["username"] ?? "")
+                
+                // Change authentication state as like (self.authenticationState = .successfullyAuthenticated)
+                print("Authorization result: \(accessToken)")
             case .failure(let error):
                 print("Get 'access_token' error: \(error.localizedDescription)")
             }
         }
     }
     
-    // MARK: - API OAuth
-    func accountOAuth(comp: @escaping (Result<URL, Never>) -> Void) {
-        getOAuthRequestToken { result in
-            switch result {
-            case .success(let url):
-                comp(.success(url))
-            }
-        }
+    @objc
+    private func callbackSafariAuthorization(_ notification: Notification) {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(Constant.NotificationName.callbackAuthorization.rawValue), object: nil)
+        
+        // Callback data after authorize
+        guard let url = notification.object as? URL else { return }
+        
+        // Transformation: url => oauth-flickr://?oauth_token=XXXX&oauth_verifier=ZZZZ => ["oauth_token": "XXXX", "oauth_verifier": "YYYY"]
+        let parameters = requestTokenResponseParsing(url.query ?? "")
+        guard let verifier = parameters["oauth_verifier"] else { return }
+        args?.verifier = verifier
+        
+        // Triggered function to close 'Safari'
+        NotificationCenter.default.post(name: Notification.Name(Constant.NotificationName.triggerBrowserTargetComplete.rawValue), object: nil)
+        
+        guard let args = args else { return }
+        getOAuthAccessToken(args: args)
+    }
+    
+    // MARK: - Public Methods API OAuth1.0
+    
+    func accountOAuth() {
+        getOAuthRequestToken()
     }
     
     func accountSignOut() {
-        
+        // Sign out from 'Flickr' account
     }
     
 }

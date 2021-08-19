@@ -6,52 +6,65 @@
 //
 
 import UIKit
-import WebKit
 import SafariServices
 
-class SignInViewController: UIViewController, WKNavigationDelegate {
-    let networkService: NetworkService = .init()
-    let webView: WKWebView = .init()
+// MARK: - UIViewController
+class SignInViewController: UIViewController {
+    let flickrOAuth: FlickrOAuth = .init()
+    var browserViewController: SFSafariViewController?
     
-    override func loadView() {
-        self.view = webView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        networkService.accountOAuth { res in
-            switch res {
-            case .success(let url):
-                let svc = SFSafariViewController(url: url)
-                
-                DispatchQueue.main.async {
-                    self.present(svc, animated: true, completion: nil)
-//                    UIApplication.shared.open(url, options: [:]) { complete in
-//                        print(complete)
-//                    }
-                    //self.webView.load(URLRequest(url: url))
-                }
-            }
-        }
-
-//        guard let urlQuery = webView.url?.query else { return }
-//        let parameters = networkService.requestTokenResponseParsing(urlQuery)
-//        /*
-//         url => flickrsdk://success?oauth_token=XXXX&oauth_verifier=ZZZZ
-//         url.query => oauth_token=XXXX&oauth_verifier=ZZZZ
-//         url.query?.urlQueryStringParameters => ["oauth_token": "XXXX", "oauth_verifier": "YYYY"]
-//         */
-//        guard let verifier = parameters["oauth_verifier"] else { return }
-//        print(verifier)
+        // Subscribe to notification when authorization need website confirmation
+        NotificationCenter.default.addObserver(self, selector: #selector(websiteConfirmation(_:)), name: Notification.Name(Constant.NotificationName.websiteСonfirmationRequired.rawValue), object: nil)
         
+        // Subscribe to notification when 'Safari' is ready to close
+        NotificationCenter.default.addObserver(self, selector: #selector(triggerBrowserTargetComplete(_:)), name: Notification.Name(Constant.NotificationName.triggerBrowserTargetComplete.rawValue), object: nil)
+        
+        // User athorization request
+        flickrOAuth.accountOAuth()
     }
-
+    
+    // Show preview web page in 'Safari'
+    private func activateBrowserPreview(for url: URL) {
+        // Initialization 'Safari' object
+        browserViewController = .init(url: url)
+        browserViewController?.delegate = self
+        
+        // Async preview after receiving the link
+        DispatchQueue.main.async {
+            guard let viewController = self.browserViewController else { return }
+            self.present(viewController, animated: true, completion: nil)
+        }
+    }
+    
+    // Method triggered when 'Flickr' need user website confirmation
+    @objc
+    private func websiteConfirmation(_ notification: Notification) {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(Constant.NotificationName.websiteСonfirmationRequired.rawValue), object: nil)
+        
+        // Callback data after authorize
+        guard let url = notification.object as? URL else { return }
+        activateBrowserPreview(for: url)
+    }
+    
+    // Method triggered when authorizatoin complete
+    @objc
+    private func triggerBrowserTargetComplete(_ notification: Notification) {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(Constant.NotificationName.triggerBrowserTargetComplete.rawValue), object: nil)
+        
+        // Finally dismiss the 'Safari' ViewController
+        browserViewController?.dismiss(animated: true, completion: nil)
+    }
+    
 }
 
+// MARK: - SFSafariViewControllerDelegate
 extension SignInViewController: SFSafariViewControllerDelegate {
-    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name("CallbackNotification"), object: nil)
+    
+    func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
+        print("Browser 'didLoadSuccessfully': \(didLoadSuccessfully)")
     }
     
 }
