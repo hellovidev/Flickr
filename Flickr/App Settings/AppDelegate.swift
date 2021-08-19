@@ -9,7 +9,21 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        if url.host == "oauth-flickr" {
+          //OAuthSwift.handle(url: url)
+            print("handle(url: url)")
+        }
+        if let sourceApplication = options[.sourceApplication] {
+            if (String(describing: sourceApplication) == "com.testApp.Incognito") {
+                //NSNotificationCenter.defaultCenter().postNotificationName(kSafariViewControllerCloseNotification, object: url)
+                return true
+            }
+        }
+        return true
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         return true

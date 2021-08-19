@@ -30,6 +30,7 @@ enum HttpEndpoint {
     enum PathType: String {
         case requestTokenOAuth = "services/oauth/request_token"
         case accessTokenOAuth = "services/oauth/access_token"
+        case authorizeOAuth = "services/oauth/authorize"
     }
     
 }
