@@ -6,10 +6,15 @@
 //
 
 import UIKit
+import SafariServices
 import CommonCrypto
 
-// MARK: - Network Layer (Flickr API)
-class FlickrOAuth {
+// MARK: - Network OAuth1.0 Layer (Flickr API)
+
+class FlickrOAuth: NSObject {
+    
+    // Singleton
+    static let shared = FlickrOAuth()
     
     private var args: RequestArgumentsOAuth?
     
@@ -158,6 +163,9 @@ class FlickrOAuth {
         // Request creation
         let session = URLSession(configuration: config)
         let task = session.dataTask(with: urlRequest) { data, response, error in
+            if let httpResponse = response as? HTTPURLResponse {
+                print(httpResponse.statusCode)
+            }
             if let data = data {
                 complition(.success(data))
             } else {
@@ -171,7 +179,7 @@ class FlickrOAuth {
     
     // MARK: - Special Requests Cases
     
-    private func getOAuthRequestToken() {
+    private func getOAuthRequestToken(complition: @escaping (Result<URL, Error>) -> Void) {
         requestOAuth(path: .requestTokenOAuth, method: .post) { result in
             switch result {
             case .success(let data):
@@ -189,13 +197,17 @@ class FlickrOAuth {
                 let urlString = "\(HttpEndpoint.InternetProtocolType.https.rawValue + HttpEndpoint.HostType.hostAPI.rawValue + HttpEndpoint.PathType.authorizeOAuth.rawValue)?oauth_token=\(requestToken.token)&perms=write"
                 guard let urlOAuth = URL(string: urlString) else { return }
                 
+                complition(.success(urlOAuth))
+                
+
                 // Subscribe to callback data (verifier) after website confirmation
-                NotificationCenter.default.addObserver(self, selector: #selector(self.callbackSafariAuthorization(_:)), name: Notification.Name(Constant.NotificationName.callbackAuthorization.rawValue), object: nil)
+                //NotificationCenter.default.addObserver(self, selector: #selector(self.callbackSafariAuthorization(_:)), name: Notification.Name(Constant.NotificationName.callbackAuthorization.rawValue), object: nil)
                 
                 // Trigered function to open 'Safari'
-                NotificationCenter.default.post(name: Notification.Name(Constant.NotificationName.websiteСonfirmationRequired.rawValue), object: urlOAuth)
+                //NotificationCenter.default.post(name: Notification.Name(Constant.NotificationName.websiteСonfirmationRequired.rawValue), object: urlOAuth)
             case .failure(let error):
                 print("Get 'request_token' error: \(error.localizedDescription)")
+                complition(.failure(error))
             }
         }
     }
@@ -219,35 +231,61 @@ class FlickrOAuth {
         }
     }
     
-    @objc
-    private func callbackSafariAuthorization(_ notification: Notification) {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name(Constant.NotificationName.callbackAuthorization.rawValue), object: nil)
-        
-        // Callback data after authorize
-        guard let url = notification.object as? URL else { return }
-        
+    func handleURL(_ url: URL) {
         // Transformation: url => oauth-flickr://?oauth_token=XXXX&oauth_verifier=ZZZZ => ["oauth_token": "XXXX", "oauth_verifier": "YYYY"]
         let parameters = requestTokenResponseParsing(url.query ?? "")
         guard let verifier = parameters["oauth_verifier"] else { return }
         args?.verifier = verifier
         
         // Triggered function to close 'Safari'
-        NotificationCenter.default.post(name: Notification.Name(Constant.NotificationName.triggerBrowserTargetComplete.rawValue), object: nil)
+        closeSafari()
         
         guard let args = args else { return }
+        
+        // Step #3: Getting 'access_token'
         getOAuthAccessToken(args: args)
     }
     
     // MARK: - Public Methods API OAuth1.0
     
-    func accountOAuth(presenter: UIViewController) {
-        getOAuthRequestToken()
+    func flickrLogin(presenter: UIViewController) {
+        // Step #1: Getting 'request_token'
+        getOAuthRequestToken() { result in
+            switch result {
+            case .success(let url):
+                // Step #2: Getting user website confirmation
+                self.openSafari(from: presenter, for: url)
+            case .failure(let error):
+                print("Error getting URL: \(error.localizedDescription)")
+            }
+        }
     }
     
-    func accountSignOut() {
+    func flickrLogout() {
         // Sign out from 'Flickr' account
     }
     
+    // MARK: - Safari Methods
+    
+    private var safari: SFSafariViewController?
+    
+    // Show preview web page from current ViewController in 'Safari'
+    private func openSafari(from viewController: UIViewController, for url: URL) {
+        // Initialization 'Safari' object
+        safari = .init(url: url)
+        
+        // Async preview after receiving the link
+        DispatchQueue.main.async {
+            guard let safari = self.safari else { return }
+            viewController.present(safari, animated: true, completion: nil)
+        }
+    }
+    
+    // Close 'Safari' web page preview
+    private func closeSafari() {
+        // Finally dismiss the 'Safari' ViewController
+        self.safari?.dismiss(animated: true, completion: nil)
+    }
 }
 
 // MARK: - Refactoring
@@ -255,4 +293,8 @@ class FlickrOAuth {
  1. В структуре RequestArgumentsOAuth оставить опциональным только Verifier
  2. Передавать UIViewController в функцию авторизации
  3. Заменить явное указание типа Dictionary<String, String> через литеральный вариант [String: String]
+ 4. В GIT удалил файл с приватными данными FlickrAPI
+ 5. Сделать FlickrOAuth синглтоном, чтобы вызывать функцию handleURL(_ url: URL) для прокидывания callback ссылки из SceneDelegate
+ 6. Браузер открывать/закрывать в FlickrOAuth
+ 7. Добавлен вывод статус кода из запроса на сервер
  */
