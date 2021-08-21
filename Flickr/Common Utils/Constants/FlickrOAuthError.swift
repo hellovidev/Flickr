@@ -10,12 +10,12 @@ import Foundation
 // MARK: - FlickrOAuthError
 
 enum FlickrOAuthError: Error {
+    case dataCanNotBeParsed
     case responseIsEmpty
     case dataIsEmpty
     case invalidSignature
     case serverInternalError
     case unexpected(code: Int)
-    
 }
 
 // MARK: -  LocalizedError
@@ -23,6 +23,8 @@ enum FlickrOAuthError: Error {
 extension FlickrOAuthError: LocalizedError {
     public var errorDescription: String? {
         switch self {
+        case .dataCanNotBeParsed:
+            return NSLocalizedString("Response data can not be parsed.",comment: "FlickrOAuthError Error")
         case .responseIsEmpty:
             return NSLocalizedString("Response from server is empty.",comment: "FlickrOAuthError Error")
         case .dataIsEmpty:
