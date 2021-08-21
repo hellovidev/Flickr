@@ -5,7 +5,7 @@
 //  Created by Sergei Romanchuk on 18.08.2021.
 //
 
-import Foundation
+import UIKit
 import CommonCrypto
 
 // MARK: - Network Layer (Flickr API)
@@ -24,8 +24,8 @@ class FlickrOAuth {
     
     // Structure to build request arguments
     private struct RequestArgumentsOAuth {
-        var token: String?
-        var secretToken: String?
+        var token: String
+        var secretToken: String
         var verifier: String?
     }
     
@@ -97,7 +97,7 @@ class FlickrOAuth {
         return header
     }
     
-    private func requestTokenResponseParsing(_ response: String) -> Dictionary<String, String> {
+    private func requestTokenResponseParsing(_ response: String) -> [String: String] {
         // Breaks apart query string into a dictionary of values
         var parameters: [String: String] = [:]
         let items = response.split(separator: "&")
@@ -240,7 +240,7 @@ class FlickrOAuth {
     
     // MARK: - Public Methods API OAuth1.0
     
-    func accountOAuth() {
+    func accountOAuth(presenter: UIViewController) {
         getOAuthRequestToken()
     }
     
@@ -249,3 +249,10 @@ class FlickrOAuth {
     }
     
 }
+
+// MARK: - Refactoring
+/*
+ 1. В структуре RequestArgumentsOAuth оставить опциональным только Verifier
+ 2. Передавать UIViewController в функцию авторизации
+ 3. Заменить явное указание типа Dictionary<String, String> через литеральный вариант [String: String]
+ */

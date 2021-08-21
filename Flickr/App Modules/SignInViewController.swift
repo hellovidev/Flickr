@@ -23,7 +23,7 @@ class SignInViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(triggerBrowserTargetComplete(_:)), name: Notification.Name(Constant.NotificationName.triggerBrowserTargetComplete.rawValue), object: nil)
         
         // User athorization request
-        flickrOAuth.accountOAuth()
+        flickrOAuth.accountOAuth(presenter: self)
     }
     
     // Show preview web page in 'Safari'
