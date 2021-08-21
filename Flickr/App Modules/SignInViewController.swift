@@ -13,6 +13,7 @@ class SignInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // User athorization request
         FlickrOAuth.shared.flickrLogin(presenter: self)
     }

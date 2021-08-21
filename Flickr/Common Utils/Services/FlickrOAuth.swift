@@ -50,57 +50,8 @@ class FlickrOAuth: NSObject {
         return value.addingPercentEncoding(withAllowedCharacters: charset)!
     }
     
-    private func prepareSignatureKey(consumerSecretKey: String, tokenSecretOAuth: String?) -> String {
-        guard let tokenSecretOAuth = tokenSecretOAuth else { return encodedUrl(consumerSecretKey) + "&" }
-        return encodedUrl(consumerSecretKey) + "&" + encodedUrl(tokenSecretOAuth)
-    }
-    
-    private func prepareSignatureParameterString(parameters: [String: Any]) -> String {
-        var result: [String] = []
-        for parameter in parameters {
-            let key = encodedUrl(parameter.key)
-            let val = encodedUrl("\(parameter.value)")
-            result.append("\(key)=\(val)")
-        }
-        return result.sorted().joined(separator: "&")
-    }
-    
-    private func prepareSignatureBaseString(httpMethod: String, url: String, parameters: [String: Any]) -> String {
-        let parameterString = prepareSignatureParameterString(parameters: parameters)
-        return httpMethod + "&" + encodedUrl(url) + "&" + encodedUrl(parameterString)
-    }
-    
-    private func hashMessageAuthenticationCodeSHA1(signingKey: String, baseSignature: String) -> String {
-        // HMAC-SHA1 hashing algorithm returned as a base64 encoded string
-        var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
-        CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA1), signingKey, signingKey.count, baseSignature, baseSignature.count, &digest)
-        return Data(digest).base64EncodedString()
-    }
-    
-    private func signatureOAuth(httpMethod: String, url: String, parameters: [String: Any], consumerSecretKey: String = FlickrAPI.secretKey.rawValue, tokenSecretOAuth: String? = nil) -> String {
-        // Initialization 'Signing Key'
-        let signingKey = prepareSignatureKey(consumerSecretKey: consumerSecretKey, tokenSecretOAuth: tokenSecretOAuth)
 
-        // Initialization 'Signing Base'
-        let signatureBase = prepareSignatureBaseString(httpMethod: httpMethod, url: url, parameters: parameters)
 
-        // Build 'Signature' using HMAC-SHA1
-        let signature = hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: signatureBase)
-
-        return signature
-    }
-    
-    private func encodeAuthorizationHeader(parameters: [String: Any]) -> String {
-        var parts: [String] = []
-        for parameter in parameters {
-            let key = encodedUrl(parameter.key)
-            let val = encodedUrl("\(parameter.value)")
-            parts.append("\(key)=\"\(val)\"")
-        }
-        let header = "OAuth " + parts.sorted().joined(separator: ", ")
-
-        return header
-    }
     
     private func requestTokenResponseParsing(_ response: String) -> [String: String] {
         // Breaks apart query string into a dictionary of values
@@ -117,9 +68,33 @@ class FlickrOAuth: NSObject {
         return parameters
     }
     
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
     // MARK: - Base Function Where Process Request Configuration
     
-    private func requestOAuth(args: RequestArgumentsOAuth? = nil, path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, Error>) -> Void) {
+    private func requestOAuth(args: RequestArgumentsOAuth? = nil, path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, FlickrOAuthError>) -> Void) {
         // Build base URL with path as parameter
         let urlString = HttpEndpoint.InternetProtocolType.https.rawValue + HttpEndpoint.HostType.hostAPI.rawValue + path.rawValue
         
@@ -130,7 +105,7 @@ class FlickrOAuth: NSObject {
         var urlRequest = URLRequest(url: url)
         
         // Set HTTP method to request using HttpMethodType with uppercase letters
-        urlRequest.httpMethod = method.rawValue.uppercased()
+        urlRequest.httpMethod = method.rawValue
         
         // Generate valid parameetrs
         let callback = (args != nil ? nil : FlickrAPI.urlScheme.rawValue)
@@ -151,25 +126,42 @@ class FlickrOAuth: NSObject {
         ]
         
         // Build the OAuth signature from parameters
-        parameters["oauth_signature"] = signatureOAuth(httpMethod: method.rawValue.uppercased(), url: urlString, parameters: parameters, tokenSecretOAuth: tokenSecretOAuth)
+        parameters["oauth_signature"] = createSignatureOAuth(httpMethod: method.rawValue, url: urlString, parameters: parameters, tokenSecretOAuth: tokenSecretOAuth)
         
         // Set parameters to HTTP body of URL request
-        urlRequest.setValue(encodeAuthorizationHeader(parameters: parameters), forHTTPHeaderField: "Authorization")
+        let header = "OAuth \(convertParametersToString(parameters, separator: ", "))"
+        urlRequest.setValue(header, forHTTPHeaderField: "Authorization")
+        //urlRequest.setValue(encodeAuthorizationHeader(parameters: parameters), forHTTPHeaderField: "Authorization")
         
         // URL configuration
         let config = URLSessionConfiguration.default
-        //config.allowsCellularAccess = true
         
         // Request creation
         let session = URLSession(configuration: config)
         let task = session.dataTask(with: urlRequest) { data, response, error in
-            if let httpResponse = response as? HTTPURLResponse {
-                print(httpResponse.statusCode)
+            guard let httpResponse = response as? HTTPURLResponse else {
+                complition(.failure(.responseIsEmpty))
+                return
             }
-            if let data = data {
+            
+            guard let data = data else {
+                complition(.failure(.dataIsEmpty))
+                return
+            }
+            
+            switch httpResponse.statusCode {
+            case 200..<300:
+                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
                 complition(.success(data))
-            } else {
-                complition(.failure(error!))
+            case ..<500:
+                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
+                complition(.failure(.invalidSignature))
+            case ..<600:
+                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
+                complition(.failure(.serverInternalError))
+            default:
+                print("Unknown status code!")
+                complition(.failure(.unexpected(code: httpResponse.statusCode)))
             }
         }
         
@@ -180,12 +172,12 @@ class FlickrOAuth: NSObject {
     // MARK: - Special Requests Cases
     
     private func getOAuthRequestToken(complition: @escaping (Result<URL, Error>) -> Void) {
-        requestOAuth(path: .requestTokenOAuth, method: .post) { result in
+        requestOAuth(path: .requestTokenOAuth, method: .POST) { result in
             switch result {
             case .success(let data):
                 // Convert Data into String (Response: oauth_token=XXXX&oauth_token_secret=YYYY&oauth_callback_confirmed=true)
                 guard let dataString = String(data: data, encoding: .utf8) else { return }
-
+                
                 // Parse data response
                 let attributes = self.requestTokenResponseParsing(dataString)
                 let requestToken = RequestTokenOAuth(token: attributes["oauth_token"] ?? "", secretToken: attributes["oauth_token_secret"] ?? "", callbackConfirmed: attributes["oauth_callback_confirmed"] ?? "")
@@ -199,21 +191,14 @@ class FlickrOAuth: NSObject {
                 
                 complition(.success(urlOAuth))
                 
-
-                // Subscribe to callback data (verifier) after website confirmation
-                //NotificationCenter.default.addObserver(self, selector: #selector(self.callbackSafariAuthorization(_:)), name: Notification.Name(Constant.NotificationName.callbackAuthorization.rawValue), object: nil)
-                
-                // Trigered function to open 'Safari'
-                //NotificationCenter.default.post(name: Notification.Name(Constant.NotificationName.websiteСonfirmationRequired.rawValue), object: urlOAuth)
             case .failure(let error):
-                print("Get 'request_token' error: \(error.localizedDescription)")
                 complition(.failure(error))
             }
         }
     }
     
     private func getOAuthAccessToken(args: RequestArgumentsOAuth) {
-        requestOAuth(args: args, path: .accessTokenOAuth, method: .post) { result in
+        requestOAuth(args: args, path: .accessTokenOAuth, method: .POST) { result in
             switch result {
             case .success(let data):
                 // Convert Data into String (Response: oauth_token=XXXX&oauth_token_secret=YYYY&user_nsid=CCC&username=NNN)
@@ -256,7 +241,7 @@ class FlickrOAuth: NSObject {
                 // Step #2: Getting user website confirmation
                 self.openSafari(from: presenter, for: url)
             case .failure(let error):
-                print("Error getting URL: \(error.localizedDescription)")
+                print("Get 'request_token' error: \(error.localizedDescription)")
             }
         }
     }
@@ -283,9 +268,46 @@ class FlickrOAuth: NSObject {
     
     // Close 'Safari' web page preview
     private func closeSafari() {
-        // Finally dismiss the 'Safari' ViewController
+        // Dismiss the 'Safari' ViewController
         self.safari?.dismiss(animated: true, completion: nil)
     }
+    
+    // MARK: - Prepare Methods
+    
+    // HMAC-SHA1 method to create signature
+    private func hashMessageAuthenticationCodeSHA1(signingKey: String, baseSignature: String) -> String {
+        // HMAC-SHA1 hashing algorithm returned as a base64 encoded string
+        var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
+        CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA1), signingKey, signingKey.count, baseSignature, baseSignature.count, &digest)
+        return Data(digest).base64EncodedString()
+    }
+    
+    // Method uses for prepare headers and signature parameters
+    private func convertParametersToString(_ parameters: [String: Any], separator: String) -> String {
+        var result: [String] = []
+        for parameter in parameters {
+            let key = parameter.key
+            let value = encodedUrl("\(parameter.value)")
+            result.append("\(key)=\(value)")
+        }
+        return result.sorted().joined(separator: separator)
+    }
+    
+    // Method uses for creating signature to get 'authorize' request
+    private func createSignatureOAuth(httpMethod: String, url: String, parameters: [String: Any], consumerSecretKey: String = FlickrAPI.secretKey.rawValue, tokenSecretOAuth: String? = nil) -> String {
+        // Initialization 'Signing Key'
+        let signingKey = "\(consumerSecretKey)&\(tokenSecretOAuth ?? "")"
+        
+        // Initialization 'Signing Base'
+        let stringParameters = convertParametersToString(parameters, separator: "&")
+        let baseSignature = "\(httpMethod)&\(encodedUrl(url))&\(encodedUrl(stringParameters))"
+        
+        // Build 'Signature' using HMAC-SHA1
+        let signature = hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
+        
+        return signature
+    }
+    
 }
 
 // MARK: - Refactoring
@@ -297,4 +319,8 @@ class FlickrOAuth: NSObject {
  5. Сделать FlickrOAuth синглтоном, чтобы вызывать функцию handleURL(_ url: URL) для прокидывания callback ссылки из SceneDelegate
  6. Браузер открывать/закрывать в FlickrOAuth
  7. Добавлен вывод статус кода из запроса на сервер
+ 8. Добавлен вызов ошибок
+ 9. Объеденены методы подготови заголовка 'encodeAuthorizationHeader' и параметров подписи 'prepareSignatureParameterString' в один метод
+ 10. Объеденены методы подготовки ключей подписи, вся реализация теперь находиться в методе createSignatureOAuth
+ 11. В перечислении HTTP кейсы теперь по умолчанию uppercased()
  */

@@ -32,9 +32,9 @@ enum HttpEndpoint {
 
 // MARK: - HTTP method types
 enum HttpMethodType: String {
-    case get
-    case post
-    case delete
-    case put
-    case patch
+    case GET
+    case POST
+    case DELETE
+    case PUT
+    case PATCH
 }
