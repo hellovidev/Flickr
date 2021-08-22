@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F894B8E26D164FE00066FBF /* FlickrOAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F894B8D26D164FE00066FBF /* FlickrOAuthError.swift */; };
 		5FF8D97726CEC4F80058FEC7 /* HTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8D97626CEC4F80058FEC7 /* HTTP.swift */; };
 		5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */; };
 		5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F894B8D26D164FE00066FBF /* FlickrOAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrOAuthError.swift; sourceTree = "<group>"; };
 		5FF8D97626CEC4F80058FEC7 /* HTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTP.swift; sourceTree = "<group>"; };
 		5FFEC0AD26CD4DDB000A0BAB /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				5FFEC0CD26CD4FD3000A0BAB /* AppConstants.swift */,
 				5FFEC0CF26CD56D5000A0BAB /* FlickrAPI.swift */,
 				5FF8D97626CEC4F80058FEC7 /* HTTP.swift */,
+				5F894B8D26D164FE00066FBF /* FlickrOAuthError.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 				5FFEC0D026CD56D5000A0BAB /* FlickrAPI.swift in Sources */,
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* AppConstants.swift in Sources */,
+				5F894B8E26D164FE00066FBF /* FlickrOAuthError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

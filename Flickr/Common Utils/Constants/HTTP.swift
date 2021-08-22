@@ -10,31 +10,21 @@ import Foundation
 // MARK: - API URL requests
 enum HttpEndpoint {
     
-    // MARK: - InternetProtocolType
-    enum InternetProtocolType: String {
-        case http = "http://"
-        case https = "https://"
-    }
-    
-    // MARK: - HostType
-    enum HostType: String {
-        case hostAPI = "www.flickr.com/"
-    }
-    
     // MARK: - PathType
     enum PathType: String {
-        case requestTokenOAuth = "services/oauth/request_token"
-        case accessTokenOAuth = "services/oauth/access_token"
-        case authorizeOAuth = "services/oauth/authorize"
+        case requestTokenOAuth = "/services/oauth/request_token"
+        case accessTokenOAuth = "/services/oauth/access_token"
+        case authorizeOAuth = "/services/oauth/authorize"
+        case authenticatedRequest = "/services/rest"
     }
     
 }
 
 // MARK: - HTTP method types
 enum HttpMethodType: String {
-    case get
-    case post
-    case delete
-    case put
-    case patch
+    case GET
+    case POST
+    case DELETE
+    case PUT
+    case PATCH
 }

@@ -12,9 +12,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard let url = URLContexts.first?.url else { return }
-        NotificationCenter.default.post(name: Notification.Name(Constant.NotificationName.callbackAuthorization.rawValue), object: url)
-        print("Callback URL: \(url.absoluteString)")
+        guard let url = URLContexts.first?.url else {
+            fatalError("Could not get url on \(#line) in \(#function)")
+        }
+        
+        // Catch callback link with 'verifier' parameter
+        FlickrOAuth.shared.handleURL(url)
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
