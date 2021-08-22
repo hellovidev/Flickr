@@ -24,17 +24,17 @@ extension FlickrOAuthError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .dataCanNotBeParsed:
-            return NSLocalizedString("Response data can not be parsed.",comment: "FlickrOAuthError Error")
+            return NSLocalizedString("Response data can not be parsed.", comment: "FlickrOAuthError Error")
         case .responseIsEmpty:
-            return NSLocalizedString("Response from server is empty.",comment: "FlickrOAuthError Error")
+            return NSLocalizedString("Response from server is empty.", comment: "FlickrOAuthError Error")
         case .dataIsEmpty:
-            return NSLocalizedString("Data from server is empty.",comment: "FlickrOAuthError Error")
+            return NSLocalizedString("Data from server is empty.", comment: "FlickrOAuthError Error")
         case .invalidSignature:
-            return NSLocalizedString("Invalid 'HMAC-SHA1' signature.",comment: "FlickrOAuthError Error")
+            return NSLocalizedString("Invalid 'HMAC-SHA1' signature.", comment: "FlickrOAuthError Error")
         case .serverInternalError:
-            return NSLocalizedString("Internal server error.",comment: "FlickrOAuthError Error")
+            return NSLocalizedString("Internal server error.", comment: "FlickrOAuthError Error")
         case .unexpected(_):
-            return NSLocalizedString("An unexpected error occurred.",comment: "FlickrOAuthError Error")
+            return NSLocalizedString("An unexpected error occurred.", comment: "FlickrOAuthError Error")
         }
     }
     

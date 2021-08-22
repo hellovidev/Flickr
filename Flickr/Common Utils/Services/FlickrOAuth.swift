@@ -19,20 +19,20 @@ class FlickrOAuth: NSObject {
     // MARK: - Structs For Responses
     
     // Structure to save request token response
-    private struct RequestTokenOAuth {
+    struct RequestTokenOAuth {
         let token: String
         let secretToken: String
     }
     
     // Structure to build request arguments
-    private struct RequestArgumentsOAuth {
+    struct RequestArgumentsOAuth {
         var token: String
         var secretToken: String
         var verifier: String
     }
     
     // Structure to save access token response
-    private struct AccessTokenOAuth {
+    struct AccessTokenOAuth {
         let token: String
         let secretToken: String
         let userNSId: String
@@ -65,8 +65,28 @@ class FlickrOAuth: NSObject {
         // Sign out from 'Flickr' account
     }
     
+    // Test login request with JSON response
+    func getCurrenUser(access token: AccessTokenOAuth) {
+        let parameters: [String: String] = ["nojsoncallback": "1", "format": "json", "oauth_token": token.token, "method": "flickr.test.login" ]
+        
+        request(secretToken: token.secretToken, params: parameters, path: HttpEndpoint.PathType.authenticatedRequest, method: .GET) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    guard let response = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+                    print("Response: \(response)")
+                } catch(let error) {
+                    print(error.localizedDescription)
+                }
+            case .failure(let error):
+                print("Get 'flickr.test.login' error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     // MARK: - Base Request Configuration Methods
     
+    // Base OAuth method
     private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, FlickrOAuthError>) -> Void) {
         // Build base URL with path as parameter
         let urlString = "https://www.flickr.com\(path.rawValue)"
@@ -135,11 +155,80 @@ class FlickrOAuth: NSObject {
         task.resume()
     }
     
+    // Base regular request method
+    private func request(secretToken: String, params extraParameters: [String: String], path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, FlickrOAuthError>) -> Void) {
+        // Build base URL with path as parameter
+        let urlString = "https://www.flickr.com\(path.rawValue)"
+        
+        var parameters: [String: String] = [
+            "oauth_consumer_key": FlickrAPI.consumerKey.rawValue,
+            // Value 'nonce' can be any 32-bit string made up of random ASCII values
+            "oauth_nonce": UUID().uuidString,
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_timestamp": String(Int(Date().timeIntervalSince1970)),
+            "oauth_version": "1.0"
+        ]
+        
+        // Add to parameters extra values
+        parameters = parameters.merging(extraParameters) { (current, _) in current }
+        
+        // Build the OAuth signature from parameters
+        parameters["oauth_signature"] = createSignatureOAuth(httpMethod: method.rawValue, url: urlString, parameters: parameters, tokenSecretOAuth: secretToken)
+        
+        // Set parameters to request
+        var components = URLComponents(string: urlString)
+        components?.queryItems = parameters.map { (key, value) in
+            URLQueryItem(name: key, value: value)
+        }
+        
+        // Initialize and configure URL request
+        guard let url = components?.url else { return }
+        var urlRequest = URLRequest(url: url)
+        
+        // Set HTTP method to request using HttpMethodType with uppercase letters
+        urlRequest.httpMethod = method.rawValue
+        
+        // URL configuration
+        let config = URLSessionConfiguration.default
+        
+        // Request creation
+        let session = URLSession(configuration: config)
+        let task = session.dataTask(with: urlRequest) { data, response, error in
+            guard let httpResponse = response as? HTTPURLResponse else {
+                complition(.failure(.responseIsEmpty))
+                return
+            }
+            
+            guard let data = data else {
+                complition(.failure(.dataIsEmpty))
+                return
+            }
+            
+            switch httpResponse.statusCode {
+            case 200..<300:
+                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
+                complition(.success(data))
+            case ..<500:
+                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
+                complition(.failure(.invalidSignature))
+            case ..<600:
+                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
+                complition(.failure(.serverInternalError))
+            default:
+                print("Unknown status code!")
+                complition(.failure(.unexpected(code: httpResponse.statusCode)))
+            }
+        }
+        
+        // Start request process
+        task.resume()
+    }
+    
     // MARK: - OAuth1.0 Steps Methods
     
     // Uses to save request secret token
     private var secretToken: String?
-
+    
     // Catch URL callback after confirmed authorization (Step #2: Website Confirmation)
     func handleURL(_ url: URL) {
         // Transformation: oauth-flickr://?oauth_token=XXXX&oauth_verifier=ZZZZ => ["oauth_token": "XXXX", "oauth_verifier": "YYYY"]
@@ -158,7 +247,10 @@ class FlickrOAuth: NSObject {
             switch result {
             case .success(let token):
                 print("Authorization result: \(token)")
-                // Change authentication state as like (self.authenticationState = .successfullyAuthenticated)
+                
+                // Test to get JSON info
+                self.getCurrenUser(access: token)
+            // Change authentication state as like (self.authenticationState = .successfullyAuthenticated)
             case .failure(let error):
                 print("Get 'access_token' error: \(error.localizedDescription)")
             }
@@ -237,8 +329,8 @@ class FlickrOAuth: NSObject {
     
     // MARK: - Prepare Methods
     
-    // Prepare string value to signature
-    private func encodedUrl(_ value: String) -> String {
+    // Prepare string value to signature: 'https://www.flickr.com/services/oauth/request_token' => 'https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token'
+    private func encodeString(_ value: String) -> String {
         var charset: CharacterSet = .urlQueryAllowed
         charset.remove(charactersIn: "\n:#/?@!$&'()*+,;=")
         return value.addingPercentEncoding(withAllowedCharacters: charset)!
@@ -257,7 +349,7 @@ class FlickrOAuth: NSObject {
         var result: [String] = []
         for parameter in parameters {
             let key = parameter.key
-            let value = encodedUrl("\(parameter.value)")
+            let value = encodeString("\(parameter.value)")
             result.append("\(key)=\(value)")
         }
         return result.sorted().joined(separator: separator)
@@ -270,7 +362,7 @@ class FlickrOAuth: NSObject {
         
         // Initialization 'Signing Base'
         let stringParameters = convertParametersToString(parameters, separator: "&")
-        let baseSignature = "\(httpMethod)&\(encodedUrl(url))&\(encodedUrl(stringParameters))"
+        let baseSignature = "\(httpMethod)&\(encodeString(url))&\(encodeString(stringParameters))"
         
         // Build 'Signature' using HMAC-SHA1
         return hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
@@ -313,4 +405,9 @@ class FlickrOAuth: NSObject {
  15. Захардкодил ссылку на flickr.com
  16. Добавлены extraParameters в базовый метод запроса requestOAuth()
  17. Исправлена логика шагов авторизации в методе flickrLogin()
+ 18. Создан REST запрос сответом в виде JSON
+ 19. Разобраться с encodeString()
+ 
+ *20. Получить данные авторизации через JSON - Отмена
+ *21. Проблема с логикой вызова метода getAccessToken()
  */
