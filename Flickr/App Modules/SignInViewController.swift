@@ -15,7 +15,14 @@ class SignInViewController: UIViewController {
         super.viewDidLoad()
         
         // User athorization request
-        FlickrOAuth.shared.flickrLogin(presenter: self)
+        FlickrOAuth.shared.flickrLogin(presenter: self) { result in
+            switch result {
+            case .success(let accessToken):
+                print(accessToken)
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        }
     }
  
 }

@@ -8,14 +8,16 @@
 import Foundation
 
 // MARK: - API URL requests
-enum HttpEndpoint {
+enum HttpEndpoint: String {
     
-    // MARK: - PathType
+    case baseDomain = "https://www.flickr.com"
+    
+    // MARK: - Request Path Type
     enum PathType: String {
         case requestTokenOAuth = "/services/oauth/request_token"
         case accessTokenOAuth = "/services/oauth/access_token"
         case authorizeOAuth = "/services/oauth/authorize"
-        case authenticatedRequest = "/services/rest"
+        case requestREST = "/services/rest"
     }
     
 }
