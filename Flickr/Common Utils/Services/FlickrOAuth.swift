@@ -15,7 +15,7 @@ class FlickrOAuth {
     static let shared = FlickrOAuth()
     
     // Methods to prepare API requests
-    let prepare: RequestPreparation = .init()
+    private let prepare: RequestPreparation = .init()
     
     // MARK: - Authorization State
     
