@@ -13,14 +13,14 @@ import CommonCrypto
 class RequestPreparation {
     
     // Prepare string value to signature view: 'https://www.flickr.com/services/oauth/request_token' => 'https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token'
-    func encodeString(_ value: String) -> String {
+    private func encodeString(_ value: String) -> String {
         var charset: CharacterSet = .urlQueryAllowed
         charset.remove(charactersIn: "\n:#/?@!$&'()*+,;=")
         return value.addingPercentEncoding(withAllowedCharacters: charset)!
     }
     
     // HMAC-SHA1 method to create signature, HMAC-SHA1 hashing algorithm returned as a base64 encoded string
-    func hashMessageAuthenticationCodeSHA1(signingKey: String, baseSignature: String) -> String {
+    private func hashMessageAuthenticationCodeSHA1(signingKey: String, baseSignature: String) -> String {
         var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
         CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA1), signingKey, signingKey.count, baseSignature, baseSignature.count, &digest)
         return Data(digest).base64EncodedString()

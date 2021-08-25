@@ -8,33 +8,47 @@
 import UIKit
 import SafariServices
 
-// MARK: - Network Layer (FlickrAPI OAuth1.0)
+// MARK: - Network Layer (OAuth1.0)
 
-class FlickrOAuth: RequestPreparation {
+class FlickrOAuth {
     
     static let shared = FlickrOAuth()
     
+    // Methods to prepare API requests
+    let prepare: RequestPreparation = .init()
+    
     // MARK: - Authorization State
     
-    enum AuthorizationState {
+    private enum AuthorizationState {
         case requestTokenRequested
         case authorizeRequested(handler: (URL) -> Void)
         case accessTokenRequested
         case successfullyAuthenticated
     }
     
-    var state: AuthorizationState?
+    private var state: AuthorizationState?
+    
+    // MARK: - Additional Methods
+    
+    func isAuthorized() -> Bool {
+        switch state {
+        case .successfullyAuthenticated:
+            return true
+        default:
+            return false
+        }
+    }
     
     // MARK: - Structs For Responses
     
     // Structure to save request token response
-    struct RequestTokenOAuth {
+    private struct RequestTokenOAuth {
         let token: String
         let secretToken: String
     }
         
     // Structure to build request arguments
-    struct ArgumentsAccessToken {
+    private struct ArgumentsAccessToken {
         var token: String
         var secretToken: String
         var verifier: String
@@ -53,8 +67,7 @@ class FlickrOAuth: RequestPreparation {
     func flickrLogin(presenter: UIViewController, complition: @escaping (Result<AccessTokenOAuth, Error>) -> Void) {
         // Check authorization state
         guard state == nil else {
-            let error = NSError(domain: "Bad Request", code: 400, userInfo: [NSLocalizedDescriptionKey: "User is already logged in."])
-            complition(.failure(error))
+            complition(.failure(ErrorMessage.error("User is already logged in.")))
             return
         }
         
@@ -70,9 +83,10 @@ class FlickrOAuth: RequestPreparation {
                         let arguments = ArgumentsAccessToken(token: requestToken.token, secretToken: requestToken.secretToken, verifier: verifier)
                         
                         // Step #3: Getting access token
-                        self?.getAccessToken(arguments: arguments) { result in
+                        self?.getAccessToken(arguments: arguments) { [weak self] result in
                             switch result {
                             case .success(let accessToken):
+                                self?.state = .successfullyAuthenticated
                                 complition(.success(accessToken))
                             case .failure(let error):
                                 complition(.failure(error))
@@ -89,6 +103,7 @@ class FlickrOAuth: RequestPreparation {
     }
     
     func flickrLogout() {
+        state = nil
         // Sign out from 'Flickr' account
     }
     
@@ -113,8 +128,7 @@ class FlickrOAuth: RequestPreparation {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"] else {
-                    let error = NSError(domain: "Not Found", code: 404, userInfo: [NSLocalizedDescriptionKey: "Request token was not found."])
-                    complition(.failure(error))
+                    complition(.failure(ErrorMessage.error("Request token was not found.")))
                     return
                 }
                 
@@ -142,7 +156,7 @@ class FlickrOAuth: RequestPreparation {
     }
     
     // Step #2: Website Confirmation
-    private func requestAuthorize(with token: String, presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
+    private func requestAuthorize(with token: String, presenter: UIViewController, complition: @escaping (Result<String, Error>) -> Void) {
         // Build website confirmation link for 'Safari'
         let urlString = "\(HttpEndpoint.baseDomain.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
         guard let websiteConfirmationURL = URL(string: urlString) else { return }
@@ -156,21 +170,20 @@ class FlickrOAuth: RequestPreparation {
             safari.dismiss(animated: true, completion: nil)
             
             guard let query = url.query else {
-                let error = NSError(domain: "Not Found", code: 404, userInfo: [NSLocalizedDescriptionKey: "Parameters were not found after confirmation on the website."])
-                completion(.failure(error))
+                complition(.failure(ErrorMessage.error("Parameters were not found after confirmation on the website.")))
                 return
             }
             
             // Transformation: oauth-flickr://?oauth_token=XXXX&oauth_verifier=ZZZZ => ["oauth_token": "XXXX", "oauth_verifier": "YYYY"]
             let parameters = self?.convertStringToParameters(query)
             
-            guard let verifier = parameters?["oauth_verifier"], let token = parameters?["oauth_token"] else {
-                let error = NSError(domain: "Not Found", code: 404, userInfo: [NSLocalizedDescriptionKey: "Parameters were not found after confirmation on the website."])
-                completion(.failure(error))
+            guard let verifier = parameters?["oauth_verifier"] else {
+                complition(.failure(ErrorMessage.error("Parameters were not found after confirmation on the website.")))
                 return
             }
 
-            completion(.success(verifier))
+            print("'verifier' -> Status: Complete")
+            complition(.success(verifier))
         }
         
         // Async preview after receiving the link
@@ -182,8 +195,7 @@ class FlickrOAuth: RequestPreparation {
     // Catch URL callback after confirmed authorization (Step #2: Website Confirmation)
     func handleURL(_ url: URL) {
         guard case let .authorizeRequested(handler) = state else {
-            print("Invalid authorization state.")
-            return
+            fatalError("Invalid authorization state.")
         }
         
         handler(url)
@@ -209,8 +221,7 @@ class FlickrOAuth: RequestPreparation {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"], let userNSID = attributes["user_nsid"], let username = attributes["username"] else {
-                    let error = NSError(domain: "Not Found", code: 404, userInfo: [NSLocalizedDescriptionKey: "Access token was not found."])
-                    complition(.failure(error))
+                    complition(.failure(ErrorMessage.error("Access token was not found.")))
                     return
                 }
                 
@@ -220,50 +231,10 @@ class FlickrOAuth: RequestPreparation {
             }
         }
     }
-    
-    
-    
-    
-    
-    
 
+    // MARK: - Request Configuration Methods
     
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - Base Request Configuration Methods
-    
-    // Base OAuth method
-    private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, FlickrOAuthError>) -> Void) {
+    private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, Error>) -> Void) {
         // Build base URL with path as parameter
         let urlString = HttpEndpoint.baseDomain.rawValue + path.rawValue
         
@@ -289,10 +260,10 @@ class FlickrOAuth: RequestPreparation {
         parameters = parameters.merging(extraParameters) { (current, _) in current }
         
         // Build the OAuth signature from parameters
-        parameters["oauth_signature"] = createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
+        parameters["oauth_signature"] = prepare.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
         
         // Set parameters to HTTP body of URL request
-        let header = "OAuth \(convertParametersToString(parameters, separator: ", "))"
+        let header = "OAuth \(prepare.convertParametersToString(parameters, separator: ", "))"
         urlRequest.setValue(header, forHTTPHeaderField: "Authorization")
         
         // URL configuration
@@ -302,28 +273,29 @@ class FlickrOAuth: RequestPreparation {
         let session = URLSession(configuration: config)
         let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let httpResponse = response as? HTTPURLResponse else {
-                complition(.failure(.responseIsEmpty))
+                complition(.failure(ErrorMessage.error("HTTP response is empty.")))
                 return
             }
             
             guard let data = data else {
-                complition(.failure(.dataIsEmpty))
+                complition(.failure(ErrorMessage.error("Data response is empty.")))
                 return
             }
             
             switch httpResponse.statusCode {
-            case 200..<300:
-                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
+            case ..<200:
+                complition(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
+            case ..<300:
+                print("\(path == .requestTokenOAuth ? "'request_token'" : "'access_token'") -> Status: \(httpResponse.statusCode) OK")
                 complition(.success(data))
+            case ..<400:
+                complition(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
             case ..<500:
-                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
-                complition(.failure(.invalidSignature))
+                complition(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)).")))
             case ..<600:
-                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
-                complition(.failure(.serverInternalError))
+                complition(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)).")))
             default:
-                print("Unknown status code!")
-                complition(.failure(.unexpected(code: httpResponse.statusCode)))
+                complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
             }
         }
         
