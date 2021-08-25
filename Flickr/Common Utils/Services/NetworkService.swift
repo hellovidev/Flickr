@@ -77,9 +77,42 @@ class NetworkService {
         }
     }
     
+    private struct PhotosResponse: Decodable {
+        let data: Photos
+        
+        fileprivate struct Photos: Decodable {
+            let photos: [Photo]
+            
+            enum CodingKeys: String, CodingKey {
+                case photos = "photo"
+            }
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case data = "photos"
+        }
+    }
+    
+    private struct TagsResponse: Decodable {
+        let data: Tags
+        
+        fileprivate struct Tags: Decodable {
+            let tag: [Tag]
+            
+            enum CodingKeys: String, CodingKey {
+                case tag = "tag"
+            }
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case data = "hottags"
+        }
+    }
+    
+    
     // MARK: - Special Methods
     
-    // Get current user profile 'flickr.profile.getProfile'
+    // Get current user profile 'flickr.profile.getProfile' (User screen)
     func getProfile(complition: @escaping (Result<Profile, Error>) -> Void) {
         let parameters: [String: String] = [
             "user_id": access.nsid
@@ -106,7 +139,7 @@ class NetworkService {
         }
     }
     
-    // Get photo comments list 'flickr.photos.comments.getList'
+    // Get photo comments list 'flickr.photos.comments.getList' (Post screen)
     func getPhotoComments(for photoId: String, complition: @escaping (Result<[Comment], Error>) -> Void) {
         let parameters: [String: String] = [
             "photo_id": photoId
@@ -148,99 +181,109 @@ class NetworkService {
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
     // Get list of popular photos 'flickr.photos.getPopular' (General screen)
-    func getPopularPosts() {
+    func getPopularPosts(complition: @escaping (Result<[Photo], Error>) -> Void) {
         request(requestMethod: .getPopularPosts, path: .requestREST, method: .GET) { result in
             switch result {
             case .success(let data):
                 do {
-                    guard let response = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
-                    print("Response: \(response)")
-                } catch(let error) {
-                    print("Data couldn't be parsed: \(error.localizedDescription)")
+                    // Initialization decoder
+                    let decoder = JSONDecoder()
+                    let response = try decoder.decode(PhotosResponse.self, from: data)
+                    complition(.success(response.data.photos))
+                } catch {
+                    complition(.failure(ErrorMessage.error("Popular photos could not be parsed.\nDescription: \(error)")))
                 }
             case .failure(let error):
-                print("Get 'flickr.test.login' error: \(error.localizedDescription)")
+                complition(.failure(error))
             }
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    enum Period: String {
-        case day
-        case week
-    }
-    
-    func getHotTags(period: Period) {
-        //        let parameters: [String: String] = [
-        //            "period": "asd",
-        //            "cound": "25"
-        //        ]
+    // Get list of hot tags 'flickr.places.tagsForPlace' (General screen)
+    func getHotTags(count: Int, complition: @escaping (Result<[Tag], Error>) -> Void) {
+        let parameters: [String: String] = [
+            "count": String(count)
+        ]
         
-        request(params: nil, requestMethod: .getHotTags, path: .requestREST, method: .GET) { result in
+        request(params: parameters, requestMethod: .getHotTags, path: .requestREST, method: .GET) { result in
             switch result {
             case .success(let data):
                 do {
-                    guard let response = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
-                    print("Response: \(response)")
-                } catch(let error) {
-                    print("Data couldn't be parsed: \(error.localizedDescription)")
+                    // Initialization decoder
+                    let decoder = JSONDecoder()
+                    let response = try decoder.decode(TagsResponse.self, from: data)
+                    complition(.success(response.data.tag))
+                } catch {
+                    complition(.failure(ErrorMessage.error("Tags could not be parsed.\nDescription: \(error)")))
                 }
             case .failure(let error):
-                print("Get 'flickr.test.login' error: \(error.localizedDescription)")
+                complition(.failure(error))
             }
         }
     }
     
-    /*
-     Response: ["count": 1, "period": day, "stat": ok, "hottags": {
-     tag =     (
-     {
-     "_content" = mountain;
-     "thm_data" =             {
-     photos =                 {
-     photo =                     (
-     {
-     farm = 6;
-     id = 30006983321;
-     isfamily = 0;
-     isfriend = 0;
-     ispublic = 1;
-     owner = "57973623@N06";
-     secret = 4330984edb;
-     server = 5159;
-     title = "Looking west (Riffelsee, Switzerland)";
-     username = "<null>";
-     }
-     );
-     };
-     };
-     }
-     );
-     }]
-     */
+
     
-    //case postPhoto = "flickr.blogs.postPhoto"
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    func postNewPhoto(photoId: String, title: String, description: String, complition: @escaping (String) -> Void) {
+        let parameters: [String: String] = [
+            "photo_id": photoId,
+            "title": title,
+            "description": description,
+            "perms": "write",
+            "blog_id": UUID().uuidString
+        ]
+        
+        request(params: parameters, requestMethod: .postPhoto, path: .requestREST, method: .POST) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    // Initialization decoder
+                    guard let response = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+                    print("Response: \(response)")
+                    //complition(.success(response.data.comments))
+                } catch {
+                    //complition(.failure(ErrorMessage.error("Comments of photo with id(\(photoId) could not be parsed.\nDescription: \(error)")))
+                }
+            case .failure(let error):
+                print("ERROR !!! \(error)")
+            //complition(.failure(error))
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -398,3 +441,46 @@ class NetworkService {
 //default:
 //    complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
 //}
+
+
+
+
+
+
+
+
+
+
+// to generate link https://www.flickr.com/services/api/misc.urls.html
+/*
+ 
+ 
+ #
+ # Typical usage
+ #
+ 
+ https://live.staticflickr.com/{server-id}/{id}_{secret}_{size-suffix}.jpg
+ 
+ #
+ # Unique URL format for 500px size
+ #
+ 
+ https://live.staticflickr.com/{server-id}/{id}_{secret}.jpg
+ 
+ #
+ # Originals might have a different file format extension
+ #
+ 
+ https://live.staticflickr.com/{server-id}/{id}_{o-secret}_o.{o-format}
+ 
+ #
+ # Example
+ #   server-id: 7372
+ #   photo-id: 12502775644
+ #   secret: acfd415fa7
+ #   size: w
+ #
+ 
+ https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg
+ 
+ */

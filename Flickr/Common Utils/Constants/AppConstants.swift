@@ -23,11 +23,11 @@ enum Constant {
     
     enum FlickrMethod: String {
         case getFavorites = "flickr.favorites.getList"
-        case getPopularPosts = "flickr.photos.getPopular"
+        case getPopularPosts = "flickr.photos.getRecent" // => "flickr.photos.getPopular"
         case getProfile = "flickr.profile.getProfile"
-        case postPhoto = "flickr.blogs.postPhoto"
         case getComments = "flickr.photos.comments.getList"
-        case getHotTags = "flickr.places.tagsForPlace"
+        case getHotTags = "flickr.tags.getHotList"
+        case postPhoto = "flickr.blogs.postPhoto"
     }
     
 }

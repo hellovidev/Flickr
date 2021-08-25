@@ -39,15 +39,38 @@ class SignInViewController: UIViewController {
 //                    }
 //                }
             
-                self?.networkService?.getFavorites { result in
-                                        switch result {
-                                        case .success(let favorites):
-                                            print(favorites)
-                                        case .failure(let error):
-                                            print(error)
-                                        }
+//                self?.networkService?.getFavorites { result in
+//                                        switch result {
+//                                        case .success(let favorites):
+//                                            print(favorites)
+//                                        case .failure(let error):
+//                                            print(error)
+//                                        }
+//
+//                }
+                self?.networkService?.getHotTags(count: 10) {result in
+                                                            switch result {
+                                                            case .success(let tags):
+                                                                print(tags)
+                                                            case .failure(let error):
+                                                                print(error)
+                                                            }
                     
                 }
+//                self?.networkService?.postNewPhoto(photoId: UUID().uuidString, title: "First photo loaded from iPhone", description: "WOW!") { str in
+//                    print(str)
+//
+//                }
+            
+//                self?.networkService?.getPopularPosts {result in
+//                                                            switch result {
+//                                                            case .success(let photos):
+//                                                                print(photos)
+//                                                            case .failure(let error):
+//                                                                print(error)
+//                                                            }
+//                    
+//                }
             case .failure(let error):
                 switch error {
                 case ErrorMessage.notFound:
