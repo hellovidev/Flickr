@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Catch callback link with 'verifier' parameter
-        FlickrOAuth.shared.handleURL(url)
+        FlickrOAuthService.shared.handleURL(url)
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {

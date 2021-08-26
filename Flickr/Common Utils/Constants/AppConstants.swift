@@ -8,13 +8,37 @@
 import Foundation
 
 // MARK: - App Constants
+
 enum Constant {
     
     // MARK: - Notification Names Identifiers
+    
     enum NotificationName: String {
         case callbackAuthorization = "CallbackAuthorizationNotification"
         case triggerBrowserTargetComplete = "BrowserTargetCompleteNotification"
         case websiteСonfirmationRequired = "СonfirmationRequiredNotification"
+    }
+    
+    // MARK: - Flickr Methods Identifiers (Documentstion: https://www.flickr.com/services/api/)
+    
+    enum FlickrMethod: String {
+        // Profile screen
+        case getProfile = "flickr.profile.getProfile"
+        
+        // Home screen
+        case getHotTags = "flickr.tags.getHotList"
+        case getPopularPosts = "flickr.photos.getRecent" // => "flickr.photos.getPopular"
+        case getPhotoInfo = "flickr.photos.getInfo"
+        case getPhotoComments = "flickr.photos.comments.getList"
+        case addToFavorites = "flickr.favorites.add"
+        case removeFromFavorites = "flickr.favorites.remove"
+        
+        // Gallery screen
+        case getUserPhotos = "flickr.people.getPhotos" // => "flickr.___.getUserPhotos"
+        case deleteUserPhotoById = "flickr.photos.delete"
+        
+        // ???
+        case getFavorites = "flickr.favorites.getList"
     }
     
 }
