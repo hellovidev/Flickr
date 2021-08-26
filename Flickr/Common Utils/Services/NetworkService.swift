@@ -32,10 +32,7 @@ class NetworkService {
     
     // MARK: - Response Decoders Entities
     
-    /*
-     Response: ["message": Invalid NSID provided, "code": 1, "stat": fail]
-     */
-    
+    // Error Response: ["message": Invalid NSID provided, "code": 1, "stat": fail]
     private struct ErrorResponse: Decodable {
         let message: String
         let code: Int
@@ -77,6 +74,7 @@ class NetworkService {
         }
     }
     
+    // Build link to get image: https://www.flickr.com/services/api/misc.urls.html
     private struct PhotosResponse: Decodable {
         let data: Photos
         
@@ -145,7 +143,7 @@ class NetworkService {
             "photo_id": photoId
         ]
         
-        request(params: parameters, requestMethod: .getComments, path: .requestREST, method: .GET) { result in
+        request(params: parameters, requestMethod: .getPhotoComments, path: .requestREST, method: .GET) { result in
             switch result {
             case .success(let data):
                 do {
@@ -223,102 +221,28 @@ class NetworkService {
         }
     }
     
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    func postNewPhoto(photoId: String, title: String, description: String, complition: @escaping (String) -> Void) {
+    // Get photo 'flickr.photos.getInfo' (Post screen)
+    func getPhotoById(with photoId: String, secret: String? = nil, complition: @escaping (Result<PhotoInfo, Error>) -> Void) {
         let parameters: [String: String] = [
-            "photo_id": photoId,
-            "title": title,
-            "description": description,
-            "perms": "write",
-            "blog_id": UUID().uuidString
+            "photo_id": photoId
         ]
         
-        request(params: parameters, requestMethod: .postPhoto, path: .requestREST, method: .POST) { result in
+        request(params: parameters, requestMethod: .getPhotoInfo, path: .requestREST, method: .GET) { result in
             switch result {
             case .success(let data):
                 do {
                     // Initialization decoder
-                    guard let response = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
-                    print("Response: \(response)")
-                    //complition(.success(response.data.comments))
+                    let decoder = JSONDecoder()
+                    let response = try decoder.decode(PhotoInfo.self, from: data)
+                    complition(.success(response))
                 } catch {
-                    //complition(.failure(ErrorMessage.error("Comments of photo with id(\(photoId) could not be parsed.\nDescription: \(error)")))
+                    complition(.failure(ErrorMessage.error("Photo info with id(\(photoId) could not be parsed.\nDescription: \(error)")))
                 }
             case .failure(let error):
-                print("ERROR !!! \(error)")
-            //complition(.failure(error))
+                complition(.failure(error))
             }
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /*
-     //
-     //
-     //
-     //    Photo uploading link and(?) flickr.blogs.postPhoto
-     */
-    
-    //    func testLoginRequest() {
-    //        let parameters: [String: String] = [
-    //            "nojsoncallback": "1",
-    //            "format": "json",
-    //            "oauth_token": access.token,
-    //            "method": "flickr.test.login"
-    //        ]
-    //
-    //        request(params: parameters, requestMethod: <#Constant.FlickrMethod#>, path: .requestREST, method: .GET) { result in
-    //            switch result {
-    //            case .success(let data):
-    //                do {
-    //                    guard let response = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
-    //                    print("Response: \(response)")
-    //                } catch(let error) {
-    //                    print("Data couldn't be parsed: \(error.localizedDescription)")
-    //                }
-    //            case .failure(let error):
-    //                print("Get 'flickr.test.login' error: \(error.localizedDescription)")
-    //            }
-    //        }
-    //    }
     
     // MARK: - Foundation Methods
     
@@ -348,7 +272,6 @@ class NetworkService {
         parameters["oauth_signature"] = prepare.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: access.secret)
         
         // Set parameters to request
-        
         var components = URLComponents(string: urlString)
         components?.queryItems = parameters.map { (key, value) in
             URLQueryItem(name: key, value: value)
@@ -368,35 +291,36 @@ class NetworkService {
         let session = URLSession(configuration: config)
         let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let httpResponse = response as? HTTPURLResponse else {
-                complition(.failure(FlickrOAuthError.responseIsEmpty))
+                complition(.failure(ErrorMessage.error("HTTP response is empty.")))
                 return
             }
             
             guard let data = data else {
-                complition(.failure(FlickrOAuthError.dataIsEmpty))
+                complition(.failure(ErrorMessage.error("Data response is empty.")))
                 return
             }
             
             if let error = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
-                complition(.failure(ErrorMessage.error("Error: \(error.message)")))
+                complition(.failure(ErrorMessage.error("Error Server Response: \(error.message)")))
                 return
             }
             
             switch httpResponse.statusCode {
-            case 200..<300:
-                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
+            case ..<200:
+                complition(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
+            case ..<300:
+                print("Status: \(httpResponse.statusCode) OK")
                 complition(.success(data))
+            case ..<400:
+                complition(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
             case ..<500:
-                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
-                complition(.failure(FlickrOAuthError.invalidSignature))
+                complition(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)).")))
             case ..<600:
-                print("Status Code: \(httpResponse.statusCode)\nMessage: \(HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))")
-                complition(.failure(FlickrOAuthError.serverInternalError))
+                complition(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)).")))
             default:
-                print("Unknown status code!")
-                complition(.failure(FlickrOAuthError.unexpected(code: httpResponse.statusCode)))
+                complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
             }
-            
+
         }
         
         // Start request process
@@ -407,80 +331,37 @@ class NetworkService {
 
 
 
+    
 
 
-//switch self {
-//case .dataCanNotBeParsed:
-//    return "Response data can not be parsed."
-//case .responseIsEmpty:
-//    return "Response from server is empty."
-//case .dataIsEmpty:
-//    return "Data from server is empty."
-//case .invalidSignature:
-//    return "Invalid 'HMAC-SHA1' signature."
-//case .serverInternalError:
-//    return "Internal server error."
-//case .unexpected(_):
-//    return "An unexpected error occurred."
+
+
+
+
+//Photo uploading link and(?) flickr.blogs.postPhoto
+//func postNewPhoto(photoId: String, title: String, description: String, complition: @escaping (String) -> Void) {
+//    let parameters: [String: String] = [
+//        "photo_id": photoId,
+//        "title": title,
+//        "description": description,
+//        "perms": "write",
+//        "blog_id": UUID().uuidString
+//    ]
+//    
+//    request(params: parameters, requestMethod: .postPhoto, path: .requestREST, method: .POST) { result in
+//        switch result {
+//        case .success(let data):
+//            do {
+//                // Initialization decoder
+//                guard let response = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+//                print("Response: \(response)")
+//                //complition(.success(response.data.comments))
+//            } catch {
+//                //complition(.failure(ErrorMessage.error("Comments of photo with id(\(photoId) could not be parsed.\nDescription: \(error)")))
+//            }
+//        case .failure(let error):
+//            print("ERROR !!! \(error)")
+//        //complition(.failure(error))
+//        }
+//    }
 //}
-
-
-
-//switch httpResponse.statusCode {
-//case ..<200:
-//    complition(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
-//case ..<300:
-//    print("Status: \(httpResponse.statusCode) OK")
-//    complition(.success(data))
-//case ..<400:
-//    complition(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
-//case ..<500:
-//    complition(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)).")))
-//case ..<600:
-//    complition(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)).")))
-//default:
-//    complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
-//}
-
-
-
-
-
-
-
-
-
-
-// to generate link https://www.flickr.com/services/api/misc.urls.html
-/*
- 
- 
- #
- # Typical usage
- #
- 
- https://live.staticflickr.com/{server-id}/{id}_{secret}_{size-suffix}.jpg
- 
- #
- # Unique URL format for 500px size
- #
- 
- https://live.staticflickr.com/{server-id}/{id}_{secret}.jpg
- 
- #
- # Originals might have a different file format extension
- #
- 
- https://live.staticflickr.com/{server-id}/{id}_{o-secret}_o.{o-format}
- 
- #
- # Example
- #   server-id: 7372
- #   photo-id: 12502775644
- #   secret: acfd415fa7
- #   size: w
- #
- 
- https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg
- 
- */

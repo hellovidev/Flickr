@@ -22,12 +22,21 @@ enum Constant {
     // MARK: - Flickr Methods Identifiers (Documentstion: https://www.flickr.com/services/api/)
     
     enum FlickrMethod: String {
-        case getFavorites = "flickr.favorites.getList"
-        case getPopularPosts = "flickr.photos.getRecent" // => "flickr.photos.getPopular"
+        // Profile screen
         case getProfile = "flickr.profile.getProfile"
-        case getComments = "flickr.photos.comments.getList"
+        
+        // Home screen
         case getHotTags = "flickr.tags.getHotList"
-        case postPhoto = "flickr.blogs.postPhoto"
+        case getPopularPosts = "flickr.photos.getRecent" // => "flickr.photos.getPopular"
+        case getPhotoInfo = "flickr.photos.getInfo"
+        case getPhotoComments = "flickr.photos.comments.getList"
+        
+        // Gallery screen
+        case postNewPhoto = "flickr.blogs.postPhoto"
+        case getGalleryPhotos = ""
+        
+        // ???
+        case getFavorites = "flickr.favorites.getList"
     }
     
 }
