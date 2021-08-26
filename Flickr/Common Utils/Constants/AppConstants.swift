@@ -34,13 +34,11 @@ enum Constant {
         case removeFromFavorites = "flickr.favorites.remove"
         
         // Gallery screen
-        case postNewPhoto = "flickr.blogs.postPhoto"
-        case getGalleryPhotos = ""
+        case getUserPhotos = "flickr.people.getPhotos" // => "flickr.___.getUserPhotos"
+        case deleteUserPhotoById = "flickr.photos.delete"
         
         // ???
         case getFavorites = "flickr.favorites.getList"
-        
-        case getGalleries = "flickr.urls.getUserPhotos"
     }
     
 }

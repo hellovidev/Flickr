@@ -18,8 +18,7 @@
 		5F7F996C26D6CBC700482485 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996B26D6CBC700482485 /* Photo.swift */; };
 		5F7F996E26D6D26300482485 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996D26D6D26300482485 /* Tag.swift */; };
 		5F7F997026D7816800482485 /* PhotoInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996F26D7816800482485 /* PhotoInfo.swift */; };
-		5F894B8E26D164FE00066FBF /* FlickrOAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F894B8D26D164FE00066FBF /* FlickrOAuthError.swift */; };
-		5FF8D97726CEC4F80058FEC7 /* HTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8D97626CEC4F80058FEC7 /* HTTP.swift */; };
+		5FF8D97726CEC4F80058FEC7 /* HttpEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8D97626CEC4F80058FEC7 /* HttpEndpoint.swift */; };
 		5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */; };
 		5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */; };
 		5FFEC0B526CD4DDB000A0BAB /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B426CD4DDB000A0BAB /* SignInViewController.swift */; };
@@ -42,8 +41,7 @@
 		5F7F996B26D6CBC700482485 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		5F7F996D26D6D26300482485 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		5F7F996F26D7816800482485 /* PhotoInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoInfo.swift; sourceTree = "<group>"; };
-		5F894B8D26D164FE00066FBF /* FlickrOAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrOAuthError.swift; sourceTree = "<group>"; };
-		5FF8D97626CEC4F80058FEC7 /* HTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTP.swift; sourceTree = "<group>"; };
+		5FF8D97626CEC4F80058FEC7 /* HttpEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpEndpoint.swift; sourceTree = "<group>"; };
 		5FFEC0AD26CD4DDB000A0BAB /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -169,8 +167,7 @@
 				5FFEC0CD26CD4FD3000A0BAB /* AppConstants.swift */,
 				5F71301226D40E12001A3762 /* FlickrAPI.swift */,
 				5F71301426D4161A001A3762 /* FlickrAPI.swift */,
-				5FF8D97626CEC4F80058FEC7 /* HTTP.swift */,
-				5F894B8D26D164FE00066FBF /* FlickrOAuthError.swift */,
+				5FF8D97626CEC4F80058FEC7 /* HttpEndpoint.swift */,
 				5F7F996226D66DE300482485 /* ErrorMessage.swift */,
 			);
 			path = Constants;
@@ -252,7 +249,7 @@
 				5F7F996A26D6C05800482485 /* Favorite.swift in Sources */,
 				5FFEC0B526CD4DDB000A0BAB /* SignInViewController.swift in Sources */,
 				5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */,
-				5FF8D97726CEC4F80058FEC7 /* HTTP.swift in Sources */,
+				5FF8D97726CEC4F80058FEC7 /* HttpEndpoint.swift in Sources */,
 				5F7F996826D6AE1000482485 /* Comment.swift in Sources */,
 				5F7F996626D69AE900482485 /* Profile.swift in Sources */,
 				5FFEC0CC26CD4FAD000A0BAB /* FlickrOAuthService.swift in Sources */,
@@ -260,7 +257,6 @@
 				5F71301126D40D32001A3762 /* NetworkService.swift in Sources */,
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* AppConstants.swift in Sources */,
-				5F894B8E26D164FE00066FBF /* FlickrOAuthError.swift in Sources */,
 				5F71301326D40E12001A3762 /* FlickrAPI.swift in Sources */,
 				5F71301526D4161A001A3762 /* FlickrAPI.swift in Sources */,
 				5F71301726D4196D001A3762 /* RequestPreparation.swift in Sources */,
