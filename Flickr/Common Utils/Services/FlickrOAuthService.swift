@@ -10,9 +10,9 @@ import SafariServices
 
 // MARK: - Network Layer (OAuth1.0)
 
-class FlickrOAuth {
+class FlickrOAuthService {
     
-    static let shared = FlickrOAuth()
+    static let shared = FlickrOAuthService()
     
     // Methods to prepare API requests
     private let prepare: RequestPreparation = .init()

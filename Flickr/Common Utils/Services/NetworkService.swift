@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: - API Access Structure
 
@@ -244,6 +245,58 @@ class NetworkService {
         }
     }
     
+    // Add photo to favorites 'flickr.favorites.add' (General screen)
+    func addToFavorites(with photoId: String, complition: @escaping (Result<String, Error>) -> Void) {
+        let parameters: [String: String] = [
+            "photo_id": photoId
+        ]
+        
+        request(params: parameters, requestMethod: .addToFavorites, path: .requestREST, method: .POST) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    // Initialization decoder
+                    guard let response = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+                    guard let status = response["stat"] as? String else {
+                        complition(.failure(ErrorMessage.error("Response of adding to favorites photo with id(\(photoId) has no status.")))
+                        return
+                    }
+                    complition(.success(status.uppercased()))
+                } catch {
+                    complition(.failure(ErrorMessage.error("Response of adding to favorites photo with id(\(photoId) could not be parsed.\nDescription: \(error)")))
+                }
+            case .failure(let error):
+            complition(.failure(error))
+            }
+        }
+    }
+    
+    // Remove photo from favorites 'flickr.favorites.remove' (General screen)
+    func removeFromFavorites(with photoId: String, complition: @escaping (Result<String, Error>) -> Void) {
+        let parameters: [String: String] = [
+            "photo_id": photoId
+        ]
+        
+        request(params: parameters, requestMethod: .removeFromFavorites, path: .requestREST, method: .POST) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    // Initialization decoder
+                    guard let response = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+                    guard let status = response["stat"] as? String else {
+                        complition(.failure(ErrorMessage.error("Response of removing from favorites photo with id(\(photoId) has no status.")))
+                        return
+                    }
+                    complition(.success(status.uppercased()))
+                } catch {
+                    complition(.failure(ErrorMessage.error("Response of removing from favorites photo with id(\(photoId) could not be parsed.\nDescription: \(error)")))
+                }
+            case .failure(let error):
+            complition(.failure(error))
+            }
+        }
+    }
+    
     // MARK: - Foundation Methods
     
     private func request(params extraParameters: [String: String]? = nil, requestMethod: Constant.FlickrMethod, path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, Error>) -> Void) {
@@ -327,16 +380,184 @@ class NetworkService {
         task.resume()
     }
     
-}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    let image = UIImage(named: "TestImage")!
+    
+    
+    // "Image Data".data(using: .utf8)!
+
+    func uploadRequest(complition: @escaping (Result<Data, Error>) -> Void) {
+        let imageData: Data = image.pngData()!
+        let boundary = "Boundary-\(UUID().uuidString)"
+
+        var parameters: [String: String] = [
+            //"photo": imageData.base64EncodedString(),
+            "title": "iOS Photo",
+            "description": "Photo uploded!",
+            "is_public": "1",
+            "perms": "write",
+            "nojsoncallback": "1",
+            "format": "json",
+            "oauth_token": access.token,
+            "oauth_consumer_key": FlickrAPI.consumerKey.rawValue,
+            // Value 'nonce' can be any 32-bit string made up of random ASCII values
+            "oauth_nonce": UUID().uuidString,
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_timestamp": String(Int(Date().timeIntervalSince1970)),
+            "oauth_version": "1.0"
+        ]
+        
+        parameters["oauth_signature"] = prepare.createRequestSignature(httpMethod: "POST", url: "https://up.flickr.com/services/upload/", parameters: parameters, secretToken: access.secret)
+
+        var request = URLRequest(url: URL(string: "https://up.flickr.com/services/upload/")!)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        let httpBody = NSMutableData()
+
+        for (key, value) in parameters {
+          httpBody.appendString(convertFormField(named: key, value: value, using: boundary))
+        }
+
+        httpBody.append(convertFileData(fieldName: "photo",
+                                        fileName: "imagename.png",
+                                        mimeType: "image/png",
+                                        fileData: imageData,
+                                        using: boundary))
+
+        httpBody.appendString("--\(boundary)--")
+
+        request.httpBody = httpBody as Data
+
+        //print(String(data: httpBody as Data, encoding: .utf8)!)
+        // URL configuration
+        let config = URLSessionConfiguration.default
+        
+        // Request creation
+        let session = URLSession(configuration: config)
+        let task = session.dataTask(with: request) { data, response, error in
+            guard let httpResponse = response as? HTTPURLResponse else {
+                complition(.failure(ErrorMessage.error("HTTP response is empty.")))
+                return
+            }
+            
+            guard let data = data else {
+                complition(.failure(ErrorMessage.error("Data response is empty.")))
+                return
+            }
+            
+            if let error = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                complition(.failure(ErrorMessage.error("Error Server Response: \(error.message)")))
+                return
+            }
+            
+            if let dataString = String(data: data, encoding: .utf8) {
+                print("Response: \(dataString)")
+            }
+            
+            
+            switch httpResponse.statusCode {
+            case ..<200:
+                complition(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
+            case ..<300:
+                print("Status: \(httpResponse.statusCode) OK")
+                complition(.success(data))
+            case ..<400:
+                complition(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
+            case ..<500:
+                complition(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)).")))
+            case ..<600:
+                complition(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)).")))
+            default:
+                complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
+            }
+
+        }
+        
+        // Start request process
+        task.resume()
+    }
+
+    private func convertFormField(named name: String, value: String, using boundary: String) -> String {
+      var fieldString = "--\(boundary)\r\n"
+      fieldString += "Content-Disposition: form-data; name=\"\(name)\"\r\n"
+      fieldString += "\r\n"
+      fieldString += "\(value)\r\n"
+
+      return fieldString
+    }
+
+
+    private func convertFileData(fieldName: String, fileName: String, mimeType: String, fileData: Data, using boundary: String) -> Data {
+      let data = NSMutableData()
+
+      data.appendString("--\(boundary)\r\n")
+      data.appendString("Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(fileName)\"\r\n")
+      data.appendString("Content-Type: \(mimeType)\r\n\r\n")
+      data.append(fileData)
+      data.appendString("\r\n")
+
+      return data as Data
+    }
 
 
 
     
+    
+}
+
+
+
+extension NSMutableData {
+  func appendString(_ string: String) {
+    if let data = string.data(using: .utf8) {
+      self.append(data)
+    }
+  }
+}
 
 
 
 
-
+// Upload phot: https://www.flickr.com/services/api/upload.api.html
 
 //Photo uploading link and(?) flickr.blogs.postPhoto
 //func postNewPhoto(photoId: String, title: String, description: String, complition: @escaping (String) -> Void) {
@@ -347,7 +568,7 @@ class NetworkService {
 //        "perms": "write",
 //        "blog_id": UUID().uuidString
 //    ]
-//    
+//
 //    request(params: parameters, requestMethod: .postPhoto, path: .requestREST, method: .POST) { result in
 //        switch result {
 //        case .success(let data):
@@ -365,3 +586,15 @@ class NetworkService {
 //        }
 //    }
 //}
+
+
+
+
+
+
+
+
+
+
+
+

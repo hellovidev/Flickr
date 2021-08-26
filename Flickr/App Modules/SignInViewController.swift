@@ -16,7 +16,7 @@ class SignInViewController: UIViewController {
         super.viewDidLoad()
         
         // User athorization request
-        FlickrOAuth.shared.flickrLogin(presenter: self) { [weak self] result in
+        FlickrOAuthService.shared.flickrLogin(presenter: self) { [weak self] result in
             switch result {
             case .success(let accessToken):
                 // Initialization 'NetworkService'
@@ -72,14 +72,41 @@ class SignInViewController: UIViewController {
                 //                }
                 
                 
-                self?.networkService?.getPhotoById(with: "51403173555") { result in
-                    switch result {
-                    case .success(let photoInfo):
-                        print(photoInfo)
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
+//                self?.networkService?.getPhotoById(with: "51403173555") { result in
+//                    switch result {
+//                    case .success(let photoInfo):
+//                        print(photoInfo)
+//                    case .failure(let error):
+//                        print(error)
+//                    }
+//                }
+                
+//                                self?.networkService?.addToFavorites(with: "49804197266") { result in
+//                                    switch result {
+//                                    case .success(let response):
+//                                        print("Photo with id \(49804197266) is added to favorites with status \(response)")
+//                                    case .failure(let error):
+//                                        print(error)
+//                                    }
+//                                }
+//                self?.networkService?.removeFromFavorites(with: "49804197266") { result in
+//                    switch result {
+//                    case .success(let response):
+//                        print("Photo with id \(49804197266) is removed from favorites with status \(response)")
+//                    case .failure(let error):
+//                        print(error)
+//                    }
+//                }
+            
+                self?.networkService?.uploadRequest(complition: { result in
+                                        switch result {
+                                        case .success(let response):
+                                            guard let resp = try? JSONSerialization.jsonObject(with: response) as? [String: Any] else { return }
+                                            print("Response: \(resp)")
+                                        case .failure(let error):
+                                            print(error)
+                                        }
+                })
             case .failure(let error):
                 switch error {
                 case ErrorMessage.notFound:

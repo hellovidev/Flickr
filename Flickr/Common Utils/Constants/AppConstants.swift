@@ -30,6 +30,8 @@ enum Constant {
         case getPopularPosts = "flickr.photos.getRecent" // => "flickr.photos.getPopular"
         case getPhotoInfo = "flickr.photos.getInfo"
         case getPhotoComments = "flickr.photos.comments.getList"
+        case addToFavorites = "flickr.favorites.add"
+        case removeFromFavorites = "flickr.favorites.remove"
         
         // Gallery screen
         case postNewPhoto = "flickr.blogs.postPhoto"
@@ -37,6 +39,8 @@ enum Constant {
         
         // ???
         case getFavorites = "flickr.favorites.getList"
+        
+        case getGalleries = "flickr.urls.getUserPhotos"
     }
     
 }
