@@ -31,7 +31,7 @@ class SignInViewController: UIViewController {
 //                        print(error)
 //                    }
 //                }
-//
+
 //                self?.networkService?.getPhotoComments(for: "109722179") {result in
 //                    switch result {
 //                    case .success(let comments):
@@ -50,7 +50,7 @@ class SignInViewController: UIViewController {
 //                    }
 //                }
 //
-//                self?.networkService?.getHotTags(count: 10) {result in
+//                self?.networkService?.getHotTags { result in
 //                    switch result {
 //                    case .success(let tags):
 //                        print(tags)
@@ -95,17 +95,27 @@ class SignInViewController: UIViewController {
 //                    }
 //                }
 //
-//                self?.networkService?.getUserPhotos(for: "me") {result in
-//                    switch result {
-//                    case .success(let userPhotos):
-//
-//                        print("Response: \(userPhotos)")
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
+
                 
-//                self?.networkService?.uploadNewPhoto {result in
+                self?.networkService?.uploadNewPhoto(title: "Poster", description: "New photo from iOS application.") {result in
+                    switch result {
+                    case .success(_): break
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+                
+                self?.networkService?.getUserPhotos(for: "me") {result in
+                    switch result {
+                    case .success(let userPhotos):
+
+                        print("Response: \(userPhotos)")
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+                
+//                self?.networkService?.deletePhotoById(with: "51404594320") {result in
 //                    switch result {
 //                    case .success(let resp):
 //                        print("Response: \(resp)")
@@ -113,16 +123,6 @@ class SignInViewController: UIViewController {
 //                        print(error)
 //                    }
 //                }
-                
-                self?.networkService?.deletePhotoById(with: "51404594320") {result in
-                    switch result {
-                    case .success(let resp):
-                        print("Response: \(resp)")
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
-                
             case .failure(let error):
                 switch error {
                 case ErrorMessage.notFound:

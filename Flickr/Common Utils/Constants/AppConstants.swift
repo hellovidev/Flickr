@@ -29,7 +29,9 @@ enum Constant {
         case getHotTags = "flickr.tags.getHotList"
         case getPopularPosts = "flickr.photos.getRecent" // => "flickr.photos.getPopular"
         case getPhotoInfo = "flickr.photos.getInfo"
-        case getPhotoComments = "flickr.photos.comments.getList"
+        case getPhotoComments = "flickr.photos.comments.getList000"
+        case addPhotoComment = "flickr.photos.comments.addComment"
+        case deletePhotoComment = "flickr.photos.comments.deleteComment"
         case addToFavorites = "flickr.favorites.add"
         case removeFromFavorites = "flickr.favorites.remove"
         

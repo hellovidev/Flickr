@@ -14,9 +14,6 @@ class FlickrOAuthService {
     
     static let shared = FlickrOAuthService()
     
-    // Methods to prepare API requests
-    private let prepare: RequestPreparation = .init()
-    
     // MARK: - Authorization State
     
     private enum AuthorizationState {
@@ -245,7 +242,6 @@ class FlickrOAuthService {
         var urlRequest = URLRequest(url: url)
         
         // Set HTTP method to request using HttpMethodType with uppercase letters
-        urlRequest.httpMethod = method.rawValue
         
         var parameters: [String: String] = [
             "oauth_consumer_key": FlickrAPI.consumerKey.rawValue,
@@ -256,14 +252,29 @@ class FlickrOAuthService {
             "oauth_version": "1.0"
         ]
         
+
+        
         // Add to parameters extra values
         parameters = parameters.merging(extraParameters) { (current, _) in current }
+
+        // Methods to prepare API requests
+        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
         
         // Build the OAuth signature from parameters
-        parameters["oauth_signature"] = prepare.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
-        
+        parameters["oauth_signature"] = signature
+        // Set parameters to request
+//        var components = URLComponents(string: urlString)
+//        components?.queryItems = parameters.map { (key, value) in
+//            URLQueryItem(name: key, value: value)
+//        }
+//
+//        // Initialize and configure URL request
+//        guard let url = components?.url else { return }
+//        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method.rawValue
+
         // Set parameters to HTTP body of URL request
-        let header = "OAuth \(prepare.convertParametersToString(parameters, separator: ", "))"
+        let header = "OAuth \(SignatureHelper.convertParametersToString(parameters, separator: ", "))"
         urlRequest.setValue(header, forHTTPHeaderField: "Authorization")
         
         // URL configuration
@@ -281,21 +292,22 @@ class FlickrOAuthService {
                 complition(.failure(ErrorMessage.error("Data response is empty.")))
                 return
             }
+            print(String(data: data, encoding: .utf8))
             
             switch httpResponse.statusCode {
             case ..<200:
-                complition(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
+                complition(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<300:
                 print("\(path == .requestTokenOAuth ? "'request_token'" : "'access_token'") -> Status: \(httpResponse.statusCode) OK")
                 complition(.success(data))
             case ..<400:
-                complition(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
+                complition(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<500:
-                complition(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)).")))
+                complition(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<600:
-                complition(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)).")))
+                complition(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             default:
-                complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
+                complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             }
         }
         
