@@ -22,7 +22,6 @@ extension NetworkService {
         request(
             params: parameters,
             requestMethod: .getHotTags,
-            path: .requestREST,
             method: .GET,
             parser: deserializer.parse(data:)
         ) { result in

@@ -40,7 +40,7 @@ struct NetworkService {
     func request<Response>(
         params extraParameters: [String: String]? = nil,
         requestMethod: Constant.FlickrMethod,
-        path: HttpEndpoint.PathType,
+        path: HttpEndpoint.PathType = .requestREST,
         method: HttpMethodType,
         parser: @escaping (Data) throws -> Response,
         complition: @escaping (Result<Response, Error>) -> Void

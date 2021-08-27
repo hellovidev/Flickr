@@ -22,7 +22,6 @@ extension NetworkService {
         request(
             params: parameters,
             requestMethod: .getPhotoComments,
-            path: .requestREST,
             method: .GET,
             parser: deserializer.parse(data:)
         ) { result in
@@ -49,7 +48,6 @@ extension NetworkService {
         request(
             params: parameters,
             requestMethod: .addPhotoComment,
-            path: .requestREST,
             method: .POST,
             parser: deserializer.parse(data:)
         ) { result in
@@ -75,7 +73,6 @@ extension NetworkService {
         request(
             params: parameters,
             requestMethod: .deletePhotoComment,
-            path: .requestREST,
             method: .POST,
             parser: deserializer.parse(data:)
         ) { result in

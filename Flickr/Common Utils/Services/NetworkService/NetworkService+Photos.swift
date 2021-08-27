@@ -16,7 +16,6 @@ extension NetworkService {
         
         request(
             requestMethod: .getPopularPosts,
-            path: .requestREST,
             method: .GET,
             parser: deserializer.parse(data:)
         ) { result in
@@ -42,7 +41,6 @@ extension NetworkService {
         request(
             params: parameters,
             requestMethod: .getPhotoInfo,
-            path: .requestREST,
             method: .GET,
             parser: deserializer.parse(data:)
         ) { result in
@@ -68,7 +66,6 @@ extension NetworkService {
         request(
             params: parameters,
             requestMethod: .getUserPhotos,
-            path: .requestREST,
             method: .POST,
             parser: deserializer.parse(data:)
         ) { result in
@@ -95,7 +92,6 @@ extension NetworkService {
         request(
             params: parameters,
             requestMethod: .deleteUserPhotoById,
-            path: .requestREST,
             method: .POST,
             parser: deserializer.parse(data:)
         ) { result in
