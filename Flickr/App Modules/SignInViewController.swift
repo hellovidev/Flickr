@@ -31,33 +31,33 @@ class SignInViewController: UIViewController {
 //                        print(error)
 //                    }
 //                }
-//
-//                self?.networkService?.getPhotoComments(for: "109722179") {result in
-//                    switch result {
-//                    case .success(let comments):
-//                        print(comments)
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
-//
-//                self?.networkService?.getFavorites { result in
-//                    switch result {
-//                    case .success(let favorites):
-//                        print(favorites)
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
-//
-//                self?.networkService?.getHotTags(count: 10) {result in
-//                    switch result {
-//                    case .success(let tags):
-//                        print(tags)
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
+
+                self?.networkService?.getPhotoComments(for: "109722179") {result in
+                    switch result {
+                    case .success(let comments):
+                        print(comments)
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+
+                self?.networkService?.getFavorites { result in
+                    switch result {
+                    case .success(let favorites):
+                        print(favorites)
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+
+                self?.networkService?.getHotTags { result in
+                    switch result {
+                    case .success(let tags):
+                        print(tags)
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
 //
 //                self?.networkService?.getPopularPosts {result in
 //                    switch result {
@@ -114,15 +114,14 @@ class SignInViewController: UIViewController {
 //                    }
 //                }
                 
-                self?.networkService?.deletePhotoById(with: "51404594320") {result in
-                    switch result {
-                    case .success(let resp):
-                        print("Response: \(resp)")
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
-                
+//                self?.networkService?.deletePhotoById(with: "51404594320") {result in
+//                    switch result {
+//                    case .success(let resp):
+//                        print("Response: \(resp)")
+//                    case .failure(let error):
+//                        print(error)
+//                    }
+//                }
             case .failure(let error):
                 switch error {
                 case ErrorMessage.notFound:

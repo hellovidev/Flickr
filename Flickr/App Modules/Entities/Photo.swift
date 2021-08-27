@@ -25,10 +25,10 @@ struct Photo: Decodable {
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
-        //case title = "title"
+        case title = "title"
         case secret = "secret"
         case server = "server"
-        //case owner = "owner"
+        case owner = "owner"
         case isPublic = "ispublic"
         case isFriend = "isfriend"
         case farm = "farm"
