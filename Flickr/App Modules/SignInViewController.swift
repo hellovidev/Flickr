@@ -23,14 +23,14 @@ class SignInViewController: UIViewController {
                 self?.networkService = .init(withAccess: AccessTokenAPI(token: accessToken.token, secret: accessToken.secretToken, nsid: accessToken.userNSID.removingPercentEncoding!))
                 
                 // MARK: - Methods
-//                self?.networkService?.getProfile { result in
-//                    switch result {
-//                    case .success(let profile):
-//                        print(profile)
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
+                self?.networkService?.getProfile(for: accessToken.userNSID.removingPercentEncoding!) { result in
+                    switch result {
+                    case .success(let profile):
+                        print(profile)
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
 
 //                self?.networkService?.getPhotoComments(for: "109722179") {result in
 //                    switch result {
@@ -58,7 +58,7 @@ class SignInViewController: UIViewController {
 //                        print(error)
 //                    }
 //                }
-//
+
 //                self?.networkService?.getPopularPosts {result in
 //                    switch result {
 //                    case .success(let photos):
@@ -105,15 +105,15 @@ class SignInViewController: UIViewController {
                     }
                 }
                 
-                self?.networkService?.getUserPhotos(for: "me") {result in
-                    switch result {
-                    case .success(let userPhotos):
-
-                        print("Response: \(userPhotos)")
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
+//                self?.networkService?.getUserPhotos(for: "me") {result in
+//                    switch result {
+//                    case .success(let userPhotos):
+//
+//                        print("Response: \(userPhotos)")
+//                    case .failure(let error):
+//                        print(error)
+//                    }
+//                }
                 
 //                self?.networkService?.deletePhotoById(with: "51404594320") {result in
 //                    switch result {

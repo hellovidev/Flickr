@@ -10,7 +10,7 @@ import UIKit
 extension NetworkService {
     
     // Upload photo: https://www.flickr.com/services/api/upload.api.html
-    func uploadNewPhoto(_ image: UIImage = UIImage(named: "TestImage")!, title: String, description: String, complition: @escaping (Result<Void, Error>) -> Void) {
+    func uploadNewPhoto(_ image: UIImage = UIImage(named: "TestImage")!, title: String, description: String, completion: @escaping (Result<Void, Error>) -> Void) {
         // Initialize parser
         let deserializer: VoidDeserializer = .init()
         
@@ -24,19 +24,25 @@ extension NetworkService {
         
         guard let imageData: Data = image.pngData() else { return }
         
-        uploadRequest(
-            params: parameters,
-            for: imageData,
-            method: .POST,
+//        uploadRequest(
+//            params: parameters,
+//            for: imageData,
+//            method: .POST,
+//            parser: deserializer.parse(data:)
+//        ) { result in completion(result) }
+        
+        request(
+            for: .upload,
+            with: imageData,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .POST,
+            formatType: .json,
             parser: deserializer.parse(data:)
-        ) { result in
-            switch result {
-            case .success(let response):
-                complition(.success(response))
-            case .failure(let error):
-                complition(.failure(error))
-            }
-        }
+        ) { result in completion(result) }
     }
     
 }

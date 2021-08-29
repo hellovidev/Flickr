@@ -10,9 +10,9 @@ import Foundation
 extension NetworkService {
     
     // Get photo comments list 'flickr.photos.comments.getList' (Post screen)
-    func getPhotoComments(for photoId: String, complition: @escaping (Result<[Comment], Error>) -> Void) {
+    func getPhotoComments(for photoId: String, completion: @escaping (Result<[Comment], Error>) -> Void) {
         // Initialize parser
-        let deserializer: CommentArrayDeserializer = .init()
+        let deserializer: ModelDeserializer<CommentsResponse> = .init()
         
         // Push some additional parameters
         let parameters: [String: String] = [
@@ -27,15 +27,15 @@ extension NetworkService {
         ) { result in
             switch result {
             case .success(let response):
-                complition(.success(response))
+                completion(.success(response.data.comments))
             case .failure(let error):
-                complition(.failure(error))
+                completion(.failure(error))
             }
         }
     }
     
     // Add new photo comment 'flickr.photos.comments.addComment' (Post screen) -> https://www.flickr.com/services/api/flickr.photos.comments.addComment.html
-    func addPhotoComment(for photoId: String, comment: String, complition: @escaping (Result<Void, Error>) -> Void) {
+    func addPhotoComment(for photoId: String, comment: String, completion: @escaping (Result<Void, Error>) -> Void) {
         // Initialize parser
         let deserializer: VoidDeserializer = .init()
         
@@ -50,18 +50,11 @@ extension NetworkService {
             requestMethod: .addPhotoComment,
             method: .POST,
             parser: deserializer.parse(data:)
-        ) { result in
-            switch result {
-            case .success(let response):
-                complition(.success(response))
-            case .failure(let error):
-                complition(.failure(error))
-            }
-        }
+        ) { result in completion(result) }
     }
     
     // Delete comment 'flickr.photos.comments.deleteComment' (Post screen) -> https://www.flickr.com/services/api/flickr.photos.comments.deleteComment.html
-    func deletePhotoComment(for commentId: String, complition: @escaping (Result<Void, Error>) -> Void) {
+    func deletePhotoComment(for commentId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         // Initialize parser
         let deserializer: VoidDeserializer = .init()
         
@@ -75,30 +68,7 @@ extension NetworkService {
             requestMethod: .deletePhotoComment,
             method: .POST,
             parser: deserializer.parse(data:)
-        ) { result in
-            switch result {
-            case .success(let response):
-                complition(.success(response))
-            case .failure(let error):
-                complition(.failure(error))
-            }
-        }
-    }
-    
-    // The server response parser
-    private struct CommentArrayDeserializer: Deserializer {
-        typealias Response = [Comment]
-        
-        func parse(data: Data) throws -> [Comment] {
-            let decoder = JSONDecoder()
-            
-            do {
-                let response = try decoder.decode(CommentsResponse.self, from: data)
-                return response.data.comments
-            } catch (let error) {
-                throw ErrorMessage.error("The server response could not be parsed into an array of comments.\nDescription: \(error)")
-            }
-        }
+        ) { result in completion(result) }
     }
     
     // The server JSON response decoder

@@ -10,9 +10,9 @@ import Foundation
 extension NetworkService {
     
     // Get list of hot tags 'flickr.places.tagsForPlace' (General screen)
-    func getHotTags(count: Int = 10, complition: @escaping (Result<[Tag], Error>) -> Void) {
+    func getHotTags(count: Int = 10, completion: @escaping (Result<[Tag], Error>) -> Void) {
         // Initialize parser
-        let deserializer: TagArrayDeserializer = .init()
+        let deserializer: ModelDeserializer<TagsResponse> = .init()
         
         // Push some additional parameters
         let parameters: [String: String] = [
@@ -27,25 +27,9 @@ extension NetworkService {
         ) { result in
             switch result {
             case .success(let response):
-                complition(.success(response))
+                completion(.success(response.data.tags))
             case .failure(let error):
-                complition(.failure(error))
-            }
-        }
-    }
-    
-    // The server response parser
-    private struct TagArrayDeserializer: Deserializer {
-        typealias Response = [Tag]
-        
-        func parse(data: Data) throws -> [Tag] {
-            let decoder = JSONDecoder()
-            
-            do {
-                let response = try decoder.decode(TagsResponse.self, from: data)
-                return response.data.tags
-            } catch (let error) {
-                throw ErrorMessage.error("The server response could not be parsed into an array of tags.\nDescription: \(error)")
+                completion(.failure(error))
             }
         }
     }
@@ -66,5 +50,25 @@ extension NetworkService {
             }
         }
     }
+    
+//    struct ResponseCatcher: Decodable {
+//        let parent: ResponseCatcherChild
+//        
+//        enum CodingKeys: String, CodingKey {
+//            required init(parentKey: String) {
+//                NetworkService.ResponseCatcher.CodingKeys(rawValue: NetworkService.ResponseCatcher.CodingKeys.parent = parentKey) ?? <#default value#>
+//            }
+//            
+//            case parent = ""
+//        }
+//        
+//        struct ResponseCatcherChild: Decodable {
+//            let child: [String]
+//            
+//            enum CodingKeys: String, CodingKey {
+//                case child = ""
+//            }
+//        }
+//    }
     
 }

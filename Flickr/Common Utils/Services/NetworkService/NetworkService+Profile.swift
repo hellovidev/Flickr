@@ -10,44 +10,47 @@ import Foundation
 extension NetworkService {
     
     // Get current user profile 'flickr.profile.getProfile' (User screen)
-    func getProfile(complition: @escaping (Result<Profile, Error>) -> Void) {
+    func getProfile(for userId: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         // Initialize parser
-        let deserializer: ProfileDeserializer = .init()
+        let deserializer: ModelDeserializer<ProfileResponse> = .init()
         
         // Push some additional parameters
         let parameters: [String: String] = [
-            "user_id": "access.nsid\(0)"
+            "user_id": userId,
+            "method": Constant.FlickrMethod.getProfile.rawValue,
         ]
         
+//        request(
+//            params: parameters,
+//            requestMethod: .getProfile,
+//            method: .GET,
+//            parser: deserializer.parse(data:)
+//        ) { result in
+//            switch result {
+//            case .success(let response):
+//                completion(.success(response.profile))
+//            case .failure(let error):
+//                completion(.failure(error))
+//            }
+//        }
+        
         request(
-            params: parameters,
-            requestMethod: .getProfile,
-            method: .GET,
+            for: .request,
+            methodAPI: .getProfile,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .GET,
+            formatType: .json,
             parser: deserializer.parse(data:)
         ) { result in
             switch result {
             case .success(let response):
-                complition(.success(response))
+                completion(.success(response.profile))
             case .failure(let error):
-                complition(.failure(error))
-            }
-        }
-    }
-    
-    // The server response parser
-    private struct ProfileDeserializer: Deserializer {
-        typealias Response = Profile
-        
-        func parse(data: Data) throws -> Profile {
-            let decoder = JSONDecoder()
-            // Decode with 'snake_case' strategy
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            
-            do {
-                let response = try decoder.decode(ProfileResponse.self, from: data)
-                return response.profile
-            } catch (let error) {
-                throw ErrorMessage.error("The server response could not be parsed into profile object.\nDescription: \(error)")
+                completion(.failure(error))
             }
         }
     }

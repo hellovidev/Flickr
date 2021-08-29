@@ -61,10 +61,10 @@ class FlickrOAuthService {
     
     // MARK: - Public Methods API OAuth1.0
     
-    func flickrLogin(presenter: UIViewController, complition: @escaping (Result<AccessTokenOAuth, Error>) -> Void) {
+    func flickrLogin(presenter: UIViewController, completion: @escaping (Result<AccessTokenOAuth, Error>) -> Void) {
         // Check authorization state
         guard state == nil else {
-            complition(.failure(ErrorMessage.error("User is already logged in.")))
+            completion(.failure(ErrorMessage.error("User is already logged in.")))
             return
         }
         
@@ -84,17 +84,17 @@ class FlickrOAuthService {
                             switch result {
                             case .success(let accessToken):
                                 self?.state = .successfullyAuthenticated
-                                complition(.success(accessToken))
+                                completion(.success(accessToken))
                             case .failure(let error):
-                                complition(.failure(error))
+                                completion(.failure(error))
                             }
                         }
                     case .failure(let error):
-                        complition(.failure(error))
+                        completion(.failure(error))
                     }
                 }
             case .failure(let error):
-                complition(.failure(error))
+                completion(.failure(error))
             }
         }
     }
@@ -107,7 +107,7 @@ class FlickrOAuthService {
     // MARK: - Steps OAuth1.0 Methods
     
     // Step #1: Getting Request Token
-    private func getRequestToken(complition: @escaping (Result<RequestTokenOAuth, Error>) -> Void) {
+    private func getRequestToken(completion: @escaping (Result<RequestTokenOAuth, Error>) -> Void) {
         // Change authorization state
         state = .requestTokenRequested
         
@@ -125,13 +125,13 @@ class FlickrOAuthService {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"] else {
-                    complition(.failure(ErrorMessage.error("Request token was not found.")))
+                    completion(.failure(ErrorMessage.error("Request token was not found.")))
                     return
                 }
                 
-                complition(.success(RequestTokenOAuth(token: token, secretToken: secretToken)))
+                completion(.success(RequestTokenOAuth(token: token, secretToken: secretToken)))
             case .failure(let error):
-                complition(.failure(error))
+                completion(.failure(error))
             }
         }
     }
@@ -153,7 +153,7 @@ class FlickrOAuthService {
     }
     
     // Step #2: Website Confirmation
-    private func requestAuthorize(with token: String, presenter: UIViewController, complition: @escaping (Result<String, Error>) -> Void) {
+    private func requestAuthorize(with token: String, presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
         // Build website confirmation link for 'Safari'
         let urlString = "\(HttpEndpoint.baseDomain.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
         guard let websiteConfirmationURL = URL(string: urlString) else { return }
@@ -167,7 +167,7 @@ class FlickrOAuthService {
             safari.dismiss(animated: true, completion: nil)
             
             guard let query = url.query else {
-                complition(.failure(ErrorMessage.error("Parameters were not found after confirmation on the website.")))
+                completion(.failure(ErrorMessage.error("Parameters were not found after confirmation on the website.")))
                 return
             }
             
@@ -175,12 +175,12 @@ class FlickrOAuthService {
             let parameters = self?.convertStringToParameters(query)
             
             guard let verifier = parameters?["oauth_verifier"] else {
-                complition(.failure(ErrorMessage.error("Parameters were not found after confirmation on the website.")))
+                completion(.failure(ErrorMessage.error("Parameters were not found after confirmation on the website.")))
                 return
             }
 
             print("'verifier' -> Status: Complete")
-            complition(.success(verifier))
+            completion(.success(verifier))
         }
         
         // Async preview after receiving the link
@@ -199,7 +199,7 @@ class FlickrOAuthService {
     }
     
     // Step #3: Getting Access Token
-    private func getAccessToken(arguments: ArgumentsAccessToken, complition: @escaping (Result<AccessTokenOAuth, Error>) -> Void) {
+    private func getAccessToken(arguments: ArgumentsAccessToken, completion: @escaping (Result<AccessTokenOAuth, Error>) -> Void) {
         // Change authorization state
         state = .accessTokenRequested
         
@@ -218,20 +218,20 @@ class FlickrOAuthService {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"], let userNSID = attributes["user_nsid"], let username = attributes["username"] else {
-                    complition(.failure(ErrorMessage.error("Access token was not found.")))
+                    completion(.failure(ErrorMessage.error("Access token was not found.")))
                     return
                 }
                 
-                complition(.success(AccessTokenOAuth(token: token, secretToken: secretToken, userNSID: userNSID, username: username)))
+                completion(.success(AccessTokenOAuth(token: token, secretToken: secretToken, userNSID: userNSID, username: username)))
             case .failure(let error):
-                complition(.failure(error))
+                completion(.failure(error))
             }
         }
     }
 
     // MARK: - Request Configuration Methods
     
-    private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: HttpEndpoint.PathType, method: HttpMethodType, complition: @escaping (Result<Data, Error>) -> Void) {
+    private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: HttpEndpoint.PathType, method: HttpMethodType, completion: @escaping (Result<Data, Error>) -> Void) {
         // Build base URL with path as parameter
         let urlString = HttpEndpoint.baseDomain.rawValue + path.rawValue
         
@@ -258,10 +258,12 @@ class FlickrOAuthService {
         parameters = parameters.merging(extraParameters) { (current, _) in current }
 
         // Methods to prepare API requests
-        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
+//        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
+        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: secretToken)
+        parameters["oauth_signature"] = signature.getSignature()
         
         // Build the OAuth signature from parameters
-        parameters["oauth_signature"] = signature
+        //parameters["oauth_signature"] = signature
         // Set parameters to request
 //        var components = URLComponents(string: urlString)
 //        components?.queryItems = parameters.map { (key, value) in
@@ -274,7 +276,7 @@ class FlickrOAuthService {
         urlRequest.httpMethod = method.rawValue
 
         // Set parameters to HTTP body of URL request
-        let header = "OAuth \(SignatureHelper.convertParametersToString(parameters, separator: ", "))"
+        let header = "OAuth \(signature.convertParametersToString(parameters, separator: ", "))"
         urlRequest.setValue(header, forHTTPHeaderField: "Authorization")
         
         // URL configuration
@@ -284,30 +286,30 @@ class FlickrOAuthService {
         let session = URLSession(configuration: config)
         let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let httpResponse = response as? HTTPURLResponse else {
-                complition(.failure(ErrorMessage.error("HTTP response is empty.")))
+                completion(.failure(ErrorMessage.error("HTTP response is empty.")))
                 return
             }
             
             guard let data = data else {
-                complition(.failure(ErrorMessage.error("Data response is empty.")))
+                completion(.failure(ErrorMessage.error("Data response is empty.")))
                 return
             }
             print(String(data: data, encoding: .utf8))
             
             switch httpResponse.statusCode {
             case ..<200:
-                complition(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<300:
                 print("\(path == .requestTokenOAuth ? "'request_token'" : "'access_token'") -> Status: \(httpResponse.statusCode) OK")
-                complition(.success(data))
+                completion(.success(data))
             case ..<400:
-                complition(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<500:
-                complition(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<600:
-                complition(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             default:
-                complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             }
         }
         

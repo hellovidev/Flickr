@@ -20,7 +20,7 @@ struct AccessTokenAPI {
 struct NetworkService {
     
     // Token to get access to 'Flickr API'
-    private let access: AccessTokenAPI
+    let access: AccessTokenAPI
     
     // Without access token 'NetworkService' do not work
     init(withAccess accessToken: AccessTokenAPI) {
@@ -43,7 +43,7 @@ struct NetworkService {
         path: HttpEndpoint.PathType = .requestREST,
         method: HttpMethodType,
         parser: @escaping (Data) throws -> Response,
-        complition: @escaping (Result<Response, Error>) -> Void
+        completion: @escaping (Result<Response, Error>) -> Void
     ) {
         // Build base URL with path as parameter
         let urlString = HttpEndpoint.baseDomain.rawValue + path.rawValue
@@ -67,8 +67,10 @@ struct NetworkService {
         }
         
         // Build the OAuth signature from parameters
-        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: access.secret)
-        parameters["oauth_signature"] = signature
+//        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: access.secret)
+//        parameters["oauth_signature"] = signature
+        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: access.secret)
+        parameters["oauth_signature"] = signature.getSignature()
         
         // Set parameters to request
         var components = URLComponents(string: urlString)
@@ -90,39 +92,39 @@ struct NetworkService {
         let session = URLSession(configuration: config)
         let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let httpResponse = response as? HTTPURLResponse else {
-                complition(.failure(ErrorMessage.error("HTTP response is empty.")))
+                completion(.failure(ErrorMessage.error("HTTP response is empty.")))
                 return
             }
             
             guard let data = data else {
-                complition(.failure(ErrorMessage.error("Data response is empty.")))
+                completion(.failure(ErrorMessage.error("Data response is empty.")))
                 return
             }
             
             if let errorMessage = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
-                complition(.failure(ErrorMessage.error("Error Server Response: \(errorMessage.message)")))
+                completion(.failure(ErrorMessage.error("Error Server Response: \(errorMessage.message)")))
                 return
             }
             
             switch httpResponse.statusCode {
             case ..<200:
-                complition(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<300:
                 print("Status: \(httpResponse.statusCode) OK")
                 do {
                     let response = try parser(data)
-                    complition(.success(response))
+                    completion(.success(response))
                 } catch (let parseError) {
-                    complition(.failure(parseError))
+                    completion(.failure(parseError))
                 }
             case ..<400:
-                complition(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<500:
-                complition(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<600:
-                complition(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             default:
-                complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
+                completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             }
             
         }
@@ -138,7 +140,7 @@ struct NetworkService {
         for fileData: Data,
         method: HttpMethodType,
         parser: @escaping (Data) throws -> Response,
-        complition: @escaping (Result<Response, Error>) -> Void
+        completion: @escaping (Result<Response, Error>) -> Void
     ) {
         // Create URL
         let urlString = HttpEndpoint.uploadDomain.rawValue
@@ -148,9 +150,7 @@ struct NetworkService {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         
-        // Set 'Content-Type' for 'multipart/form-data'
-        let boundary = "Boundary-\(UUID().uuidString)"
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
         
         var parameters: [String: String] = [
             "nojsoncallback": "1",
@@ -164,21 +164,26 @@ struct NetworkService {
             "oauth_version": "1.0"
         ]
         // Methods to prepare API requests
-        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: access.secret)
-        parameters["oauth_signature"] = signature
+        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: access.secret)
+        parameters["oauth_signature"] = signature.getSignature()
+        
+//        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: access.secret)
+//        parameters["oauth_signature"] = signature
         
         // Generate HTTP body for URL request
-        let multipartHelper: MultipartHelper = .init()
-        let httpBody = NSMutableData()
-        
-        for (key, value) in parameters {
-            httpBody.appendString(multipartHelper.convertFormField(named: key, value: value, using: boundary))
-        }
-        
-        httpBody.append(multipartHelper.convertFileData(fieldName: "photo", fileName: "imagename.png", mimeType: "image/png", fileData: fileData, using: boundary))
-        
-        httpBody.appendString("--\(boundary)--")
-        request.httpBody = httpBody as Data
+        let multipart: MultipartHelper = .init(parameters: parameters, file: fileData)
+//        var httpBody = Data()
+//        
+//        for (key, value) in parameters {
+//            httpBody.appendString(multipartHelper.convertFormField(named: key, value: value, using: boundary))
+//        }
+//        
+//        httpBody.append(multipartHelper.convertFileData(fieldName: "photo", fileName: "imagename.png", mimeType: "image/png", fileData: fileData, using: boundary))
+//        
+//        httpBody.appendString("--\(boundary)--")
+        // Set 'Content-Type' for 'multipart/form-data'
+        request.setValue(multipart.getContentType(), forHTTPHeaderField: "Content-Type")
+        request.httpBody = multipart.getRequestData()
         
         // URL configuration
         let config = URLSessionConfiguration.default
@@ -187,34 +192,34 @@ struct NetworkService {
         let session = URLSession(configuration: config)
         let task = session.dataTask(with: request) { data, response, error in
             guard let httpResponse = response as? HTTPURLResponse else {
-                complition(.failure(ErrorMessage.error("HTTP response is empty.")))
+                completion(.failure(ErrorMessage.error("HTTP response is empty.")))
                 return
             }
             
             guard let data = data else {
-                complition(.failure(ErrorMessage.error("Data response is empty.")))
+                completion(.failure(ErrorMessage.error("Data response is empty.")))
                 return
             }
             
             switch httpResponse.statusCode {
             case ..<200:
-                complition(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
+                completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
             case ..<300:
                 print("Status: \(httpResponse.statusCode) OK")
                 do {
                     let response = try parser(data)
-                    complition(.success(response))
+                    completion(.success(response))
                 } catch (let parseError) {
-                    complition(.failure(parseError))
+                    completion(.failure(parseError))
                 }
             case ..<400:
-                complition(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
+                completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
             case ..<500:
-                complition(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)).")))
+                completion(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)).")))
             case ..<600:
-                complition(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)).")))
+                completion(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)).")))
             default:
-                complition(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
+                completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
             }
             
         }
@@ -229,6 +234,128 @@ struct NetworkService {
     private struct ErrorResponse: Decodable {
         let message: String
         let code: Int
+    }
+    
+    
+    
+    
+    
+    enum RequestType {
+        case upload
+        case request
+    }
+    
+    enum ResponseFormat: String {
+        case rest = "rest"
+        case json = "json"
+    }
+    
+    let session: URLSession = .init(configuration: .default)
+    
+    func request<Response>(
+        for requestType: RequestType,
+        methodAPI: Constant.FlickrMethod? = nil,
+        with file: Data? = nil,
+        parameters: [String: String]? = nil,
+        token: String,
+        secret: String,
+        consumerKey: String,
+        secretConsumerKey: String,
+        httpMethod: HttpMethodType,
+        formatType: ResponseFormat,
+        parser: @escaping (Data) throws -> Response,
+        completion: @escaping (Result<Response, Error>) -> Void
+    ) {
+        // Create URL string
+        let path = requestType == .request ? HttpEndpoint.requestDomain.rawValue : HttpEndpoint.uploadDomain.rawValue
+        
+        // Default parameters
+        var params: [String: String] = [
+            "nojsoncallback": "1",
+            "format": formatType.rawValue,
+            "oauth_token": token,
+            "oauth_consumer_key": consumerKey,
+            "oauth_nonce": UUID().uuidString,
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_timestamp": String(Int(Date().timeIntervalSince1970)),
+            "oauth_version": "1.0"
+        ]
+        
+        // Add to parameters extra values
+        if let extra = parameters {
+            params = params.merging(extra) { (current, _) in current }
+        }
+        
+        // Generate request signature and add to parameters
+        let signature: SignatureHelper = .init(httpMethod: httpMethod.rawValue, urlAsString: path, parameters: params, secretConsumerKey: secretConsumerKey, secret: secret)
+        params["oauth_signature"] = signature.getSignature()
+        
+        // Build URL request
+        guard var request = buildURLRequest(httpMethod: httpMethod, path: path, params: params, fileData: file) else { return }
+        request.httpMethod = httpMethod.rawValue
+        
+        let task = session.dataTask(with: request) { data, response, error in
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.failure(ErrorMessage.error("HTTP response is empty.")))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(ErrorMessage.error("Data response is empty.")))
+                return
+            }
+            print(String(data: data, encoding: .utf8))
+            switch httpResponse.statusCode {
+            case ..<200:
+                completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
+            case ..<300:
+                print("Status: \(httpResponse.statusCode) OK")
+                do {
+                    let response = try parser(data)
+                    completion(.success(response))
+                } catch (let parseError) {
+                    completion(.failure(parseError))
+                }
+            case ..<400:
+                completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
+            case ..<500:
+                completion(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)).")))
+            case ..<600:
+                completion(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)).")))
+            default:
+                completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
+            }
+            
+        }
+        
+        // Start request process
+        task.resume()
+    }
+    
+    private func buildURLRequest(httpMethod: HttpMethodType, path: String, params: [String: String], fileData: Data?) -> URLRequest? {
+        switch httpMethod {
+        case .POST:
+            guard let url = URL(string: path) else { return nil }
+            var request = URLRequest(url: url)
+            
+            let multipart: MultipartHelper = .init(parameters: params, file: fileData)
+            
+            // Set 'Content-Type' for 'multipart/form-data'
+            request.setValue(multipart.getContentType(), forHTTPHeaderField: "Content-Type")
+            request.httpBody = multipart.getRequestData()
+            
+            return request
+        default:
+            // Build URL request using URLComponents
+            var components = URLComponents(string: path)
+            
+            components?.queryItems = params.map { (key, value) in
+                URLQueryItem(name: key, value: value)
+            }
+            
+            guard let url = components?.url else { return nil }
+            return URLRequest(url: url)
+        }
     }
     
 }
