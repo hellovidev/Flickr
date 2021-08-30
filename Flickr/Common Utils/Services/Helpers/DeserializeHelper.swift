@@ -7,7 +7,7 @@
 
 import Foundation
 
-private protocol Deserializer {
+protocol Deserializer {
     associatedtype Response
     func parse(data: Data) throws -> Response
 }
@@ -23,10 +23,15 @@ struct VoidDeserializer: Deserializer {
 
 struct ModelDeserializer<T: Decodable>: Deserializer {
     typealias Response = T
-        
+    
+    private let decoder: JSONDecoder
+    
+    init(decoder: JSONDecoder = .init()) {
+        self.decoder = decoder
+    }
+    
     func parse(data: Data) throws -> T {
         do {
-            let decoder = JSONDecoder()
             let response = try decoder.decode(T.self, from: data)
             return response
         } catch {

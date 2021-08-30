@@ -11,9 +11,6 @@ extension NetworkService {
     
     // Upload photo: https://www.flickr.com/services/api/upload.api.html
     func uploadNewPhoto(_ image: UIImage = UIImage(named: "TestImage")!, title: String, description: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        // Initialize parser
-        let deserializer: VoidDeserializer = .init()
-        
         // Push some additional parameters
         let parameters: [String: String] = [
             "title": title,
@@ -24,18 +21,13 @@ extension NetworkService {
         
         guard let imageData: Data = image.pngData() else { return }
         
-        request(
-            for: .upload,
-            with: imageData,
+        upload(
             parameters: parameters,
-            token: access.token,
-            secret: access.secret,
-            consumerKey: FlickrAPI.consumerKey.rawValue,
-            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
-            httpMethod: .POST,
-            formatType: .JSON,
-            parser: deserializer.parse(data:)
-        ) { result in completion(result) }
+            file: imageData,
+            parser: VoidDeserializer()
+        ) { result in
+            completion(result)
+        }
     }
     
 }

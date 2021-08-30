@@ -11,33 +11,18 @@ extension NetworkService {
     
     // Get current user profile 'flickr.profile.getProfile' (User screen)
     func getProfile(for userId: String, completion: @escaping (Result<Profile, Error>) -> Void) {
-        // Initialize parser
-        let deserializer: ModelDeserializer<ProfileResponse> = .init()
-        
         // Push some additional parameters
         let parameters: [String: String] = [
             "user_id": userId,
-            //"method": Constant.FlickrMethod.getProfile.rawValue
         ]
         
         request(
-            for: .request,
-            methodAPI: .getProfile,
             parameters: parameters,
-            token: access.token,
-            secret: access.secret,
-            consumerKey: FlickrAPI.consumerKey.rawValue,
-            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
-            httpMethod: .GET,
-            formatType: .JSON,
-            parser: deserializer.parse(data:)
+            type: .getProfile,
+            method: .GET,
+            parser: ModelDeserializer<ProfileResponse>()
         ) { result in
-            switch result {
-            case .success(let response):
-                completion(.success(response.profile))
-            case .failure(let error):
-                completion(.failure(error))
-            }
+            completion(result.map { $0.profile })
         }
     }
     

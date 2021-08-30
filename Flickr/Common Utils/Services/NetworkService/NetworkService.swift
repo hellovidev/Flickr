@@ -25,44 +25,73 @@ enum ResponseFormat: String {
     case JSON = "json"
 }
 
+enum HTTPMethod: String {
+    case GET
+    case POST
+    case DELETE
+    case PUT
+    case PATCH
+}
+
+enum APIMethod: String {
+    // Profile screen
+    case getProfile = "flickr.profile.getProfile"
+    
+    // Home screen
+    case getHotTags = "flickr.tags.getHotList"
+    case getRecentPosts = "flickr.photos.getRecent"
+    case getPhotoInfo = "flickr.photos.getInfo"
+    case getPhotoComments = "flickr.photos.comments.getList"
+    case addPhotoComment = "flickr.photos.comments.addComment"
+    case deletePhotoComment = "flickr.photos.comments.deleteComment"
+    case addToFavorites = "flickr.favorites.add"
+    case removeFromFavorites = "flickr.favorites.remove"
+    case getFavorites = "flickr.favorites.getList"
+    
+    // Gallery screen
+    case getUserPhotos = "flickr.people.getPhotos" // => "flickr.___.getUserPhotos"
+    case deleteUserPhotoById = "flickr.photos.delete"
+}
+
+// MARK: - API URL requests
+enum HTTPEndpoint: String {
+    case uploadDomain = "https://up.flickr.com/services/upload/"
+    case requestDomain = "https://www.flickr.com/services/rest"
+}
+
 // MARK: - Network Layer (REST)
 
 struct NetworkService {
     
     private let session: URLSession = .init(configuration: .default)
-    
     // Token to get access to 'Flickr API'
-    let access: AccessTokenAPI
-    
+    private var accessTokenAPI: AccessTokenAPI
+    private let consumerKeyAPI: (publicKey: String, secretKey: String)
+    private let signatureHelper: SignatureHelper
+
     // Without access token 'NetworkService' do not work
-    init(withAccess accessToken: AccessTokenAPI) {
-        self.access = accessToken
+    init(accessTokenAPI: AccessTokenAPI, publicConsumerKey: String, secretConsumerKey: String) {
+        self.accessTokenAPI = accessTokenAPI
+        self.consumerKeyAPI = (publicConsumerKey, secretConsumerKey)
+        self.signatureHelper = .init(consumerSecretKey: consumerKeyAPI.secretKey, accessSecretToken: accessTokenAPI.secret)
     }
     
-    func request<Response>(
-        for requestType: RequestType,
-        methodAPI: Constant.FlickrMethod? = nil,
-        with file: Data? = nil,
+    func request<Serializer: Deserializer>(
         parameters: [String: String]? = nil,
-        token: String,
-        secret: String,
-        consumerKey: String,
-        secretConsumerKey: String,
-        httpMethod: HttpMethodType,
-        formatType: ResponseFormat,
-        parser: @escaping (Data) throws -> Response,
-        completion: @escaping (Result<Response, Error>) -> Void
+        type: APIMethod,
+        method: HTTPMethod,
+        parser: Serializer,
+        completion: @escaping (Result<Serializer.Response, Error>) -> Void
     ) {
-        // Create URL string
-        let path = requestType == .request ? HttpEndpoint.requestDomain.rawValue : HttpEndpoint.uploadDomain.rawValue
+        let endpoint = HTTPEndpoint.requestDomain.rawValue
         
         // Default parameters
         var params: [String: String] = [
             "nojsoncallback": "1",
-            "format": formatType.rawValue,
-            "method": methodAPI?.rawValue ?? "",
-            "oauth_token": token,
-            "oauth_consumer_key": consumerKey,
+            "format": "json",
+            "method": type.rawValue,
+            "oauth_token": accessTokenAPI.token,
+            "oauth_consumer_key": consumerKeyAPI.publicKey,
             "oauth_nonce": UUID().uuidString,
             "oauth_signature_method": "HMAC-SHA1",
             "oauth_timestamp": String(Int(Date().timeIntervalSince1970)),
@@ -75,13 +104,105 @@ struct NetworkService {
         }
         
         // Generate request signature and add to parameters
-        let signature: SignatureHelper = .init(httpMethod: httpMethod.rawValue, urlAsString: path, parameters: params, secretConsumerKey: secretConsumerKey, secret: secret)
-        params["oauth_signature"] = signature.getSignature()
+        let signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: endpoint, parameters: params)
+        params["oauth_signature"] = signature
         
-        // Build URL request
-        guard var request = buildURLRequest(httpMethod: httpMethod, path: path, params: params, fileData: file) else { return }
-        request.httpMethod = httpMethod.rawValue
+        // Build URL request using URLComponents
+        var components = URLComponents(string: endpoint)
         
+        components?.queryItems = params.map { (key, value) in
+            URLQueryItem(name: key, value: value)
+        }
+        
+        guard let url = components?.url else {
+            completion(.failure(ErrorMessage.error("URL could not be created at line \(#line) and function \(#function).")))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = method.rawValue
+        
+        self.request(request: request) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let response = try parser.parse(data: data)
+                    completion(.success(response))
+                } catch (let parseError) {
+                    completion(.failure(parseError))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        
+    }
+    
+    func upload<Serializer: Deserializer>(
+        parameters: [String: String]? = nil,
+        file: Data,
+        parser: Serializer,
+        completion: @escaping (Result<Serializer.Response, Error>) -> Void
+    ) {
+        let endpoint = HTTPEndpoint.requestDomain.rawValue
+        
+        // Default parameters
+        var params: [String: String] = [
+            "nojsoncallback": "1",
+            "format": "json",
+            "oauth_token": accessTokenAPI.token,
+            "oauth_consumer_key": consumerKeyAPI.publicKey,
+            "oauth_nonce": UUID().uuidString,
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_timestamp": String(Int(Date().timeIntervalSince1970)),
+            "oauth_version": "1.0"
+        ]
+        
+        // Add to parameters extra values
+        if let extra = parameters {
+            params = params.merging(extra) { (current, _) in current }
+        }
+        
+        // Generate request signature and add to parameters
+        let signature = signatureHelper.buildSignature(method: HTTPMethod.POST.rawValue, endpoint: endpoint, parameters: params)
+        params["oauth_signature"] = signature
+        
+        // Build URL request using multipart/form-data
+        guard let url = URL(string: endpoint) else {
+            completion(.failure(ErrorMessage.error("URL could not be created at line \(#line) and function \(#function).")))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        
+        let multipart: MultipartHelper = .init(parameters: params, file: file)
+        
+        // Set 'Content-Type' for 'multipart/form-data'
+        request.setValue(multipart.getContentType(), forHTTPHeaderField: "Content-Type")
+        request.httpBody = multipart.getRequestData()
+        request.httpMethod = HTTPMethod.POST.rawValue
+        
+        self.request(request: request) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let response = try parser.parse(data: data)
+                    completion(.success(response))
+                } catch (let parseError) {
+                    completion(.failure(parseError))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        
+    }
+    
+    private func request(
+        request: URLRequest,
+        completion: @escaping (Result<Data, Error>) -> Void
+    ) {
+        // Create URLSession task
         let task = session.dataTask(with: request) { data, response, error in
             guard let httpResponse = response as? HTTPURLResponse else {
                 completion(.failure(ErrorMessage.error("HTTP response is empty.")))
@@ -93,7 +214,7 @@ struct NetworkService {
                 return
             }
             
-            //print(String(data: data, encoding: .utf8))
+//            print(String(data: data, encoding: .utf8))
 //            if let errorMessage = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
 //                completion(.failure(ErrorMessage.error("Error Server Response: \(errorMessage.message)")))
 //                return
@@ -104,12 +225,7 @@ struct NetworkService {
                 completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
             case ..<300:
                 print("Status: \(httpResponse.statusCode) OK")
-                do {
-                    let response = try parser(data)
-                    completion(.success(response))
-                } catch (let parseError) {
-                    completion(.failure(parseError))
-                }
+                completion(.success(data))
             case ..<400:
                 completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
             case ..<500:
@@ -119,39 +235,12 @@ struct NetworkService {
             default:
                 completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
             }
-            
         }
         
         // Start request process
         task.resume()
     }
-    
-    private func buildURLRequest(httpMethod: HttpMethodType, path: String, params: [String: String], fileData: Data?) -> URLRequest? {
-        switch httpMethod {
-        case .POST:
-            guard let url = URL(string: path) else { return nil }
-            var request = URLRequest(url: url)
-            
-            let multipart: MultipartHelper = .init(parameters: params, file: fileData)
-            
-            // Set 'Content-Type' for 'multipart/form-data'
-            request.setValue(multipart.getContentType(), forHTTPHeaderField: "Content-Type")
-            request.httpBody = multipart.getRequestData()
-            
-            return request
-        default:
-            // Build URL request using URLComponents
-            var components = URLComponents(string: path)
-            
-            components?.queryItems = params.map { (key, value) in
-                URLQueryItem(name: key, value: value)
-            }
-            
-            guard let url = components?.url else { return nil }
-            return URLRequest(url: url)
-        }
-    }
-    
+ 
     // MARK: - Response Decoders Entities
     
     // Error Response: ["message": Invalid NSID provided, "code": 1, "stat": fail]
@@ -159,203 +248,5 @@ struct NetworkService {
         let message: String
         let code: Int
     }
-    
-    // MARK: - Foundation Methods
-    
-//    func request<Response>(
-//        params extraParameters: [String: String]? = nil,
-//        requestMethod: Constant.FlickrMethod,
-//        path: HttpEndpoint.PathType = .requestREST,
-//        method: HttpMethodType,
-//        parser: @escaping (Data) throws -> Response,
-//        completion: @escaping (Result<Response, Error>) -> Void
-//    ) {
-//        // Build base URL with path as parameter
-//        let urlString = HttpEndpoint.baseDomain.rawValue + path.rawValue
-//
-//        var parameters: [String: String] = [
-//            "nojsoncallback": "1",
-//            "format": "json",
-//            "oauth_token": access.token,
-//            "method": requestMethod.rawValue,
-//            "oauth_consumer_key": FlickrAPI.consumerKey.rawValue,
-//            // Value 'nonce' can be any 32-bit string made up of random ASCII values
-//            "oauth_nonce": UUID().uuidString,
-//            "oauth_signature_method": "HMAC-SHA1",
-//            "oauth_timestamp": String(Int(Date().timeIntervalSince1970)),
-//            "oauth_version": "1.0"
-//        ]
-//
-//        // Add to parameters extra values
-//        if let extraParameters = extraParameters {
-//            parameters = parameters.merging(extraParameters) { (current, _) in current }
-//        }
-//
-//        // Build the OAuth signature from parameters
-////        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: access.secret)
-////        parameters["oauth_signature"] = signature
-//        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: access.secret)
-//        parameters["oauth_signature"] = signature.getSignature()
-//
-//        // Set parameters to request
-//        var components = URLComponents(string: urlString)
-//        components?.queryItems = parameters.map { (key, value) in
-//            URLQueryItem(name: key, value: value)
-//        }
-//
-//        // Initialize and configure URL request
-//        guard let url = components?.url else { return }
-//        var urlRequest = URLRequest(url: url)
-//
-//        // Set HTTP method to request using HttpMethodType with uppercase letters
-//        urlRequest.httpMethod = method.rawValue
-//
-//        // URL configuration
-//        let config = URLSessionConfiguration.default
-//
-//        // Request creation
-//        let session = URLSession(configuration: config)
-//        let task = session.dataTask(with: urlRequest) { data, response, error in
-//            guard let httpResponse = response as? HTTPURLResponse else {
-//                completion(.failure(ErrorMessage.error("HTTP response is empty.")))
-//                return
-//            }
-//
-//            guard let data = data else {
-//                completion(.failure(ErrorMessage.error("Data response is empty.")))
-//                return
-//            }
-//
-//            if let errorMessage = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
-//                completion(.failure(ErrorMessage.error("Error Server Response: \(errorMessage.message)")))
-//                return
-//            }
-//
-//            switch httpResponse.statusCode {
-//            case ..<200:
-//                completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
-//            case ..<300:
-//                print("Status: \(httpResponse.statusCode) OK")
-//                do {
-//                    let response = try parser(data)
-//                    completion(.success(response))
-//                } catch (let parseError) {
-//                    completion(.failure(parseError))
-//                }
-//            case ..<400:
-//                completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
-//            case ..<500:
-//                completion(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
-//            case ..<600:
-//                completion(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
-//            default:
-//                completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
-//            }
-//
-//        }
-//
-//        // Start request process
-//        task.resume()
-//    }
-    
-    // MARK: - Upload Methods
-    
-//    func uploadRequest<Response>(
-//        params extraParameters: [String: String]? = nil,
-//        for fileData: Data,
-//        method: HttpMethodType,
-//        parser: @escaping (Data) throws -> Response,
-//        completion: @escaping (Result<Response, Error>) -> Void
-//    ) {
-//        // Create URL
-//        let urlString = HttpEndpoint.uploadDomain.rawValue
-//        guard let url = URL(string: urlString) else { return }
-//
-//        // Bild URL request
-//        var request = URLRequest(url: url)
-//        request.httpMethod = method.rawValue
-//
-//
-//
-//        var parameters: [String: String] = [
-//            "nojsoncallback": "1",
-//            "format": "json",
-//            "oauth_token": access.token,
-//            "oauth_consumer_key": FlickrAPI.consumerKey.rawValue,
-//            // Value 'nonce' can be any 32-bit string made up of random ASCII values
-//            "oauth_nonce": UUID().uuidString,
-//            "oauth_signature_method": "HMAC-SHA1",
-//            "oauth_timestamp": String(Int(Date().timeIntervalSince1970)),
-//            "oauth_version": "1.0"
-//        ]
-//        // Methods to prepare API requests
-//        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: access.secret)
-//        parameters["oauth_signature"] = signature.getSignature()
-//
-////        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: access.secret)
-////        parameters["oauth_signature"] = signature
-//
-//        // Generate HTTP body for URL request
-//        let multipart: MultipartHelper = .init(parameters: parameters, file: fileData)
-////        var httpBody = Data()
-////
-////        for (key, value) in parameters {
-////            httpBody.appendString(multipartHelper.convertFormField(named: key, value: value, using: boundary))
-////        }
-////
-////        httpBody.append(multipartHelper.convertFileData(fieldName: "photo", fileName: "imagename.png", mimeType: "image/png", fileData: fileData, using: boundary))
-////
-////        httpBody.appendString("--\(boundary)--")
-//        // Set 'Content-Type' for 'multipart/form-data'
-//        request.setValue(multipart.getContentType(), forHTTPHeaderField: "Content-Type")
-//        request.httpBody = multipart.getRequestData()
-//
-//        // URL configuration
-//        let config = URLSessionConfiguration.default
-//
-//        // Request creation
-//        let session = URLSession(configuration: config)
-//        let task = session.dataTask(with: request) { data, response, error in
-//            guard let httpResponse = response as? HTTPURLResponse else {
-//                completion(.failure(ErrorMessage.error("HTTP response is empty.")))
-//                return
-//            }
-//
-//            guard let data = data else {
-//                completion(.failure(ErrorMessage.error("Data response is empty.")))
-//                return
-//            }
-//
-//            switch httpResponse.statusCode {
-//            case ..<200:
-//                completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)).")))
-//            case ..<300:
-//                print("Status: \(httpResponse.statusCode) OK")
-//                do {
-//                    let response = try parser(data)
-//                    completion(.success(response))
-//                } catch (let parseError) {
-//                    completion(.failure(parseError))
-//                }
-//            case ..<400:
-//                completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)).")))
-//            case ..<500:
-//                completion(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)).")))
-//            case ..<600:
-//                completion(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)).")))
-//            default:
-//                completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)).")))
-//            }
-//
-//        }
-//
-//        // Start request process
-//        task.resume()
-//    }
-    
-
-    
-    
-
     
 }

@@ -11,32 +11,18 @@ extension NetworkService {
     
     // Get list of hot tags 'flickr.places.tagsForPlace' (General screen)
     func getHotTags(count: Int = 10, completion: @escaping (Result<[Tag], Error>) -> Void) {
-        // Initialize parser
-        let deserializer: ModelDeserializer<TagsResponse> = .init()
-        
         // Push some additional parameters
         let parameters: [String: String] = [
             "count": String(count)
         ]
         
         request(
-            for: .request,
-            methodAPI: .getHotTags,
             parameters: parameters,
-            token: access.token,
-            secret: access.secret,
-            consumerKey: FlickrAPI.consumerKey.rawValue,
-            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
-            httpMethod: .GET,
-            formatType: .JSON,
-            parser: deserializer.parse(data:)
+            type: .getHotTags,
+            method: .GET,
+            parser: ModelDeserializer<TagsResponse>()
         ) { result in
-            switch result {
-            case .success(let response):
-                completion(.success(response.data.tags))
-            case .failure(let error):
-                completion(.failure(error))
-            }
+            completion(result.map { $0.data.tags })
         }
     }
     
