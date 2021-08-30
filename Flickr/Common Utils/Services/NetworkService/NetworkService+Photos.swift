@@ -10,28 +10,34 @@ import Foundation
 extension NetworkService {
     
     // Get list of popular photos 'flickr.photos.getPopular' (General screen)
-    func getPopularPosts(complition: @escaping (Result<[Photo], Error>) -> Void) {
+    func getRecentPosts(completion: @escaping (Result<[Photo], Error>) -> Void) {
         // Initialize parser
-        let deserializer: PhotoArrayDeserializer = .init()
+        let deserializer: ModelDeserializer<PhotosResponse> = .init()
         
         request(
-            requestMethod: .getPopularPosts,
-            method: .GET,
+            for: .request,
+            methodAPI: .getRecentPosts,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .GET,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in
             switch result {
             case .success(let response):
-                complition(.success(response))
+                completion(.success(response.data.photos))
             case .failure(let error):
-                complition(.failure(error))
+                completion(.failure(error))
             }
         }
     }
     
     // Get photo 'flickr.photos.getInfo' (Post screen)
-    func getPhotoById(with photoId: String, secret: String? = nil, complition: @escaping (Result<PhotoInfo, Error>) -> Void) {
+    func getPhotoById(with photoId: String, secret: String? = nil, completion: @escaping (Result<PhotoInfo, Error>) -> Void) {
         // Initialize parser
-        let deserializer: PhotoInfoDeserializer = .init()
+        let deserializer: ModelDeserializer<PhotoInfo> = .init()
         
         // Push some additional parameters
         let parameters: [String: String] = [
@@ -39,24 +45,23 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .getPhotoInfo,
-            method: .GET,
+            for: .request,
+            methodAPI: .getPhotoInfo,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .GET,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
-        ) { result in
-            switch result {
-            case .success(let response):
-                complition(.success(response))
-            case .failure(let error):
-                complition(.failure(error))
-            }
-        }
+        ) { result in completion(result) }
     }
     
     // Get user photos 'flickr.people.getPhotos' (Gallery screen)
-    func getUserPhotos(for userId: String, complition: @escaping (Result<[Photo], Error>) -> Void) {
+    func getUserPhotos(for userId: String, completion: @escaping (Result<[Photo], Error>) -> Void) {
         // Initialize parser
-        let deserializer: PhotoArrayDeserializer = .init()
+        let deserializer: ModelDeserializer<PhotosResponse> = .init()
         
         // Push some additional parameters
         let parameters: [String: String] = [
@@ -64,22 +69,28 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .getUserPhotos,
-            method: .POST,
+            for: .request,
+            methodAPI: .getUserPhotos,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .POST,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in
             switch result {
             case .success(let response):
-                complition(.success(response))
+                completion(.success(response.data.photos))
             case .failure(let error):
-                complition(.failure(error))
+                completion(.failure(error))
             }
         }
     }
     
     // Delete user 'flickr.photos.delete' (Gallery screen)
-    func deletePhotoById(with photoId: String, complition: @escaping (Result<Void, Error>) -> Void) {
+    func deletePhotoById(with photoId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         // Initialize parser
         let deserializer: VoidDeserializer = .init()
         
@@ -90,49 +101,17 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .deleteUserPhotoById,
-            method: .POST,
+            for: .request,
+            methodAPI: .deleteUserPhotoById,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .POST,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
-        ) { result in
-            switch result {
-            case .success(let response):
-                complition(.success(response))
-            case .failure(let error):
-                complition(.failure(error))
-            }
-        }
-    }
-    
-    // The server response parser
-    private struct PhotoArrayDeserializer: Deserializer {
-        typealias Response = [Photo]
-        
-        func parse(data: Data) throws -> [Photo] {
-            let decoder = JSONDecoder()
-            
-            do {
-                let response = try decoder.decode(PhotosResponse.self, from: data)
-                return response.data.photos
-            } catch (let error) {
-                throw ErrorMessage.error("The server response could not be parsed into an array of photos.\nDescription: \(error)")
-            }
-        }
-    }
-    
-    private struct PhotoInfoDeserializer: Deserializer {
-        typealias Response = PhotoInfo
-        
-        func parse(data: Data) throws -> PhotoInfo {
-            let decoder = JSONDecoder()
-            
-            do {
-                let response = try decoder.decode(PhotoInfo.self, from: data)
-                return response
-            } catch (let error) {
-                throw ErrorMessage.error("The server response could not be parsed into an array of photos.\nDescription: \(error)")
-            }
-        }
+        ) { result in completion(result) }
     }
     
     // Build link to get image: https://www.flickr.com/services/api/misc.urls.html

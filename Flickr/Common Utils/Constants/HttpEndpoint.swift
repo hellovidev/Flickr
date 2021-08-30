@@ -12,6 +12,7 @@ enum HttpEndpoint: String {
     
     case baseDomain = "https://www.flickr.com"
     case uploadDomain = "https://up.flickr.com/services/upload/"
+    case requestDomain = "https://www.flickr.com/services/rest"
     
     // MARK: - Request Path Type
     enum PathType: String {
