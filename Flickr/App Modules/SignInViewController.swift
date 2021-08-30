@@ -23,14 +23,14 @@ class SignInViewController: UIViewController {
                 self?.networkService = .init(withAccess: AccessTokenAPI(token: accessToken.token, secret: accessToken.secretToken, nsid: accessToken.userNSID.removingPercentEncoding!))
                 
                 // MARK: - Methods
-                self?.networkService?.getProfile(for: accessToken.userNSID.removingPercentEncoding!) { result in
-                    switch result {
-                    case .success(let profile):
-                        print(profile)
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
+//                self?.networkService?.getProfile(for: accessToken.userNSID.removingPercentEncoding!) { result in
+//                    switch result {
+//                    case .success(let profile):
+//                        print(profile)
+//                    case .failure(let error):
+//                        print(error)
+//                    }
+//                }
 
 //                self?.networkService?.getPhotoComments(for: "109722179") {result in
 //                    switch result {
@@ -59,7 +59,7 @@ class SignInViewController: UIViewController {
 //                    }
 //                }
 
-//                self?.networkService?.getPopularPosts {result in
+//                self?.networkService?.getRecentPosts {result in
 //                    switch result {
 //                    case .success(let photos):
 //                        print(photos)
@@ -68,7 +68,7 @@ class SignInViewController: UIViewController {
 //                    }
 //                }
 //
-//                self?.networkService?.getPhotoById(with: "51403173555") { result in
+//                self?.networkService?.getPhotoById(with: "51413316285") { result in
 //                    switch result {
 //                    case .success(let photoInfo):
 //                        print(photoInfo)
@@ -97,13 +97,13 @@ class SignInViewController: UIViewController {
 //
 
                 
-                self?.networkService?.uploadNewPhoto(title: "Poster", description: "New photo from iOS application.") {result in
-                    switch result {
-                    case .success(_): break
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
+//                self?.networkService?.uploadNewPhoto(title: "New poster", description: "Added photo from iOS application.") {result in
+//                    switch result {
+//                    case .success(_): break
+//                    case .failure(let error):
+//                        print(error)
+//                    }
+//                }
                 
 //                self?.networkService?.getUserPhotos(for: "me") {result in
 //                    switch result {
@@ -115,14 +115,14 @@ class SignInViewController: UIViewController {
 //                    }
 //                }
                 
-//                self?.networkService?.deletePhotoById(with: "51404594320") {result in
-//                    switch result {
-//                    case .success(let resp):
-//                        print("Response: \(resp)")
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
+                self?.networkService?.deletePhotoById(with: "51413316285") {result in
+                    switch result {
+                    case .success(let resp):
+                        print("Response: \(resp)")
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
             case .failure(let error):
                 switch error {
                 case ErrorMessage.notFound:

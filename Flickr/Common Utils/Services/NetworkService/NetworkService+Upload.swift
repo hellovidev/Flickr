@@ -24,13 +24,6 @@ extension NetworkService {
         
         guard let imageData: Data = image.pngData() else { return }
         
-//        uploadRequest(
-//            params: parameters,
-//            for: imageData,
-//            method: .POST,
-//            parser: deserializer.parse(data:)
-//        ) { result in completion(result) }
-        
         request(
             for: .upload,
             with: imageData,
@@ -40,7 +33,7 @@ extension NetworkService {
             consumerKey: FlickrAPI.consumerKey.rawValue,
             secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
             httpMethod: .POST,
-            formatType: .json,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in completion(result) }
     }

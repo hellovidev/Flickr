@@ -10,13 +10,19 @@ import Foundation
 extension NetworkService {
     
     // Get list of popular photos 'flickr.photos.getPopular' (General screen)
-    func getPopularPosts(completion: @escaping (Result<[Photo], Error>) -> Void) {
+    func getRecentPosts(completion: @escaping (Result<[Photo], Error>) -> Void) {
         // Initialize parser
         let deserializer: ModelDeserializer<PhotosResponse> = .init()
         
         request(
-            requestMethod: .getPopularPosts,
-            method: .GET,
+            for: .request,
+            methodAPI: .getRecentPosts,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .GET,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in
             switch result {
@@ -39,9 +45,15 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .getPhotoInfo,
-            method: .GET,
+            for: .request,
+            methodAPI: .getPhotoInfo,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .GET,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in completion(result) }
     }
@@ -57,9 +69,15 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .getUserPhotos,
-            method: .POST,
+            for: .request,
+            methodAPI: .getUserPhotos,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .POST,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in
             switch result {
@@ -83,9 +101,15 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .deleteUserPhotoById,
-            method: .POST,
+            for: .request,
+            methodAPI: .deleteUserPhotoById,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .POST,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in completion(result) }
     }

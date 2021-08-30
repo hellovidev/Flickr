@@ -17,22 +17,8 @@ extension NetworkService {
         // Push some additional parameters
         let parameters: [String: String] = [
             "user_id": userId,
-            "method": Constant.FlickrMethod.getProfile.rawValue,
+            //"method": Constant.FlickrMethod.getProfile.rawValue
         ]
-        
-//        request(
-//            params: parameters,
-//            requestMethod: .getProfile,
-//            method: .GET,
-//            parser: deserializer.parse(data:)
-//        ) { result in
-//            switch result {
-//            case .success(let response):
-//                completion(.success(response.profile))
-//            case .failure(let error):
-//                completion(.failure(error))
-//            }
-//        }
         
         request(
             for: .request,
@@ -43,7 +29,7 @@ extension NetworkService {
             consumerKey: FlickrAPI.consumerKey.rawValue,
             secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
             httpMethod: .GET,
-            formatType: .json,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in
             switch result {

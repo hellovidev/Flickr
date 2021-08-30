@@ -20,9 +20,15 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .getHotTags,
-            method: .GET,
+            for: .request,
+            methodAPI: .getHotTags,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .GET,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in
             switch result {
@@ -50,25 +56,5 @@ extension NetworkService {
             }
         }
     }
-    
-//    struct ResponseCatcher: Decodable {
-//        let parent: ResponseCatcherChild
-//        
-//        enum CodingKeys: String, CodingKey {
-//            required init(parentKey: String) {
-//                NetworkService.ResponseCatcher.CodingKeys(rawValue: NetworkService.ResponseCatcher.CodingKeys.parent = parentKey) ?? <#default value#>
-//            }
-//            
-//            case parent = ""
-//        }
-//        
-//        struct ResponseCatcherChild: Decodable {
-//            let child: [String]
-//            
-//            enum CodingKeys: String, CodingKey {
-//                case child = ""
-//            }
-//        }
-//    }
     
 }

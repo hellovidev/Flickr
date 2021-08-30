@@ -15,8 +15,14 @@ extension NetworkService {
         let deserializer: ModelDeserializer<FavoritesResponse> = .init()
         
         request(
-            requestMethod: .getFavorites,
-            method: .GET,
+            for: .request,
+            methodAPI: .getFavorites,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .GET,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in
             switch result {
@@ -39,9 +45,15 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .addToFavorites,
-            method: .POST,
+            for: .request,
+            methodAPI: .addToFavorites,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .POST,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in completion(result) }
     }
@@ -57,9 +69,15 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .removeFromFavorites,
-            method: .POST,
+            for: .request,
+            methodAPI: .removeFromFavorites,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .POST,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in completion(result) }
     }

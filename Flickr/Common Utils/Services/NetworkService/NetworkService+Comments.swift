@@ -20,9 +20,15 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .getPhotoComments,
-            method: .GET,
+            for: .request,
+            methodAPI: .getPhotoComments,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .GET,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in
             switch result {
@@ -46,9 +52,15 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .addPhotoComment,
-            method: .POST,
+            for: .request,
+            methodAPI: .addPhotoComment,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .POST,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in completion(result) }
     }
@@ -64,9 +76,15 @@ extension NetworkService {
         ]
         
         request(
-            params: parameters,
-            requestMethod: .deletePhotoComment,
-            method: .POST,
+            for: .request,
+            methodAPI: .deletePhotoComment,
+            parameters: parameters,
+            token: access.token,
+            secret: access.secret,
+            consumerKey: FlickrAPI.consumerKey.rawValue,
+            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
+            httpMethod: .POST,
+            formatType: .JSON,
             parser: deserializer.parse(data:)
         ) { result in completion(result) }
     }
