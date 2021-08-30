@@ -259,8 +259,12 @@ class FlickrOAuthService {
 
         // Methods to prepare API requests
 //        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
-        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: secretToken)
-        parameters["oauth_signature"] = signature.getSignature()
+        let signatureHelper = SignatureHelper(consumerSecretKey: FlickrAPI.consumerSecretKey.rawValue, accessSecretToken: secretToken)
+        let signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: urlString, parameters: parameters)
+        parameters["oauth_signature"] = signature
+        
+//        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: secretToken)
+//        parameters["oauth_signature"] = signature.getSignature()
         
         // Build the OAuth signature from parameters
         //parameters["oauth_signature"] = signature
@@ -276,7 +280,7 @@ class FlickrOAuthService {
         urlRequest.httpMethod = method.rawValue
 
         // Set parameters to HTTP body of URL request
-        let header = "OAuth \(signature.convertParametersToString(parameters, separator: ", "))"
+        let header = "OAuth \(signatureHelper.convertParametersToString(parameters, separator: ", "))"
         urlRequest.setValue(header, forHTTPHeaderField: "Authorization")
         
         // URL configuration

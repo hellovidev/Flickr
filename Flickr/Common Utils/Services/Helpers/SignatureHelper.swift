@@ -9,25 +9,31 @@ import Foundation
 import CommonCrypto
 
 struct SignatureHelper {
-    private var content: String = .init()
-
-    init(httpMethod: String, urlAsString: String, parameters: [String: String], secretConsumerKey: String, secret: String? = nil) {
+    private let consumerSecretKey: String
+    private var accessSecretToken: String?
+    
+    init(consumerSecretKey: String, accessSecretToken: String?) {
+        self.consumerSecretKey = consumerSecretKey
+        self.accessSecretToken = accessSecretToken
+    }
+    
+    mutating func setNewAccessSecretToken(_ accessSecretToken: String) {
+        self.accessSecretToken = accessSecretToken
+    }
+    
+    func buildSignature(method: String, endpoint: String, parameters: [String: String]) -> String {
         // Initialization 'Signing Key'
-        var signingKey = secretConsumerKey + "&"
-        if let secretToken = secret {
+        var signingKey = self.consumerSecretKey + "&"
+        if let secretToken = self.accessSecretToken {
             signingKey += secretToken
         }
         
         // Initialization 'Signing Base'
         let stringParameters = convertParametersToString(parameters, separator: "&")
-        let baseSignature = httpMethod + "&" + encodeString(urlAsString) + "&" + encodeString(stringParameters)
+        let baseSignature = method + "&" + encodeString(endpoint) + "&" + encodeString(stringParameters)
         
         // Build 'Signature' using HMAC-SHA1
-        self.content = hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
-    }
-    
-    func getSignature() -> String {
-        return content
+        return hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
     }
     
     // Prepare string value to signature view: 'https://www.flickr.com/services/oauth/request_token' => 'https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token'
@@ -53,19 +59,5 @@ struct SignatureHelper {
         }
         return result.sorted().joined(separator: separator)
     }
-    
-//    func createRequestSignature(httpMethod: String, url: String, parameters: [String: String], secretConsumerKey: String, secret: String? = nil) -> String {
-//        // Initialization 'Signing Key'
-//        var signingKey = secretConsumerKey + "&"
-//        if let secretToken = secret {
-//            signingKey += secretToken
-//        }
-//        
-//        // Initialization 'Signing Base'
-//        let stringParameters = convertParametersToString(parameters, separator: "&")
-//        let baseSignature = httpMethod + "&" + encodeString(url) + "&" + encodeString(stringParameters)
-//        
-//        // Build 'Signature' using HMAC-SHA1
-//        return hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
-//    }
+
 }

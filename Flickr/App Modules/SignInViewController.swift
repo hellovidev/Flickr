@@ -20,17 +20,17 @@ class SignInViewController: UIViewController {
             switch result {
             case .success(let accessToken):
                 // Initialization 'NetworkService'
-                self?.networkService = .init(withAccess: AccessTokenAPI(token: accessToken.token, secret: accessToken.secretToken, nsid: accessToken.userNSID.removingPercentEncoding!))
+                self?.networkService = .init(accessTokenAPI: AccessTokenAPI(token: accessToken.token, secret: accessToken.secretToken, nsid: accessToken.userNSID.removingPercentEncoding!), publicConsumerKey: FlickrAPI.consumerKey.rawValue, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue)
                 
                 // MARK: - Methods
-//                self?.networkService?.getProfile(for: accessToken.userNSID.removingPercentEncoding!) { result in
-//                    switch result {
-//                    case .success(let profile):
-//                        print(profile)
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
+                self?.networkService?.getProfile(for: accessToken.userNSID.removingPercentEncoding!) { result in
+                    switch result {
+                    case .success(let profile):
+                        print(profile)
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
 
 //                self?.networkService?.getPhotoComments(for: "109722179") {result in
 //                    switch result {
@@ -41,14 +41,14 @@ class SignInViewController: UIViewController {
 //                    }
 //                }
 //
-//                self?.networkService?.getFavorites { result in
-//                    switch result {
-//                    case .success(let favorites):
-//                        print(favorites)
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
+                self?.networkService?.getFavorites { result in
+                    switch result {
+                    case .success(let favorites):
+                        print(favorites)
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
 //
 //                self?.networkService?.getHotTags { result in
 //                    switch result {

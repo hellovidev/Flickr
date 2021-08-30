@@ -11,40 +11,23 @@ extension NetworkService {
     
     // Get photo comments list 'flickr.photos.comments.getList' (Post screen)
     func getPhotoComments(for photoId: String, completion: @escaping (Result<[Comment], Error>) -> Void) {
-        // Initialize parser
-        let deserializer: ModelDeserializer<CommentsResponse> = .init()
-        
         // Push some additional parameters
         let parameters: [String: String] = [
             "photo_id": photoId
         ]
         
         request(
-            for: .request,
-            methodAPI: .getPhotoComments,
             parameters: parameters,
-            token: access.token,
-            secret: access.secret,
-            consumerKey: FlickrAPI.consumerKey.rawValue,
-            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
-            httpMethod: .GET,
-            formatType: .JSON,
-            parser: deserializer.parse(data:)
+            type: .getPhotoComments,
+            method: .GET,
+            parser: ModelDeserializer<CommentsResponse>()
         ) { result in
-            switch result {
-            case .success(let response):
-                completion(.success(response.data.comments))
-            case .failure(let error):
-                completion(.failure(error))
-            }
+            completion(result.map { $0.data.comments })
         }
     }
     
     // Add new photo comment 'flickr.photos.comments.addComment' (Post screen) -> https://www.flickr.com/services/api/flickr.photos.comments.addComment.html
     func addPhotoComment(for photoId: String, comment: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        // Initialize parser
-        let deserializer: VoidDeserializer = .init()
-        
         // Push some additional parameters
         let parameters: [String: String] = [
             "photo_id": photoId,
@@ -52,41 +35,30 @@ extension NetworkService {
         ]
         
         request(
-            for: .request,
-            methodAPI: .addPhotoComment,
             parameters: parameters,
-            token: access.token,
-            secret: access.secret,
-            consumerKey: FlickrAPI.consumerKey.rawValue,
-            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
-            httpMethod: .POST,
-            formatType: .JSON,
-            parser: deserializer.parse(data:)
-        ) { result in completion(result) }
+            type: .addPhotoComment,
+            method: .POST,
+            parser: VoidDeserializer()
+        ) { result in
+            completion(result)
+        }
     }
     
     // Delete comment 'flickr.photos.comments.deleteComment' (Post screen) -> https://www.flickr.com/services/api/flickr.photos.comments.deleteComment.html
     func deletePhotoComment(for commentId: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        // Initialize parser
-        let deserializer: VoidDeserializer = .init()
-        
         // Push some additional parameters
         let parameters: [String: String] = [
             "comment_id": commentId
         ]
         
         request(
-            for: .request,
-            methodAPI: .deletePhotoComment,
             parameters: parameters,
-            token: access.token,
-            secret: access.secret,
-            consumerKey: FlickrAPI.consumerKey.rawValue,
-            secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue,
-            httpMethod: .POST,
-            formatType: .JSON,
-            parser: deserializer.parse(data:)
-        ) { result in completion(result) }
+            type: .deletePhotoComment,
+            method: .POST,
+            parser: VoidDeserializer()
+        ) { result in
+            completion(result)
+        }
     }
     
     // The server JSON response decoder
