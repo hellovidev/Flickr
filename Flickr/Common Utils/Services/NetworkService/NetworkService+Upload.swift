@@ -24,10 +24,9 @@ extension NetworkService {
         upload(
             parameters: parameters,
             file: imageData,
-            parser: VoidDeserializer()
-        ) { result in
-            completion(result)
-        }
+            parser: VoidDeserializer(),
+            completion: completion
+        )
     }
     
 }

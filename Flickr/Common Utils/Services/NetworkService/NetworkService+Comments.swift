@@ -38,10 +38,9 @@ extension NetworkService {
             parameters: parameters,
             type: .addPhotoComment,
             method: .POST,
-            parser: VoidDeserializer()
-        ) { result in
-            completion(result)
-        }
+            parser: VoidDeserializer(),
+            completion: completion
+        )
     }
     
     // Delete comment 'flickr.photos.comments.deleteComment' (Post screen) -> https://www.flickr.com/services/api/flickr.photos.comments.deleteComment.html
@@ -55,10 +54,9 @@ extension NetworkService {
             parameters: parameters,
             type: .deletePhotoComment,
             method: .POST,
-            parser: VoidDeserializer()
-        ) { result in
-            completion(result)
-        }
+            parser: VoidDeserializer(),
+            completion: completion
+        )
     }
     
     // The server JSON response decoder
