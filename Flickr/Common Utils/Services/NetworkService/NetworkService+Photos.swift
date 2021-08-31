@@ -66,10 +66,9 @@ extension NetworkService {
             parameters: parameters,
             type: .deleteUserPhotoById,
             method: .POST,
-            parser: VoidDeserializer()
-        ) { result in
-            completion(result)
-        }
+            parser: VoidDeserializer(),
+            completion: completion
+        )
     }
     
     // Build link to get image: https://www.flickr.com/services/api/misc.urls.html

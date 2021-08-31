@@ -31,10 +31,9 @@ extension NetworkService {
             parameters: parameters,
             type: .addToFavorites,
             method: .POST,
-            parser: VoidDeserializer()
-        ) { result in
-            completion(result)
-        }
+            parser: VoidDeserializer(),
+            completion: completion
+        )
     }
     
     // Remove photo from favorites 'flickr.favorites.remove' (General screen)
@@ -48,10 +47,9 @@ extension NetworkService {
             parameters: parameters,
             type: .removeFromFavorites,
             method: .POST,
-            parser: VoidDeserializer()
-        ) { result in
-            completion(result)
-        }
+            parser: VoidDeserializer(),
+            completion: completion
+        )
     }
     
     // The server JSON response decoder
