@@ -16,6 +16,13 @@ class HomeViewController: UIViewController {
     }
     
 
+    @IBAction func postShowAction(_ sender: UIButton) {
+        performSegue(withIdentifier: "PostPath", sender: self)
+    }
+    
+    deinit {
+        print("\(Self.Type.self) deinited.")
+    }
     /*
     // MARK: - Navigation
 

@@ -33,7 +33,7 @@
 		5FF8D97726CEC4F80058FEC7 /* HttpEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8D97626CEC4F80058FEC7 /* HttpEndpoint.swift */; };
 		5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */; };
 		5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */; };
-		5FFEC0B526CD4DDB000A0BAB /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B426CD4DDB000A0BAB /* SignInViewController.swift */; };
+		5FFEC0B526CD4DDB000A0BAB /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B426CD4DDB000A0BAB /* AuthViewController.swift */; };
 		5FFEC0B826CD4DDB000A0BAB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B626CD4DDB000A0BAB /* Main.storyboard */; };
 		5FFEC0BA26CD4DDC000A0BAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B926CD4DDC000A0BAB /* Assets.xcassets */; };
 		5FFEC0BD26CD4DDC000A0BAB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FFEC0BB26CD4DDC000A0BAB /* LaunchScreen.storyboard */; };
@@ -69,7 +69,7 @@
 		5FFEC0AD26CD4DDB000A0BAB /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		5FFEC0B426CD4DDB000A0BAB /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
+		5FFEC0B426CD4DDB000A0BAB /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		5FFEC0B726CD4DDB000A0BAB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5FFEC0B926CD4DDC000A0BAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5FFEC0BC26CD4DDC000A0BAB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -168,11 +168,11 @@
 			isa = PBXGroup;
 			children = (
 				5F7F996426D69ACF00482485 /* Entities */,
-				5FFEC0B426CD4DDB000A0BAB /* SignInViewController.swift */,
+				5FFEC0B426CD4DDB000A0BAB /* AuthViewController.swift */,
 				5FA9B2EF26E4B0F20060DAE8 /* ProfileViewController.swift */,
 				5FA9B2F126E4B1020060DAE8 /* HomeViewController.swift */,
-				5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */,
 				5FA9B2F526E4B12A0060DAE8 /* PostViewController.swift */,
+				5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */,
 			);
 			path = "App Modules";
 			sourceTree = "<group>";
@@ -302,7 +302,7 @@
 				5F7F998426D8E89200482485 /* DeserializeHelper.swift in Sources */,
 				5F7F996C26D6CBC700482485 /* Photo.swift in Sources */,
 				5F7F996A26D6C05800482485 /* Favorite.swift in Sources */,
-				5FFEC0B526CD4DDB000A0BAB /* SignInViewController.swift in Sources */,
+				5FFEC0B526CD4DDB000A0BAB /* AuthViewController.swift in Sources */,
 				5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */,
 				5F7F998626D8F78F00482485 /* NetworkService+Upload.swift in Sources */,
 				5FF8D97726CEC4F80058FEC7 /* HttpEndpoint.swift in Sources */,

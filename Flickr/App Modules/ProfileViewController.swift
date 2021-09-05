@@ -15,7 +15,14 @@ class ProfileViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    deinit {
+        print("\(Self.Type.self) deinited.")
+    }
 
+    @IBAction func logoutAction(_ sender: UIButton) {
+        FlickrOAuthService.shared.flickrLogout()
+        dismiss(animated: true, completion: nil)
+    }
     /*
     // MARK: - Navigation
 

@@ -15,7 +15,9 @@ class GalleryViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-
+    deinit {
+        print("\(Self.Type.self) deinited.")
+    }
     /*
     // MARK: - Navigation
 
