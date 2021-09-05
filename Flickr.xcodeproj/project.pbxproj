@@ -29,7 +29,8 @@
 		5FA9B2F426E4B1180060DAE8 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */; };
 		5FA9B2F626E4B12A0060DAE8 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2F526E4B12A0060DAE8 /* PostViewController.swift */; };
 		5FA9B2F826E5320A0060DAE8 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2F726E5320A0060DAE8 /* API.swift */; };
-		5FF8D97726CEC4F80058FEC7 /* HttpEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8D97626CEC4F80058FEC7 /* HttpEndpoint.swift */; };
+		5FA9B2FA26E533700060DAE8 /* HTTPMethodType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2F926E533700060DAE8 /* HTTPMethodType.swift */; };
+		5FF8D97726CEC4F80058FEC7 /* HTTPEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF8D97626CEC4F80058FEC7 /* HTTPEndpoint.swift */; };
 		5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */; };
 		5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */; };
 		5FFEC0B526CD4DDB000A0BAB /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B426CD4DDB000A0BAB /* AuthViewController.swift */; };
@@ -63,7 +64,8 @@
 		5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		5FA9B2F526E4B12A0060DAE8 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		5FA9B2F726E5320A0060DAE8 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
-		5FF8D97626CEC4F80058FEC7 /* HttpEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpEndpoint.swift; sourceTree = "<group>"; };
+		5FA9B2F926E533700060DAE8 /* HTTPMethodType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethodType.swift; sourceTree = "<group>"; };
+		5FF8D97626CEC4F80058FEC7 /* HTTPEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPEndpoint.swift; sourceTree = "<group>"; };
 		5FFEC0AD26CD4DDB000A0BAB /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -215,9 +217,10 @@
 			isa = PBXGroup;
 			children = (
 				5FFEC0CD26CD4FD3000A0BAB /* AppConstants.swift */,
-				5FF8D97626CEC4F80058FEC7 /* HttpEndpoint.swift */,
 				5F7F996226D66DE300482485 /* ErrorMessage.swift */,
 				5FA9B2F726E5320A0060DAE8 /* API.swift */,
+				5FF8D97626CEC4F80058FEC7 /* HTTPEndpoint.swift */,
+				5FA9B2F926E533700060DAE8 /* HTTPMethodType.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -303,7 +306,7 @@
 				5FFEC0B526CD4DDB000A0BAB /* AuthViewController.swift in Sources */,
 				5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */,
 				5F7F998626D8F78F00482485 /* NetworkService+Upload.swift in Sources */,
-				5FF8D97726CEC4F80058FEC7 /* HttpEndpoint.swift in Sources */,
+				5FF8D97726CEC4F80058FEC7 /* HTTPEndpoint.swift in Sources */,
 				5FA9B2F026E4B0F20060DAE8 /* ProfileViewController.swift in Sources */,
 				5F7F996826D6AE1000482485 /* Comment.swift in Sources */,
 				5F7F996626D69AE900482485 /* Profile.swift in Sources */,
@@ -320,6 +323,7 @@
 				5F7F997A26D8001F00482485 /* NetworkService+Profile.swift in Sources */,
 				5F7F997826D7FFA600482485 /* NetworkService+Comments.swift in Sources */,
 				5FA9B2F626E4B12A0060DAE8 /* PostViewController.swift in Sources */,
+				5FA9B2FA26E533700060DAE8 /* HTTPMethodType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

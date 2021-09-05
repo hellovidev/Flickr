@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - ErrorMessage
+// MARK: - Error Message
 
 enum ErrorMessage: Error {
     case notFound

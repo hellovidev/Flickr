@@ -155,7 +155,7 @@ class FlickrOAuthService {
     // Step #2: Website Confirmation
     private func requestAuthorize(with token: String, presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
         // Build website confirmation link for 'Safari'
-        let urlString = "\(HttpEndpoint.baseDomain.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
+        let urlString = "\(HTTPEndpoint.baseDomain.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
         guard let websiteConfirmationURL = URL(string: urlString) else { return }
         
         // Initialization 'Safari' object
@@ -231,9 +231,9 @@ class FlickrOAuthService {
 
     // MARK: - Request Configuration Methods
     
-    private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: HttpEndpoint.PathType, method: HttpMethodType, completion: @escaping (Result<Data, Error>) -> Void) {
+    private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: HTTPEndpoint.PathType, method: HTTPMethodType, completion: @escaping (Result<Data, Error>) -> Void) {
         // Build base URL with path as parameter
-        let urlString = HttpEndpoint.baseDomain.rawValue + path.rawValue
+        let urlString = HTTPEndpoint.baseDomain.rawValue + path.rawValue
         
         // Create URL using endpoint
         guard let url = URL(string: urlString) else { return }

@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - API URL requests
-enum HttpEndpoint: String {
+enum HTTPEndpoint: String {
     
     case baseDomain = "https://www.flickr.com"
     case uploadDomain = "https://up.flickr.com/services/upload/"
@@ -24,11 +24,3 @@ enum HttpEndpoint: String {
     
 }
 
-// MARK: - HTTP method types
-enum HttpMethodType: String {
-    case GET
-    case POST
-    case DELETE
-    case PUT
-    case PATCH
-}

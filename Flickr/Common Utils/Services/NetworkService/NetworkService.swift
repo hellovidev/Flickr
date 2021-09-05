@@ -53,12 +53,6 @@ enum APIMethod: String {
     case deleteUserPhotoById = "flickr.photos.delete"
 }
 
-// MARK: - API URL requests
-enum HTTPEndpoint: String {
-    case uploadDomain = "https://up.flickr.com/services/upload/"
-    case requestDomain = "https://www.flickr.com/services/rest"
-}
-
 // MARK: - Network Layer (REST)
 
 struct NetworkService {

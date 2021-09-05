@@ -10,11 +10,7 @@ import Foundation
 // MARK: - API Private
 
 enum API: String {
-    
     case consumerKey = "hbdsic9823ueh238qw8as"
-    
     case consumerSecretKey = "nasncas7d9128hwqus"
-    
     case urlScheme = "oauth-flickr://"
-    
 }
