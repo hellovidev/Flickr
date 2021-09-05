@@ -113,7 +113,7 @@ class FlickrOAuthService {
         
         // Set extra parameters
         let parameters: [String: String] = [
-            "oauth_callback": FlickrAPI.urlScheme.rawValue
+            "oauth_callback": API.urlScheme.rawValue
         ]
         
         requestOAuth(params: parameters, path: .requestTokenOAuth, method: .POST) { result in
@@ -244,7 +244,7 @@ class FlickrOAuthService {
         // Set HTTP method to request using HttpMethodType with uppercase letters
         
         var parameters: [String: String] = [
-            "oauth_consumer_key": FlickrAPI.consumerKey.rawValue,
+            "oauth_consumer_key": API.consumerKey.rawValue,
             // Value 'nonce' can be any 32-bit string made up of random ASCII values
             "oauth_nonce": UUID().uuidString,
             "oauth_signature_method": "HMAC-SHA1",
@@ -259,7 +259,7 @@ class FlickrOAuthService {
 
         // Methods to prepare API requests
 //        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
-        let signatureHelper = SignatureHelper(consumerSecretKey: FlickrAPI.consumerSecretKey.rawValue, accessSecretToken: secretToken)
+        let signatureHelper = SignatureHelper(consumerSecretKey: API.consumerSecretKey.rawValue, accessSecretToken: secretToken)
         let signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: urlString, parameters: parameters)
         parameters["oauth_signature"] = signature
         

@@ -22,6 +22,7 @@ class PostViewController: UIViewController {
     deinit {
         print("\(Self.Type.self) deinited.")
     }
+    
     /*
     // MARK: - Navigation
 

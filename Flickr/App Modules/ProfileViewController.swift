@@ -23,6 +23,7 @@ class ProfileViewController: UIViewController {
         FlickrOAuthService.shared.flickrLogout()
         dismiss(animated: true, completion: nil)
     }
+    
     /*
     // MARK: - Navigation
 

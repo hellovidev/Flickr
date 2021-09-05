@@ -17,12 +17,13 @@ class AuthViewController: UIViewController {
     }
     
     @IBAction func loginAction(_ sender: UIButton) {
+        
         // User athorization request
         FlickrOAuthService.shared.flickrLogin(presenter: self) { [weak self] result in
             switch result {
             case .success(let accessToken):
                 // Initialization 'NetworkService'
-                self?.networkService = .init(accessTokenAPI: AccessTokenAPI(token: accessToken.token, secret: accessToken.secretToken, nsid: accessToken.userNSID.removingPercentEncoding!), publicConsumerKey: FlickrAPI.consumerKey.rawValue, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue)
+                self?.networkService = .init(accessTokenAPI: AccessTokenAPI(token: accessToken.token, secret: accessToken.secretToken, nsid: accessToken.userNSID.removingPercentEncoding!), publicConsumerKey: API.consumerKey.rawValue, secretConsumerKey: API.consumerSecretKey.rawValue)
                 
                 DispatchQueue.main.async {
                     self?.performSegue(withIdentifier: "HomePath", sender: self)
@@ -39,6 +40,7 @@ class AuthViewController: UIViewController {
                 }
             }
         }
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -52,7 +54,6 @@ class AuthViewController: UIViewController {
     }
     
 }
-
 
 // MARK: - Methods
 //self?.networkService?.getProfile(for: accessToken.userNSID.removingPercentEncoding!) { result in
