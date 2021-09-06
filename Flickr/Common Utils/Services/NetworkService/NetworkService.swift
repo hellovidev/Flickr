@@ -34,12 +34,12 @@ struct NetworkService {
     
     func request<Serializer: Deserializer>(
         parameters: [String: String]? = nil,
-        type: Flickr.Method,
+        type: FlickrConstant.Method,
         method: HTTPMethod,
         parser: Serializer,
         completion: @escaping (Result<Serializer.Response, Error>) -> Void
     ) {
-        let endpoint = Flickr.requestURL.rawValue
+        let endpoint = FlickrConstant.URL.requestURL.rawValue
         
         // Default parameters
         var params: [String: String] = [
@@ -100,7 +100,7 @@ struct NetworkService {
         parser: Serializer,
         completion: @escaping (Result<Serializer.Response, Error>) -> Void
     ) {
-        let endpoint = Flickr.uploadURL.rawValue
+        let endpoint = FlickrConstant.URL.uploadURL.rawValue
         
         // Default parameters
         var params: [String: String] = [

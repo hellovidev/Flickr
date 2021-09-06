@@ -23,7 +23,7 @@ class AuthViewController: UIViewController {
             switch result {
             case .success(let accessToken):
                 // Initialization 'NetworkService'
-                self?.networkService = .init(accessTokenAPI: AccessTokenAPI(token: accessToken.token, secret: accessToken.secretToken, nsid: accessToken.userNSID.removingPercentEncoding!), publicConsumerKey: Flickr.Key.consumerKey.rawValue, secretConsumerKey: Flickr.Key.consumerSecretKey.rawValue)
+                self?.networkService = .init(accessTokenAPI: AccessTokenAPI(token: accessToken.token, secret: accessToken.secretToken, nsid: accessToken.userNSID.removingPercentEncoding!), publicConsumerKey: FlickrConstant.Key.consumerKey.rawValue, secretConsumerKey: FlickrConstant.Key.consumerSecretKey.rawValue)
                 
                 DispatchQueue.main.async {
                     self?.performSegue(withIdentifier: "HomePath", sender: self)
