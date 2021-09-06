@@ -9,11 +9,13 @@ import Foundation
 
 // MARK: - Flickr Constants
 
-enum Flickr: String {
+enum Flickr {
     
-    case baseURL = "https://www.flickr.com"
-    case uploadURL = "https://up.flickr.com/services/upload/"
-    case requestURL = "https://www.flickr.com/services/rest"
+    enum URL: String {
+        case baseURL = "https://www.flickr.com"
+        case uploadURL = "https://up.flickr.com/services/upload/"
+        case requestURL = "https://www.flickr.com/services/rest"
+    }
     
     // MARK: - Flickr Methods Identifiers (Documentstion: https://www.flickr.com/services/api/)
     
