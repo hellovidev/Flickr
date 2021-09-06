@@ -15,10 +15,6 @@ class PostViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    @IBAction func goBackAction(_ sender: UIButton) {
-        dismiss(animated: true, completion: nil)
-    }
-    
     deinit {
         print("\(Self.Type.self) deinited.")
     }

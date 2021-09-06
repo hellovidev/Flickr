@@ -76,7 +76,7 @@
             </objects>
             <point key="canvasLocation" x="1992.753623188406" y="-710.49107142857144"/>
         </scene>
-        <!--Home-->
+        <!--Home View Controller-->
         <scene sceneID="4aX-y0-uCM">
             <objects>
                 <viewController id="R48-il-36O" customClass="HomeViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
@@ -88,7 +88,7 @@
                                 <rect key="frame" x="170.5" y="485" width="73" height="30"/>
                                 <state key="normal" title="Show Post"/>
                                 <connections>
-                                    <action selector="postShowAction:" destination="R48-il-36O" eventType="touchUpInside" id="WzF-3h-91O"/>
+                                    <segue destination="F1j-m2-vV7" kind="show" id="t0D-8R-sPY"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kvv-lf-j7f">
@@ -107,15 +107,11 @@
                             <constraint firstItem="kvv-lf-j7f" firstAttribute="centerX" secondItem="rwk-vw-Cd9" secondAttribute="centerX" id="rKP-6i-i9I"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Home" image="house" catalog="system" id="JcE-cJ-O2y"/>
                     <navigationItem key="navigationItem" id="Sma-xk-zBp"/>
-                    <connections>
-                        <segue destination="F1j-m2-vV7" kind="presentation" identifier="PostPath" modalPresentationStyle="fullScreen" id="2lO-Sl-Shc"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lBn-2P-TNH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2902.898550724638" y="36.830357142857139"/>
+            <point key="canvasLocation" x="3813.04347826087" y="36.830357142857139"/>
         </scene>
         <!--Profile-->
         <scene sceneID="FOW-fS-ajm">
@@ -135,9 +131,7 @@
                                 <rect key="frame" x="183" y="485" width="48" height="30"/>
                                 <state key="normal" title="Logout"/>
                                 <connections>
-                                    <action selector="goBackAction:" destination="F1j-m2-vV7" eventType="touchUpInside" id="SBA-Ep-wMG"/>
                                     <action selector="logoutAction:" destination="1Lc-1F-k0N" eventType="touchUpInside" id="msk-Vb-hmE"/>
-                                    <action selector="postShowAction:" destination="R48-il-36O" eventType="touchUpInside" id="GaT-Eq-lFx"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -166,34 +160,24 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Post Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rwq-r8-KhO">
-                                <rect key="frame" x="161" y="407" width="92" height="21"/>
+                                <rect key="frame" x="161" y="451" width="92" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xtd-xU-Hq6">
-                                <rect key="frame" x="178.5" y="482" width="57" height="30"/>
-                                <state key="normal" title="Go back"/>
-                                <connections>
-                                    <action selector="goBackAction:" destination="F1j-m2-vV7" eventType="touchUpInside" id="t5B-re-Edl"/>
-                                    <action selector="postShowAction:" destination="R48-il-36O" eventType="touchUpInside" id="eoT-ev-V7e"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="f51-Ex-F2q"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Xtd-xU-Hq6" firstAttribute="centerX" secondItem="KYY-OQ-g39" secondAttribute="centerX" id="ADu-2V-NmP"/>
                             <constraint firstItem="rwq-r8-KhO" firstAttribute="top" secondItem="f51-Ex-F2q" secondAttribute="top" constant="363" id="DqG-PE-d5i"/>
                             <constraint firstItem="rwq-r8-KhO" firstAttribute="centerX" secondItem="KYY-OQ-g39" secondAttribute="centerX" id="fdd-aT-NwC"/>
-                            <constraint firstItem="Xtd-xU-Hq6" firstAttribute="top" secondItem="rwq-r8-KhO" secondAttribute="bottom" constant="54" id="m7c-VF-mDy"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="wVY-J4-DHF"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nHp-n5-7DX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3921.739130434783" y="36.830357142857139"/>
+            <point key="canvasLocation" x="4784" y="37"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="by4-Z2-Iwn">
@@ -202,11 +186,12 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="L5o-Xu-v48"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="kvI-us-Pk6">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="R48-il-36O" kind="relationship" relationship="viewControllers" id="2lR-yB-Khq"/>
+                        <segue destination="hcO-lg-SIz" kind="relationship" relationship="viewControllers" id="2lR-yB-Khq"/>
                         <segue destination="nW2-TO-bVd" kind="relationship" relationship="viewControllers" id="Wzs-Vc-vt2"/>
                         <segue destination="1Lc-1F-k0N" kind="relationship" relationship="viewControllers" id="ni4-k3-QK1"/>
                     </connections>
@@ -214,6 +199,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DWr-CV-Qid" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1992.753623188406" y="36.830357142857139"/>
+        </scene>
+        <!--Home-->
+        <scene sceneID="Yl6-kJ-qLL">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hcO-lg-SIz" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Home" image="house" catalog="system" id="JcE-cJ-O2y"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="8wm-mA-GtF">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="R48-il-36O" kind="relationship" relationship="rootViewController" id="oNg-Dz-L1l"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f6c-IY-cIr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2902.898550724638" y="36.830357142857139"/>
         </scene>
     </scenes>
     <resources>

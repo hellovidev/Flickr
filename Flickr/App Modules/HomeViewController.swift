@@ -15,10 +15,6 @@ class HomeViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    @IBAction func postShowAction(_ sender: UIButton) {
-        performSegue(withIdentifier: "PostPath", sender: self)
-    }
-    
     deinit {
         print("\(Self.Type.self) deinited.")
     }

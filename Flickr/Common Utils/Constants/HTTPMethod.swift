@@ -1,5 +1,5 @@
 //
-//  HTTPMethodType.swift
+//  HTTPMethod.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 05.09.2021.
@@ -7,9 +7,9 @@
 
 import Foundation
 
-// MARK: - HTTP method types
+// MARK: - HTTP Methods
 
-enum HTTPMethodType: String {
+enum HTTPMethod: String {
     case GET
     case POST
     case DELETE

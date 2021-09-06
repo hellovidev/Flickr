@@ -113,7 +113,7 @@ class FlickrOAuthService {
         
         // Set extra parameters
         let parameters: [String: String] = [
-            "oauth_callback": API.urlScheme.rawValue
+            "oauth_callback": Flickr.Callback.schemeURL.rawValue
         ]
         
         requestOAuth(params: parameters, path: .requestTokenOAuth, method: .POST) { result in
@@ -155,7 +155,7 @@ class FlickrOAuthService {
     // Step #2: Website Confirmation
     private func requestAuthorize(with token: String, presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
         // Build website confirmation link for 'Safari'
-        let urlString = "\(HTTPEndpoint.baseDomain.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
+        let urlString = "\(Flickr.baseURL.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
         guard let websiteConfirmationURL = URL(string: urlString) else { return }
         
         // Initialization 'Safari' object
@@ -231,9 +231,9 @@ class FlickrOAuthService {
 
     // MARK: - Request Configuration Methods
     
-    private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: HTTPEndpoint.PathType, method: HTTPMethodType, completion: @escaping (Result<Data, Error>) -> Void) {
+    private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: Flickr.OAuthPath, method: HTTPMethod, completion: @escaping (Result<Data, Error>) -> Void) {
         // Build base URL with path as parameter
-        let urlString = HTTPEndpoint.baseDomain.rawValue + path.rawValue
+        let urlString = Flickr.baseURL.rawValue + path.rawValue
         
         // Create URL using endpoint
         guard let url = URL(string: urlString) else { return }
@@ -244,7 +244,7 @@ class FlickrOAuthService {
         // Set HTTP method to request using HttpMethodType with uppercase letters
         
         var parameters: [String: String] = [
-            "oauth_consumer_key": API.consumerKey.rawValue,
+            "oauth_consumer_key": Flickr.Key.consumerKey.rawValue,
             // Value 'nonce' can be any 32-bit string made up of random ASCII values
             "oauth_nonce": UUID().uuidString,
             "oauth_signature_method": "HMAC-SHA1",
@@ -259,7 +259,7 @@ class FlickrOAuthService {
 
         // Methods to prepare API requests
 //        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
-        let signatureHelper = SignatureHelper(consumerSecretKey: API.consumerSecretKey.rawValue, accessSecretToken: secretToken)
+        let signatureHelper = SignatureHelper(consumerSecretKey: Flickr.Key.consumerSecretKey.rawValue, accessSecretToken: secretToken)
         let signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: urlString, parameters: parameters)
         parameters["oauth_signature"] = signature
         
