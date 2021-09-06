@@ -18,8 +18,7 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: FlickrConstant.Method.getHotTags.rawValue,
-            endpoint: FlickrConstant.URL.requestURL.rawValue,
+            type: .getHotTags,
             method: .GET,
             parser: ModelDeserializer<TagsResponse>()
         ) { result in

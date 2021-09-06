@@ -12,8 +12,7 @@ extension NetworkService {
     // Get list of faves 'flickr.favorites.getList' (Gallery screen)
     func getFavorites(completion: @escaping (Result<[Favorite], Error>) -> Void) {
         request(
-            type: FlickrConstant.Method.getFavorites.rawValue,
-            endpoint: FlickrConstant.URL.requestURL.rawValue,
+            type: .getFavorites,
             method: .GET,
             parser: ModelDeserializer<FavoritesResponse>()
         ) { result in
@@ -30,8 +29,7 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: FlickrConstant.Method.addToFavorites.rawValue,
-            endpoint: FlickrConstant.URL.requestURL.rawValue,
+            type: .addToFavorites,
             method: .POST,
             parser: VoidDeserializer(),
             completion: completion
@@ -47,8 +45,7 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: FlickrConstant.Method.removeFromFavorites.rawValue,
-            endpoint: FlickrConstant.URL.requestURL.rawValue,
+            type: .removeFromFavorites,
             method: .POST,
             parser: VoidDeserializer(),
             completion: completion

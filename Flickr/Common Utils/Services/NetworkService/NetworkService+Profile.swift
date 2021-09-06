@@ -18,8 +18,7 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: FlickrConstant.Method.getProfile.rawValue,
-            endpoint: FlickrConstant.URL.requestURL.rawValue,
+            type: .getProfile,
             method: .GET,
             parser: ModelDeserializer<ProfileResponse>()
         ) { result in
