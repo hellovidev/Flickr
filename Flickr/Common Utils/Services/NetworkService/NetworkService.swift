@@ -34,18 +34,19 @@ struct NetworkService {
     
     func request<Serializer: Deserializer>(
         parameters: [String: String]? = nil,
-        type: FlickrConstant.Method,
+        type: String,
+        endpoint: String,
         method: HTTPMethod,
         parser: Serializer,
         completion: @escaping (Result<Serializer.Response, Error>) -> Void
     ) {
-        let endpoint = FlickrConstant.URL.requestURL.rawValue
+        let endpoint = endpoint
         
         // Default parameters
         var params: [String: String] = [
             "nojsoncallback": "1",
             "format": "json",
-            "method": type.rawValue,
+            "method": type,
             "oauth_token": accessTokenAPI.token,
             "oauth_consumer_key": consumerKeyAPI.publicKey,
             "oauth_nonce": UUID().uuidString,
@@ -97,10 +98,11 @@ struct NetworkService {
     func upload<Serializer: Deserializer>(
         parameters: [String: String]? = nil,
         file: Data,
+        endpoint: String,
         parser: Serializer,
         completion: @escaping (Result<Serializer.Response, Error>) -> Void
     ) {
-        let endpoint = FlickrConstant.URL.uploadURL.rawValue
+        let endpoint = endpoint
         
         // Default parameters
         var params: [String: String] = [

@@ -18,7 +18,8 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: .getPhotoComments,
+            type: FlickrConstant.Method.getPhotoComments.rawValue,
+            endpoint: FlickrConstant.URL.requestURL.rawValue,
             method: .GET,
             parser: ModelDeserializer<CommentsResponse>()
         ) { result in
@@ -36,7 +37,8 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: .addPhotoComment,
+            type: FlickrConstant.Method.addPhotoComment.rawValue,
+            endpoint: FlickrConstant.URL.requestURL.rawValue,
             method: .POST,
             parser: VoidDeserializer(),
             completion: completion
@@ -52,7 +54,8 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: .deletePhotoComment,
+            type: FlickrConstant.Method.deletePhotoComment.rawValue,
+            endpoint: FlickrConstant.URL.requestURL.rawValue,
             method: .POST,
             parser: VoidDeserializer(),
             completion: completion

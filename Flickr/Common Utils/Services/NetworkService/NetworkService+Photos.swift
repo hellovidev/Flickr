@@ -12,7 +12,8 @@ extension NetworkService {
     // Get list of popular photos 'flickr.photos.getPopular' (General screen)
     func getRecentPosts(completion: @escaping (Result<[Photo], Error>) -> Void) {
         request(
-            type: .getRecentPosts,
+            type: FlickrConstant.Method.getRecentPosts.rawValue,
+            endpoint: FlickrConstant.URL.requestURL.rawValue,
             method: .GET,
             parser: ModelDeserializer<PhotosResponse>()
         ) { result in
@@ -29,7 +30,8 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: .getPhotoInfo,
+            type: FlickrConstant.Method.getPhotoInfo.rawValue,
+            endpoint: FlickrConstant.URL.requestURL.rawValue,
             method: .GET,
             parser: ModelDeserializer<PhotoInfo>()
         ) { result in
@@ -46,7 +48,8 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: .getUserPhotos,
+            type: FlickrConstant.Method.getUserPhotos.rawValue,
+            endpoint: FlickrConstant.URL.requestURL.rawValue,
             method: .GET,
             parser: ModelDeserializer<PhotosResponse>()
         ) { result in
@@ -64,7 +67,8 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: .deleteUserPhotoById,
+            type: FlickrConstant.Method.deleteUserPhotoById.rawValue,
+            endpoint: FlickrConstant.URL.requestURL.rawValue,
             method: .POST,
             parser: VoidDeserializer(),
             completion: completion

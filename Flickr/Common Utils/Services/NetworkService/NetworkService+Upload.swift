@@ -24,6 +24,7 @@ extension NetworkService {
         upload(
             parameters: parameters,
             file: imageData,
+            endpoint: FlickrConstant.URL.uploadURL.rawValue,
             parser: VoidDeserializer(),
             completion: completion
         )
