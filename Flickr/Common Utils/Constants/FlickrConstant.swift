@@ -1,5 +1,5 @@
 //
-//  Flickr.swift
+//  FlickrConstant.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 18.08.2021.
@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Flickr Constants
 
-enum Flickr {
+enum FlickrConstant {
     
     enum URL: String {
         case baseURL = "https://www.flickr.com"
@@ -40,10 +40,13 @@ enum Flickr {
     }
     
     // MARK: - Private Keys
-
+    
+    /// Flickr OAuth1.0 private keys (https://www.flickr.com/services/api/misc.api_keys.html)
+    /// - Parameter consumerKey: You must replace 'PUBLIC_API_KEY' with your valid public API key
+    /// - Parameter consumerSecretKey: You must replace 'PRIVATE_API_KEY' with your valid private API key
     enum Key: String {
-        case consumerKey = "jnsdvlkjsdncn4fel2kjnlkj23d"
-        case consumerSecretKey = "sdfmlksdmf342mfkwed"
+        case consumerKey = "PUBLIC_API_KEY"
+        case consumerSecretKey = "PRIVATE_API_KEY"
     }
     
     // MARK: - Request OAuth1.0 Path
