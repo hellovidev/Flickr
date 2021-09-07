@@ -15,50 +15,6 @@ struct AccessTokenAPI {
     let nsid: String
 }
 
-enum RequestType {
-    case upload
-    case request
-}
-
-enum ResponseFormat: String {
-    case REST = "rest"
-    case JSON = "json"
-}
-
-enum HTTPMethod: String {
-    case GET
-    case POST
-    case DELETE
-    case PUT
-    case PATCH
-}
-
-enum APIMethod: String {
-    // Profile screen
-    case getProfile = "flickr.profile.getProfile"
-    
-    // Home screen
-    case getHotTags = "flickr.tags.getHotList"
-    case getRecentPosts = "flickr.photos.getRecent"
-    case getPhotoInfo = "flickr.photos.getInfo"
-    case getPhotoComments = "flickr.photos.comments.getList"
-    case addPhotoComment = "flickr.photos.comments.addComment"
-    case deletePhotoComment = "flickr.photos.comments.deleteComment"
-    case addToFavorites = "flickr.favorites.add"
-    case removeFromFavorites = "flickr.favorites.remove"
-    case getFavorites = "flickr.favorites.getList"
-    
-    // Gallery screen
-    case getUserPhotos = "flickr.people.getPhotos" // => "flickr.___.getUserPhotos"
-    case deleteUserPhotoById = "flickr.photos.delete"
-}
-
-// MARK: - API URL requests
-enum HTTPEndpoint: String {
-    case uploadDomain = "https://up.flickr.com/services/upload/"
-    case requestDomain = "https://www.flickr.com/services/rest"
-}
-
 // MARK: - Network Layer (REST)
 
 struct NetworkService {
@@ -78,18 +34,17 @@ struct NetworkService {
     
     func request<Serializer: Deserializer>(
         parameters: [String: String]? = nil,
-        type: APIMethod,
+        type: String,
+        endpoint: String,
         method: HTTPMethod,
         parser: Serializer,
         completion: @escaping (Result<Serializer.Response, Error>) -> Void
-    ) {
-        let endpoint = HTTPEndpoint.requestDomain.rawValue
-        
+    ) {        
         // Default parameters
         var params: [String: String] = [
             "nojsoncallback": "1",
             "format": "json",
-            "method": type.rawValue,
+            "method": type,
             "oauth_token": accessTokenAPI.token,
             "oauth_consumer_key": consumerKeyAPI.publicKey,
             "oauth_nonce": UUID().uuidString,
@@ -141,11 +96,10 @@ struct NetworkService {
     func upload<Serializer: Deserializer>(
         parameters: [String: String]? = nil,
         file: Data,
+        endpoint: String,
         parser: Serializer,
         completion: @escaping (Result<Serializer.Response, Error>) -> Void
     ) {
-        let endpoint = HTTPEndpoint.requestDomain.rawValue
-        
         // Default parameters
         var params: [String: String] = [
             "nojsoncallback": "1",

@@ -8,23 +8,222 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Sign In View Controller-->
+        <!--Auth View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="SignInViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                <viewController id="BYZ-38-t0r" customClass="AuthViewController" customModule="Flickr" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC" customClass="Auth" customModule="Flickr" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TZx-4s-ZJv">
+                                <rect key="frame" x="157" y="401" width="100" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BSu-sB-DSE">
+                                <rect key="frame" x="188" y="479" width="38" height="30"/>
+                                <state key="normal" title="Login"/>
+                                <connections>
+                                    <action selector="loginAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9Ve-NG-44a"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="TZx-4s-ZJv" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="357" id="JvM-Eq-wjL"/>
+                            <constraint firstItem="TZx-4s-ZJv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Xek-Yg-SBw"/>
+                            <constraint firstItem="BSu-sB-DSE" firstAttribute="top" secondItem="TZx-4s-ZJv" secondAttribute="bottom" constant="57" id="bRe-7f-LUm"/>
+                            <constraint firstItem="BSu-sB-DSE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="txa-8J-Pvo"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="FkQ-yF-a6h"/>
+                    <connections>
+                        <segue destination="prl-EQ-mRu" kind="presentation" identifier="HomePath" modalPresentationStyle="fullScreen" modalTransitionStyle="flipHorizontal" id="nmN-sZ-Pra"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="132" y="40"/>
+            <point key="canvasLocation" x="1049" y="37"/>
+        </scene>
+        <!--Gallery-->
+        <scene sceneID="eiP-c6-SsD">
+            <objects>
+                <viewController id="nW2-TO-bVd" customClass="GalleryViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Z82-Pv-FG8">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gallery Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gxp-O1-orf">
+                                <rect key="frame" x="151.5" y="437.5" width="111" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="2c7-hy-0C8"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Gxp-O1-orf" firstAttribute="centerY" secondItem="Z82-Pv-FG8" secondAttribute="centerY" id="MJT-ij-5dk"/>
+                            <constraint firstItem="Gxp-O1-orf" firstAttribute="centerX" secondItem="Z82-Pv-FG8" secondAttribute="centerX" id="qkZ-je-Xsc"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Gallery" image="square.grid.2x2.fill" catalog="system" id="XpT-Ac-GAV"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="D4Q-u8-iYZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1992.753623188406" y="-710.49107142857144"/>
+        </scene>
+        <!--Home View Controller-->
+        <scene sceneID="4aX-y0-uCM">
+            <objects>
+                <viewController id="R48-il-36O" customClass="HomeViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rwk-vw-Cd9">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jpY-vU-0Fl">
+                                <rect key="frame" x="170.5" y="485" width="73" height="30"/>
+                                <state key="normal" title="Show Post"/>
+                                <connections>
+                                    <segue destination="F1j-m2-vV7" kind="show" id="t0D-8R-sPY"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kvv-lf-j7f">
+                                <rect key="frame" x="155.5" y="407" width="103.5" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ZGf-SP-Hgv"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="jpY-vU-0Fl" firstAttribute="top" secondItem="kvv-lf-j7f" secondAttribute="bottom" constant="57" id="1Gl-W0-Ouc"/>
+                            <constraint firstItem="jpY-vU-0Fl" firstAttribute="centerX" secondItem="rwk-vw-Cd9" secondAttribute="centerX" id="ACy-gY-QPa"/>
+                            <constraint firstItem="ZGf-SP-Hgv" firstAttribute="bottom" secondItem="jpY-vU-0Fl" secondAttribute="bottom" constant="298" id="LHN-Sp-KgR"/>
+                            <constraint firstItem="kvv-lf-j7f" firstAttribute="centerX" secondItem="rwk-vw-Cd9" secondAttribute="centerX" id="rKP-6i-i9I"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="Sma-xk-zBp"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lBn-2P-TNH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3813.04347826087" y="36.830357142857139"/>
+        </scene>
+        <!--Profile-->
+        <scene sceneID="FOW-fS-ajm">
+            <objects>
+                <viewController id="1Lc-1F-k0N" customClass="ProfileViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="iVL-eS-zRe">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Profile Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X88-d6-n4M">
+                                <rect key="frame" x="154" y="413" width="106.5" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SYi-co-eRw">
+                                <rect key="frame" x="183" y="485" width="48" height="30"/>
+                                <state key="normal" title="Logout"/>
+                                <connections>
+                                    <action selector="logoutAction:" destination="1Lc-1F-k0N" eventType="touchUpInside" id="msk-Vb-hmE"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="4XV-3F-Ipx"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="X88-d6-n4M" firstAttribute="centerX" secondItem="iVL-eS-zRe" secondAttribute="centerX" id="DRw-a6-Jyq"/>
+                            <constraint firstItem="4XV-3F-Ipx" firstAttribute="bottom" secondItem="SYi-co-eRw" secondAttribute="bottom" constant="298" id="RRH-5x-jtk"/>
+                            <constraint firstItem="X88-d6-n4M" firstAttribute="centerX" secondItem="iVL-eS-zRe" secondAttribute="centerX" id="b03-Fg-dch"/>
+                            <constraint firstItem="SYi-co-eRw" firstAttribute="top" secondItem="X88-d6-n4M" secondAttribute="bottom" constant="51" id="fqe-d8-DMI"/>
+                            <constraint firstItem="SYi-co-eRw" firstAttribute="centerX" secondItem="iVL-eS-zRe" secondAttribute="centerX" id="gcy-hw-f4d"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Profile" image="person.circle" catalog="system" id="sk1-jm-REP"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zTQ-d0-9F2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1992.753623188406" y="784.82142857142856"/>
+        </scene>
+        <!--Post View Controller-->
+        <scene sceneID="pAa-hP-85q">
+            <objects>
+                <viewController id="F1j-m2-vV7" customClass="PostViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="KYY-OQ-g39">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Post Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rwq-r8-KhO">
+                                <rect key="frame" x="161" y="451" width="92" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="f51-Ex-F2q"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="rwq-r8-KhO" firstAttribute="top" secondItem="f51-Ex-F2q" secondAttribute="top" constant="363" id="DqG-PE-d5i"/>
+                            <constraint firstItem="rwq-r8-KhO" firstAttribute="centerX" secondItem="KYY-OQ-g39" secondAttribute="centerX" id="fdd-aT-NwC"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="wVY-J4-DHF"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nHp-n5-7DX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4784" y="37"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="by4-Z2-Iwn">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="prl-EQ-mRu" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="L5o-Xu-v48"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="kvI-us-Pk6">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="hcO-lg-SIz" kind="relationship" relationship="viewControllers" id="2lR-yB-Khq"/>
+                        <segue destination="nW2-TO-bVd" kind="relationship" relationship="viewControllers" id="Wzs-Vc-vt2"/>
+                        <segue destination="1Lc-1F-k0N" kind="relationship" relationship="viewControllers" id="ni4-k3-QK1"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DWr-CV-Qid" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1992.753623188406" y="36.830357142857139"/>
+        </scene>
+        <!--Home-->
+        <scene sceneID="Yl6-kJ-qLL">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hcO-lg-SIz" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Home" image="house" catalog="system" id="JcE-cJ-O2y"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="8wm-mA-GtF">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="R48-il-36O" kind="relationship" relationship="rootViewController" id="oNg-Dz-L1l"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f6c-IY-cIr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2902.898550724638" y="36.830357142857139"/>
         </scene>
     </scenes>
     <resources>
+        <image name="house" catalog="system" width="128" height="106"/>
+        <image name="person.circle" catalog="system" width="128" height="121"/>
+        <image name="square.grid.2x2.fill" catalog="system" width="128" height="114"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
