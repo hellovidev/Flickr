@@ -39,9 +39,7 @@ struct NetworkService {
         method: HTTPMethod,
         parser: Serializer,
         completion: @escaping (Result<Serializer.Response, Error>) -> Void
-    ) {
-        let endpoint = endpoint
-        
+    ) {        
         // Default parameters
         var params: [String: String] = [
             "nojsoncallback": "1",
@@ -102,8 +100,6 @@ struct NetworkService {
         parser: Serializer,
         completion: @escaping (Result<Serializer.Response, Error>) -> Void
     ) {
-        let endpoint = endpoint
-        
         // Default parameters
         var params: [String: String] = [
             "nojsoncallback": "1",
