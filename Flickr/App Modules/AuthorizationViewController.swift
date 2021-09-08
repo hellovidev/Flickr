@@ -13,39 +13,29 @@ class AuthorizationViewController: UIViewController {
     
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signupLabel: UILabel!
+    @IBOutlet weak var questionLabel: UILabel!
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        let loginAttributes: [NSAttributedString.Key : Any] = [
-//            .font:
-//        ]
+        let loginButtonTextAttributes: [NSAttributedString.Key : Any] = [
+            .font: UIFont.systemFont(ofSize: 18, weight: .bold)
+        ]
+        
+        let loginButtonText = NSMutableAttributedString(string: "Log in with ", attributes: nil)
+        let flickrLinkText = NSAttributedString(string: "flickr.com", attributes: loginButtonTextAttributes)
+        loginButtonText.append(flickrLinkText)
+        loginButton.setAttributedTitle(loginButtonText, for: .normal)
         loginButton.layer.cornerRadius = 5
         
-        
-//        let signupAttributes = NSMutableAttributedString(string: "Already have an account? ")
-//        text.addAttribute(.font,
-//                          value: UIFont.preferredFont(forTextStyle: .) .systemFont(ofSize: 12),
-//                          range: NSRange(location: 0, length: text.length))
-        //authButton.currentAttributedTitle = ///
-        
-        
-        let signupWordAttributes: [NSAttributedString.Key : Any] = [
+        let signupLabelTextAttributes: [NSAttributedString.Key : Any] = [
             .foregroundColor: UIColor.black,
             .font: UIFont.systemFont(ofSize: 12, weight: .bold)
         ]
-        
-        let questionAttributes: [NSAttributedString.Key : Any] = [
-            .font: UIFont.systemFont(ofSize: 12, weight: .bold)
-        ]
-        
-        let sign = NSAttributedString(string: " Sign up.", attributes: signupWordAttributes)
-        let question = NSMutableAttributedString(string: "Don’t have an account?")
-        question.append(sign)
 
-        signupLabel.attributedText = question
+        signupLabel.sizeToFit()
+        signupLabel.attributedText = NSAttributedString(string: "Sign up.", attributes: signupLabelTextAttributes)
         
-
-        
+        questionLabel.sizeToFit()
     }
     
 
