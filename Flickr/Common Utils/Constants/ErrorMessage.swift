@@ -13,3 +13,14 @@ enum ErrorMessage: Error {
     case notFound
     case error(_ message: String)
 }
+
+extension ErrorMessage: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .notFound:
+            return "Not found"
+        case .error(let message):
+            return message
+        }
+    }
+}

@@ -52,7 +52,7 @@ class FlickrOAuthService {
     }
     
     // Structure to save access token response
-    struct AccessTokenOAuth {
+    struct AccessTokenOAuth: Codable {
         let token: String
         let secretToken: String
         let userNSID: String
@@ -125,12 +125,14 @@ class FlickrOAuthService {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"] else {
+                    self.state = nil
                     completion(.failure(ErrorMessage.error("Request token was not found.")))
                     return
                 }
                 
                 completion(.success(RequestTokenOAuth(token: token, secretToken: secretToken)))
             case .failure(let error):
+                self.state = nil
                 completion(.failure(error))
             }
         }
@@ -192,6 +194,7 @@ class FlickrOAuthService {
     // Catch URL callback after confirmed authorization (Step #2: Website Confirmation)
     func handleURL(_ url: URL) {
         guard case let .authorizeRequested(handler) = state else {
+            self.state = nil
             fatalError("Invalid authorization state.")
         }
         
@@ -218,12 +221,14 @@ class FlickrOAuthService {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"], let userNSID = attributes["user_nsid"], let username = attributes["username"] else {
+                    self.state = nil
                     completion(.failure(ErrorMessage.error("Access token was not found.")))
                     return
                 }
                 
                 completion(.success(AccessTokenOAuth(token: token, secretToken: secretToken, userNSID: userNSID, username: username)))
             case .failure(let error):
+                self.state = nil
                 completion(.failure(error))
             }
         }
@@ -302,17 +307,22 @@ class FlickrOAuthService {
             
             switch httpResponse.statusCode {
             case ..<200:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<300:
                 print("\(path == .requestTokenOAuth ? "'request_token'" : "'access_token'") -> Status: \(httpResponse.statusCode) OK")
                 completion(.success(data))
             case ..<400:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<500:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<600:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             default:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             }
         }

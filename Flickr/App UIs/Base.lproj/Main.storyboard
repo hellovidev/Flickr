@@ -8,23 +8,63 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Auth View Controller-->
+        <!--Authorization View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="AuthViewController" customModule="Flickr" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AuthViewController" id="BYZ-38-t0r" customClass="AuthorizationViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC" customClass="Auth" customModule="Flickr" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TZx-4s-ZJv">
-                                <rect key="frame" x="157" y="401" width="100" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Fb-5B-hoq">
+                                <rect key="frame" x="90" y="798" width="234" height="14"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Don’t have an account?">
+                                        <attributes>
+                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="0.40098038872203079" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <font key="NSFont" size="12" name="SFProText-Regular"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BSu-sB-DSE">
-                                <rect key="frame" x="188" y="479" width="38" height="30"/>
-                                <state key="normal" title="Login"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FlickrLogotype" translatesAutoresizingMaskIntoConstraints="NO" id="zoj-hL-Yqa">
+                                <rect key="frame" x="90" y="174" width="234" height="64"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="hAq-so-YQz"/>
+                                </constraints>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3hO-Cn-TwD">
+                                <rect key="frame" x="0.0" y="777" width="414" height="1"/>
+                                <color key="backgroundColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.23529411764705882" alpha="0.29761670622580721" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="ctw-ts-eFM"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BSu-sB-DSE">
+                                <rect key="frame" x="35" y="426" width="344" height="44"/>
+                                <color key="backgroundColor" red="0.65099853279999997" green="0.058895207939999999" blue="0.57640361790000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="QA1-zR-4Pl"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal">
+                                    <attributedString key="attributedTitle">
+                                        <fragment content="Log in with ">
+                                            <attributes>
+                                                <font key="NSFont" size="14" name="SFProText-Regular"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                            </attributes>
+                                        </fragment>
+                                        <fragment content="flickr.com">
+                                            <attributes>
+                                                <font key="NSFont" size="18" name="SFProText-Semibold"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                            </attributes>
+                                        </fragment>
+                                    </attributedString>
+                                </state>
                                 <connections>
                                     <action selector="loginAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9Ve-NG-44a"/>
                                 </connections>
@@ -33,14 +73,28 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="TZx-4s-ZJv" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="357" id="JvM-Eq-wjL"/>
-                            <constraint firstItem="TZx-4s-ZJv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Xek-Yg-SBw"/>
-                            <constraint firstItem="BSu-sB-DSE" firstAttribute="top" secondItem="TZx-4s-ZJv" secondAttribute="bottom" constant="57" id="bRe-7f-LUm"/>
-                            <constraint firstItem="BSu-sB-DSE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="txa-8J-Pvo"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3Fb-5B-hoq" secondAttribute="trailing" constant="90" id="6ie-MR-w8J"/>
+                            <constraint firstItem="3Fb-5B-hoq" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="90" id="9oi-9d-oZ3"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3hO-Cn-TwD" secondAttribute="trailing" id="BBZ-ko-rz4"/>
+                            <constraint firstItem="zoj-hL-Yqa" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Cln-a7-vDB"/>
+                            <constraint firstItem="3Fb-5B-hoq" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="D5H-Sy-OnW"/>
+                            <constraint firstItem="zoj-hL-Yqa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="130" id="Dbh-Yq-IGb"/>
+                            <constraint firstItem="3hO-Cn-TwD" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="FYL-4R-dQd"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BSu-sB-DSE" secondAttribute="trailing" constant="35" id="OqY-De-QW9"/>
+                            <constraint firstItem="3Fb-5B-hoq" firstAttribute="top" secondItem="3hO-Cn-TwD" secondAttribute="bottom" constant="20" id="YhJ-v9-RKb"/>
+                            <constraint firstItem="BSu-sB-DSE" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="35" id="aNZ-wm-Hmk"/>
+                            <constraint firstItem="BSu-sB-DSE" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="cls-5H-hNt"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zoj-hL-Yqa" secondAttribute="trailing" constant="90" id="kyI-zH-sV0"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="3Fb-5B-hoq" secondAttribute="bottom" constant="50" id="q7J-hu-Vlo"/>
+                            <constraint firstItem="3hO-Cn-TwD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="tk5-WJ-qDe"/>
+                            <constraint firstItem="zoj-hL-Yqa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="90" id="uTU-7a-caX"/>
+                            <constraint firstItem="BSu-sB-DSE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zyI-F7-7Xj"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="FkQ-yF-a6h"/>
                     <connections>
+                        <outlet property="loginButton" destination="BSu-sB-DSE" id="d11-og-eab"/>
+                        <outlet property="signupLabel" destination="3Fb-5B-hoq" id="QVb-fF-dV9"/>
                         <segue destination="prl-EQ-mRu" kind="presentation" identifier="HomePath" modalPresentationStyle="fullScreen" modalTransitionStyle="flipHorizontal" id="nmN-sZ-Pra"/>
                     </connections>
                 </viewController>
@@ -221,6 +275,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="FlickrLogotype" width="189" height="64"/>
         <image name="house" catalog="system" width="128" height="106"/>
         <image name="person.circle" catalog="system" width="128" height="121"/>
         <image name="square.grid.2x2.fill" catalog="system" width="128" height="114"/>

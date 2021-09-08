@@ -30,3 +30,14 @@ class HomeViewController: UIViewController {
     */
 
 }
+
+//extension HomeViewController: PostViewDelegate {
+//    func close() {
+//        <#code#>
+//    }
+//    
+//}
+//
+//protocol PostViewDelegate: AnyObject {
+//    func close()
+//}
