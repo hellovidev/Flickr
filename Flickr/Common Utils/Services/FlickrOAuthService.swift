@@ -10,7 +10,7 @@ import SafariServices
 
 // MARK: - Network Layer (OAuth1.0)
 
-class FlickrOAuthService {
+class FlickrOAuthService: NSObject {
     
     static let shared = FlickrOAuthService()
     
@@ -157,12 +157,12 @@ class FlickrOAuthService {
     // Step #2: Website Confirmation
     private func requestAuthorize(with token: String, presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
         // Build website confirmation link for 'Safari'
-        let urlString = "\(FlickrConstant.URL.baseURL.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
+        let urlString = "\(FlickrConstant.URL.base.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
         guard let websiteConfirmationURL = URL(string: urlString) else { return }
         
         // Initialization 'Safari' object
         let safari = SFSafariViewController(url: websiteConfirmationURL)
-        
+        safari.delegate = self
         // Return 'ArgumentsAccessToken' after callback URL
         state = .authorizeRequested() { [weak self] url in
             // Dismiss the 'Safari' ViewController
@@ -238,7 +238,7 @@ class FlickrOAuthService {
     
     private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: FlickrConstant.OAuthPath, method: HTTPMethod, completion: @escaping (Result<Data, Error>) -> Void) {
         // Build base URL with path as parameter
-        let urlString = FlickrConstant.URL.baseURL.rawValue + path.rawValue
+        let urlString = FlickrConstant.URL.base.rawValue + path.rawValue
         
         // Create URL using endpoint
         guard let url = URL(string: urlString) else { return }
@@ -303,7 +303,8 @@ class FlickrOAuthService {
                 completion(.failure(ErrorMessage.error("Data response is empty.")))
                 return
             }
-            print(String(data: data, encoding: .utf8))
+            
+            print(String(data: data, encoding: .utf8)!)
             
             switch httpResponse.statusCode {
             case ..<200:
@@ -329,6 +330,16 @@ class FlickrOAuthService {
         
         // Start request process
         task.resume()
+    }
+    
+}
+
+// MARK: - SFSafariViewControllerDelegate
+
+extension FlickrOAuthService: SFSafariViewControllerDelegate {
+    
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        self.state = nil
     }
     
 }

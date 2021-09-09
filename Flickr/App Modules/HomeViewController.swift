@@ -16,7 +16,7 @@ class HomeViewController: UIViewController {
     }
     
     deinit {
-        print("\(Self.Type.self) deinited.")
+        print("\(type(of: self)) deinited.")
     }
     
     /*

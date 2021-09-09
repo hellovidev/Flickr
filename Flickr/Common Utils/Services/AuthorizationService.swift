@@ -7,15 +7,13 @@
 
 import UIKit
 
-protocol AuthorizationProtocol {
-    static func login(presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void)
-    static func signup()
-    static func logout()
-}
+class AuthorizationService: AuthorizationProtocol {
+    
+    static let shared = AuthorizationService()
+    
+    private var signupWebView: WKWebViewController = .init()
 
-struct AuthorizationService: AuthorizationProtocol {
-
-    static func login(presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
+    func login(presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
         FlickrOAuthService.shared.flickrLogin(presenter: presenter) { result in
             switch result {
             case .success(let access):
@@ -33,13 +31,37 @@ struct AuthorizationService: AuthorizationProtocol {
         }
     }
     
-    static func signup() {
-        //
+    func signup(presenter: UIViewController) {
+        signupWebView.delegate = self
+        signupWebView.endpoint = FlickrConstant.URL.signup.rawValue
+        presenter.present(signupWebView, animated: true, completion: nil)
     }
     
-    static func logout() {
+    func logout() {
         FlickrOAuthService.shared.flickrLogout()
     }
     
     
+}
+
+// MARK: - WKWebViewDelegate
+
+extension AuthorizationService: WKWebViewDelegate {
+    
+    func close() {
+        signupWebView.dismiss(animated: true, completion: nil)
+    }
+    
+}
+
+// MARK: - Protocols
+
+protocol AuthorizationProtocol {
+    func login(presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void)
+    func signup(presenter: UIViewController)
+    func logout()
+}
+
+protocol WKWebViewDelegate: AnyObject {
+    func close()
 }
