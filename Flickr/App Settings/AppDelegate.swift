@@ -15,16 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        
-//        window = UIWindow(frame: UIScreen.main.bounds)
-//
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//
-//        let initialViewController = storyboard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-//
-//        window?.rootViewController = initialViewController
-//
-//        window?.makeKeyAndVisible()
+        window = UIWindow(frame: UIScreen.main.bounds)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+        let initialViewController = storyboard.instantiateViewController(withIdentifier: "AuthorizationViewController") as! AuthorizationViewController
+
+        window?.rootViewController = initialViewController
+        window?.makeKeyAndVisible()
         
         return true
     }
@@ -41,18 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the user discards a scene session.
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-    
-}
-
-extension UIViewController {
-    
-    func showAlert(title: String, message: String, button: String) {
-        DispatchQueue.main.async { [weak self] in
-            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alert.addAction(.init(title: button, style: .default, handler: nil))
-            self?.present(alert, animated: true, completion: nil)
-        }
     }
     
 }

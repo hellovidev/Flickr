@@ -41,7 +41,6 @@ class AuthorizationService: AuthorizationProtocol {
         FlickrOAuthService.shared.flickrLogout()
     }
     
-    
 }
 
 // MARK: - WKWebViewDelegate

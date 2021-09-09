@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
+		5F25F69326EA13E400F98608 /* UIViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */; };
 		5F71301126D40D32001A3762 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71301026D40D32001A3762 /* NetworkService.swift */; };
 		5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996226D66DE300482485 /* ErrorMessage.swift */; };
 		5F7F996626D69AE900482485 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996526D69AE900482485 /* Profile.swift */; };
@@ -46,6 +47,7 @@
 /* Begin PBXFileReference section */
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
+		5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Alert.swift"; sourceTree = "<group>"; };
 		5F71301026D40D32001A3762 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5F7F996226D66DE300482485 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		5F7F996526D69AE900482485 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -93,6 +95,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F25F69126EA13C800F98608 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		5F7F996426D69ACF00482485 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -203,6 +213,7 @@
 		5FFEC0C826CD4F43000A0BAB /* Common Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5F25F69126EA13C800F98608 /* Extensions */,
 				5FFEC0CA26CD4F8D000A0BAB /* Constants */,
 				5FFEC0C926CD4F87000A0BAB /* Services */,
 			);
@@ -324,6 +335,7 @@
 				5F71301126D40D32001A3762 /* NetworkService.swift in Sources */,
 				5F7F997E26D8023300482485 /* NetworkService+Tags.swift in Sources */,
 				5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */,
+				5F25F69326EA13E400F98608 /* UIViewController+Alert.swift in Sources */,
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* FlickrConstant.swift in Sources */,
 				5F7F997C26D8003700482485 /* NetworkService+Photos.swift in Sources */,

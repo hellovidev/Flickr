@@ -69,16 +69,13 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
         progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
     }
 
-
     @objc
     func doneAction() { // remove @objc for Swift 3
         delegate?.close()
     }
 
-    //implement the decidePolicyFor method. This is the only part that takes any work: you need to pull out the host of the URL that was requested, run any checks you want to make sure it’s OK, then call the decisionHandler() closure with either .allow to allow the URL or .cancel to deny access.
-
+    /// Implement the decidePolicyFor method. This is the only part that takes any work: you need to pull out the host of the URL that was requested, run any checks you want to make sure it’s OK, then call the decisionHandler() closure with either .allow to allow the URL or .cancel to deny access.
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-
         if let host = navigationAction.request.url?.host {
             //print(#function, host)
             if host.contains("flickr.com") {
