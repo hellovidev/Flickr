@@ -33,7 +33,7 @@ class AuthorizationViewController: UIViewController {
             .foregroundColor: UIColor.black,
             .font: UIFont.systemFont(ofSize: 12, weight: .bold)
         ]
-
+        
         signupLabel.sizeToFit()
         signupLabel.attributedText = NSAttributedString(string: "Sign up.", attributes: signupLabelTextAttributes)
     }
@@ -44,7 +44,7 @@ class AuthorizationViewController: UIViewController {
         signupLabel.isUserInteractionEnabled = true
         signupLabel.addGestureRecognizer(signupAction)
     }
-
+    
     @IBAction func loginAction(_ sender: UIButton) {
         authorizationService.login(presenter: self) { [weak self] result in
             switch result {
@@ -59,7 +59,7 @@ class AuthorizationViewController: UIViewController {
     @IBAction func signupAction(sender: UITapGestureRecognizer) {
         authorizationService.signup(presenter: self)
     }
-        
+    
     deinit {
         print("\(type(of: self)) deinited.")
     }

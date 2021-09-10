@@ -43,7 +43,7 @@ class FlickrOAuthService: NSObject {
         let token: String
         let secretToken: String
     }
-        
+    
     // Structure to build request arguments
     private struct ArgumentsAccessToken {
         var token: String
@@ -89,19 +89,19 @@ class FlickrOAuthService: NSObject {
                                 }
                             case .failure(let error):
                                 DispatchQueue.main.async {
-                                completion(.failure(error))
+                                    completion(.failure(error))
                                 }
                             }
                         }
                     case .failure(let error):
                         DispatchQueue.main.async {
-                        completion(.failure(error))
+                            completion(.failure(error))
                         }
                     }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                completion(.failure(error))
+                    completion(.failure(error))
                 }
             }
         }
@@ -188,7 +188,7 @@ class FlickrOAuthService: NSObject {
                 completion(.failure(ErrorMessage.error("Parameters were not found after confirmation on the website.")))
                 return
             }
-
+            
             print("'verifier' -> Status: Complete")
             completion(.success(verifier))
         }
@@ -241,7 +241,7 @@ class FlickrOAuthService: NSObject {
             }
         }
     }
-
+    
     // MARK: - Request Configuration Methods
     
     private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: FlickrConstant.OAuthPath, method: HTTPMethod, completion: @escaping (Result<Data, Error>) -> Void) {
@@ -265,33 +265,33 @@ class FlickrOAuthService: NSObject {
             "oauth_version": "1.0"
         ]
         
-
+        
         
         // Add to parameters extra values
         parameters = parameters.merging(extraParameters) { (current, _) in current }
-
+        
         // Methods to prepare API requests
-//        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
+        //        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
         let signatureHelper = SignatureHelper(consumerSecretKey: FlickrConstant.Key.consumerSecretKey.rawValue, accessSecretToken: secretToken)
         let signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: urlString, parameters: parameters)
         parameters["oauth_signature"] = signature
         
-//        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: secretToken)
-//        parameters["oauth_signature"] = signature.getSignature()
+        //        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: secretToken)
+        //        parameters["oauth_signature"] = signature.getSignature()
         
         // Build the OAuth signature from parameters
         //parameters["oauth_signature"] = signature
         // Set parameters to request
-//        var components = URLComponents(string: urlString)
-//        components?.queryItems = parameters.map { (key, value) in
-//            URLQueryItem(name: key, value: value)
-//        }
-//
-//        // Initialize and configure URL request
-//        guard let url = components?.url else { return }
-//        var urlRequest = URLRequest(url: url)
+        //        var components = URLComponents(string: urlString)
+        //        components?.queryItems = parameters.map { (key, value) in
+        //            URLQueryItem(name: key, value: value)
+        //        }
+        //
+        //        // Initialize and configure URL request
+        //        guard let url = components?.url else { return }
+        //        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method.rawValue
-
+        
         // Set parameters to HTTP body of URL request
         let header = "OAuth \(signatureHelper.convertParametersToString(parameters, separator: ", "))"
         urlRequest.setValue(header, forHTTPHeaderField: "Authorization")

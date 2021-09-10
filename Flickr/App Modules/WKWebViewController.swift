@@ -10,22 +10,25 @@ import WebKit
 
 class WKWebViewController: UIViewController, WKNavigationDelegate {
     
-    private var webView: WKWebView!
-    private var progressView: UIProgressView!
-    
-    weak var delegate: WKWebViewControllerDelegate?
-    var endpoint: String?
+    private let webView: WKWebView = .init(frame: CGRect(x: 0, y: 55, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 55))
+    private let progressView: UIProgressView = .init(progressViewStyle: .default)
 
+    weak var delegate: WKWebViewControllerDelegate?
+    var endpoint: String
+    
+    init(endpoint: String) {
+        self.endpoint = endpoint
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         webView.navigationDelegate = self
-
-        guard let endpoint = endpoint else {
-            delegate?.close(webView: self)
-            return
-        }
-        
         webView.load(endpoint)
     }
     
@@ -56,7 +59,6 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
     }
     
     private func setupWKWebView() {
-        webView = WKWebView(frame: CGRect(x: 0, y: 55, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 55), configuration: WKWebViewConfiguration())
         webView.autoresizingMask = [.flexibleHeight]
         self.view.addSubview(webView)
         webView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -78,7 +80,6 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
     }
     
     private func setupUIProgressView() {
-        progressView = UIProgressView(progressViewStyle: .default)
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.center = view.center
         progressView.trackTintColor = UIColor.systemGray5
@@ -95,7 +96,7 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
 
     @objc
     func doneAction() {
-        delegate?.close(webView: self)
+        delegate?.close(viewController: self)
     }
     
     @objc func reload() {
@@ -141,5 +142,5 @@ extension WKWebView {
 // MARK: - WKWebViewControllerDelegate
 
 protocol WKWebViewControllerDelegate: AnyObject {
-    func close(webView: WKWebViewController)
+    func close(viewController: WKWebViewController)
 }
