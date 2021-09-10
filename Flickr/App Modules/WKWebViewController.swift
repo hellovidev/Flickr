@@ -14,7 +14,7 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
     private let progressView: UIProgressView = .init(progressViewStyle: .default)
 
     weak var delegate: WKWebViewControllerDelegate?
-    var endpoint: String
+    let endpoint: String
     
     init(endpoint: String) {
         self.endpoint = endpoint
