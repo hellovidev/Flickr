@@ -48,7 +48,7 @@ class AuthorizationViewController: UIViewController {
     @IBAction func loginAction(_ sender: UIButton) {
         authorizationService.login(presenter: self) { [weak self] result in
             switch result {
-            case .success():
+            case .success:
                 self?.performSegue(withIdentifier: "HomePath", sender: self)
             case .failure(let error):
                 self?.showAlert(title: "Authorize error", message: error.localizedDescription, button: "OK")

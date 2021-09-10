@@ -22,7 +22,11 @@ extension NetworkService {
             endpoint: FlickrConstant.URL.request.rawValue,
             method: method,
             parser: parser,
-            completion: completion
+            completion: { result in
+                DispatchQueue.main.async {
+                    completion(result)
+                }
+            }
         )
     }
     
@@ -37,7 +41,11 @@ extension NetworkService {
             file: file,
             endpoint: FlickrConstant.URL.upload.rawValue,
             parser: parser,
-            completion: completion
+            completion: { result in
+                DispatchQueue.main.async {
+                    completion(result)
+                }
+            }
         )
     }
     

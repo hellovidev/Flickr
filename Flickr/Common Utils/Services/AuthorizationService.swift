@@ -8,11 +8,7 @@
 import UIKit
 
 class AuthorizationService: AuthorizationProtocol {
-    
-    static let shared = AuthorizationService()
-    
-    private var signupWebView: WKWebViewController = .init()
-
+        
     func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {
         FlickrOAuthService.shared.flickrLogin(presenter: presenter) { result in
             switch result {
@@ -32,6 +28,7 @@ class AuthorizationService: AuthorizationProtocol {
     }
     
     func signup(presenter: UIViewController) {
+        let signupWebView: WKWebViewController = .init()
         signupWebView.delegate = self
         signupWebView.endpoint = FlickrConstant.URL.signup.rawValue
         presenter.present(signupWebView, animated: true, completion: nil)
@@ -45,10 +42,10 @@ class AuthorizationService: AuthorizationProtocol {
 
 // MARK: - WKWebViewDelegate
 
-extension AuthorizationService: WKWebViewDelegate {
+extension AuthorizationService: WKWebViewControllerDelegate {
     
-    func close() {
-        signupWebView.dismiss(animated: true, completion: nil)
+    func close(webView: WKWebViewController) {
+        webView.dismiss(animated: true, completion: nil)
     }
     
 }
@@ -59,8 +56,4 @@ protocol AuthorizationProtocol {
     func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)
     func signup(presenter: UIViewController)
     func logout()
-}
-
-protocol WKWebViewDelegate: AnyObject {
-    func close()
 }

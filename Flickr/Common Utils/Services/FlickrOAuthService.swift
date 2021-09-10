@@ -88,15 +88,21 @@ class FlickrOAuthService: NSObject {
                                     completion(.success(accessToken))
                                 }
                             case .failure(let error):
+                                DispatchQueue.main.async {
                                 completion(.failure(error))
+                                }
                             }
                         }
                     case .failure(let error):
+                        DispatchQueue.main.async {
                         completion(.failure(error))
+                        }
                     }
                 }
             case .failure(let error):
+                DispatchQueue.main.async {
                 completion(.failure(error))
+                }
             }
         }
     }

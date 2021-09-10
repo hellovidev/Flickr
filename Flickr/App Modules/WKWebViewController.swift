@@ -13,7 +13,7 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
     private var webView: WKWebView!
     private var progressView: UIProgressView!
     
-    weak var delegate: WKWebViewDelegate?
+    weak var delegate: WKWebViewControllerDelegate?
     var endpoint: String?
 
     override func viewDidLoad() {
@@ -22,7 +22,7 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
         webView.navigationDelegate = self
 
         guard let endpoint = endpoint else {
-            delegate?.close()
+            delegate?.close(webView: self)
             return
         }
         
@@ -95,7 +95,7 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
 
     @objc
     func doneAction() {
-        delegate?.close()
+        delegate?.close(webView: self)
     }
     
     @objc func reload() {
@@ -136,4 +136,10 @@ extension WKWebView {
         }
     }
     
+}
+
+// MARK: - WKWebViewControllerDelegate
+
+protocol WKWebViewControllerDelegate: AnyObject {
+    func close(webView: WKWebViewController)
 }

@@ -30,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
 
         let initialViewController = storyboard.instantiateViewController(withIdentifier: "AuthorizationViewController") as! AuthorizationViewController
-        initialViewController.authorizationService = AuthorizationService.shared
+        initialViewController.authorizationService = AuthorizationService()
 
         window?.rootViewController = initialViewController
         window?.makeKeyAndVisible()
