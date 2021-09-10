@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
+		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
+		5F25F69326EA13E400F98608 /* UIViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */; };
 		5F71301126D40D32001A3762 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71301026D40D32001A3762 /* NetworkService.swift */; };
 		5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996226D66DE300482485 /* ErrorMessage.swift */; };
 		5F7F996626D69AE900482485 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996526D69AE900482485 /* Profile.swift */; };
@@ -33,7 +36,7 @@
 		5FA9B2FE26E669400060DAE8 /* NetworkService+Flickr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2FD26E669400060DAE8 /* NetworkService+Flickr.swift */; };
 		5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */; };
 		5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */; };
-		5FFEC0B526CD4DDB000A0BAB /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B426CD4DDB000A0BAB /* AuthViewController.swift */; };
+		5FFEC0B526CD4DDB000A0BAB /* AuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B426CD4DDB000A0BAB /* AuthorizationViewController.swift */; };
 		5FFEC0B826CD4DDB000A0BAB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B626CD4DDB000A0BAB /* Main.storyboard */; };
 		5FFEC0BA26CD4DDC000A0BAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B926CD4DDC000A0BAB /* Assets.xcassets */; };
 		5FFEC0BD26CD4DDC000A0BAB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FFEC0BB26CD4DDC000A0BAB /* LaunchScreen.storyboard */; };
@@ -42,6 +45,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
+		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
+		5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Alert.swift"; sourceTree = "<group>"; };
 		5F71301026D40D32001A3762 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5F7F996226D66DE300482485 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		5F7F996526D69AE900482485 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -69,7 +75,7 @@
 		5FFEC0AD26CD4DDB000A0BAB /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		5FFEC0B426CD4DDB000A0BAB /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
+		5FFEC0B426CD4DDB000A0BAB /* AuthorizationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewController.swift; sourceTree = "<group>"; };
 		5FFEC0B726CD4DDB000A0BAB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5FFEC0B926CD4DDC000A0BAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5FFEC0BC26CD4DDC000A0BAB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -89,6 +95,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F25F69126EA13C800F98608 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		5F7F996426D69ACF00482485 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -169,11 +183,12 @@
 			isa = PBXGroup;
 			children = (
 				5F7F996426D69ACF00482485 /* Entities */,
-				5FFEC0B426CD4DDB000A0BAB /* AuthViewController.swift */,
+				5FFEC0B426CD4DDB000A0BAB /* AuthorizationViewController.swift */,
 				5FA9B2EF26E4B0F20060DAE8 /* ProfileViewController.swift */,
 				5FA9B2F126E4B1020060DAE8 /* HomeViewController.swift */,
 				5FA9B2F526E4B12A0060DAE8 /* PostViewController.swift */,
 				5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */,
+				5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */,
 			);
 			path = "App Modules";
 			sourceTree = "<group>";
@@ -198,6 +213,7 @@
 		5FFEC0C826CD4F43000A0BAB /* Common Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5F25F69126EA13C800F98608 /* Extensions */,
 				5FFEC0CA26CD4F8D000A0BAB /* Constants */,
 				5FFEC0C926CD4F87000A0BAB /* Services */,
 			);
@@ -210,6 +226,7 @@
 				5F7F997326D7FEEC00482485 /* NetworkService */,
 				5F7F997226D7FEDA00482485 /* Helpers */,
 				5FFEC0CB26CD4FAD000A0BAB /* FlickrOAuthService.swift */,
+				5F25F68D26E9322000F98608 /* AuthorizationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -302,8 +319,9 @@
 				5F7F998426D8E89200482485 /* DeserializeHelper.swift in Sources */,
 				5F7F996C26D6CBC700482485 /* Photo.swift in Sources */,
 				5F7F996A26D6C05800482485 /* Favorite.swift in Sources */,
-				5FFEC0B526CD4DDB000A0BAB /* AuthViewController.swift in Sources */,
+				5FFEC0B526CD4DDB000A0BAB /* AuthorizationViewController.swift in Sources */,
 				5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */,
+				5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */,
 				5F7F998626D8F78F00482485 /* NetworkService+Upload.swift in Sources */,
 				5FA9B2F026E4B0F20060DAE8 /* ProfileViewController.swift in Sources */,
 				5F7F996826D6AE1000482485 /* Comment.swift in Sources */,
@@ -316,6 +334,8 @@
 				5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */,
 				5F71301126D40D32001A3762 /* NetworkService.swift in Sources */,
 				5F7F997E26D8023300482485 /* NetworkService+Tags.swift in Sources */,
+				5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */,
+				5F25F69326EA13E400F98608 /* UIViewController+Alert.swift in Sources */,
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* FlickrConstant.swift in Sources */,
 				5F7F997C26D8003700482485 /* NetworkService+Photos.swift in Sources */,

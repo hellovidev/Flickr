@@ -19,10 +19,14 @@ extension NetworkService {
         request(
             parameters: parameters,
             type: type.rawValue,
-            endpoint: FlickrConstant.URL.requestURL.rawValue,
+            endpoint: FlickrConstant.URL.request.rawValue,
             method: method,
             parser: parser,
-            completion: completion
+            completion: { result in
+                DispatchQueue.main.async {
+                    completion(result)
+                }
+            }
         )
     }
     
@@ -35,9 +39,13 @@ extension NetworkService {
         upload(
             parameters: parameters,
             file: file,
-            endpoint: FlickrConstant.URL.uploadURL.rawValue,
+            endpoint: FlickrConstant.URL.upload.rawValue,
             parser: parser,
-            completion: completion
+            completion: { result in
+                DispatchQueue.main.async {
+                    completion(result)
+                }
+            }
         )
     }
     

@@ -10,7 +10,7 @@ import SafariServices
 
 // MARK: - Network Layer (OAuth1.0)
 
-class FlickrOAuthService {
+class FlickrOAuthService: NSObject {
     
     static let shared = FlickrOAuthService()
     
@@ -43,7 +43,7 @@ class FlickrOAuthService {
         let token: String
         let secretToken: String
     }
-        
+    
     // Structure to build request arguments
     private struct ArgumentsAccessToken {
         var token: String
@@ -52,7 +52,7 @@ class FlickrOAuthService {
     }
     
     // Structure to save access token response
-    struct AccessTokenOAuth {
+    struct AccessTokenOAuth: Codable {
         let token: String
         let secretToken: String
         let userNSID: String
@@ -84,17 +84,25 @@ class FlickrOAuthService {
                             switch result {
                             case .success(let accessToken):
                                 self?.state = .successfullyAuthenticated
-                                completion(.success(accessToken))
+                                DispatchQueue.main.async {
+                                    completion(.success(accessToken))
+                                }
                             case .failure(let error):
-                                completion(.failure(error))
+                                DispatchQueue.main.async {
+                                    completion(.failure(error))
+                                }
                             }
                         }
                     case .failure(let error):
-                        completion(.failure(error))
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
                     }
                 }
             case .failure(let error):
-                completion(.failure(error))
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -125,12 +133,14 @@ class FlickrOAuthService {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"] else {
+                    self.state = nil
                     completion(.failure(ErrorMessage.error("Request token was not found.")))
                     return
                 }
                 
                 completion(.success(RequestTokenOAuth(token: token, secretToken: secretToken)))
             case .failure(let error):
+                self.state = nil
                 completion(.failure(error))
             }
         }
@@ -155,12 +165,12 @@ class FlickrOAuthService {
     // Step #2: Website Confirmation
     private func requestAuthorize(with token: String, presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
         // Build website confirmation link for 'Safari'
-        let urlString = "\(FlickrConstant.URL.baseURL.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
+        let urlString = "\(FlickrConstant.URL.base.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
         guard let websiteConfirmationURL = URL(string: urlString) else { return }
         
         // Initialization 'Safari' object
         let safari = SFSafariViewController(url: websiteConfirmationURL)
-        
+        safari.delegate = self
         // Return 'ArgumentsAccessToken' after callback URL
         state = .authorizeRequested() { [weak self] url in
             // Dismiss the 'Safari' ViewController
@@ -178,7 +188,7 @@ class FlickrOAuthService {
                 completion(.failure(ErrorMessage.error("Parameters were not found after confirmation on the website.")))
                 return
             }
-
+            
             print("'verifier' -> Status: Complete")
             completion(.success(verifier))
         }
@@ -192,6 +202,7 @@ class FlickrOAuthService {
     // Catch URL callback after confirmed authorization (Step #2: Website Confirmation)
     func handleURL(_ url: URL) {
         guard case let .authorizeRequested(handler) = state else {
+            self.state = nil
             fatalError("Invalid authorization state.")
         }
         
@@ -218,22 +229,24 @@ class FlickrOAuthService {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"], let userNSID = attributes["user_nsid"], let username = attributes["username"] else {
+                    self.state = nil
                     completion(.failure(ErrorMessage.error("Access token was not found.")))
                     return
                 }
                 
                 completion(.success(AccessTokenOAuth(token: token, secretToken: secretToken, userNSID: userNSID, username: username)))
             case .failure(let error):
+                self.state = nil
                 completion(.failure(error))
             }
         }
     }
-
+    
     // MARK: - Request Configuration Methods
     
     private func requestOAuth(secretToken: String? = nil, params extraParameters: [String: String], path: FlickrConstant.OAuthPath, method: HTTPMethod, completion: @escaping (Result<Data, Error>) -> Void) {
         // Build base URL with path as parameter
-        let urlString = FlickrConstant.URL.baseURL.rawValue + path.rawValue
+        let urlString = FlickrConstant.URL.base.rawValue + path.rawValue
         
         // Create URL using endpoint
         guard let url = URL(string: urlString) else { return }
@@ -252,33 +265,33 @@ class FlickrOAuthService {
             "oauth_version": "1.0"
         ]
         
-
+        
         
         // Add to parameters extra values
         parameters = parameters.merging(extraParameters) { (current, _) in current }
-
+        
         // Methods to prepare API requests
-//        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
+        //        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
         let signatureHelper = SignatureHelper(consumerSecretKey: FlickrConstant.Key.consumerSecretKey.rawValue, accessSecretToken: secretToken)
         let signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: urlString, parameters: parameters)
         parameters["oauth_signature"] = signature
         
-//        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: secretToken)
-//        parameters["oauth_signature"] = signature.getSignature()
+        //        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: secretToken)
+        //        parameters["oauth_signature"] = signature.getSignature()
         
         // Build the OAuth signature from parameters
         //parameters["oauth_signature"] = signature
         // Set parameters to request
-//        var components = URLComponents(string: urlString)
-//        components?.queryItems = parameters.map { (key, value) in
-//            URLQueryItem(name: key, value: value)
-//        }
-//
-//        // Initialize and configure URL request
-//        guard let url = components?.url else { return }
-//        var urlRequest = URLRequest(url: url)
+        //        var components = URLComponents(string: urlString)
+        //        components?.queryItems = parameters.map { (key, value) in
+        //            URLQueryItem(name: key, value: value)
+        //        }
+        //
+        //        // Initialize and configure URL request
+        //        guard let url = components?.url else { return }
+        //        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method.rawValue
-
+        
         // Set parameters to HTTP body of URL request
         let header = "OAuth \(signatureHelper.convertParametersToString(parameters, separator: ", "))"
         urlRequest.setValue(header, forHTTPHeaderField: "Authorization")
@@ -298,27 +311,43 @@ class FlickrOAuthService {
                 completion(.failure(ErrorMessage.error("Data response is empty.")))
                 return
             }
-            print(String(data: data, encoding: .utf8))
+            
+            print(String(data: data, encoding: .utf8)!)
             
             switch httpResponse.statusCode {
             case ..<200:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<300:
                 print("\(path == .requestTokenOAuth ? "'request_token'" : "'access_token'") -> Status: \(httpResponse.statusCode) OK")
                 completion(.success(data))
             case ..<400:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<500:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<600:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             default:
+                self.state = nil
                 completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             }
         }
         
         // Start request process
         task.resume()
+    }
+    
+}
+
+// MARK: - SFSafariViewControllerDelegate
+
+extension FlickrOAuthService: SFSafariViewControllerDelegate {
+    
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        self.state = nil
     }
     
 }
