@@ -84,7 +84,9 @@ class FlickrOAuthService: NSObject {
                             switch result {
                             case .success(let accessToken):
                                 self?.state = .successfullyAuthenticated
-                                completion(.success(accessToken))
+                                DispatchQueue.main.async {
+                                    completion(.success(accessToken))
+                                }
                             case .failure(let error):
                                 completion(.failure(error))
                             }

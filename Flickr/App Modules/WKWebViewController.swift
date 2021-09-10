@@ -10,9 +10,8 @@ import WebKit
 
 class WKWebViewController: UIViewController, WKNavigationDelegate {
     
-    private let webView = WKWebView(frame: CGRect(x: 0, y: 55, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 55), configuration: WKWebViewConfiguration())
-    private let progressView = UIProgressView(progressViewStyle: .default)
-    private let navigationWebViewBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44))
+    private var webView: WKWebView!
+    private var progressView: UIProgressView!
     
     weak var delegate: WKWebViewDelegate?
     var endpoint: String?
@@ -21,9 +20,6 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
 
         webView.navigationDelegate = self
-        
-        // Monitoring page loads
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
 
         guard let endpoint = endpoint else {
             delegate?.close()
@@ -33,12 +29,34 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
         webView.load(endpoint)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Traking Website Loads
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Remove Strong Link
+        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
+    }
+    
     // MARK: - WKNavigationDelegate
 
     override func loadView() {
+        setupUIView()
+        setupWKWebView()
+        setupUINavigationBar()
+        setupUIProgressView()
+    }
+    
+    private func setupUIView() {
         self.view = UIView(frame: UIScreen.main.bounds)
         self.view.backgroundColor = UIColor.white
-        
+    }
+    
+    private func setupWKWebView() {
+        webView = WKWebView(frame: CGRect(x: 0, y: 55, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 55), configuration: WKWebViewConfiguration())
         webView.autoresizingMask = [.flexibleHeight]
         self.view.addSubview(webView)
         webView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -46,15 +64,21 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
         webView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         webView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         webView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        
-        let navigationItem = UINavigationItem(title: "flikr.com")
+    }
+    
+    private func setupUINavigationBar() {
+        let navigationWebViewBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44))
+        let navigationItem = UINavigationItem()
         let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: nil, action: #selector(doneAction))
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(reload))
         navigationItem.leftBarButtonItem = doneButton
         navigationItem.rightBarButtonItem = refresh
-        self.navigationWebViewBar.setItems([navigationItem], animated: false)
+        navigationWebViewBar.setItems([navigationItem], animated: false)
         self.view.addSubview(navigationWebViewBar)
-        
+    }
+    
+    private func setupUIProgressView() {
+        progressView = UIProgressView(progressViewStyle: .default)
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.center = view.center
         progressView.trackTintColor = UIColor.systemGray5
@@ -70,21 +94,8 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
     }
 
     @objc
-    func doneAction() { // remove @objc for Swift 3
+    func doneAction() {
         delegate?.close()
-    }
-
-    /// Implement the decidePolicyFor method. This is the only part that takes any work: you need to pull out the host of the URL that was requested, run any checks you want to make sure it’s OK, then call the decisionHandler() closure with either .allow to allow the URL or .cancel to deny access.
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if let host = navigationAction.request.url?.host {
-            //print(#function, host)
-            if host.contains("flickr.com") {
-                decisionHandler(.allow)
-                return
-            }
-        }
-
-        decisionHandler(.cancel)
     }
     
     @objc func reload() {
@@ -92,7 +103,7 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
         webView.reload()
     }
 
-    // Monitoring page load progress
+    // Tracking Website Load Progress
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "estimatedProgress" {
             //print(Float(webView.estimatedProgress))

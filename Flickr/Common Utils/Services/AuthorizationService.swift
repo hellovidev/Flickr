@@ -13,7 +13,7 @@ class AuthorizationService: AuthorizationProtocol {
     
     private var signupWebView: WKWebViewController = .init()
 
-    func login(presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
+    func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {
         FlickrOAuthService.shared.flickrLogin(presenter: presenter) { result in
             switch result {
             case .success(let access):
@@ -24,7 +24,7 @@ class AuthorizationService: AuthorizationProtocol {
                 } catch {
                     completion(.failure(error))
                 }
-                completion(.success("Authorization success."))
+                completion(.success(Void()))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -56,7 +56,7 @@ extension AuthorizationService: WKWebViewDelegate {
 // MARK: - Protocols
 
 protocol AuthorizationProtocol {
-    func login(presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void)
+    func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)
     func signup(presenter: UIViewController)
     func logout()
 }

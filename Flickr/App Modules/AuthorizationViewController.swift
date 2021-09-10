@@ -14,7 +14,8 @@ class AuthorizationViewController: UIViewController {
     
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signupLabel: UILabel!
-    @IBOutlet weak var questionLabel: UILabel!
+    
+    var authorizationService: AuthorizationService!
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -35,26 +36,20 @@ class AuthorizationViewController: UIViewController {
 
         signupLabel.sizeToFit()
         signupLabel.attributedText = NSAttributedString(string: "Sign up.", attributes: signupLabelTextAttributes)
-        
-        questionLabel.sizeToFit()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         let signupAction = UITapGestureRecognizer(target: self, action: #selector(signupAction(sender:)))
         signupLabel.isUserInteractionEnabled = true
         signupLabel.addGestureRecognizer(signupAction)
     }
 
     @IBAction func loginAction(_ sender: UIButton) {
-        AuthorizationService.shared.login(presenter: self) { [weak self] result in
+        authorizationService.login(presenter: self) { [weak self] result in
             switch result {
-            case .success(let message):
-                print(message)
-                DispatchQueue.main.async {
-                    self?.performSegue(withIdentifier: "HomePath", sender: self)
-                }
+            case .success():
+                self?.performSegue(withIdentifier: "HomePath", sender: self)
             case .failure(let error):
                 self?.showAlert(title: "Authorize error", message: error.localizedDescription, button: "OK")
             }
@@ -62,7 +57,7 @@ class AuthorizationViewController: UIViewController {
     }
     
     @IBAction func signupAction(sender: UITapGestureRecognizer) {
-        AuthorizationService.shared.signup(presenter: self)
+        authorizationService.signup(presenter: self)
     }
         
     deinit {
