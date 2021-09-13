@@ -8,6 +8,8 @@
 import UIKit
 
 class ProfileViewController: UIViewController {
+    
+    private lazy var authorizationService: AuthorizationService = .init()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,8 +22,18 @@ class ProfileViewController: UIViewController {
     }
 
     @IBAction func logoutAction(_ sender: UIButton) {
-        FlickrOAuthService.shared.flickrLogout()
-        dismiss(animated: true, completion: nil)
+        authorizationService.logout()
+        
+        guard let window = UIApplication.shared.windows.first else { return }
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+        let initialViewController = storyboard.instantiateViewController(withIdentifier: "AuthorizationViewController") as! AuthorizationViewController
+        initialViewController.authorizationService = AuthorizationService()
+        
+        window.rootViewController = initialViewController
+        window.makeKeyAndVisible()
+        
+        UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve], animations: {}, completion: nil)
     }
     
     /*

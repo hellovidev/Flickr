@@ -123,7 +123,6 @@
                     <connections>
                         <outlet property="loginButton" destination="BSu-sB-DSE" id="d11-og-eab"/>
                         <outlet property="signupLabel" destination="3Fb-5B-hoq" id="QVb-fF-dV9"/>
-                        <segue destination="prl-EQ-mRu" kind="presentation" identifier="HomePath" modalPresentationStyle="fullScreen" modalTransitionStyle="flipHorizontal" id="nmN-sZ-Pra"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -166,30 +165,35 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jpY-vU-0Fl">
-                                <rect key="frame" x="170.5" y="485" width="73" height="30"/>
-                                <state key="normal" title="Show Post"/>
-                                <connections>
-                                    <segue destination="F1j-m2-vV7" kind="show" id="t0D-8R-sPY"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kvv-lf-j7f">
-                                <rect key="frame" x="155.5" y="407" width="103.5" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="SmU-rc-PAw">
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="FeedPostCell" id="VFN-hg-atv">
+                                        <rect key="frame" x="0.0" y="24.5" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="VFN-hg-atv" id="1Yz-jY-Ybh">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ZGf-SP-Hgv"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="jpY-vU-0Fl" firstAttribute="top" secondItem="kvv-lf-j7f" secondAttribute="bottom" constant="57" id="1Gl-W0-Ouc"/>
-                            <constraint firstItem="jpY-vU-0Fl" firstAttribute="centerX" secondItem="rwk-vw-Cd9" secondAttribute="centerX" id="ACy-gY-QPa"/>
-                            <constraint firstItem="ZGf-SP-Hgv" firstAttribute="bottom" secondItem="jpY-vU-0Fl" secondAttribute="bottom" constant="298" id="LHN-Sp-KgR"/>
-                            <constraint firstItem="kvv-lf-j7f" firstAttribute="centerX" secondItem="rwk-vw-Cd9" secondAttribute="centerX" id="rKP-6i-i9I"/>
+                            <constraint firstItem="ZGf-SP-Hgv" firstAttribute="trailing" secondItem="SmU-rc-PAw" secondAttribute="trailing" id="FXb-hZ-PYe"/>
+                            <constraint firstItem="SmU-rc-PAw" firstAttribute="top" secondItem="ZGf-SP-Hgv" secondAttribute="top" id="PbI-xf-tEt"/>
+                            <constraint firstItem="SmU-rc-PAw" firstAttribute="leading" secondItem="ZGf-SP-Hgv" secondAttribute="leading" id="QeD-gW-TOX"/>
+                            <constraint firstItem="SmU-rc-PAw" firstAttribute="centerX" secondItem="rwk-vw-Cd9" secondAttribute="centerX" id="tkN-xf-SUB"/>
+                            <constraint firstItem="ZGf-SP-Hgv" firstAttribute="bottom" secondItem="SmU-rc-PAw" secondAttribute="bottom" id="u2k-GQ-FMM"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Sma-xk-zBp"/>
+                    <connections>
+                        <outlet property="tableView" destination="SmU-rc-PAw" id="X3m-oL-Sun"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lBn-2P-TNH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -236,13 +240,13 @@
         <!--Post View Controller-->
         <scene sceneID="pAa-hP-85q">
             <objects>
-                <viewController id="F1j-m2-vV7" customClass="PostViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PostViewController" id="F1j-m2-vV7" customClass="PostViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KYY-OQ-g39">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Post Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rwq-r8-KhO">
-                                <rect key="frame" x="161" y="451" width="92" height="21"/>
+                                <rect key="frame" x="161" y="407" width="92" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -264,7 +268,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="by4-Z2-Iwn">
             <objects>
-                <tabBarController storyboardIdentifier="Bar" automaticallyAdjustsScrollViewInsets="NO" id="prl-EQ-mRu" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" automaticallyAdjustsScrollViewInsets="NO" id="prl-EQ-mRu" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="L5o-Xu-v48"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="kvI-us-Pk6">

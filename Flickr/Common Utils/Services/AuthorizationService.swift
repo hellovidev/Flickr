@@ -12,15 +12,14 @@ class AuthorizationService: AuthorizationProtocol {
     func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {
         FlickrOAuthService.shared.flickrLogin(presenter: presenter) { result in
             switch result {
-            case .success(let access):
+            case .success(let accessOAuthToken):
                 do {
-                    let encoder = JSONEncoder()
-                    let data = try encoder.encode(access)
-                    UserDefaults.standard.set(data, forKey: "token")
+                    let token = AccessTokenAPI(token: accessOAuthToken.token, secret: accessOAuthToken.secretToken, nsid: accessOAuthToken.userNSID)
+                    try StorageService.save(object: token, with: "token")
+                    completion(.success(Void()))
                 } catch {
                     completion(.failure(error))
                 }
-                completion(.success(Void()))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -35,6 +34,8 @@ class AuthorizationService: AuthorizationProtocol {
     
     func logout() {
         FlickrOAuthService.shared.flickrLogout()
+        StorageService.remove(for: "state")
+        StorageService.remove(for: "token")
     }
     
 }

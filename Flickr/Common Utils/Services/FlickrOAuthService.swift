@@ -16,14 +16,55 @@ class FlickrOAuthService: NSObject {
     
     // MARK: - Authorization State
     
-    private enum AuthorizationState {
+    private enum AuthorizationState: CustomStringConvertible {
+        var description: String {
+            switch self {
+            case .requestTokenRequested:
+                return "requestTokenRequested"
+            case .authorizeRequested(handler: _):
+                return "authorizeRequested"
+            case .accessTokenRequested:
+                return "accessTokenRequested"
+            case .successfullyAuthenticated:
+                return "successfullyAuthenticated"
+            }
+        }
+        
+        
+//        init(from decoder: Decoder) throws {
+//            let container = try decoder.container(keyedBy: CodingKeys.self)
+//            FlickrOAuthService.AuthorizationState = try container.decode(String.self, forKey: .successfullyAuthenticated)
+//        }
+//
+//        func encode(to encoder: Encoder) throws {
+//            var container = encoder.container(keyedBy: CodingKeys.self)
+//            try container.encode("successfullyAuthenticated", forKey: .successfullyAuthenticated)
+//        }
+        
         case requestTokenRequested
         case authorizeRequested(handler: (URL) -> Void)
         case accessTokenRequested
         case successfullyAuthenticated
+//
+//        private enum CodingKeys: String, CodingKey {
+//             case successfullyAuthenticated
+//        }
+
     }
     
-    private var state: AuthorizationState?
+    private var state: AuthorizationState? {
+        didSet {
+            do {
+                if case .successfullyAuthenticated = state {
+                    try StorageService.save(object: true, with: "state")
+                } else {
+                    try StorageService.save(object: false, with: "state")
+                }
+            } catch(let storageError) {
+                print(storageError)
+            }
+        }
+    }
     
     // MARK: - Additional Methods
     

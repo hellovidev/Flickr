@@ -21,7 +21,7 @@ extension NetworkService {
     }
     
     // Get photo 'flickr.photos.getInfo' (Post screen)
-    func getPhotoById(with photoId: String, secret: String? = nil, completion: @escaping (Result<PhotoInfo, Error>) -> Void) {
+    func getPhotoById(with photoId: String, secret: String? = nil, completion: @escaping (Result<PostDetails, Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
             "photo_id": photoId
@@ -31,9 +31,9 @@ extension NetworkService {
             parameters: parameters,
             type: .getPhotoInfo,
             method: .GET,
-            parser: ModelDeserializer<PhotoInfo>()
+            parser: ModelDeserializer<PostDetailsResponse>()
         ) { result in
-            completion(result)
+            completion(result.map { $0.details })
         }
     }
     
@@ -85,6 +85,14 @@ extension NetworkService {
         
         private enum CodingKeys: String, CodingKey {
             case data = "photos"
+        }
+    }
+    
+    private struct PostDetailsResponse: Decodable {
+        let details: PostDetails
+        
+        private enum CodingKeys: String, CodingKey {
+            case details = "photo"
         }
     }
     

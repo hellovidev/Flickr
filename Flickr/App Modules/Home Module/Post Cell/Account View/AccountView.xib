@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AccountView" customModule="Flickr" customModuleProvider="target">
+            <connections>
+                <outlet property="locationLabel" destination="DQl-G3-NHL" id="j0C-LO-Cjn"/>
+                <outlet property="nicknameLabel" destination="n8e-Js-JqC" id="FJG-YC-Tps"/>
+                <outlet property="ownerAvatar" destination="QRo-gn-Yle" id="AjF-1L-p5e"/>
+                <outlet property="view" destination="iN0-l3-epB" id="4gD-xG-Hv7"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="420" height="120"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" semanticContentAttribute="spatial" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QRo-gn-Yle">
+                    <rect key="frame" x="12" y="44" width="32" height="32"/>
+                    <color key="backgroundColor" systemColor="systemGray3Color"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="32" id="v7c-X7-0TM"/>
+                        <constraint firstAttribute="height" constant="32" id="xoD-x6-Qqb"/>
+                    </constraints>
+                </imageView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="3zO-jA-SR8">
+                    <rect key="frame" x="56" y="41.5" width="85" height="37"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nickname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n8e-Js-JqC">
+                            <rect key="frame" x="0.0" y="0.0" width="85" height="16"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New York, USA" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DQl-G3-NHL">
+                            <rect key="frame" x="0.0" y="21" width="85" height="16"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="n8e-Js-JqC" secondAttribute="trailing" id="4Zy-up-83g"/>
+                        <constraint firstAttribute="bottom" secondItem="DQl-G3-NHL" secondAttribute="bottom" id="50z-6T-ETP"/>
+                        <constraint firstItem="n8e-Js-JqC" firstAttribute="top" secondItem="3zO-jA-SR8" secondAttribute="top" id="FlR-0r-IEs"/>
+                        <constraint firstAttribute="trailing" secondItem="DQl-G3-NHL" secondAttribute="trailing" id="YVI-GU-LWd"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="leading" secondItem="3zO-jA-SR8" secondAttribute="leading" id="g0t-Bi-jPT"/>
+                        <constraint firstItem="n8e-Js-JqC" firstAttribute="leading" secondItem="3zO-jA-SR8" secondAttribute="leading" id="yhd-S1-xhM"/>
+                    </constraints>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="7rd-0M-KbC"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="QRo-gn-Yle" secondAttribute="bottom" constant="12" id="IHf-wT-Rpo"/>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="Wc3-57-GfY"/>
+                <constraint firstItem="3zO-jA-SR8" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Xpi-tK-AQi"/>
+                <constraint firstItem="3zO-jA-SR8" firstAttribute="leading" secondItem="QRo-gn-Yle" secondAttribute="trailing" constant="12" id="u1s-pL-p1L"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="3zO-jA-SR8" secondAttribute="trailing" constant="12" id="yMr-aB-g9u"/>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="yTO-tY-U6J"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="477" y="-9"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray3Color">
+            <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

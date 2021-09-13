@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - API Access Structure
 
-struct AccessTokenAPI {
+struct AccessTokenAPI: Codable {
     let token: String
     let secret: String
     let nsid: String

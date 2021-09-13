@@ -10,6 +10,12 @@
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
 		5F25F69326EA13E400F98608 /* UIViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */; };
+		5F25F6BD26EE08B800F98608 /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6BB26EE08B800F98608 /* PostTableViewCell.swift */; };
+		5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */; };
+		5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6C326EE0B4E00F98608 /* AccountView.swift */; };
+		5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6C526EE0BFD00F98608 /* AccountView.xib */; };
+		5F25F6C926EE5C8F00F98608 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6C826EE5C8F00F98608 /* StorageService.swift */; };
+		5F25F6CC26EE69A300F98608 /* AuthorizationStateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */; };
 		5F71301126D40D32001A3762 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71301026D40D32001A3762 /* NetworkService.swift */; };
 		5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996226D66DE300482485 /* ErrorMessage.swift */; };
 		5F7F996626D69AE900482485 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996526D69AE900482485 /* Profile.swift */; };
@@ -17,7 +23,7 @@
 		5F7F996A26D6C05800482485 /* Favorite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996926D6C05800482485 /* Favorite.swift */; };
 		5F7F996C26D6CBC700482485 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996B26D6CBC700482485 /* Photo.swift */; };
 		5F7F996E26D6D26300482485 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996D26D6D26300482485 /* Tag.swift */; };
-		5F7F997026D7816800482485 /* PhotoInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996F26D7816800482485 /* PhotoInfo.swift */; };
+		5F7F997026D7816800482485 /* PostDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996F26D7816800482485 /* PostDetails.swift */; };
 		5F7F997526D7FF0C00482485 /* NetworkService+Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F997426D7FF0C00482485 /* NetworkService+Favorites.swift */; };
 		5F7F997826D7FFA600482485 /* NetworkService+Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F997726D7FFA600482485 /* NetworkService+Comments.swift */; };
 		5F7F997A26D8001F00482485 /* NetworkService+Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F997926D8001F00482485 /* NetworkService+Profile.swift */; };
@@ -48,6 +54,12 @@
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
 		5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Alert.swift"; sourceTree = "<group>"; };
+		5F25F6BB26EE08B800F98608 /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
+		5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PostTableViewCell.xib; sourceTree = "<group>"; };
+		5F25F6C326EE0B4E00F98608 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
+		5F25F6C526EE0BFD00F98608 /* AccountView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountView.xib; sourceTree = "<group>"; };
+		5F25F6C826EE5C8F00F98608 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationStateProvider.swift; sourceTree = "<group>"; };
 		5F71301026D40D32001A3762 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5F7F996226D66DE300482485 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		5F7F996526D69AE900482485 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -55,7 +67,7 @@
 		5F7F996926D6C05800482485 /* Favorite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorite.swift; sourceTree = "<group>"; };
 		5F7F996B26D6CBC700482485 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		5F7F996D26D6D26300482485 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
-		5F7F996F26D7816800482485 /* PhotoInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoInfo.swift; sourceTree = "<group>"; };
+		5F7F996F26D7816800482485 /* PostDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetails.swift; sourceTree = "<group>"; };
 		5F7F997426D7FF0C00482485 /* NetworkService+Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Favorites.swift"; sourceTree = "<group>"; };
 		5F7F997726D7FFA600482485 /* NetworkService+Comments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Comments.swift"; sourceTree = "<group>"; };
 		5F7F997926D8001F00482485 /* NetworkService+Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Profile.swift"; sourceTree = "<group>"; };
@@ -103,6 +115,50 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		5F25F6BA26EE087C00F98608 /* Home Module */ = {
+			isa = PBXGroup;
+			children = (
+				5F25F6BF26EE08BE00F98608 /* Post Cell */,
+				5FA9B2F126E4B1020060DAE8 /* HomeViewController.swift */,
+			);
+			path = "Home Module";
+			sourceTree = "<group>";
+		};
+		5F25F6BF26EE08BE00F98608 /* Post Cell */ = {
+			isa = PBXGroup;
+			children = (
+				5F25F6C026EE0A9900F98608 /* Account View */,
+				5F25F6BB26EE08B800F98608 /* PostTableViewCell.swift */,
+				5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */,
+			);
+			path = "Post Cell";
+			sourceTree = "<group>";
+		};
+		5F25F6C026EE0A9900F98608 /* Account View */ = {
+			isa = PBXGroup;
+			children = (
+				5F25F6C326EE0B4E00F98608 /* AccountView.swift */,
+				5F25F6C526EE0BFD00F98608 /* AccountView.xib */,
+			);
+			path = "Account View";
+			sourceTree = "<group>";
+		};
+		5F25F6C726EE5C6B00F98608 /* StorageService */ = {
+			isa = PBXGroup;
+			children = (
+				5F25F6C826EE5C8F00F98608 /* StorageService.swift */,
+			);
+			path = StorageService;
+			sourceTree = "<group>";
+		};
+		5F25F6CA26EE698A00F98608 /* AuthorizationStateProvider */ = {
+			isa = PBXGroup;
+			children = (
+				5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */,
+			);
+			path = AuthorizationStateProvider;
+			sourceTree = "<group>";
+		};
 		5F7F996426D69ACF00482485 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,7 +167,7 @@
 				5F7F996926D6C05800482485 /* Favorite.swift */,
 				5F7F996B26D6CBC700482485 /* Photo.swift */,
 				5F7F996D26D6D26300482485 /* Tag.swift */,
-				5F7F996F26D7816800482485 /* PhotoInfo.swift */,
+				5F7F996F26D7816800482485 /* PostDetails.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -182,10 +238,10 @@
 		5FFEC0C526CD4F17000A0BAB /* App Modules */ = {
 			isa = PBXGroup;
 			children = (
+				5F25F6BA26EE087C00F98608 /* Home Module */,
 				5F7F996426D69ACF00482485 /* Entities */,
 				5FFEC0B426CD4DDB000A0BAB /* AuthorizationViewController.swift */,
 				5FA9B2EF26E4B0F20060DAE8 /* ProfileViewController.swift */,
-				5FA9B2F126E4B1020060DAE8 /* HomeViewController.swift */,
 				5FA9B2F526E4B12A0060DAE8 /* PostViewController.swift */,
 				5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */,
 				5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */,
@@ -223,6 +279,8 @@
 		5FFEC0C926CD4F87000A0BAB /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				5F25F6CA26EE698A00F98608 /* AuthorizationStateProvider */,
+				5F25F6C726EE5C6B00F98608 /* StorageService */,
 				5F7F997326D7FEEC00482485 /* NetworkService */,
 				5F7F997226D7FEDA00482485 /* Helpers */,
 				5FFEC0CB26CD4FAD000A0BAB /* FlickrOAuthService.swift */,
@@ -301,7 +359,9 @@
 			files = (
 				5FFEC0BD26CD4DDC000A0BAB /* LaunchScreen.storyboard in Resources */,
 				5FFEC0BA26CD4DDC000A0BAB /* Assets.xcassets in Resources */,
+				5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */,
 				5FFEC0B826CD4DDB000A0BAB /* Main.storyboard in Resources */,
+				5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,7 +372,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F7F997026D7816800482485 /* PhotoInfo.swift in Sources */,
+				5F7F997026D7816800482485 /* PostDetails.swift in Sources */,
 				5FA9B2F426E4B1180060DAE8 /* GalleryViewController.swift in Sources */,
 				5F7F996E26D6D26300482485 /* Tag.swift in Sources */,
 				5F7F998226D8064A00482485 /* SignatureHelper.swift in Sources */,
@@ -323,14 +383,18 @@
 				5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */,
 				5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */,
 				5F7F998626D8F78F00482485 /* NetworkService+Upload.swift in Sources */,
+				5F25F6BD26EE08B800F98608 /* PostTableViewCell.swift in Sources */,
 				5FA9B2F026E4B0F20060DAE8 /* ProfileViewController.swift in Sources */,
 				5F7F996826D6AE1000482485 /* Comment.swift in Sources */,
+				5F25F6CC26EE69A300F98608 /* AuthorizationStateProvider.swift in Sources */,
 				5F7F996626D69AE900482485 /* Profile.swift in Sources */,
 				5FFEC0CC26CD4FAD000A0BAB /* FlickrOAuthService.swift in Sources */,
 				5FA9B2F226E4B1020060DAE8 /* HomeViewController.swift in Sources */,
 				5F7F998026D805EA00482485 /* MultipartHelper.swift in Sources */,
 				5F7F997526D7FF0C00482485 /* NetworkService+Favorites.swift in Sources */,
 				5FA9B2FE26E669400060DAE8 /* NetworkService+Flickr.swift in Sources */,
+				5F25F6C926EE5C8F00F98608 /* StorageService.swift in Sources */,
+				5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */,
 				5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */,
 				5F71301126D40D32001A3762 /* NetworkService.swift in Sources */,
 				5F7F997E26D8023300482485 /* NetworkService+Tags.swift in Sources */,
