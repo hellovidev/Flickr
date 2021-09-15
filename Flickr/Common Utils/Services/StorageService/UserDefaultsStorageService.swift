@@ -10,9 +10,9 @@ import Foundation
 // MARK: - StorageProtocol
 
 protocol StorageProtocol {
-    static func save<Value: Codable>(object: Value, with key: String) throws
-    static func pull<Value: Codable>(for key: String, type: Value.Type) throws -> Value
-    static func remove(for key: String)
+    func save<Value: Codable>(object: Value, with key: String) throws
+    func pull<Value: Codable>(for key: String, type: Value.Type) throws -> Value
+    func remove(for key: String)
 }
 
 // MARK: - StorageError
@@ -25,7 +25,7 @@ enum StorageError: Error {
 
 struct UserDefaultsStorageService: StorageProtocol {
     
-    static func save<Value: Codable>(object: Value, with key: String) throws {
+    func save<Value: Codable>(object: Value, with key: String) throws {
         do {
             let encoder = JSONEncoder()
             let data = try encoder.encode(object)
@@ -35,7 +35,7 @@ struct UserDefaultsStorageService: StorageProtocol {
         }
     }
     
-    static func pull<Value: Codable>(for key: String, type: Value.Type = Value.self) throws -> Value {
+    func pull<Value: Codable>(for key: String, type: Value.Type = Value.self) throws -> Value {
         do {
             guard
                 let data = UserDefaults.standard.data(forKey: key)
@@ -50,7 +50,7 @@ struct UserDefaultsStorageService: StorageProtocol {
         }
     }
     
-    static func remove(for key: String) {
+    func remove(for key: String) {
         UserDefaults.standard.removeObject(forKey: key)
     }
     

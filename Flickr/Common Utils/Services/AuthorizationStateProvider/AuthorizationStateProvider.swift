@@ -9,9 +9,10 @@ import UIKit
 
 struct AuthorizationStateProvider {
     
-    static func checkStateAndReturnViewController() -> UIViewController {
+    func checkStateAndReturnViewController() -> UIViewController {
         do {
-            let state = try UserDefaultsStorageService.pull(type: Bool.self, for: "state")
+            let userDefaultsStorageService = UserDefaultsStorageService()
+            let state = try userDefaultsStorageService.pull(for: "state", type: Bool.self)
             
             if state {
                 let viewController = createViewController(type: UITabBarController.self)
@@ -28,7 +29,7 @@ struct AuthorizationStateProvider {
         }
     }
     
-    private static func createViewController<T: UIViewController>(type: T.Type) -> T {
+    private func createViewController<T: UIViewController>(type: T.Type) -> T {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let initialViewController = storyboard.instantiateViewController(withIdentifier: "\(type)") as! T
         return initialViewController

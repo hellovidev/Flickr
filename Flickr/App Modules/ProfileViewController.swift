@@ -21,7 +21,8 @@ class ProfileViewController: UIViewController {
         authorizationService.logout()
         
         guard let window = UIApplication.shared.windows.first else { return }
-        let viewController = AuthorizationStateProvider.checkStateAndReturnViewController()
+        let authorizationStateProvider = AuthorizationStateProvider()
+        let viewController = authorizationStateProvider.checkStateAndReturnViewController()
         
         window.rootViewController = viewController
         window.makeKeyAndVisible()

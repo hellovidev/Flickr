@@ -41,7 +41,8 @@ class HomeViewController: UIViewController {
         self.tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
         
         do {
-            let token = try UserDefaultsStorageService.pull(type: AccessTokenAPI.self, for: "token")
+            let userDefaultsStorageService = UserDefaultsStorageService()
+            let token = try userDefaultsStorageService.pull(for: "token", type: AccessTokenAPI.self)
             
             networkService = .init(
                 accessTokenAPI: token,

@@ -14,6 +14,8 @@ class FlickrOAuthService: NSObject {
     
     static let shared = FlickrOAuthService()
     
+    private let userDefaultsStorageService = UserDefaultsStorageService()
+    
     // MARK: - Authorization State
     
     private enum AuthorizationState: CustomStringConvertible {
@@ -41,9 +43,9 @@ class FlickrOAuthService: NSObject {
         didSet {
             do {
                 if case .successfullyAuthenticated = state {
-                    try UserDefaultsStorageService.save(object: true, with: "state")
+                    try userDefaultsStorageService.save(object: true, with: "state")
                 } else {
-                    try UserDefaultsStorageService.save(object: false, with: "state")
+                    try userDefaultsStorageService.save(object: false, with: "state")
                 }
             } catch(let storageError) {
                 print(storageError)
