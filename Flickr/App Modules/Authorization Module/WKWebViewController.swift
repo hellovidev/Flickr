@@ -8,13 +8,15 @@
 import UIKit
 import WebKit
 
-class WKWebViewController: UIViewController, WKNavigationDelegate {
+// MARK: - WKWebViewController
+
+class WKWebViewController: UIViewController {
     
     private let webView: WKWebView = .init(frame: CGRect(x: 0, y: 55, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 55))
     private let progressView: UIProgressView = .init(progressViewStyle: .default)
-
+    
     weak var delegate: WKWebViewControllerDelegate?
-    let endpoint: String
+    private let endpoint: String
     
     init(endpoint: String) {
         self.endpoint = endpoint
@@ -27,7 +29,7 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         webView.navigationDelegate = self
         webView.load(endpoint)
     }
@@ -44,8 +46,6 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
         webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
     }
     
-    // MARK: - WKNavigationDelegate
-
     override func loadView() {
         setupUIView()
         setupWKWebView()
@@ -85,15 +85,15 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
         progressView.trackTintColor = UIColor.systemGray5
         progressView.tintColor = UIColor.link
         progressView.transform = progressView.transform.scaledBy(x: 1, y: 0.75)
-
+        
         self.view.addSubview(progressView)
-  
+        
         progressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         progressView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 55).isActive = true
         progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
     }
-
+    
     @objc
     func doneAction() {
         delegate?.close(viewController: self)
@@ -103,25 +103,30 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
         progressView.progress = 0
         webView.reload()
     }
-
+    
     // Tracking Website Load Progress
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "estimatedProgress" {
-            //print(Float(webView.estimatedProgress))
             progressView.setProgress(Float(webView.estimatedProgress), animated: false)
         }
     }
     
+    deinit {
+        print("\(type(of: self)) deinited.")
+    }
+    
+}
+
+// MARK: - WKNavigationDelegate
+
+extension WKWebViewController: WKNavigationDelegate {
+    
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         progressView.isHidden = false
     }
-
+    
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         progressView.isHidden = true
-    }
-
-    deinit {
-        print("\(type(of: self)) deinited.")
     }
     
 }
@@ -129,9 +134,9 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
 // MARK: - WKWebView
 
 extension WKWebView {
-
-    func load(_ urlString: String) {
-        if let url = URL(string: urlString) {
+    
+    func load(_ endpoint: String) {
+        if let url = URL(string: endpoint) {
             let request = URLRequest(url: url)
             load(request)
         }

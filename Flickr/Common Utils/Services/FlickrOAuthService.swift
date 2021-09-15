@@ -17,6 +17,12 @@ class FlickrOAuthService: NSObject {
     // MARK: - Authorization State
     
     private enum AuthorizationState: CustomStringConvertible {
+        
+        case requestTokenRequested
+        case authorizeRequested(handler: (URL) -> Void)
+        case accessTokenRequested
+        case successfullyAuthenticated
+        
         var description: String {
             switch self {
             case .requestTokenRequested:
@@ -29,27 +35,6 @@ class FlickrOAuthService: NSObject {
                 return "successfullyAuthenticated"
             }
         }
-        
-        
-//        init(from decoder: Decoder) throws {
-//            let container = try decoder.container(keyedBy: CodingKeys.self)
-//            FlickrOAuthService.AuthorizationState = try container.decode(String.self, forKey: .successfullyAuthenticated)
-//        }
-//
-//        func encode(to encoder: Encoder) throws {
-//            var container = encoder.container(keyedBy: CodingKeys.self)
-//            try container.encode("successfullyAuthenticated", forKey: .successfullyAuthenticated)
-//        }
-        
-        case requestTokenRequested
-        case authorizeRequested(handler: (URL) -> Void)
-        case accessTokenRequested
-        case successfullyAuthenticated
-//
-//        private enum CodingKeys: String, CodingKey {
-//             case successfullyAuthenticated
-//        }
-
     }
     
     private var state: AuthorizationState? {
@@ -150,7 +135,6 @@ class FlickrOAuthService: NSObject {
     
     func flickrLogout() {
         state = nil
-        // Sign out from 'Flickr' account
     }
     
     // MARK: - Steps OAuth1.0 Methods
@@ -357,22 +341,17 @@ class FlickrOAuthService: NSObject {
             
             switch httpResponse.statusCode {
             case ..<200:
-                self.state = nil
                 completion(.failure(ErrorMessage.error("Informational message error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<300:
                 print("\(path == .requestTokenOAuth ? "'request_token'" : "'access_token'") -> Status: \(httpResponse.statusCode) OK")
                 completion(.success(data))
             case ..<400:
-                self.state = nil
                 completion(.failure(ErrorMessage.error("Redirection message (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<500:
-                self.state = nil
                 completion(.failure(ErrorMessage.error("Client request error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             case ..<600:
-                self.state = nil
                 completion(.failure(ErrorMessage.error("Internal server error (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             default:
-                self.state = nil
                 completion(.failure(ErrorMessage.error("Unknown status code (\(httpResponse.statusCode)). Error: \(String(describing: error))")))
             }
         }

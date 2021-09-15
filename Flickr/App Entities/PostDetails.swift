@@ -9,7 +9,7 @@ import Foundation
 
 /// Post Details Object.
 /// Use this object to get post deatils by id.
-/// - Warning: https://www.flickr.com/services/api/explore/flickr.photos.getInfo.
+/// - Note: https://www.flickr.com/services/api/explore/flickr.photos.getInfo.
 struct PostDetails: Decodable {
     
     let id: String

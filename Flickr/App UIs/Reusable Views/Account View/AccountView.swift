@@ -7,10 +7,11 @@
 
 import UIKit
 
+// MARK: - AccountView
+
+@IBDesignable
 class AccountView: UIView {
     
-    private let XIB_NAME = "AccountView"
-
     @IBOutlet var view: UIView!
     @IBOutlet weak var ownerAvatar: UIImageView!
     @IBOutlet weak var nicknameLabel: UILabel!
@@ -26,14 +27,11 @@ class AccountView: UIView {
         setup()
     }
     
-    private func loadViewFromNib() -> UIView {
-        let nib = UINib(nibName: XIB_NAME, bundle: Bundle.main)
-        let view = nib.instantiate(withOwner: self, options: nil).first as! UIView
-        return view
-    }
-    
     func setup() {
-        view = loadViewFromNib()
+        //Bundle.main.loadNibNamed("AccountView", owner: self, options: nil)
+        let bundle = Bundle(for: AccountView.self)
+        bundle.loadNibNamed("AccountView", owner: self, options: nil)
+        ownerAvatar.layer.cornerRadius = ownerAvatar.frame.height / 2
         view.frame = bounds
         addSubview(view)
     }

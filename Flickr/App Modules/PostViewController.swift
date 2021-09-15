@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - PostViewController
+
 class PostViewController: UIViewController {
     
     weak var delegate: PostViewControllerDelegate?

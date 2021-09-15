@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import WebKit
 
 // MARK: - AuthorizationViewController
 
@@ -49,18 +48,13 @@ class AuthorizationViewController: UIViewController {
         authorizationService.login(presenter: self) { [weak self] result in
             switch result {
             case .success:
-                //self?.performSegue(withIdentifier: "HomePath", sender: self)
-                
                 guard let window = UIApplication.shared.windows.first else { return }
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-
-                let initialViewController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as! UITabBarController
+                let viewController = AuthorizationStateProvider.checkStateAndReturnViewController()
                 
-                window.rootViewController = initialViewController
+                window.rootViewController = viewController
                 window.makeKeyAndVisible()
                 
                 UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve], animations: {}, completion: nil)
-                
             case .failure(let error):
                 self?.showAlert(title: "Authorize error", message: error.localizedDescription, button: "OK")
             }

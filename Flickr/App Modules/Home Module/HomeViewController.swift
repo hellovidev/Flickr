@@ -7,11 +7,13 @@
 
 import UIKit
 
+// MARK: - HomeViewController
+
 class HomeViewController: UIViewController {
     
     private var networkService: NetworkService?
-    private var posts: [PostDetails] = .init()
-    private var postsId = [String]()
+    private var postsId: [String] = .init()
+    
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidAppear(_ animated: Bool) {
@@ -30,12 +32,13 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         tableView.delegate = self
         tableView.dataSource = self
         
-        self.tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "FeedPostCell")
+        tableView.estimatedRowHeight = 800
         
-        //tableView.register(PostTableViewCell.self, forCellReuseIdentifier: "FeedPostCell")
+        self.tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
         
         do {
             let token = try StorageService.pull(type: AccessTokenAPI.self, for: "token")
@@ -45,12 +48,11 @@ class HomeViewController: UIViewController {
                 publicConsumerKey: FlickrConstant.Key.consumerKey.rawValue,
                 secretConsumerKey: FlickrConstant.Key.consumerSecretKey.rawValue
             )
+            
             requestListOfPosts()
         } catch {
             showAlert(title: "Error", message: error.localizedDescription, button: "OK")
         }
-        
-
     }
     
     private func requestListOfPosts() {
@@ -69,16 +71,6 @@ class HomeViewController: UIViewController {
         print("\(type(of: self)) deinited.")
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
 }
 
 // MARK: - UITableViewDataSource
@@ -86,22 +78,56 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return postsId.count//1//posts.count
+        return postsId.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FeedPostCell", for: indexPath) as! PostTableViewCell
-        
-        networkService?.getPhotoById(with: postsId[indexPath.row], completion: { result in
-            switch result {
-            case .success(let photoDetails):
-                cell.configure(for: photoDetails)
-            case .failure(let error):
-                print(error)
-            }
-        })
+        let cell = tableView.dequeueReusableCell(withIdentifier: "HomePostCell", for: indexPath) as! PostTableViewCell
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let cell = cell as! PostTableViewCell
 
+        networkService?.getPhotoById(with: postsId[indexPath.row]) { [weak self] result in
+            switch result {
+            case .success(let post):
+                // Set current data of post to cell
+                cell.configure(for: post)
+                
+                // Request for buddyicon
+                if
+                    let iconFarm = post.owner?.iconFarm,
+                    let iconServer = post.owner?.iconServer,
+                    let nsid = post.owner?.nsid {
+                    
+                    self?.networkService?.buddyicon(iconFarm: iconFarm, iconServer: iconServer, nsid: nsid) { result in
+                        switch result {
+                        case .success(let image):
+                            cell.setupBuddyIcon(image: image, postId: post.id)
+                        case .failure(let error):
+                            print("Download buddyicon error: \(error)")
+                        }
+                    }
+                }
+                
+                // Request for post image
+                if
+                    let postSecret = post.secret,
+                    let serverId = post.server {
+                    self?.networkService?.image(postId: post.id, postSecret: postSecret, serverId: serverId) { result in
+                        switch result {
+                        case .success(let image):
+                            cell.setupPostImage(image: image, postId: post.id)
+                        case .failure(let error):
+                            print("Download image error: \(error)")
+                        }
+                    }
+                }
+            case .failure(let error):
+                print("\(#function) has error: \(error.localizedDescription)")
+            }
+        }
     }
     
 }

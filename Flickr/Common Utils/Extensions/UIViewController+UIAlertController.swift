@@ -1,5 +1,5 @@
 //
-//  UIViewController+Alert.swift
+//  UIViewController+UIAlertController.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 09.09.2021.

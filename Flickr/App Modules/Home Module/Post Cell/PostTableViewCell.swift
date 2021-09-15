@@ -6,120 +6,95 @@
 //
 
 import UIKit
-import Combine
+
+// MARK: - PostTableViewCell
 
 class PostTableViewCell: UITableViewCell {
-
+    
     @IBOutlet weak var accountView: AccountView!
+    @IBOutlet weak var metaView: MetaView!
     @IBOutlet weak var postImage: UIImageView!
-    @IBOutlet weak var nicknameLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var postTitle: UILabel!
+    
+    private var representedIdentifier: String?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        // Configure the view for the selected state
     }
     
-    func configure(for post: PostDetails?) {
+    private func convertDateToSpecificFormat(_ dateAsString: String) -> String {
+        guard let dateAsIntSince1970 = Int(dateAsString) else { fatalError() }
+        let date: Date = Date(timeIntervalSince1970: TimeInterval(dateAsIntSince1970))
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMM yyyy"
+        
+        let formattedDateAsString = dateFormatter.string(from: date)
+        return formattedDateAsString
+    }
+    
+    func configure(for post: PostDetails) {
+        representedIdentifier = post.id
 
-        accountView.nicknameLabel.text = "\(String(describing: post?.owner?.realName)) (\(String(describing: post?.owner?.username)))"
-        accountView.locationLabel.text = post?.owner?.location ?? "Unknown"
-        //postImage.image = UIImage(named: "TestImage")
-        
-
-        //fetchImage(endpoint: post?.urls?.url?.first?._content ?? "")
-
-        
-        postTitle.text = post?.title?.content
-        nicknameLabel.text = post?.owner?.username
-        dateLabel.text = post?.dates?.taken//"21 Jun 2001"
-        
-        accountView.ownerAvatar.layer.cornerRadius = accountView.ownerAvatar.frame.height / 2
-        accountView.ownerAvatar.layer.borderWidth = 1
-        accountView.ownerAvatar.layer.borderColor = CGColor.init(gray: 1, alpha: 1)
-        //accountView.nicknameLabel.text = post.owner
-        
-        guard
-            let photoId = post?.id,
-            let photoSecret = post?.secret,
-            let serverId = post?.server
-        else {
-            return
-        }
-        
-        let size = "b"
-        let format = "jpg"
-        
-        guard let url = URL(string: "https://live.staticflickr.com/\(serverId)/\(photoId)_\(photoSecret)_\(size).\(format)") else { return }
-        postImage.load(url: url) { result in
-            switch result {
-            case .success(let image):
+        // Setup header of cell
+        accountView.nicknameLabel.text = "\(post.owner?.realName.flatMap { $0 } ?? "") (\(post.owner?.username.flatMap { $0 } ?? ""))"
+        accountView.nicknameLabel.backgroundColor = .clear
+        accountView.locationLabel.text = post.owner?.location.flatMap { $0 }
+        accountView.locationLabel.backgroundColor = .clear
                 
-                let ratio = image.size.width / image.size.height
-                if self.frame.width > self.frame.height {
-                    let newHeight = self.frame.width / ratio
-                   self.postImage.frame.size = CGSize(width: self.frame.width, height: newHeight)
-                }
-                else{
-                    let newWidth = self.frame.height * ratio
-                   self.postImage.frame.size = CGSize(width: newWidth, height: self.frame.height)
-                }
-                self.postImage.image = image
+        // Setup footer of cell
+        metaView.nicknameLabel.text = post.owner?.username.flatMap { $0 }
+        metaView.nicknameLabel.backgroundColor = .clear
 
-                self.layoutIfNeeded()
-            case .failure(let error):
-                print(error)
-            }
-        }
+        metaView.postTitleLabel.text = post.title?.content.flatMap { $0 }
+        metaView.postTitleLabel.backgroundColor = .clear
         
-        guard
-        let iconFarm = post?.owner?.iconFarm,
-            let iconServer = post?.owner?.iconServer,
-            let nsid = post?.owner?.nsid
-        else {
-            return
-        }
-        guard let urlAvatar = URL(string: "http://farm\(iconFarm).staticflickr.com/\(iconServer)/buddyicons/\(nsid).jpg") else { return }
-        accountView.ownerAvatar.load(url: urlAvatar) { result in
-            switch result {
-            
-            case .success(let image):
-                self.accountView.ownerAvatar.image = image
-            case .failure(let error):
-                print(error)
-            }
-            
-        }
-        
-
-
+        metaView.publishedDateLabel.text = post.dateUploaded.flatMap(convertDateToSpecificFormat)
+        metaView.publishedDateLabel.backgroundColor = .clear
     }
     
-    
-
-    
-    
-}
-
-extension UIImageView {
-    
-    func load(url: URL, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        completionHandler(.success(image))
-                        //self?.image = image
-                    }
-                }
-            }
+    func setupBuddyIcon(image: UIImage?, postId: String) {
+        // Setup account avatar image
+        if (representedIdentifier == postId) {
+            accountView.ownerAvatar.image = image
+            accountView.ownerAvatar.backgroundColor = .clear
         }
+    }
+    
+    func setupPostImage(image: UIImage?, postId: String) {
+        // Setup cell image
+        if (representedIdentifier == postId) {
+            postImage.image = image
+            postImage.backgroundColor = .clear
+        }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        accountView.ownerAvatar.image = nil
+        accountView.ownerAvatar.backgroundColor = .systemGray5
+
+        accountView.nicknameLabel.text = nil
+        accountView.nicknameLabel.backgroundColor = .systemGray5
+
+        accountView.locationLabel.text = nil
+        accountView.locationLabel.backgroundColor = .systemGray5
+        
+        postImage.image = nil
+        postImage.backgroundColor = .systemGray5
+
+        metaView.nicknameLabel.text = " "
+        metaView.nicknameLabel.backgroundColor = .systemGray5
+
+        metaView.postTitleLabel.text = " "
+        metaView.postTitleLabel.backgroundColor = .systemGray5
+        
+        metaView.publishedDateLabel.text = " "
+        metaView.publishedDateLabel.backgroundColor = .systemGray5
     }
     
 }

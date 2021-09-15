@@ -9,6 +9,7 @@ import Foundation
 import CommonCrypto
 
 struct SignatureHelper {
+    
     private let consumerSecretKey: String
     private var accessSecretToken: String?
     
@@ -59,5 +60,5 @@ struct SignatureHelper {
         }
         return result.sorted().joined(separator: separator)
     }
-
+    
 }

@@ -8,7 +8,7 @@
 import UIKit
 
 extension NetworkService {
-    
+        
     // Upload photo: https://www.flickr.com/services/api/upload.api.html
     func uploadNewPhoto(_ image: UIImage = UIImage(named: "TestImage")!, title: String, description: String, completion: @escaping (Result<Void, Error>) -> Void) {
         // Push some additional parameters

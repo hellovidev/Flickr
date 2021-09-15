@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - AuthorizationService
+
 class AuthorizationService: AuthorizationProtocol {
     
     func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -38,12 +40,16 @@ class AuthorizationService: AuthorizationProtocol {
         StorageService.remove(for: "token")
     }
     
+    func handleURL(_ url: URL) {
+        FlickrOAuthService.shared.handleURL(url)
+    }
+    
 }
 
 // MARK: - WKWebViewDelegate
 
 extension AuthorizationService: WKWebViewControllerDelegate {
-
+    
     func close(viewController: WKWebViewController) {
         viewController.dismiss(animated: true, completion: nil)
     }

@@ -7,14 +7,21 @@
 
 import Foundation
 
+// MARK: - StorageProtocol
+
 protocol StorageProtocol {
     static func save<Value: Codable>(object: Value, with key: String) throws
     static func pull<Value: Codable>(type: Value.Type, for key: String) throws -> Value
+    static func remove(for key: String)
 }
+
+// MARK: - StorageError
 
 enum StorageError: Error {
     case dataNotFound
 }
+
+// MARK: - StorageService
 
 struct StorageService: StorageProtocol {
     

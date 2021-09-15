@@ -7,9 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F155EA026F1397A007E2859 /* MetaView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F155E9F26F1397A007E2859 /* MetaView.xib */; };
+		5F155EA226F13988007E2859 /* MetaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F155EA126F13988007E2859 /* MetaView.swift */; };
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
-		5F25F69326EA13E400F98608 /* UIViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */; };
+		5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */; };
 		5F25F6BD26EE08B800F98608 /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6BB26EE08B800F98608 /* PostTableViewCell.swift */; };
 		5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */; };
 		5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6C326EE0B4E00F98608 /* AccountView.swift */; };
@@ -40,6 +42,7 @@
 		5FA9B2FA26E533700060DAE8 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2F926E533700060DAE8 /* HTTPMethod.swift */; };
 		5FA9B2FC26E655AE0060DAE8 /* RequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2FB26E655AE0060DAE8 /* RequestType.swift */; };
 		5FA9B2FE26E669400060DAE8 /* NetworkService+Flickr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2FD26E669400060DAE8 /* NetworkService+Flickr.swift */; };
+		5FF2241C26F1204E0026BAF4 /* NetworkService+ImageDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF2241B26F1204E0026BAF4 /* NetworkService+ImageDownload.swift */; };
 		5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */; };
 		5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */; };
 		5FFEC0B526CD4DDB000A0BAB /* AuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B426CD4DDB000A0BAB /* AuthorizationViewController.swift */; };
@@ -51,9 +54,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F155E9F26F1397A007E2859 /* MetaView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MetaView.xib; sourceTree = "<group>"; };
+		5F155EA126F13988007E2859 /* MetaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaView.swift; sourceTree = "<group>"; };
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
-		5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Alert.swift"; sourceTree = "<group>"; };
+		5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+UIAlertController.swift"; sourceTree = "<group>"; };
 		5F25F6BB26EE08B800F98608 /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
 		5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PostTableViewCell.xib; sourceTree = "<group>"; };
 		5F25F6C326EE0B4E00F98608 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
@@ -84,6 +89,7 @@
 		5FA9B2F926E533700060DAE8 /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		5FA9B2FB26E655AE0060DAE8 /* RequestType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestType.swift; sourceTree = "<group>"; };
 		5FA9B2FD26E669400060DAE8 /* NetworkService+Flickr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Flickr.swift"; sourceTree = "<group>"; };
+		5FF2241B26F1204E0026BAF4 /* NetworkService+ImageDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+ImageDownload.swift"; sourceTree = "<group>"; };
 		5FFEC0AD26CD4DDB000A0BAB /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -107,10 +113,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F155E9E26F13940007E2859 /* Meta View */ = {
+			isa = PBXGroup;
+			children = (
+				5F155E9F26F1397A007E2859 /* MetaView.xib */,
+				5F155EA126F13988007E2859 /* MetaView.swift */,
+			);
+			path = "Meta View";
+			sourceTree = "<group>";
+		};
 		5F25F69126EA13C800F98608 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				5F25F69226EA13E400F98608 /* UIViewController+Alert.swift */,
+				5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -127,7 +142,6 @@
 		5F25F6BF26EE08BE00F98608 /* Post Cell */ = {
 			isa = PBXGroup;
 			children = (
-				5F25F6C026EE0A9900F98608 /* Account View */,
 				5F25F6BB26EE08B800F98608 /* PostTableViewCell.swift */,
 				5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */,
 			);
@@ -137,8 +151,8 @@
 		5F25F6C026EE0A9900F98608 /* Account View */ = {
 			isa = PBXGroup;
 			children = (
-				5F25F6C326EE0B4E00F98608 /* AccountView.swift */,
 				5F25F6C526EE0BFD00F98608 /* AccountView.xib */,
+				5F25F6C326EE0B4E00F98608 /* AccountView.swift */,
 			);
 			path = "Account View";
 			sourceTree = "<group>";
@@ -159,17 +173,17 @@
 			path = AuthorizationStateProvider;
 			sourceTree = "<group>";
 		};
-		5F7F996426D69ACF00482485 /* Entities */ = {
+		5F7F996426D69ACF00482485 /* App Entities */ = {
 			isa = PBXGroup;
 			children = (
+				5F7F996F26D7816800482485 /* PostDetails.swift */,
 				5F7F996526D69AE900482485 /* Profile.swift */,
 				5F7F996726D6AE1000482485 /* Comment.swift */,
 				5F7F996926D6C05800482485 /* Favorite.swift */,
 				5F7F996B26D6CBC700482485 /* Photo.swift */,
 				5F7F996D26D6D26300482485 /* Tag.swift */,
-				5F7F996F26D7816800482485 /* PostDetails.swift */,
 			);
-			path = Entities;
+			path = "App Entities";
 			sourceTree = "<group>";
 		};
 		5F7F997226D7FEDA00482485 /* Helpers */ = {
@@ -193,8 +207,27 @@
 				5F7F997926D8001F00482485 /* NetworkService+Profile.swift */,
 				5F7F997D26D8023300482485 /* NetworkService+Tags.swift */,
 				5FA9B2FD26E669400060DAE8 /* NetworkService+Flickr.swift */,
+				5FF2241B26F1204E0026BAF4 /* NetworkService+ImageDownload.swift */,
 			);
 			path = NetworkService;
+			sourceTree = "<group>";
+		};
+		5FF2241A26F10EF90026BAF4 /* Authorization Module */ = {
+			isa = PBXGroup;
+			children = (
+				5FFEC0B426CD4DDB000A0BAB /* AuthorizationViewController.swift */,
+				5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */,
+			);
+			path = "Authorization Module";
+			sourceTree = "<group>";
+		};
+		5FF2241D26F125810026BAF4 /* Reusable Views */ = {
+			isa = PBXGroup;
+			children = (
+				5F155E9E26F13940007E2859 /* Meta View */,
+				5F25F6C026EE0A9900F98608 /* Account View */,
+			);
+			path = "Reusable Views";
 			sourceTree = "<group>";
 		};
 		5FFEC0A426CD4DDB000A0BAB = {
@@ -219,6 +252,7 @@
 				5FFEC0C426CD4F0B000A0BAB /* App UIs */,
 				5FFEC0C726CD4F32000A0BAB /* App Assets */,
 				5FFEC0C626CD4F24000A0BAB /* App Settings */,
+				5F7F996426D69ACF00482485 /* App Entities */,
 				5FFEC0C526CD4F17000A0BAB /* App Modules */,
 				5FFEC0C826CD4F43000A0BAB /* Common Utils */,
 				5FFEC0BE26CD4DDC000A0BAB /* Info.plist */,
@@ -229,6 +263,7 @@
 		5FFEC0C426CD4F0B000A0BAB /* App UIs */ = {
 			isa = PBXGroup;
 			children = (
+				5FF2241D26F125810026BAF4 /* Reusable Views */,
 				5FFEC0B626CD4DDB000A0BAB /* Main.storyboard */,
 				5FFEC0BB26CD4DDC000A0BAB /* LaunchScreen.storyboard */,
 			);
@@ -238,13 +273,11 @@
 		5FFEC0C526CD4F17000A0BAB /* App Modules */ = {
 			isa = PBXGroup;
 			children = (
+				5FF2241A26F10EF90026BAF4 /* Authorization Module */,
 				5F25F6BA26EE087C00F98608 /* Home Module */,
-				5F7F996426D69ACF00482485 /* Entities */,
-				5FFEC0B426CD4DDB000A0BAB /* AuthorizationViewController.swift */,
 				5FA9B2EF26E4B0F20060DAE8 /* ProfileViewController.swift */,
 				5FA9B2F526E4B12A0060DAE8 /* PostViewController.swift */,
 				5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */,
-				5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */,
 			);
 			path = "App Modules";
 			sourceTree = "<group>";
@@ -360,6 +393,7 @@
 				5FFEC0BD26CD4DDC000A0BAB /* LaunchScreen.storyboard in Resources */,
 				5FFEC0BA26CD4DDC000A0BAB /* Assets.xcassets in Resources */,
 				5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */,
+				5F155EA026F1397A007E2859 /* MetaView.xib in Resources */,
 				5FFEC0B826CD4DDB000A0BAB /* Main.storyboard in Resources */,
 				5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */,
 			);
@@ -395,11 +429,13 @@
 				5FA9B2FE26E669400060DAE8 /* NetworkService+Flickr.swift in Sources */,
 				5F25F6C926EE5C8F00F98608 /* StorageService.swift in Sources */,
 				5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */,
+				5F155EA226F13988007E2859 /* MetaView.swift in Sources */,
+				5FF2241C26F1204E0026BAF4 /* NetworkService+ImageDownload.swift in Sources */,
 				5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */,
 				5F71301126D40D32001A3762 /* NetworkService.swift in Sources */,
 				5F7F997E26D8023300482485 /* NetworkService+Tags.swift in Sources */,
 				5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */,
-				5F25F69326EA13E400F98608 /* UIViewController+Alert.swift in Sources */,
+				5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */,
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* FlickrConstant.swift in Sources */,
 				5F7F997C26D8003700482485 /* NetworkService+Photos.swift in Sources */,

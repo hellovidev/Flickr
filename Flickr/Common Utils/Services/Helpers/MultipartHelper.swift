@@ -12,6 +12,7 @@ enum MimeType: String {
 }
 
 struct MultipartHelper {
+    
     private let boundary: String = "Boundary-\(UUID().uuidString)"
     private let parameters: [String: String]
     private let data: Data?

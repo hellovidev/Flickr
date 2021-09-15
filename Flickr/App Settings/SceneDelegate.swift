@@ -10,6 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
+    private let authorizationService: AuthorizationService = .init()
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
@@ -17,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Catch callback link with 'verifier' parameter
-        FlickrOAuthService.shared.handleURL(url)
+        authorizationService.handleURL(url)
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -27,7 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
 
-        let initialViewController = AuthorizationStateProvider.initialView()
+        let initialViewController = AuthorizationStateProvider.checkStateAndReturnViewController()
 
         window?.rootViewController = initialViewController
         window?.makeKeyAndVisible()

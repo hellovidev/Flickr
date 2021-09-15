@@ -9,26 +9,29 @@ import UIKit
 
 struct AuthorizationStateProvider {
     
-    static func initialView() -> UIViewController {
-        //Добавить на старте выбор начального экрана (написать отдельную структуру, которая будет делать проверку и возвращать результат этой проверки): если залогинен, то Home, иначе Login
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        var state: Bool? = nil
+    static func checkStateAndReturnViewController() -> UIViewController {
         do {
-            state = try StorageService.pull(type: Bool.self, for: "state")
-        } catch(let storageError) {
-            print(storageError)
+            let state = try StorageService.pull(type: Bool.self, for: "state")
+            
+            if state {
+                let viewController = createViewController(type: UITabBarController.self)
+                return viewController
+            } else {
+                let viewController = createViewController(type: AuthorizationViewController.self)
+                viewController.authorizationService = AuthorizationService()
+                return viewController
+            }
+        } catch {
+            let viewController = createViewController(type: AuthorizationViewController.self)
+            viewController.authorizationService = AuthorizationService()
+            return viewController
         }
-        
-        if state ?? false {//FlickrOAuthService.shared.isAuthorized() {
-            let initialViewController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as! UITabBarController
-            return initialViewController
-        } else {
-            let initialViewController = storyboard.instantiateViewController(withIdentifier: "AuthorizationViewController") as! AuthorizationViewController
-            initialViewController.authorizationService = AuthorizationService()
-            return initialViewController
-        }
-
+    }
+    
+    private static func createViewController<T: UIViewController>(type: T.Type) -> T {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let initialViewController = storyboard.instantiateViewController(withIdentifier: "\(type)") as! T
+        return initialViewController
     }
     
 }

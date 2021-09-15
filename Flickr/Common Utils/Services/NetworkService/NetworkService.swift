@@ -19,7 +19,9 @@ struct AccessTokenAPI: Codable {
 
 struct NetworkService {
     
+    private var task: URLSessionTask?
     private let session: URLSession = .init(configuration: .default)
+    
     // Token to get access to 'Flickr API'
     private var accessTokenAPI: AccessTokenAPI
     private let consumerKeyAPI: (publicKey: String, secretKey: String)
@@ -151,7 +153,7 @@ struct NetworkService {
         }
         
     }
-    
+        
     private func request(
         request: URLRequest,
         completion: @escaping (Result<Data, Error>) -> Void
@@ -193,6 +195,44 @@ struct NetworkService {
         
         // Start request process
         task.resume()
+    }
+    
+    mutating func request(for url: URL, completionHandler: @escaping (Result<Data, Error>) -> Void) {
+        if let cachedData = try? ImageCache.shared.get(with: url.absoluteString as NSString) {
+            completionHandler(.success(cachedData as Data))
+            return
+        }
+
+        task = session.downloadTask(with: url) { fileURL, response, error in
+            if let error = error {
+                completionHandler(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                completionHandler(.failure(NetworkError.badHTTPResponse))
+                return
+            }
+            
+            guard let fileURL = fileURL else {
+                completionHandler(.failure(NetworkError.badResponseURL))
+                return
+            }
+            
+            do {
+                let data = try Data(contentsOf: fileURL)
+                ImageCache.shared.set(for: data as NSData, with: url.absoluteString as NSString)
+                completionHandler(.success(data))
+            } catch {
+                completionHandler(.failure(error))
+            }
+        }
+        
+        task?.resume()
+    }
+    
+    func cancel() {
+        task?.cancel()
     }
  
     // MARK: - Response Decoders Entities
