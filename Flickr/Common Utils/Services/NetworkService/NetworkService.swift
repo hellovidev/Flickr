@@ -19,7 +19,6 @@ struct AccessTokenAPI: Codable {
 
 struct NetworkService {
     
-    private var task: URLSessionTask?
     private let session: URLSession = .init(configuration: .default)
     
     // Token to get access to 'Flickr API'
@@ -203,7 +202,7 @@ struct NetworkService {
             return
         }
 
-        task = session.downloadTask(with: url) { fileURL, response, error in
+        let task = session.downloadTask(with: url) { fileURL, response, error in
             if let error = error {
                 completionHandler(.failure(error))
                 return
@@ -228,11 +227,7 @@ struct NetworkService {
             }
         }
         
-        task?.resume()
-    }
-    
-    func cancel() {
-        task?.cancel()
+        task.resume()
     }
  
     // MARK: - Response Decoders Entities
