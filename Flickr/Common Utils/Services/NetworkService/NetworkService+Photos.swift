@@ -33,7 +33,7 @@ extension NetworkService {
             method: .GET,
             parser: ModelDeserializer<PostDetailsResponse>()
         ) { result in
-            completion(result.map { $0.details })
+            completion(result.map { $0.photo })
         }
     }
     
@@ -89,11 +89,7 @@ extension NetworkService {
     }
     
     private struct PostDetailsResponse: Decodable {
-        let details: PostDetails
-        
-        private enum CodingKeys: String, CodingKey {
-            case details = "photo"
-        }
+        let photo: PostDetails
     }
     
 }

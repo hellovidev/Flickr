@@ -87,13 +87,13 @@ class PostTableViewCell: UITableViewCell {
         postImage.image = nil
         postImage.backgroundColor = .systemGray5
 
-        metaView.nicknameLabel.text = " "
+        metaView.nicknameLabel.text = nil
         metaView.nicknameLabel.backgroundColor = .systemGray5
 
-        metaView.postTitleLabel.text = " "
+        metaView.postTitleLabel.text = nil
         metaView.postTitleLabel.backgroundColor = .systemGray5
         
-        metaView.publishedDateLabel.text = " "
+        metaView.publishedDateLabel.text = nil
         metaView.publishedDateLabel.backgroundColor = .systemGray5
     }
     

@@ -11,7 +11,7 @@ struct AuthorizationStateProvider {
     
     static func checkStateAndReturnViewController() -> UIViewController {
         do {
-            let state = try StorageService.pull(type: Bool.self, for: "state")
+            let state = try UserDefaultsStorageService.pull(type: Bool.self, for: "state")
             
             if state {
                 let viewController = createViewController(type: UITabBarController.self)

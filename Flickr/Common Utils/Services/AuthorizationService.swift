@@ -17,7 +17,7 @@ class AuthorizationService: AuthorizationProtocol {
             case .success(let accessOAuthToken):
                 do {
                     let token = AccessTokenAPI(token: accessOAuthToken.token, secret: accessOAuthToken.secretToken, nsid: accessOAuthToken.userNSID)
-                    try StorageService.save(object: token, with: "token")
+                    try UserDefaultsStorageService.save(object: token, with: "token")
                     completion(.success(Void()))
                 } catch {
                     completion(.failure(error))
@@ -36,8 +36,8 @@ class AuthorizationService: AuthorizationProtocol {
     
     func logout() {
         FlickrOAuthService.shared.flickrLogout()
-        StorageService.remove(for: "state")
-        StorageService.remove(for: "token")
+        UserDefaultsStorageService.remove(for: "state")
+        UserDefaultsStorageService.remove(for: "token")
     }
     
     func handleURL(_ url: URL) {

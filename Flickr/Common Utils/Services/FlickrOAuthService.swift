@@ -41,9 +41,9 @@ class FlickrOAuthService: NSObject {
         didSet {
             do {
                 if case .successfullyAuthenticated = state {
-                    try StorageService.save(object: true, with: "state")
+                    try UserDefaultsStorageService.save(object: true, with: "state")
                 } else {
-                    try StorageService.save(object: false, with: "state")
+                    try UserDefaultsStorageService.save(object: false, with: "state")
                 }
             } catch(let storageError) {
                 print(storageError)

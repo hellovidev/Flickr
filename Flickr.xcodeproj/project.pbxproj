@@ -16,7 +16,7 @@
 		5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */; };
 		5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6C326EE0B4E00F98608 /* AccountView.swift */; };
 		5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6C526EE0BFD00F98608 /* AccountView.xib */; };
-		5F25F6C926EE5C8F00F98608 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6C826EE5C8F00F98608 /* StorageService.swift */; };
+		5F25F6C926EE5C8F00F98608 /* UserDefaultsStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6C826EE5C8F00F98608 /* UserDefaultsStorageService.swift */; };
 		5F25F6CC26EE69A300F98608 /* AuthorizationStateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */; };
 		5F71301126D40D32001A3762 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71301026D40D32001A3762 /* NetworkService.swift */; };
 		5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996226D66DE300482485 /* ErrorMessage.swift */; };
@@ -63,7 +63,7 @@
 		5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PostTableViewCell.xib; sourceTree = "<group>"; };
 		5F25F6C326EE0B4E00F98608 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		5F25F6C526EE0BFD00F98608 /* AccountView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountView.xib; sourceTree = "<group>"; };
-		5F25F6C826EE5C8F00F98608 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		5F25F6C826EE5C8F00F98608 /* UserDefaultsStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStorageService.swift; sourceTree = "<group>"; };
 		5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationStateProvider.swift; sourceTree = "<group>"; };
 		5F71301026D40D32001A3762 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5F7F996226D66DE300482485 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
@@ -160,7 +160,7 @@
 		5F25F6C726EE5C6B00F98608 /* StorageService */ = {
 			isa = PBXGroup;
 			children = (
-				5F25F6C826EE5C8F00F98608 /* StorageService.swift */,
+				5F25F6C826EE5C8F00F98608 /* UserDefaultsStorageService.swift */,
 			);
 			path = StorageService;
 			sourceTree = "<group>";
@@ -427,7 +427,7 @@
 				5F7F998026D805EA00482485 /* MultipartHelper.swift in Sources */,
 				5F7F997526D7FF0C00482485 /* NetworkService+Favorites.swift in Sources */,
 				5FA9B2FE26E669400060DAE8 /* NetworkService+Flickr.swift in Sources */,
-				5F25F6C926EE5C8F00F98608 /* StorageService.swift in Sources */,
+				5F25F6C926EE5C8F00F98608 /* UserDefaultsStorageService.swift in Sources */,
 				5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */,
 				5F155EA226F13988007E2859 /* MetaView.swift in Sources */,
 				5FF2241C26F1204E0026BAF4 /* NetworkService+ImageDownload.swift in Sources */,

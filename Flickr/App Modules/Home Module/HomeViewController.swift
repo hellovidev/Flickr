@@ -36,12 +36,12 @@ class HomeViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.estimatedRowHeight = 800
+        //tableView.estimatedRowHeight = 800
         
         self.tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
         
         do {
-            let token = try StorageService.pull(type: AccessTokenAPI.self, for: "token")
+            let token = try UserDefaultsStorageService.pull(type: AccessTokenAPI.self, for: "token")
             
             networkService = .init(
                 accessTokenAPI: token,
@@ -83,12 +83,7 @@ extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomePostCell", for: indexPath) as! PostTableViewCell
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let cell = cell as! PostTableViewCell
-
+        
         networkService?.getPhotoById(with: postsId[indexPath.row]) { [weak self] result in
             switch result {
             case .success(let post):
@@ -128,7 +123,15 @@ extension HomeViewController: UITableViewDataSource {
                 print("\(#function) has error: \(error.localizedDescription)")
             }
         }
+        
+        return cell
     }
+    
+//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        let cell = cell as! PostTableViewCell
+//
+//
+//    }
     
 }
 

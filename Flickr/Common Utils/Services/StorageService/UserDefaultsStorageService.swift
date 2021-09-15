@@ -11,7 +11,7 @@ import Foundation
 
 protocol StorageProtocol {
     static func save<Value: Codable>(object: Value, with key: String) throws
-    static func pull<Value: Codable>(type: Value.Type, for key: String) throws -> Value
+    static func pull<Value: Codable>(for key: String, type: Value.Type) throws -> Value
     static func remove(for key: String)
 }
 
@@ -23,7 +23,7 @@ enum StorageError: Error {
 
 // MARK: - StorageService
 
-struct StorageService: StorageProtocol {
+struct UserDefaultsStorageService: StorageProtocol {
     
     static func save<Value: Codable>(object: Value, with key: String) throws {
         do {
@@ -35,7 +35,7 @@ struct StorageService: StorageProtocol {
         }
     }
     
-    static func pull<Value: Codable>(type: Value.Type, for key: String) throws -> Value {
+    static func pull<Value: Codable>(for key: String, type: Value.Type = Value.self) throws -> Value {
         do {
             guard
                 let data = UserDefaults.standard.data(forKey: key)
