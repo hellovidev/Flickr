@@ -19,7 +19,7 @@ class HomeViewController: UIViewController {
     private var postsId: [String] = .init()
     
     var networkService: NetworkService!
-    
+    private var pageNumber = 0
     
     
     
@@ -37,13 +37,17 @@ class HomeViewController: UIViewController {
         tableView.refreshControl = refreshControl
         tableView.addSubview(refreshControl)
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
-
     }
     
     
     @objc
     private func refresh() {
-        requestListOfPosts()
+        pageNumber = 0
+        postsId.removeAll()
+        activityIndicator.stopAnimating()
+        tableView.reloadData()
+        
+        requestListOfPosts(for: pageNumber)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -67,35 +71,21 @@ class HomeViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
     
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 300
+//        tableView.rowHeight = UITableView.automaticDimension
+//        tableView.estimatedRowHeight = 300
         
         self.tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
         
-        requestListOfPosts()
-//        do {
-//            let userDefaultsStorageService = UserDefaultsStorageService()
-//            let token = try userDefaultsStorageService.pull(for: "token", type: AccessTokenAPI.self)
-//            
-//            networkService = .init(
-//                accessTokenAPI: token,
-//                publicConsumerKey: FlickrConstant.Key.consumerKey.rawValue,
-//                secretConsumerKey: FlickrConstant.Key.consumerSecretKey.rawValue
-//            )
-//            
-//            requestListOfPosts()
-//        } catch {
-//            showAlert(title: "Error", message: error.localizedDescription, button: "OK")
-//        }
+        requestListOfPosts(for: pageNumber)
     }
     
-    private func requestListOfPosts() {
-        networkService?.getRecentPosts { [weak self] result in
+    private func requestListOfPosts(for page: Int) {
+        networkService?.getRecentPosts(page: page) { [weak self] result in
             switch result {
             case .success(let posts):
-                self?.postsId = posts.compactMap { $0.id }
+                self?.postsId += posts.compactMap { $0.id }
                 self?.refreshControl.endRefreshing()
-                //self?.activityIndicator.stopAnimating()
+                self?.activityIndicator.stopAnimating()
                 self?.tableView.reloadData()
             case .failure(let error):
                 self?.activityIndicator.stopAnimating()
@@ -165,9 +155,23 @@ extension HomeViewController: UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-        /// new request for data
-    }
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+       let lastSectionIndex = tableView.numberOfSections - 1
+       let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
+       if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
+
+        activityIndicator.startAnimating()
+        pageNumber += 1
+        requestListOfPosts(for: pageNumber)
+
+       }
+   }
+    
+//    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+//        activityIndicator.startAnimating()
+//        pageNumber += 1
+//        requestListOfPosts(for: pageNumber)
+//    }
     
 }
 
