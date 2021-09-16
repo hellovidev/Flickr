@@ -12,7 +12,7 @@ import UIKit
 class PostTableViewCell: UITableViewCell {
     
     @IBOutlet weak var accountView: AccountView!
-    @IBOutlet weak var metaView: MetaView!
+    @IBOutlet weak var metaView: PostDescriptionView!
     @IBOutlet weak var postImage: UIImageView!
     
     private var representedIdentifier: String?

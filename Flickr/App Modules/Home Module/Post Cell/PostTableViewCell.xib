@@ -28,7 +28,7 @@
                             <constraint firstAttribute="width" secondItem="RYM-af-tNk" secondAttribute="height" multiplier="1:1" id="1fQ-b5-H5U"/>
                         </constraints>
                     </imageView>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jyk-I6-i4j" customClass="MetaView" customModule="Flickr" customModuleProvider="target">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jyk-I6-i4j" customClass="PostDescriptionView" customModule="Flickr" customModuleProvider="target">
                         <rect key="frame" x="15" y="637" width="535" height="74"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="70" id="n12-3i-rGN"/>

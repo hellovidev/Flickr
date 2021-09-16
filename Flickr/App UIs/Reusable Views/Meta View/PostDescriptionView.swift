@@ -10,7 +10,7 @@ import UIKit
 // MARK: - MetaView
 
 @IBDesignable
-class MetaView: UIView {
+class PostDescriptionView: UIView {
     
     @IBOutlet var view: UIView!
     @IBOutlet weak var nicknameLabel: UILabel!
@@ -28,8 +28,8 @@ class MetaView: UIView {
     }
     
     func setup() {
-        let bundle = Bundle(for: AccountView.self)
-        bundle.loadNibNamed("MetaView", owner: self, options: nil)
+        let bundle = Bundle(for: PostDescriptionView.self)
+        bundle.loadNibNamed("PostDescriptionView", owner: self, options: nil)
         view.frame = bounds
         addSubview(view)
     }
