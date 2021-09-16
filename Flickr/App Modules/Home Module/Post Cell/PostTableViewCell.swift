@@ -51,6 +51,7 @@ class PostTableViewCell: UITableViewCell {
 
         metaView.postTitleLabel.text = post.title?.content.flatMap { $0 }
         metaView.postTitleLabel.backgroundColor = .clear
+        metaView.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
         
         metaView.publishedDateLabel.text = post.dateUploaded.flatMap(convertDateToSpecificFormat)
         metaView.publishedDateLabel.backgroundColor = .clear

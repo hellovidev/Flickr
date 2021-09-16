@@ -18,7 +18,7 @@ class HomeViewController: UIViewController {
 
     private var postsId: [String] = .init()
     
-    private var networkService: NetworkService!
+    var networkService: NetworkService!
     
     
     
@@ -66,30 +66,27 @@ class HomeViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
-        
-
-
-//        tableView.tableHeaderView = spinner
-//        tableView.tableFooterView?.isHidden = false
-        
-        //tableView.estimatedRowHeight = 800
+    
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 300
         
         self.tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
         
-        do {
-            let userDefaultsStorageService = UserDefaultsStorageService()
-            let token = try userDefaultsStorageService.pull(for: "token", type: AccessTokenAPI.self)
-            
-            networkService = .init(
-                accessTokenAPI: token,
-                publicConsumerKey: FlickrConstant.Key.consumerKey.rawValue,
-                secretConsumerKey: FlickrConstant.Key.consumerSecretKey.rawValue
-            )
-            
-            requestListOfPosts()
-        } catch {
-            showAlert(title: "Error", message: error.localizedDescription, button: "OK")
-        }
+        requestListOfPosts()
+//        do {
+//            let userDefaultsStorageService = UserDefaultsStorageService()
+//            let token = try userDefaultsStorageService.pull(for: "token", type: AccessTokenAPI.self)
+//            
+//            networkService = .init(
+//                accessTokenAPI: token,
+//                publicConsumerKey: FlickrConstant.Key.consumerKey.rawValue,
+//                secretConsumerKey: FlickrConstant.Key.consumerSecretKey.rawValue
+//            )
+//            
+//            requestListOfPosts()
+//        } catch {
+//            showAlert(title: "Error", message: error.localizedDescription, button: "OK")
+//        }
     }
     
     private func requestListOfPosts() {

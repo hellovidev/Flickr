@@ -115,13 +115,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5F155E9E26F13940007E2859 /* Meta View */ = {
+		5F155E9E26F13940007E2859 /* Post Description View */ = {
 			isa = PBXGroup;
 			children = (
 				5F155E9F26F1397A007E2859 /* PostDescriptionView.xib */,
 				5F155EA126F13988007E2859 /* PostDescriptionView.swift */,
 			);
-			path = "Meta View";
+			path = "Post Description View";
 			sourceTree = "<group>";
 		};
 		5F25F69126EA13C800F98608 /* Extensions */ = {
@@ -226,7 +226,7 @@
 		5FF2241D26F125810026BAF4 /* Reusable Views */ = {
 			isa = PBXGroup;
 			children = (
-				5F155E9E26F13940007E2859 /* Meta View */,
+				5F155E9E26F13940007E2859 /* Post Description View */,
 				5F25F6C026EE0A9900F98608 /* Account View */,
 			);
 			path = "Reusable Views";

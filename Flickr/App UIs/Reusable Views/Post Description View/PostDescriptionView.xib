@@ -17,7 +17,7 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="405" height="75"/>
+            <rect key="frame" x="0.0" y="0.0" width="494" height="137"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" verticalHuggingPriority="252" text="Nickname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S6G-aC-CaV">
@@ -28,7 +28,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zkj-fv-ArC">
-                    <rect key="frame" x="0.0" y="22" width="405" height="53"/>
+                    <rect key="frame" x="0.0" y="105.5" width="494" height="31.5"/>
                     <color key="backgroundColor" systemColor="systemGray5Color"/>
                     <attributedString key="attributedText">
                         <fragment content="20 Sept 2020">
@@ -41,31 +41,33 @@
                     </attributedString>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description post" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="An3-t8-DDT">
-                    <rect key="frame" x="74" y="0.0" width="106.5" height="17"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="An3-t8-DDT">
+                    <rect key="frame" x="74" y="0.0" width="408.5" height="100.5"/>
                     <color key="backgroundColor" systemColor="systemGray5Color"/>
+                    <string key="text">Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post Description post </string>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
             <constraints>
-                <constraint firstItem="S6G-aC-CaV" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="9wd-kq-nrT"/>
-                <constraint firstItem="An3-t8-DDT" firstAttribute="top" secondItem="S6G-aC-CaV" secondAttribute="top" id="Dg2-RH-w6R"/>
-                <constraint firstItem="zkj-fv-ArC" firstAttribute="top" relation="greaterThanOrEqual" secondItem="S6G-aC-CaV" secondAttribute="bottom" constant="5" id="GE0-yc-gzz"/>
-                <constraint firstItem="An3-t8-DDT" firstAttribute="leading" secondItem="S6G-aC-CaV" secondAttribute="trailing" constant="5" id="WcT-d3-g3Q"/>
-                <constraint firstAttribute="trailing" secondItem="zkj-fv-ArC" secondAttribute="trailing" id="av9-zD-HIv"/>
-                <constraint firstItem="S6G-aC-CaV" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="bLG-Jm-Zyk"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="An3-t8-DDT" secondAttribute="trailing" id="e8D-WZ-EfC"/>
-                <constraint firstItem="zkj-fv-ArC" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="elg-Wr-wT3"/>
-                <constraint firstItem="zkj-fv-ArC" firstAttribute="top" secondItem="An3-t8-DDT" secondAttribute="bottom" constant="5" id="inl-Mb-qSD"/>
-                <constraint firstAttribute="bottom" secondItem="zkj-fv-ArC" secondAttribute="bottom" id="qSb-Kv-4lX"/>
-                <constraint firstItem="An3-t8-DDT" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="v0L-Bw-qwK"/>
+                <constraint firstItem="An3-t8-DDT" firstAttribute="top" secondItem="S6G-aC-CaV" secondAttribute="top" id="43b-Ki-rX7"/>
+                <constraint firstItem="zkj-fv-ArC" firstAttribute="top" secondItem="An3-t8-DDT" secondAttribute="bottom" constant="5" id="Aa0-Aj-dCX"/>
+                <constraint firstAttribute="trailing" secondItem="zkj-fv-ArC" secondAttribute="trailing" id="Ar6-PF-mF1"/>
+                <constraint firstItem="zkj-fv-ArC" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Hot-XX-q72"/>
+                <constraint firstAttribute="bottom" secondItem="zkj-fv-ArC" secondAttribute="bottom" id="JFb-bP-FIx"/>
+                <constraint firstItem="An3-t8-DDT" firstAttribute="leading" secondItem="S6G-aC-CaV" secondAttribute="trailing" constant="5" id="LiV-4j-Rc8"/>
+                <constraint firstItem="An3-t8-DDT" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="cJx-cc-AKL"/>
+                <constraint firstItem="S6G-aC-CaV" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="cds-U5-eWq"/>
+                <constraint firstItem="S6G-aC-CaV" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="hIx-s1-K1i"/>
+                <constraint firstItem="zkj-fv-ArC" firstAttribute="top" relation="greaterThanOrEqual" secondItem="S6G-aC-CaV" secondAttribute="bottom" constant="5" id="nAv-yo-mph"/>
+                <constraint firstItem="zkj-fv-ArC" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="qYk-Jj-cOa"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="An3-t8-DDT" secondAttribute="trailing" id="z3N-WE-Y9a"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="426.81159420289856" y="-167.07589285714286"/>
+            <point key="canvasLocation" x="1011.5942028985507" y="-236.71875"/>
         </view>
     </objects>
     <resources>
