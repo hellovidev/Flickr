@@ -16,6 +16,24 @@ class HomeViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    
+    
+    
+    
+    
+    
+    private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
+    
+    
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        activityIndicator.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
+        tableView.tableFooterView = activityIndicator
+        activityIndicator.startAnimating()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -33,8 +51,14 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         tableView.delegate = self
         tableView.dataSource = self
+        
+
+
+//        tableView.tableHeaderView = spinner
+//        tableView.tableFooterView?.isHidden = false
         
         //tableView.estimatedRowHeight = 800
         
@@ -128,11 +152,9 @@ extension HomeViewController: UITableViewDataSource {
         return cell
     }
     
-//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        let cell = cell as! PostTableViewCell
-//
-//
-//    }
+    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        /// new request for data
+    }
     
 }
 
