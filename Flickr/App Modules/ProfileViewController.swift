@@ -23,7 +23,7 @@ class ProfileViewController: UIViewController {
         guard let window = UIApplication.shared.windows.first else { return }
         
         let authorizationStateProvider = AuthorizationStateProvider()
-        let viewController = authorizationStateProvider.checkStateAndReturnViewController()
+        let viewController = authorizationStateProvider.checkStateAndReturnViewController(storageService: UserDefaultsStorageService())
         
         let coordinator = Coordinator()
         coordinator.makeKeyAndVisible(viewController, window: window)

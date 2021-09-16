@@ -30,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let window = window else { return }
 
         let authorizationStateProvider = AuthorizationStateProvider()
-        let initialViewController = authorizationStateProvider.checkStateAndReturnViewController()
+        let initialViewController = authorizationStateProvider.checkStateAndReturnViewController(storageService: UserDefaultsStorageService())
 
         let coordinator = Coordinator()
         coordinator.makeKeyAndVisible(initialViewController, window: window)
