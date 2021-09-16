@@ -11,7 +11,7 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
-    private lazy var authorizationService: AuthorizationService = .init()
+    private lazy var authorizationService: AuthorizationService = .init(storageService: UserDefaultsStorageService())
     
     override func viewDidLoad() {
         super.viewDidLoad()

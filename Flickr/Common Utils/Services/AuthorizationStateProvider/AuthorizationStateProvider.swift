@@ -19,12 +19,12 @@ struct AuthorizationStateProvider {
                 return viewController
             } else {
                 let viewController = createViewController(type: AuthorizationViewController.self)
-                viewController.authorizationService = AuthorizationService()
+                viewController.authorizationService = AuthorizationService(storageService: UserDefaultsStorageService())
                 return viewController
             }
         } catch {
             let viewController = createViewController(type: AuthorizationViewController.self)
-            viewController.authorizationService = AuthorizationService()
+            viewController.authorizationService = AuthorizationService(storageService: UserDefaultsStorageService())
             return viewController
         }
     }

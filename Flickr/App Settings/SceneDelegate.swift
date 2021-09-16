@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Catch callback link with 'verifier' parameter
-        let authorizationService: AuthorizationService = .init()
+        let authorizationService: AuthorizationService = .init(storageService: UserDefaultsStorageService())
         authorizationService.handleURL(url)
     }
     

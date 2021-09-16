@@ -183,6 +183,7 @@ extension HomeViewController: UITableViewDelegate {
         let postViewController = storyboard.instantiateViewController(withIdentifier: "PostViewController") as! PostViewController
         postViewController.delegate = self
         navigationController?.pushViewController(postViewController, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
 }

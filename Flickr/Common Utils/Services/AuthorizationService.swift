@@ -11,7 +11,11 @@ import UIKit
 
 class AuthorizationService: AuthorizationProtocol {
     
-    private let userDefaultsStorageService = UserDefaultsStorageService()
+    private let storageService: StorageProtocol
+    
+    init(storageService: StorageProtocol) {
+        self.storageService = storageService
+    }
     
     func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {
         FlickrOAuthService.shared.flickrLogin(presenter: presenter) { [weak self] result in
@@ -19,7 +23,7 @@ class AuthorizationService: AuthorizationProtocol {
             case .success(let accessOAuthToken):
                 do {
                     let token = AccessTokenAPI(token: accessOAuthToken.token, secret: accessOAuthToken.secretToken, nsid: accessOAuthToken.userNSID)
-                    try self?.userDefaultsStorageService.save(object: token, with: "token")
+                    try self?.storageService.save(object: token, with: "token")
                     completion(.success(Void()))
                 } catch {
                     completion(.failure(error))
@@ -38,8 +42,8 @@ class AuthorizationService: AuthorizationProtocol {
     
     func logout() {
         FlickrOAuthService.shared.flickrLogout()
-        userDefaultsStorageService.remove(for: "state")
-        userDefaultsStorageService.remove(for: "token")
+        storageService.remove(for: "state")
+        storageService.remove(for: "token")
     }
     
     func handleURL(_ url: URL) {
