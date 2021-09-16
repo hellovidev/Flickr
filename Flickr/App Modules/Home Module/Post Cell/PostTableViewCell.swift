@@ -16,9 +16,13 @@ class PostTableViewCell: UITableViewCell {
     @IBOutlet weak var postImage: UIImageView!
     
     private var representedIdentifier: String?
-    
+        
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        startSkeletonAnimation(view: accountView.ownerAvatar)
+        startSkeletonAnimation(view: postImage)
+        startSkeletonAnimation(view: metaView.view)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -55,6 +59,8 @@ class PostTableViewCell: UITableViewCell {
         
         metaView.publishedDateLabel.text = post.dateUploaded.flatMap(convertDateToSpecificFormat)
         metaView.publishedDateLabel.backgroundColor = .clear
+        
+        stopSkeletonAnimation()
     }
     
     func setupBuddyIcon(image: UIImage?, postId: String) {
@@ -75,6 +81,10 @@ class PostTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        
+        startSkeletonAnimation(view: accountView.ownerAvatar)
+        startSkeletonAnimation(view: postImage)
+        startSkeletonAnimation(view: metaView.view)
         
         accountView.ownerAvatar.image = nil
         accountView.ownerAvatar.backgroundColor = .systemGray5
@@ -98,5 +108,46 @@ class PostTableViewCell: UITableViewCell {
         metaView.publishedDateLabel.backgroundColor = .systemGray5
     }
     
-}
+    
+    
+    // MARK: - Animation
+    
+    private var gradientLayerArray: [CAGradientLayer] = .init()
+    
+    private func startSkeletonAnimation(view: UIView) {
+        let gradientLayer: CAGradientLayer = .init()
+        gradientLayer.frame = view.bounds
+        gradientLayer.startPoint = CGPoint(x: -1.5, y: 0.25)
+        gradientLayer.endPoint = CGPoint(x: 2.5, y: 0.75)
+        gradientLayer.drawsAsynchronously = true
 
+        let colors = [
+          UIColor.systemGray4.cgColor,
+            UIColor.systemGray5.cgColor,
+            UIColor.systemGray6.cgColor,
+        ]
+        gradientLayer.colors = colors.reversed()
+
+        let locations: [NSNumber] = [0.0, 0.25, 1.0]
+        gradientLayer.locations = locations
+        gradientLayer.frame = bounds
+        view.layer.addSublayer(gradientLayer)
+
+        let gradientAnimation = CABasicAnimation(keyPath: #keyPath(CAGradientLayer.locations))
+        gradientAnimation.fromValue = [0.0, 0.0, 0.25]
+        gradientAnimation.toValue = [0.75 ,1.0, 1.0]
+        gradientAnimation.duration = 0.75
+        gradientAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
+        gradientAnimation.repeatCount = .infinity
+        gradientAnimation.autoreverses = true
+        gradientAnimation.isRemovedOnCompletion = false
+
+        gradientLayer.add(gradientAnimation, forKey: "gradientAnimation")
+        gradientLayerArray.append(gradientLayer)
+    }
+    
+    private func stopSkeletonAnimation() {
+        gradientLayerArray.forEach { $0.removeFromSuperlayer() } 
+    }
+    
+}
