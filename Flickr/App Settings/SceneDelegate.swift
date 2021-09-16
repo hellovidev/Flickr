@@ -10,7 +10,6 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    private let authorizationService: AuthorizationService = .init()
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
@@ -18,6 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Catch callback link with 'verifier' parameter
+        let authorizationService: AuthorizationService = .init()
         authorizationService.handleURL(url)
     }
     
@@ -27,12 +27,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
+        guard let window = window else { return }
 
         let authorizationStateProvider = AuthorizationStateProvider()
         let initialViewController = authorizationStateProvider.checkStateAndReturnViewController()
 
-        window?.rootViewController = initialViewController
-        window?.makeKeyAndVisible()
+        let coordinator = Coordinator()
+        coordinator.makeKeyAndVisible(initialViewController, window: window)
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

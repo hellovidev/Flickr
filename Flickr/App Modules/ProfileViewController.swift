@@ -21,11 +21,12 @@ class ProfileViewController: UIViewController {
         authorizationService.logout()
         
         guard let window = UIApplication.shared.windows.first else { return }
+        
         let authorizationStateProvider = AuthorizationStateProvider()
         let viewController = authorizationStateProvider.checkStateAndReturnViewController()
         
-        window.rootViewController = viewController
-        window.makeKeyAndVisible()
+        let coordinator = Coordinator()
+        coordinator.makeKeyAndVisible(viewController, window: window)
         
         UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve], animations: {}, completion: nil)
     }

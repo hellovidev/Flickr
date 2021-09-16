@@ -11,24 +11,23 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    private var networkService: NetworkService?
-    private var postsId: [String] = .init()
-    
     @IBOutlet weak var tableView: UITableView!
     
-    
-    
-    
-    
-    
-    
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
+
+    private var postsId: [String] = .init()
+    
+    private var networkService: NetworkService!
+    
+    
     
     
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Adding loading view to table view
         activityIndicator.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
         tableView.tableFooterView = activityIndicator
         activityIndicator.startAnimating()
