@@ -28,12 +28,15 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        tableView.showsVerticalScrollIndicator = false
+        
         // Adding loading view to table view
         activityIndicator.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
         tableView.tableFooterView = activityIndicator
         activityIndicator.startAnimating()
         tableView.tableFooterView?.isHidden = false
         
+        refreshControl.transform = CGAffineTransform(scaleX: 0.75, y: 0.75)
         tableView.refreshControl = refreshControl
         tableView.addSubview(refreshControl)
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
