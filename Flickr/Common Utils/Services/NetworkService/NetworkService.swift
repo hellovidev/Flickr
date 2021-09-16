@@ -17,6 +17,7 @@ struct AccessTokenAPI: Codable {
 
 // MARK: - Network Layer (REST)
 
+/// https://www.flickr.com/services/api/
 struct NetworkService {
     
     private let session: URLSession = .init(configuration: .default)

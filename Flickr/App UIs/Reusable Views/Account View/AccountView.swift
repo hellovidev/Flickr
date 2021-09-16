@@ -28,7 +28,6 @@ class AccountView: UIView {
     }
     
     func setup() {
-        //Bundle.main.loadNibNamed("AccountView", owner: self, options: nil)
         let bundle = Bundle(for: AccountView.self)
         bundle.loadNibNamed("AccountView", owner: self, options: nil)
         ownerAvatar.layer.cornerRadius = ownerAvatar.frame.height / 2
