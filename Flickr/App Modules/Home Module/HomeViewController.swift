@@ -14,6 +14,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
+    private let refreshControl: UIRefreshControl = .init()
 
     private var postsId: [String] = .init()
     
@@ -31,6 +32,18 @@ class HomeViewController: UIViewController {
         activityIndicator.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
         tableView.tableFooterView = activityIndicator
         activityIndicator.startAnimating()
+        tableView.tableFooterView?.isHidden = false
+        
+        tableView.refreshControl = refreshControl
+        tableView.addSubview(refreshControl)
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+
+    }
+    
+    
+    @objc
+    private func refresh() {
+        requestListOfPosts()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -84,8 +97,12 @@ class HomeViewController: UIViewController {
             switch result {
             case .success(let posts):
                 self?.postsId = posts.compactMap { $0.id }
+                self?.refreshControl.endRefreshing()
+                //self?.activityIndicator.stopAnimating()
                 self?.tableView.reloadData()
             case .failure(let error):
+                self?.activityIndicator.stopAnimating()
+                self?.tableView.tableFooterView?.isHidden = true
                 self?.showAlert(title: "Error", message: error.localizedDescription, button: "OK")
             }
         }
