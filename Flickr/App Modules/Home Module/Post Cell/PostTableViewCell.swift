@@ -40,7 +40,7 @@ class PostTableViewCell: UITableViewCell {
         return formattedDateAsString
     }
     
-    func buildNickname(fullName: String?, username: String?) -> String {
+    private func buildNickname(fullName: String?, username: String?) -> String {
         var nickname = ""
         if let fullName = fullName {
             nickname += fullName
