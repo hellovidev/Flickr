@@ -75,7 +75,7 @@ class HomeViewController: UIViewController {
     }
     
     private func requestListOfPosts(for page: Int) {
-        networkService?.getRecentPosts(page: page) { [weak self] result in
+        networkService.getRecentPosts(page: page) { [weak self] result in
             switch result {
             case .success(let posts):
                 self?.postsId += posts.compactMap { $0.id }
