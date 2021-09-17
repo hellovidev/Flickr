@@ -7,13 +7,15 @@
 
 import UIKit
 
-struct AuthorizationStateProvider {
+struct AuthorizationStateProvider<StorageService: StorageServiceProtocol> {
     
-    var storageService: StorageProtocol
+    var storageService: StorageService
     
     func getInitialViewController() -> UIViewController {
         do {
-            let state = try storageService.pull(for: "state", type: Bool.self)
+            let defaultsService = UserDefaultsStorageService<<#Object: Decodable & Encodable#>>()
+            let state = try storageService.get(for: "state" as! StorageService.KeyType) //.pull(for: "state", type: Bool.self)
+            //let state2 = try DefaultsStorageService<Bool>().get(for: "state")
             
             if state {
                 let tabBarController = createViewController(type: UITabBarController.self)

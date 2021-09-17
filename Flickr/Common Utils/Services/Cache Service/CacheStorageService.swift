@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - Cache Error
+// MARK: - StorageError
 
 enum StorageError: Error {
     
@@ -26,7 +26,7 @@ extension StorageError: LocalizedError {
     
 }
 
-// MARK: - Cache Protocol
+// MARK: - StorageServiceProtocol
 
 protocol StorageServiceProtocol {
     
@@ -44,7 +44,7 @@ protocol StorageServiceProtocol {
     
 }
 
-// MARK: - Cache Service
+// MARK: - CacheStorageService
 
 struct CacheStorageService<Key, Object>: StorageServiceProtocol where Key: AnyObject, Object: AnyObject {
     
@@ -74,6 +74,8 @@ struct CacheStorageService<Key, Object>: StorageServiceProtocol where Key: AnyOb
     }
         
 }
+
+// MARK: - UserDefaultsStorageService
 
 struct UserDefaultsStorageService<Object>: StorageServiceProtocol where Object: Codable {
     

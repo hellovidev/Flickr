@@ -18,7 +18,7 @@
 		5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6C526EE0BFD00F98608 /* AccountView.xib */; };
 		5F25F6C926EE5C8F00F98608 /* UserDefaultsStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6C826EE5C8F00F98608 /* UserDefaultsStorageService.swift */; };
 		5F25F6CC26EE69A300F98608 /* AuthorizationStateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */; };
-		5F6A836726F4EE19000F9AD2 /* CacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6A836626F4EE19000F9AD2 /* CacheService.swift */; };
+		5F6A836726F4EE19000F9AD2 /* CacheStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */; };
 		5F71301126D40D32001A3762 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71301026D40D32001A3762 /* NetworkService.swift */; };
 		5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996226D66DE300482485 /* ErrorMessage.swift */; };
 		5F7F996626D69AE900482485 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996526D69AE900482485 /* Profile.swift */; };
@@ -67,7 +67,7 @@
 		5F25F6C526EE0BFD00F98608 /* AccountView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountView.xib; sourceTree = "<group>"; };
 		5F25F6C826EE5C8F00F98608 /* UserDefaultsStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStorageService.swift; sourceTree = "<group>"; };
 		5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationStateProvider.swift; sourceTree = "<group>"; };
-		5F6A836626F4EE19000F9AD2 /* CacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheService.swift; sourceTree = "<group>"; };
+		5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheStorageService.swift; sourceTree = "<group>"; };
 		5F71301026D40D32001A3762 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5F7F996226D66DE300482485 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		5F7F996526D69AE900482485 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -181,7 +181,7 @@
 		5F6A836826F4F21C000F9AD2 /* Cache Service */ = {
 			isa = PBXGroup;
 			children = (
-				5F6A836626F4EE19000F9AD2 /* CacheService.swift */,
+				5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */,
 			);
 			path = "Cache Service";
 			sourceTree = "<group>";
@@ -326,8 +326,8 @@
 			isa = PBXGroup;
 			children = (
 				5F6A836826F4F21C000F9AD2 /* Cache Service */,
-				5F25F6CA26EE698A00F98608 /* AuthorizationStateProvider */,
 				5F25F6C726EE5C6B00F98608 /* StorageService */,
+				5F25F6CA26EE698A00F98608 /* AuthorizationStateProvider */,
 				5F7F997326D7FEEC00482485 /* NetworkService */,
 				5F7F997226D7FEDA00482485 /* Helpers */,
 				5FFEC0CB26CD4FAD000A0BAB /* FlickrOAuthService.swift */,
@@ -454,7 +454,7 @@
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* FlickrConstant.swift in Sources */,
 				5F7F997C26D8003700482485 /* NetworkService+Photos.swift in Sources */,
-				5F6A836726F4EE19000F9AD2 /* CacheService.swift in Sources */,
+				5F6A836726F4EE19000F9AD2 /* CacheStorageService.swift in Sources */,
 				5FA9B2FC26E655AE0060DAE8 /* RequestType.swift in Sources */,
 				5F7F997A26D8001F00482485 /* NetworkService+Profile.swift in Sources */,
 				5F7F997826D7FFA600482485 /* NetworkService+Comments.swift in Sources */,
