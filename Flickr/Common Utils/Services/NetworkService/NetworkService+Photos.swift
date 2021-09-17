@@ -29,6 +29,12 @@ extension NetworkService {
     
     // Get photo 'flickr.photos.getInfo' (Post screen)
     func getPhotoById(with photoId: String, secret: String? = nil, completion: @escaping (Result<PostDetails, Error>) -> Void) {
+        if let cache = try? cacheService.get(for: photoId as NSString) {
+            print("USING CACHED POST!")
+            completion(.success(cache as! PostDetails))
+            return
+        }
+        
         // Push some additional parameters
         let parameters: [String: String] = [
             "photo_id": photoId
@@ -40,7 +46,12 @@ extension NetworkService {
             method: .GET,
             parser: ModelDeserializer<PostDetailsResponse>()
         ) { result in
-            completion(result.map { $0.photo })
+            completion(
+                result.map {
+                    cacheService.set(for: $0.photo as AnyObject, with: photoId as NSString)
+                    return $0.photo
+                        
+            })
         }
     }
     
