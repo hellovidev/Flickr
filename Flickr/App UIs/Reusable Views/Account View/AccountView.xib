@@ -17,19 +17,20 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="300" height="100"/>
+            <rect key="frame" x="0.0" y="0.0" width="417" height="121"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" semanticContentAttribute="spatial" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QRo-gn-Yle">
-                    <rect key="frame" x="12" y="34" width="32" height="32"/>
+                    <rect key="frame" x="12" y="44.5" width="32" height="32"/>
                     <color key="backgroundColor" systemColor="systemGray5Color"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="QRo-gn-Yle" secondAttribute="height" multiplier="1:1" id="7aE-HR-uK7"/>
-                        <constraint firstAttribute="width" constant="32" id="aFP-nY-3i4"/>
+                        <constraint firstAttribute="width" secondItem="QRo-gn-Yle" secondAttribute="height" multiplier="1:1" id="11c-GR-Nal"/>
+                        <constraint firstAttribute="width" constant="32" id="7CI-gr-UOK"/>
+                        <constraint firstAttribute="height" constant="32" id="iDB-bk-cDN"/>
                     </constraints>
                 </imageView>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="3zO-jA-SR8">
-                    <rect key="frame" x="56" y="33" width="85" height="34"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ujf-En-lR5">
+                    <rect key="frame" x="54" y="43.5" width="85" height="34"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nickname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n8e-Js-JqC">
                             <rect key="frame" x="0.0" y="0.0" width="85" height="16"/>
@@ -47,28 +48,38 @@
                         </label>
                     </subviews>
                     <constraints>
-                        <constraint firstAttribute="trailing" secondItem="n8e-Js-JqC" secondAttribute="trailing" id="4Zy-up-83g"/>
-                        <constraint firstAttribute="bottom" secondItem="DQl-G3-NHL" secondAttribute="bottom" id="50z-6T-ETP"/>
-                        <constraint firstItem="n8e-Js-JqC" firstAttribute="top" secondItem="3zO-jA-SR8" secondAttribute="top" id="FlR-0r-IEs"/>
-                        <constraint firstAttribute="trailing" secondItem="DQl-G3-NHL" secondAttribute="trailing" id="YVI-GU-LWd"/>
-                        <constraint firstItem="DQl-G3-NHL" firstAttribute="leading" secondItem="3zO-jA-SR8" secondAttribute="leading" id="g0t-Bi-jPT"/>
-                        <constraint firstItem="n8e-Js-JqC" firstAttribute="leading" secondItem="3zO-jA-SR8" secondAttribute="leading" id="yhd-S1-xhM"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="centerX" secondItem="n8e-Js-JqC" secondAttribute="centerX" id="2rt-do-jQk"/>
+                        <constraint firstAttribute="bottom" secondItem="DQl-G3-NHL" secondAttribute="bottom" id="3Pc-vb-LSi"/>
+                        <constraint firstItem="n8e-Js-JqC" firstAttribute="centerX" secondItem="Ujf-En-lR5" secondAttribute="centerX" id="6wi-jU-nVk"/>
+                        <constraint firstAttribute="trailing" secondItem="n8e-Js-JqC" secondAttribute="trailing" id="AeG-uQ-htj"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="height" secondItem="n8e-Js-JqC" secondAttribute="height" id="H4Q-Cq-Bhi"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="leading" secondItem="n8e-Js-JqC" secondAttribute="leading" id="Oee-Xh-zKm"/>
+                        <constraint firstAttribute="trailing" secondItem="DQl-G3-NHL" secondAttribute="trailing" id="SgE-g3-Lj1"/>
+                        <constraint firstItem="n8e-Js-JqC" firstAttribute="top" secondItem="Ujf-En-lR5" secondAttribute="top" id="Ujn-84-E4O"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="centerX" secondItem="Ujf-En-lR5" secondAttribute="centerX" id="bqt-Ah-aTT"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="top" secondItem="n8e-Js-JqC" secondAttribute="bottom" constant="2" id="eHJ-Ja-GvN"/>
+                        <constraint firstItem="n8e-Js-JqC" firstAttribute="leading" secondItem="Ujf-En-lR5" secondAttribute="leading" id="jW4-Gb-ogR"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="leading" secondItem="Ujf-En-lR5" secondAttribute="leading" id="sAR-hk-oi9"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="width" secondItem="n8e-Js-JqC" secondAttribute="width" id="seh-hu-5vh"/>
                     </constraints>
-                </stackView>
+                </view>
             </subviews>
             <constraints>
-                <constraint firstItem="QRo-gn-Yle" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="7rd-0M-KbC"/>
-                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="QRo-gn-Yle" secondAttribute="bottom" constant="4" id="IHf-wT-Rpo"/>
-                <constraint firstItem="QRo-gn-Yle" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="4" id="Wc3-57-GfY"/>
-                <constraint firstItem="3zO-jA-SR8" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Xpi-tK-AQi"/>
-                <constraint firstItem="3zO-jA-SR8" firstAttribute="leading" secondItem="QRo-gn-Yle" secondAttribute="trailing" constant="12" id="u1s-pL-p1L"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="3zO-jA-SR8" secondAttribute="trailing" constant="12" id="yMr-aB-g9u"/>
-                <constraint firstItem="QRo-gn-Yle" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="yTO-tY-U6J"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Ujf-En-lR5" secondAttribute="trailing" constant="12" id="9WM-jd-UZB"/>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="BKE-qK-Vtv"/>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="BQa-fK-neb"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="QRo-gn-Yle" secondAttribute="bottom" constant="12" id="E8f-jj-JEj"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Ujf-En-lR5" secondAttribute="bottom" constant="12" id="FCD-RK-5kc"/>
+                <constraint firstItem="Ujf-En-lR5" firstAttribute="centerY" secondItem="QRo-gn-Yle" secondAttribute="centerY" id="GmJ-kg-lhG"/>
+                <constraint firstItem="Ujf-En-lR5" firstAttribute="leading" secondItem="QRo-gn-Yle" secondAttribute="trailing" constant="10" id="Mle-ik-KbQ"/>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="aO0-h9-fQa"/>
+                <constraint firstItem="Ujf-En-lR5" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="ozg-Lc-JSD"/>
+                <constraint firstItem="Ujf-En-lR5" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="pc4-TM-PR0"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="719" y="-43"/>
+            <point key="canvasLocation" x="729.71014492753625" y="-36.495535714285715"/>
         </view>
     </objects>
     <resources>

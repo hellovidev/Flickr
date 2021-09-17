@@ -22,9 +22,6 @@ class HomeViewController: UIViewController {
     private var pageNumber = 0
     
     
-    
-    
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -41,7 +38,6 @@ class HomeViewController: UIViewController {
         tableView.addSubview(refreshControl)
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
-    
     
     @objc
     private func refresh() {
@@ -70,14 +66,10 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         tableView.delegate = self
         tableView.dataSource = self
-    
-//        tableView.rowHeight = UITableView.automaticDimension
-//        tableView.estimatedRowHeight = 300
         
-        self.tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
+        tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
         
         requestListOfPosts(for: pageNumber)
     }
@@ -114,7 +106,7 @@ extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomePostCell", for: indexPath) as! PostTableViewCell
-        
+
         networkService?.getPhotoById(with: postsId[indexPath.row]) { [weak self] result in
             switch result {
             case .success(let post):
@@ -150,6 +142,7 @@ extension HomeViewController: UITableViewDataSource {
                         }
                     }
                 }
+                
             case .failure(let error):
                 print("\(#function) has error: \(error.localizedDescription)")
             }
@@ -169,6 +162,26 @@ extension HomeViewController: UITableViewDataSource {
 
        }
    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        if indexPath.section == 0 {
+//            return UITableView.automaticDimension
+//        } else {
+            tableView.setNeedsLayout()
+            tableView.layoutIfNeeded()
+            return UITableView.automaticDimension
+       // }
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return UITableView.automaticDimension
+        } else {
+            return 40
+        }
+    }
+    
+    
     
 //    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
 //        activityIndicator.startAnimating()

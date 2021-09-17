@@ -12,7 +12,7 @@ import UIKit
 class PostTableViewCell: UITableViewCell {
     
     @IBOutlet weak var accountView: AccountView!
-    @IBOutlet weak var metaView: PostDescriptionView!
+    @IBOutlet weak var postDescriptionView: PostDescriptionView!
     @IBOutlet weak var postImage: UIImageView!
     
     private var representedIdentifier: String?
@@ -22,7 +22,7 @@ class PostTableViewCell: UITableViewCell {
         
         startSkeletonAnimation(view: accountView.ownerAvatar)
         startSkeletonAnimation(view: postImage)
-        startSkeletonAnimation(view: metaView.view)
+        startSkeletonAnimation(view: postDescriptionView.publishedDateLabel)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -50,17 +50,18 @@ class PostTableViewCell: UITableViewCell {
         accountView.locationLabel.backgroundColor = .clear
                 
         // Setup footer of cell
-        metaView.nicknameLabel.text = post.owner?.username.flatMap { $0 }
-        metaView.nicknameLabel.backgroundColor = .clear
+        postDescriptionView.nicknameLabel.text = post.owner?.username.flatMap { $0 }
+        postDescriptionView.nicknameLabel.backgroundColor = .clear
 
-        metaView.postTitleLabel.text = post.title?.content.flatMap { $0 }
-        metaView.postTitleLabel.backgroundColor = .clear
-        metaView.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
+        postDescriptionView.postTitleLabel.text = "dfasadjfhuiasdf fdfsadu fhsdah  hudhfhasd iufid i diaush fiuasdi fuasdiufhisaudfihsdiu  uhfuasdh iufhasudhf  uhdfauh asidfiua iu fuasdh aus fadfasd asdg sg   ag sdfgasdgasdg sg as sag sag sg sdfub"//post.title?.content.flatMap { $0 }
+        postDescriptionView.postTitleLabel.backgroundColor = .clear
+        postDescriptionView.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
         
-        metaView.publishedDateLabel.text = post.dateUploaded.flatMap(convertDateToSpecificFormat)
-        metaView.publishedDateLabel.backgroundColor = .clear
+        postDescriptionView.publishedDateLabel.text = post.dateUploaded.flatMap(convertDateToSpecificFormat)
+        postDescriptionView.publishedDateLabel.backgroundColor = .clear
         
         stopSkeletonAnimation()
+        postDescriptionView.layoutIfNeeded()
     }
     
     func setupBuddyIcon(image: UIImage?, postId: String) {
@@ -84,28 +85,28 @@ class PostTableViewCell: UITableViewCell {
         
         startSkeletonAnimation(view: accountView.ownerAvatar)
         startSkeletonAnimation(view: postImage)
-        startSkeletonAnimation(view: metaView.view)
+        startSkeletonAnimation(view: postDescriptionView.postTitleLabel)
         
         accountView.ownerAvatar.image = nil
         accountView.ownerAvatar.backgroundColor = .systemGray5
 
-        accountView.nicknameLabel.text = nil
+        accountView.nicknameLabel.text = ""
         accountView.nicknameLabel.backgroundColor = .systemGray5
 
-        accountView.locationLabel.text = nil
+        accountView.locationLabel.text = ""
         accountView.locationLabel.backgroundColor = .systemGray5
         
         postImage.image = nil
         postImage.backgroundColor = .systemGray5
 
-        metaView.nicknameLabel.text = nil
-        metaView.nicknameLabel.backgroundColor = .systemGray5
+        postDescriptionView.nicknameLabel.text = nil
+        postDescriptionView.nicknameLabel.backgroundColor = .systemGray5
 
-        metaView.postTitleLabel.text = nil
-        metaView.postTitleLabel.backgroundColor = .systemGray5
+        postDescriptionView.postTitleLabel.text = nil
+        postDescriptionView.postTitleLabel.backgroundColor = .systemGray5
         
-        metaView.publishedDateLabel.text = nil
-        metaView.publishedDateLabel.backgroundColor = .systemGray5
+        postDescriptionView.publishedDateLabel.text = nil
+        postDescriptionView.publishedDateLabel.backgroundColor = .systemGray5
     }
     
     
