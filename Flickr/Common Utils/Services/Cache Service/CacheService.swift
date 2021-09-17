@@ -30,11 +30,15 @@ extension CacheError: LocalizedError {
 
 protocol CacheServiceProtocol {
     
-    func set(for object: AnyObject, with key: AnyObject)
+    associatedtype KeyType
     
-    func get(for key: AnyObject) throws -> AnyObject
+    associatedtype ObjectType
     
-    func remove(for key: AnyObject)
+    func set(for object: ObjectType, with key: KeyType)
+    
+    func get(for key: KeyType) throws -> ObjectType
+    
+    func remove(for key: KeyType)
     
     func removeAll()
     
@@ -42,27 +46,31 @@ protocol CacheServiceProtocol {
 
 // MARK: - Cache Service
 
-struct CacheService: CacheServiceProtocol {
+struct CacheService<Object, Key>: CacheServiceProtocol where Object: AnyObject, Key: AnyObject {
     
-    private let cacheStorage: NSCache<AnyObject, AnyObject> = .init()
+    typealias KeyType = Key
     
-    func set(for object: AnyObject, with key: AnyObject) {
+    typealias ObjectType = Object
+    
+    private let cacheStorage: NSCache<Key, Object> = .init()
+    
+    func set(for object: Object, with key: Key) {
         cacheStorage.setObject(object, forKey: key)
     }
     
-    func get(for key: AnyObject) throws -> AnyObject {
+    func get(for key: Key) throws -> Object {
         guard let object = cacheStorage.object(forKey: key) else {
             throw CacheError.nilObject(key: key)
         }
         return object
     }
     
-    func remove(for key: AnyObject) {
+    func remove(for key: Key) {
         cacheStorage.removeObject(forKey: key)
     }
     
     func removeAll() {
         cacheStorage.removeAllObjects()
     }
-    
+        
 }
