@@ -9,7 +9,9 @@ import UIKit
 
 struct AuthorizationStateProvider {
     
-    func checkStateAndReturnViewController(storageService: StorageProtocol) -> UIViewController {
+    var storageService: StorageProtocol
+    
+    func getInitialViewController() -> UIViewController {
         do {
             let state = try storageService.pull(for: "state", type: Bool.self)
             

@@ -36,7 +36,7 @@
 		5F7F998226D8064A00482485 /* SignatureHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F998126D8064A00482485 /* SignatureHelper.swift */; };
 		5F7F998426D8E89200482485 /* DeserializeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F998326D8E89200482485 /* DeserializeHelper.swift */; };
 		5F7F998626D8F78F00482485 /* NetworkService+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F998526D8F78F00482485 /* NetworkService+Upload.swift */; };
-		5F8AA85226F3749700E48706 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AA85126F3749700E48706 /* Coordinator.swift */; };
+		5F8AA85226F3749700E48706 /* CoordinatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AA85126F3749700E48706 /* CoordinatorService.swift */; };
 		5FA9B2F026E4B0F20060DAE8 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2EF26E4B0F20060DAE8 /* ProfileViewController.swift */; };
 		5FA9B2F226E4B1020060DAE8 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2F126E4B1020060DAE8 /* HomeViewController.swift */; };
 		5FA9B2F426E4B1180060DAE8 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */; };
@@ -85,7 +85,7 @@
 		5F7F998126D8064A00482485 /* SignatureHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureHelper.swift; sourceTree = "<group>"; };
 		5F7F998326D8E89200482485 /* DeserializeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeserializeHelper.swift; sourceTree = "<group>"; };
 		5F7F998526D8F78F00482485 /* NetworkService+Upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Upload.swift"; sourceTree = "<group>"; };
-		5F8AA85126F3749700E48706 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		5F8AA85126F3749700E48706 /* CoordinatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorService.swift; sourceTree = "<group>"; };
 		5FA9B2EF26E4B0F20060DAE8 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		5FA9B2F126E4B1020060DAE8 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
@@ -172,6 +172,7 @@
 		5F25F6CA26EE698A00F98608 /* AuthorizationStateProvider */ = {
 			isa = PBXGroup;
 			children = (
+				5F8AA85126F3749700E48706 /* CoordinatorService.swift */,
 				5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */,
 			);
 			path = AuthorizationStateProvider;
@@ -190,7 +191,6 @@
 			children = (
 				5F7F996F26D7816800482485 /* PostDetails.swift */,
 				5F7F996526D69AE900482485 /* Profile.swift */,
-				5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */,
 				5F7F996726D6AE1000482485 /* Comment.swift */,
 				5F7F996926D6C05800482485 /* Favorite.swift */,
 				5F7F996B26D6CBC700482485 /* Photo.swift */,
@@ -298,6 +298,7 @@
 		5FFEC0C626CD4F24000A0BAB /* App Settings */ = {
 			isa = PBXGroup;
 			children = (
+				5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */,
 				5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */,
 			);
 			path = "App Settings";
@@ -331,7 +332,6 @@
 				5F7F997226D7FEDA00482485 /* Helpers */,
 				5FFEC0CB26CD4FAD000A0BAB /* FlickrOAuthService.swift */,
 				5F25F68D26E9322000F98608 /* AuthorizationService.swift */,
-				5F8AA85126F3749700E48706 /* Coordinator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -422,7 +422,7 @@
 			files = (
 				5F7F997026D7816800482485 /* PostDetails.swift in Sources */,
 				5FA9B2F426E4B1180060DAE8 /* GalleryViewController.swift in Sources */,
-				5F8AA85226F3749700E48706 /* Coordinator.swift in Sources */,
+				5F8AA85226F3749700E48706 /* CoordinatorService.swift in Sources */,
 				5F7F996E26D6D26300482485 /* Tag.swift in Sources */,
 				5F7F998226D8064A00482485 /* SignatureHelper.swift in Sources */,
 				5F7F998426D8E89200482485 /* DeserializeHelper.swift in Sources */,

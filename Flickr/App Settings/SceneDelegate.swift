@@ -29,11 +29,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         guard let window = window else { return }
 
-        let authorizationStateProvider = AuthorizationStateProvider()
-        let initialViewController = authorizationStateProvider.checkStateAndReturnViewController(storageService: UserDefaultsStorageService())
+        let authorizationStateProvider = AuthorizationStateProvider(storageService: UserDefaultsStorageService())
+        let viewController = authorizationStateProvider.getInitialViewController()
 
-        let coordinator = Coordinator()
-        coordinator.makeKeyAndVisible(initialViewController, window: window)
+        let coordinator = CoordinatorService()
+        coordinator.makeKeyAndVisible(viewController, window: window)
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
