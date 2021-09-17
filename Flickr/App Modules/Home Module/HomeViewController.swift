@@ -163,23 +163,23 @@ extension HomeViewController: UITableViewDataSource {
        }
    }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+////        if indexPath.section == 0 {
+////            return UITableView.automaticDimension
+////        } else {
+//            tableView.setNeedsLayout()
+//            tableView.layoutIfNeeded()
+//            return UITableView.automaticDimension
+//       // }
+//    }
+//    
+//    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
 //        if indexPath.section == 0 {
 //            return UITableView.automaticDimension
 //        } else {
-            tableView.setNeedsLayout()
-            tableView.layoutIfNeeded()
-            return UITableView.automaticDimension
-       // }
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
-            return UITableView.automaticDimension
-        } else {
-            return 40
-        }
-    }
+//            return 40
+//        }
+//    }
     
     
     

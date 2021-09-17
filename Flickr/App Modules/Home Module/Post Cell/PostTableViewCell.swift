@@ -22,7 +22,7 @@ class PostTableViewCell: UITableViewCell {
         
         startSkeletonAnimation(view: accountView.ownerAvatar)
         startSkeletonAnimation(view: postImage)
-        startSkeletonAnimation(view: postDescriptionView.publishedDateLabel)
+        startSkeletonAnimation(view: postDescriptionView)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -85,15 +85,15 @@ class PostTableViewCell: UITableViewCell {
         
         startSkeletonAnimation(view: accountView.ownerAvatar)
         startSkeletonAnimation(view: postImage)
-        startSkeletonAnimation(view: postDescriptionView.postTitleLabel)
+        startSkeletonAnimation(view: postDescriptionView)
         
         accountView.ownerAvatar.image = nil
         accountView.ownerAvatar.backgroundColor = .systemGray5
 
-        accountView.nicknameLabel.text = ""
+        accountView.nicknameLabel.text = nil
         accountView.nicknameLabel.backgroundColor = .systemGray5
 
-        accountView.locationLabel.text = ""
+        accountView.locationLabel.text = nil
         accountView.locationLabel.backgroundColor = .systemGray5
         
         postImage.image = nil
