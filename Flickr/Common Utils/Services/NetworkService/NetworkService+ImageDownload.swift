@@ -90,7 +90,7 @@ class ImageCache {
 
 extension NetworkService {
     
-    mutating func image(postId: String, postSecret: String, serverId: String, size: ImageSize = .b, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage?, Error>) -> Void) {
+    mutating func image(postId: String, postSecret: String, serverId: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage?, Error>) -> Void) {
         guard
             let url = URL(string: "https://live.staticflickr.com/\(serverId)/\(postId)_\(postSecret)_\(size.rawValue).\(format.rawValue)")
         else {
