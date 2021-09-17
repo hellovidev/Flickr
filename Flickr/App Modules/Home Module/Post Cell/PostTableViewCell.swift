@@ -40,11 +40,24 @@ class PostTableViewCell: UITableViewCell {
         return formattedDateAsString
     }
     
+    func buildNickname(fullName: String?, username: String?) -> String {
+        var nickname = ""
+        if let fullName = fullName {
+            nickname += fullName
+        }
+        if let username = username {
+            nickname += " (\(username))"
+        }
+        return nickname
+    }
+    
     func configure(for post: PostDetails) {
         representedIdentifier = post.id
 
         // Setup header of cell
-        accountView.nicknameLabel.text = "\(post.owner?.realName.flatMap { $0 } ?? "") (\(post.owner?.username.flatMap { $0 } ?? ""))"
+        let nickname = buildNickname(fullName: post.owner?.realName, username: post.owner?.username)
+        accountView.nicknameLabel.text = nickname
+        
         accountView.nicknameLabel.backgroundColor = .clear
         accountView.locationLabel.text = post.owner?.location.flatMap { $0 }
         accountView.locationLabel.backgroundColor = .clear
