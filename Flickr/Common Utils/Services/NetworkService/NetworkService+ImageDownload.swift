@@ -61,33 +61,6 @@ enum URLError: Error {
     case invalidURL
 }
 
-enum ImageCacheError: Error {
-    case nilObjectForKey(NSString)
-}
-
-class ImageCache {
-    
-    static let shared = ImageCache()
-    
-    private let cache: NSCache<NSString, NSData> = .init()
-    
-    func set(for data: NSData, with key: NSString) {
-        cache.setObject(data, forKey: key)
-    }
-    
-    func get(with key: NSString) throws -> NSData {
-        guard let data = cache.object(forKey: key) else {
-            throw ImageCacheError.nilObjectForKey(key)
-        }
-        return data
-    }
-    
-    func removeAll() {
-        cache.removeAllObjects()
-    }
-    
-}
-
 extension NetworkService {
     
     mutating func image(postId: String, postSecret: String, serverId: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage?, Error>) -> Void) {

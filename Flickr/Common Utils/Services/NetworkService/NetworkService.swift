@@ -199,9 +199,10 @@ struct NetworkService {
         task.resume()
     }
     
-    mutating func request(for url: URL, completionHandler: @escaping (Result<Data, Error>) -> Void) {
-        if let cachedData = try? ImageCache.shared.get(with: url.absoluteString as NSString) {
-            completionHandler(.success(cachedData as Data))
+    func request(for url: URL, completionHandler: @escaping (Result<Data, Error>) -> Void) {
+        if let cachedData = try? cacheService.get(for: url.absoluteString as NSString) {//ImageCache.shared.get(with: url.absoluteString as NSString) {
+            print("IMAGE USE CACHE")
+            completionHandler(.success(cachedData as! Data))
             return
         }
 
@@ -223,7 +224,8 @@ struct NetworkService {
             
             do {
                 let data = try Data(contentsOf: fileURL)
-                ImageCache.shared.set(for: data as NSData, with: url.absoluteString as NSString)
+                self.cacheService.set(for: data as NSData, with: url.absoluteString as NSString)
+                //ImageCache.shared.set(for: data as NSData, with: url.absoluteString as NSString)
                 completionHandler(.success(data))
             } catch {
                 completionHandler(.failure(error))
