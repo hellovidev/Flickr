@@ -29,12 +29,12 @@ class PostTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    private func convertDateToSpecificFormat(_ dateAsString: String) -> String {
+    private func changeDateFormat(_ dateAsString: String, to format: String) -> String {
         guard let dateAsIntSince1970 = Int(dateAsString) else { fatalError() }
         let date: Date = Date(timeIntervalSince1970: TimeInterval(dateAsIntSince1970))
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMM yyyy"
+        dateFormatter.dateFormat = format
         
         let formattedDateAsString = dateFormatter.string(from: date)
         return formattedDateAsString
@@ -57,7 +57,7 @@ class PostTableViewCell: UITableViewCell {
         postDescriptionView.postTitleLabel.backgroundColor = .clear
         postDescriptionView.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
         
-        postDescriptionView.publishedDateLabel.text = post.dateUploaded.flatMap(convertDateToSpecificFormat)
+        postDescriptionView.publishedDateLabel.text = post.dateUploaded.flatMap { changeDateFormat($0, to: "dd MMM yyyy") }
         postDescriptionView.publishedDateLabel.backgroundColor = .clear
         
         stopSkeletonAnimation()
