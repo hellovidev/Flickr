@@ -180,6 +180,7 @@
 			children = (
 				5F7F996F26D7816800482485 /* PostDetails.swift */,
 				5F7F996526D69AE900482485 /* Profile.swift */,
+				5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */,
 				5F7F996726D6AE1000482485 /* Comment.swift */,
 				5F7F996926D6C05800482485 /* Favorite.swift */,
 				5F7F996B26D6CBC700482485 /* Photo.swift */,
@@ -287,7 +288,6 @@
 		5FFEC0C626CD4F24000A0BAB /* App Settings */ = {
 			isa = PBXGroup;
 			children = (
-				5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */,
 				5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */,
 			);
 			path = "App Settings";
