@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 // MARK: - HomeViewController
 
@@ -19,7 +20,7 @@ class HomeViewController: UIViewController {
     private var postsId: [String] = .init()
     
     var networkService: NetworkService!
-    private var pageNumber = 0
+    private var pageNumber = 1
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -41,7 +42,7 @@ class HomeViewController: UIViewController {
     
     @objc
     private func refresh() {
-        pageNumber = 0
+        pageNumber = 1
         postsId.removeAll()
         activityIndicator.stopAnimating()
         tableView.reloadData()
@@ -78,9 +79,16 @@ class HomeViewController: UIViewController {
         networkService.getRecentPosts(page: page) { [weak self] result in
             switch result {
             case .success(let posts):
-                self?.postsId += posts.compactMap { $0.id }
+                guard var postIds = self?.postsId else { return }
+                postIds += posts.compactMap { $0.id }
+                self?.postsId = postIds.uniques
+                
+
+                
+                self?.pageNumber += 1
                 self?.refreshControl.endRefreshing()
                 self?.activityIndicator.stopAnimating()
+                
                 self?.tableView.reloadData()
             case .failure(let error):
                 self?.activityIndicator.stopAnimating()
@@ -94,6 +102,20 @@ class HomeViewController: UIViewController {
         print("\(type(of: self)) deinited.")
     }
     
+}
+
+extension Array where Element: Hashable {
+    var uniques: Array {
+        var buffer = Array()
+        var added = Set<Element>()
+        for elem in self {
+            if !added.contains(elem) {
+                buffer.append(elem)
+                added.insert(elem)
+            }
+        }
+        return buffer
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -111,8 +133,9 @@ extension HomeViewController: UITableViewDataSource {
             switch result {
             case .success(let post):
                 // Set current data of post to cell
-                cell.configure(for: post)
-                
+                //print(post.urls?.url)
+        //let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell
+                //cell.configure(for: post)
                 // Request for buddyicon
                 if
                     let iconFarm = post.owner?.iconFarm,
@@ -122,7 +145,10 @@ extension HomeViewController: UITableViewDataSource {
                     self?.networkService?.buddyicon(iconFarm: iconFarm, iconServer: iconServer, nsid: nsid) { result in
                         switch result {
                         case .success(let image):
-                            cell.setupBuddyIcon(image: image, postId: post.id)
+                            let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell
+                            cellForRow?.configure(for: post)
+
+                            cellForRow?.setupBuddyIcon(image: image, postId: post.id)
                         case .failure(let error):
                             print("Download buddyicon error: \(error)")
                         }
@@ -136,7 +162,10 @@ extension HomeViewController: UITableViewDataSource {
                     self?.networkService?.image(postId: post.id, postSecret: postSecret, serverId: serverId) { result in
                         switch result {
                         case .success(let image):
-                            cell.setupPostImage(image: image, postId: post.id)
+                            let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell
+                            cellForRow?.configure(for: post)
+
+                            cellForRow?.setupPostImage(image: image, postId: post.id)
                         case .failure(let error):
                             print("Download image error: \(error)")
                         }
@@ -157,7 +186,6 @@ extension HomeViewController: UITableViewDataSource {
        if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
 
         activityIndicator.startAnimating()
-        pageNumber += 1
         requestListOfPosts(for: pageNumber)
 
        }
@@ -202,6 +230,8 @@ extension HomeViewController: UITableViewDelegate {
         navigationController?.pushViewController(postViewController, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    
     
 }
 
