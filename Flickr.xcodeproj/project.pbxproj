@@ -178,12 +178,12 @@
 			path = AuthorizationStateProvider;
 			sourceTree = "<group>";
 		};
-		5F6A836826F4F21C000F9AD2 /* Cache Service */ = {
+		5F6A836826F4F21C000F9AD2 /* Storage Service */ = {
 			isa = PBXGroup;
 			children = (
 				5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */,
 			);
-			path = "Cache Service";
+			path = "Storage Service";
 			sourceTree = "<group>";
 		};
 		5F7F996426D69ACF00482485 /* App Entities */ = {
@@ -325,7 +325,7 @@
 		5FFEC0C926CD4F87000A0BAB /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				5F6A836826F4F21C000F9AD2 /* Cache Service */,
+				5F6A836826F4F21C000F9AD2 /* Storage Service */,
 				5F25F6C726EE5C6B00F98608 /* StorageService */,
 				5F25F6CA26EE698A00F98608 /* AuthorizationStateProvider */,
 				5F7F997326D7FEEC00482485 /* NetworkService */,

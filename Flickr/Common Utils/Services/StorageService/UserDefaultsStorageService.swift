@@ -15,9 +15,9 @@ import Foundation
 //    func remove(for key: String)
 //}
 //
-//// MARK: - StorageError
+//// MARK: - Error
 //
-//enum StorageError: Error {
+//enum Error: Error {
 //    case dataNotFound
 //}
 //
@@ -40,7 +40,7 @@ import Foundation
 //            guard
 //                let data = UserDefaults.standard.data(forKey: key)
 //            else {
-//                throw StorageError.dataNotFound
+//                throw Error.dataNotFound
 //            }
 //            let decoder = JSONDecoder()
 //            let object = try decoder.decode(type, from: data)

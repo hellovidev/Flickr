@@ -11,9 +11,9 @@ import UIKit
 
 class AuthorizationService: AuthorizationProtocol {
     
-    private let storageService: StorageProtocol
+    private let storageService: LocalStorageServiceProtocol
     
-    init(storageService: StorageProtocol) {
+    init(storageService: LocalStorageServiceProtocol) {
         self.storageService = storageService
     }
     
@@ -23,7 +23,7 @@ class AuthorizationService: AuthorizationProtocol {
             case .success(let accessOAuthToken):
                 do {
                     let token = AccessTokenAPI(token: accessOAuthToken.token, secret: accessOAuthToken.secretToken, nsid: accessOAuthToken.userNSID)
-                    try self?.storageService.save(object: token, with: "token")
+                    try self?.storageService.set(for: token, with: "token") //save(object: token, with: "token")
                     completion(.success(Void()))
                 } catch {
                     completion(.failure(error))

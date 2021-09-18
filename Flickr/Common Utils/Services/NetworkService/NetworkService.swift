@@ -22,7 +22,9 @@ struct NetworkService {
     
     private let session: URLSession = .init(configuration: .default)
     
-    let cacheService: CacheStorageService<AnyObject, AnyObject> = .init()
+    let cacheService: CacheStorageService = .init()
+    
+    //let cacheService: CacheStorageService<AnyObject, AnyObject> = .init()
     
     // Token to get access to 'Flickr API'
     private var accessTokenAPI: AccessTokenAPI

@@ -45,7 +45,7 @@ class HomeViewController: UIViewController {
         postsId.removeAll()
         activityIndicator.stopAnimating()
         tableView.reloadData()
-        
+        networkService.cacheService.removeAll()
         requestListOfPosts(for: pageNumber)
     }
     

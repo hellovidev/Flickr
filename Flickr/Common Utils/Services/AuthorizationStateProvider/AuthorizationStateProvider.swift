@@ -7,39 +7,27 @@
 
 import UIKit
 
-struct AuthorizationStateProvider<StorageService: StorageServiceProtocol> {
+struct AuthorizationStateProvider {
     
-    var storageService: StorageService
+    var storageService: LocalStorageServiceProtocol!
     
     func getInitialViewController() -> UIViewController {
         do {
-            let defaultsService = UserDefaultsStorageService<<#Object: Decodable & Encodable#>>()
-            let state = try storageService.get(for: "state" as! StorageService.KeyType) //.pull(for: "state", type: Bool.self)
-            //let state2 = try DefaultsStorageService<Bool>().get(for: "state")
+            let state = try storageService.get(for: Bool.self, with: "state")
             
             if state {
                 let tabBarController = createViewController(type: UITabBarController.self)
                 let navigationController = tabBarController.viewControllers?.first as! UINavigationController
                 let viewController = navigationController.topViewController as! HomeViewController
-
                 
+                let token = try storageService.get(for: AccessTokenAPI.self, with: "token")
                 
-                //do {
-                 //   let userDefaultsStorageService = UserDefaultsStorageService()
-                    let token = try storageService.pull(for: "token", type: AccessTokenAPI.self)
-                    
-                    viewController.networkService = .init(
-                        accessTokenAPI: token,
-                        publicConsumerKey: FlickrConstant.Key.consumerKey.rawValue,
-                        secretConsumerKey: FlickrConstant.Key.consumerSecretKey.rawValue
-                    )
-                    
-                //} catch {
-               //     showAlert(title: "Error", message: error.localizedDescription, button: "OK")
-                //}
+                viewController.networkService = .init(
+                    accessTokenAPI: token,
+                    publicConsumerKey: FlickrConstant.Key.consumerKey.rawValue,
+                    secretConsumerKey: FlickrConstant.Key.consumerSecretKey.rawValue
+                )
                 
-                //tabBarController.selectedViewController = navigationController
-              //   = NetworkService
                 return tabBarController
             } else {
                 let viewController = createViewController(type: AuthorizationViewController.self)
