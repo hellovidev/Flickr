@@ -48,7 +48,7 @@ extension NetworkService {
         ) { result in
             completion(
                 result.map {
-                    cacheService.set(for: $0.photo as AnyObject, with: photoId as NSString)
+                    //cacheService.set(for: $0.photo as AnyObject, with: photoId as NSString)
                     return $0.photo
                         
             })

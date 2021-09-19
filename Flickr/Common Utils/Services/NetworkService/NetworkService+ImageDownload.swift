@@ -61,9 +61,13 @@ enum URLError: Error {
     case invalidURL
 }
 
+enum ImageError: Error {
+    case couldNotInit
+}
+
 extension NetworkService {
     
-    func image(postId: String, postSecret: String, serverId: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage?, Error>) -> Void) {
+    func image(postId: String, postSecret: String, serverId: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         guard
             let url = URL(string: "https://live.staticflickr.com/\(serverId)/\(postId)_\(postSecret)_\(size.rawValue).\(format.rawValue)")
         else {
@@ -75,7 +79,10 @@ extension NetworkService {
             switch result {
             case .success(let data):
                 DispatchQueue.main.async {
-                    let image = UIImage(data: data)
+                    guard let image = UIImage(data: data) else {
+                        completionHandler(.failure(ImageError.couldNotInit))
+                        return
+                    }
                     completionHandler(.success(image))
                 }
             case .failure(let error):
@@ -86,7 +93,7 @@ extension NetworkService {
         }
     }
     
-    func buddyicon(iconFarm: Int, iconServer: String, nsid: String, completionHandler: @escaping (Result<UIImage?, Error>) -> Void) {
+    func buddyicon(iconFarm: Int, iconServer: String, nsid: String, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         guard
             let url = URL(string: Int(iconServer) == 0 ? "https://www.flickr.com/images/buddyicon.gif" : "http://farm\(iconFarm).staticflickr.com/\(iconServer)/buddyicons/\(nsid).jpg")
         else {
@@ -98,7 +105,10 @@ extension NetworkService {
             switch result {
             case .success(let data):
                 DispatchQueue.main.async {
-                    let image = UIImage(data: data)
+                    guard let image = UIImage(data: data) else {
+                        completionHandler(.failure(ImageError.couldNotInit))
+                        return
+                    }
                     completionHandler(.success(image))
                 }
             case .failure(let error):

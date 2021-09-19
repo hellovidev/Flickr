@@ -22,10 +22,6 @@ struct NetworkService {
     
     private let session: URLSession = .init(configuration: .default)
     
-    let cacheService: CacheStorageService = .init()
-    
-    //let cacheService: CacheStorageService<AnyObject, AnyObject> = .init()
-    
     // Token to get access to 'Flickr API'
     private var accessTokenAPI: AccessTokenAPI
     private let consumerKeyAPI: (publicKey: String, secretKey: String)
@@ -206,12 +202,6 @@ struct NetworkService {
     }
     
     func request(for url: URL, completionHandler: @escaping (Result<Data, Error>) -> Void) {
-//        if let cachedData = try? cacheService.get(for: url.absoluteString as NSString) {//ImageCache.shared.get(with: url.absoluteString as NSString) {
-//            print("IMAGE USE CACHE")
-//            completionHandler(.success(cachedData as! Data))
-//            return
-//        }
-
         let task = session.downloadTask(with: url) { fileURL, response, error in
             if let error = error {
                 completionHandler(.failure(error))
@@ -230,8 +220,6 @@ struct NetworkService {
             
             do {
                 let data = try Data(contentsOf: fileURL)
-                //self.cacheService.set(for: data as NSData, with: url.absoluteString as NSString)
-                //ImageCache.shared.set(for: data as NSData, with: url.absoluteString as NSString)
                 completionHandler(.success(data))
             } catch {
                 completionHandler(.failure(error))

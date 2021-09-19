@@ -77,20 +77,20 @@ class PostTableViewCell: UITableViewCell {
         postDescriptionView.layoutIfNeeded()
     }
     
-    func setupBuddyIcon(image: UIImage?, postId: String) {
+    func setupBuddyicon(image: UIImage) {//, postId: String) {
         // Setup account avatar image
-        if (representedIdentifier == postId) {
+        //if (representedIdentifier == postId) {
             accountView.ownerAvatar.image = image
             accountView.ownerAvatar.backgroundColor = .clear
-        }
+        //}
     }
     
-    func setupPostImage(image: UIImage?, postId: String) {
+    func setupPostImage(image: UIImage) {//, postId: String) {
         // Setup cell image
-        if (representedIdentifier == postId) {
+        //if (representedIdentifier == postId) {
             postImage.image = image
             postImage.backgroundColor = .clear
-        }
+        //}
     }
     
     override func prepareForReuse() {
