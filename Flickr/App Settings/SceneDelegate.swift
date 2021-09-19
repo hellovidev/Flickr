@@ -11,14 +11,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
+    private let userDefaultsStorageService: UserDefaultsStorageService = .init()
+    
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
             fatalError("Could not get url on \(#line) in \(#function)")
         }
         
         // Catch callback link with 'verifier' parameter
-        let authorizationService: AuthorizationService = .init(storageService: UserDefaultsStorageService())
-        authorizationService.handleURL(url)
+        AuthorizationService.shared.handleURL(url)
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -29,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         
-        let coordinator = CoordinatorService(storageService: UserDefaultsStorageService())
+        let coordinator = CoordinatorService(storageService: userDefaultsStorageService)
         coordinator.redirectToInitialViewController()
     }
     

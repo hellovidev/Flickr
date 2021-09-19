@@ -7,23 +7,36 @@
 
 import UIKit
 
+// MARK: - AuthorizationProtocol
+
+protocol AuthorizationProtocol {
+    func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)
+    func signup(presenter: UIViewController)
+    func logout()
+}
+
 // MARK: - AuthorizationService
 
 class AuthorizationService: AuthorizationProtocol {
     
-    private let storageService: LocalStorageServiceProtocol
+    static let shared = AuthorizationService()
     
-    init(storageService: LocalStorageServiceProtocol) {
-        self.storageService = storageService
+    private let storageService: LocalStorageServiceProtocol
+    private let flickrOAuthService: FlickrOAuthService
+    
+    init() {
+        self.storageService = UserDefaultsStorageService()
+        self.flickrOAuthService = .init()
+        self.flickrOAuthService.storageService = storageService
     }
     
     func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {
-        FlickrOAuthService.shared.flickrLogin(presenter: presenter) { [weak self] result in
+        flickrOAuthService.flickrLogin(presenter: presenter) { [weak self] result in
             switch result {
             case .success(let accessOAuthToken):
                 do {
                     let token = AccessTokenAPI(token: accessOAuthToken.token, secret: accessOAuthToken.secretToken, nsid: accessOAuthToken.userNSID)
-                    try self?.storageService.set(for: token, with: "token") //save(object: token, with: "token")
+                    try self?.storageService.set(for: token, with: "token")
                     completion(.success(Void()))
                 } catch {
                     completion(.failure(error))
@@ -41,13 +54,12 @@ class AuthorizationService: AuthorizationProtocol {
     }
     
     func logout() {
-        FlickrOAuthService.shared.flickrLogout()
-        storageService.remove(for: "state")
-        storageService.remove(for: "token")
+        flickrOAuthService.flickrLogout()
+        storageService.removeAll()
     }
     
     func handleURL(_ url: URL) {
-        FlickrOAuthService.shared.handleURL(url)
+        flickrOAuthService.handleURL(url)
     }
     
 }
@@ -60,12 +72,4 @@ extension AuthorizationService: WKWebViewControllerDelegate {
         viewController.dismiss(animated: true, completion: nil)
     }
     
-}
-
-// MARK: - Protocols
-
-protocol AuthorizationProtocol {
-    func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)
-    func signup(presenter: UIViewController)
-    func logout()
 }

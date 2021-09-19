@@ -1,5 +1,5 @@
 //
-//  NetworkService+ImageDownload.swift
+//  NetworkService+Image.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 14.09.2021.

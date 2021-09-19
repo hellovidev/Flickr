@@ -12,16 +12,7 @@ import SafariServices
 
 class FlickrOAuthService: NSObject {
     
-    static let shared = FlickrOAuthService()
-    
-    private let storageService: LocalStorageServiceProtocol
-    
-    override init() {
-        storageService = UserDefaultsStorageService()
-        super.init()
-    }
-    
-    //private let userDefaultsStorageService = UserDefaultsStorageService()
+    var storageService: LocalStorageServiceProtocol!
     
     // MARK: - Authorization State
     
@@ -50,9 +41,9 @@ class FlickrOAuthService: NSObject {
         didSet {
             do {
                 if case .successfullyAuthenticated = state {
-                    try storageService.set(for: true, with: "state") //.save(object: true, with: "state")
+                    try storageService.set(for: true, with: "state")
                 } else {
-                    try storageService.set(for: false, with: "state") //save(object: false, with: "state")
+                    try storageService.set(for: false, with: "state")
                 }
             } catch(let storageError) {
                 print(storageError)

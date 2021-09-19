@@ -14,8 +14,6 @@ class AuthorizationViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signupLabel: UILabel!
     
-    var authorizationService: AuthorizationService!
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         let loginButtonTextAttributes: [NSAttributedString.Key : Any] = [
@@ -45,21 +43,11 @@ class AuthorizationViewController: UIViewController {
     }
     
     @IBAction func loginAction(_ sender: UIButton) {
-        authorizationService.login(presenter: self) { [weak self] result in
+        AuthorizationService.shared.login(presenter: self) { [weak self] result in
             switch result {
             case .success:
-                guard let window = UIApplication.shared.windows.first else { return }
-                
                 let coordinator = CoordinatorService(storageService: UserDefaultsStorageService())
                 coordinator.redirectToInitialViewController()
-                
-//                let authorizationStateProvider = AuthorizationStateProvider(storageService: UserDefaultsStorageService())
-//                let viewController = authorizationStateProvider.getInitialViewController()
-//                
-//                let coordinator = CoordinatorService()
-//                coordinator.makeKeyAndVisible(viewController, window: window)
-//                
-                UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve], animations: {}, completion: nil)
             case .failure(let error):
                 self?.showAlert(title: "Authorize error", message: error.localizedDescription, button: "OK")
             }
@@ -67,7 +55,7 @@ class AuthorizationViewController: UIViewController {
     }
     
     @IBAction func signupAction(sender: UITapGestureRecognizer) {
-        authorizationService.signup(presenter: self)
+        AuthorizationService.shared.signup(presenter: self)
     }
     
     deinit {

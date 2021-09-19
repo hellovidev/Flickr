@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Combine
 
 // MARK: - HomeViewController
 
@@ -20,9 +19,7 @@ class HomeViewController: UIViewController {
     private var postsId: [String] = .init()
     
     var manager: NetworkDataManagerService!
-    //var networkService: NetworkService!
     private var pageNumber = 1
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -76,8 +73,6 @@ class HomeViewController: UIViewController {
         requestPostIds(for: pageNumber)
     }
     
-    
-    
     deinit {
         print("\(type(of: self)) deinited.")
     }
@@ -116,38 +111,10 @@ extension HomeViewController: UITableViewDataSource {
         let lastSectionIndex = tableView.numberOfSections - 1
         let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
         if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
-            
             activityIndicator.startAnimating()
             requestPostIds(for: pageNumber)
-            
         }
     }
-    
-    //    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    ////        if indexPath.section == 0 {
-    ////            return UITableView.automaticDimension
-    ////        } else {
-    //            tableView.setNeedsLayout()
-    //            tableView.layoutIfNeeded()
-    //            return UITableView.automaticDimension
-    //       // }
-    //    }
-    //
-    //    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-    //        if indexPath.section == 0 {
-    //            return UITableView.automaticDimension
-    //        } else {
-    //            return 40
-    //        }
-    //    }
-    
-    
-    
-    //    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-    //        activityIndicator.startAnimating()
-    //        pageNumber += 1
-    //        requestListOfPosts(for: pageNumber)
-    //    }
     
 }
 
@@ -163,8 +130,6 @@ extension HomeViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    
-    
 }
 
 // MARK: - PostViewControllerDelegate
@@ -176,19 +141,6 @@ extension HomeViewController: PostViewControllerDelegate {
     }
     
 }
-
-/*
- 
- let cacheService: CacheStorageService = .init()
- //        if let cachedData = try? cacheService.get(for: url.absoluteString as NSString) {//ImageCache.shared.get(with: url.absoluteString as NSString) {
- //            print("IMAGE USE CACHE")
- //            completionHandler(.success(cachedData as! Data))
- //            return
- //        }
- //self.cacheService.set(for: data as NSData, with: url.absoluteString as NSString)
- 
- 
- */
 
 // MARK: - Network Requests
 
@@ -219,9 +171,9 @@ extension HomeViewController {
         if let cachedPost = try? manager.cache.get(for: id as NSString) {
             if let cachedPost = cachedPost as? PostDetails {
                 //if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-                   // cellForRow.configure(for: cachedPost)
+                // cellForRow.configure(for: cachedPost)
                 if let cell = cell as? PostTableViewCell {
-                cell.configure(for: cachedPost)
+                    cell.configure(for: cachedPost)
                     // Request buddyicon
                     if let iconFarm = cachedPost.owner?.iconFarm, let iconServer = cachedPost.owner?.iconServer, let nsid = cachedPost.owner?.nsid {
                         self.requestPostBuddyicon(farm: iconFarm, server: iconServer, nsid: nsid, indexPath: indexPath, cell: cell)
@@ -270,8 +222,8 @@ extension HomeViewController {
                 //guard let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
                 //cellForRow.setupPostImage(image: cachedPostImage)
                 if let cell = cell as? PostTableViewCell {
-                cell.setupPostImage(image: cachedPostImage)
-                print("Cache: [POST IMAGE][ID: \(id)]")
+                    cell.setupPostImage(image: cachedPostImage)
+                    print("Cache: [POST IMAGE][ID: \(id)]")
                     return
                 }
             }
@@ -295,8 +247,8 @@ extension HomeViewController {
                 //guard let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
                 //cellForRow.setupBuddyicon(image: cachedPostBuddyicon)
                 if let cell = cell as? PostTableViewCell {
-                cell.setupBuddyicon(image: cachedPostBuddyicon)
-                print("Cache: [POST BUDDYICON][NSID: \(nsid)]")
+                    cell.setupBuddyicon(image: cachedPostBuddyicon)
+                    print("Cache: [POST BUDDYICON][NSID: \(nsid)]")
                     return
                 }
             }

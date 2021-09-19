@@ -16,7 +16,6 @@
 		5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */; };
 		5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6C326EE0B4E00F98608 /* AccountView.swift */; };
 		5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6C526EE0BFD00F98608 /* AccountView.xib */; };
-		5F25F6CC26EE69A300F98608 /* AuthorizationStateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */; };
 		5F6A836726F4EE19000F9AD2 /* CacheStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */; };
 		5F71301126D40D32001A3762 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71301026D40D32001A3762 /* NetworkService.swift */; };
 		5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996226D66DE300482485 /* ErrorMessage.swift */; };
@@ -46,7 +45,7 @@
 		5FA9B2FA26E533700060DAE8 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2F926E533700060DAE8 /* HTTPMethod.swift */; };
 		5FA9B2FC26E655AE0060DAE8 /* RequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2FB26E655AE0060DAE8 /* RequestType.swift */; };
 		5FA9B2FE26E669400060DAE8 /* NetworkService+Flickr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2FD26E669400060DAE8 /* NetworkService+Flickr.swift */; };
-		5FF2241C26F1204E0026BAF4 /* NetworkService+ImageDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF2241B26F1204E0026BAF4 /* NetworkService+ImageDownload.swift */; };
+		5FF2241C26F1204E0026BAF4 /* NetworkService+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF2241B26F1204E0026BAF4 /* NetworkService+Image.swift */; };
 		5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */; };
 		5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */; };
 		5FFEC0B526CD4DDB000A0BAB /* AuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B426CD4DDB000A0BAB /* AuthorizationViewController.swift */; };
@@ -67,7 +66,6 @@
 		5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PostTableViewCell.xib; sourceTree = "<group>"; };
 		5F25F6C326EE0B4E00F98608 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		5F25F6C526EE0BFD00F98608 /* AccountView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountView.xib; sourceTree = "<group>"; };
-		5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationStateProvider.swift; sourceTree = "<group>"; };
 		5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheStorageService.swift; sourceTree = "<group>"; };
 		5F71301026D40D32001A3762 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5F7F996226D66DE300482485 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
@@ -97,7 +95,7 @@
 		5FA9B2F926E533700060DAE8 /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		5FA9B2FB26E655AE0060DAE8 /* RequestType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestType.swift; sourceTree = "<group>"; };
 		5FA9B2FD26E669400060DAE8 /* NetworkService+Flickr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Flickr.swift"; sourceTree = "<group>"; };
-		5FF2241B26F1204E0026BAF4 /* NetworkService+ImageDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+ImageDownload.swift"; sourceTree = "<group>"; };
+		5FF2241B26F1204E0026BAF4 /* NetworkService+Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Image.swift"; sourceTree = "<group>"; };
 		5FFEC0AD26CD4DDB000A0BAB /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FFEC0B226CD4DDB000A0BAB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -165,13 +163,12 @@
 			path = "Account View";
 			sourceTree = "<group>";
 		};
-		5F25F6CA26EE698A00F98608 /* AuthorizationStateProvider */ = {
+		5F25F6CA26EE698A00F98608 /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
 				5F8AA85126F3749700E48706 /* CoordinatorService.swift */,
-				5F25F6CB26EE69A300F98608 /* AuthorizationStateProvider.swift */,
 			);
-			path = AuthorizationStateProvider;
+			path = Coordinator;
 			sourceTree = "<group>";
 		};
 		5F6A836826F4F21C000F9AD2 /* Storage Services */ = {
@@ -207,7 +204,7 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		5F7F997326D7FEEC00482485 /* NetworkService */ = {
+		5F7F997326D7FEEC00482485 /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				5F71301026D40D32001A3762 /* NetworkService.swift */,
@@ -218,9 +215,18 @@
 				5F7F997926D8001F00482485 /* NetworkService+Profile.swift */,
 				5F7F997D26D8023300482485 /* NetworkService+Tags.swift */,
 				5FA9B2FD26E669400060DAE8 /* NetworkService+Flickr.swift */,
-				5FF2241B26F1204E0026BAF4 /* NetworkService+ImageDownload.swift */,
+				5FF2241B26F1204E0026BAF4 /* NetworkService+Image.swift */,
 			);
-			path = NetworkService;
+			path = Network;
+			sourceTree = "<group>";
+		};
+		5FD81F7E26F7A62600622B10 /* Authorization */ = {
+			isa = PBXGroup;
+			children = (
+				5F25F68D26E9322000F98608 /* AuthorizationService.swift */,
+				5FFEC0CB26CD4FAD000A0BAB /* FlickrOAuthService.swift */,
+			);
+			path = Authorization;
 			sourceTree = "<group>";
 		};
 		5FF2241A26F10EF90026BAF4 /* Authorization Module */ = {
@@ -323,13 +329,12 @@
 		5FFEC0C926CD4F87000A0BAB /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				5FD81F7E26F7A62600622B10 /* Authorization */,
 				5F97D9CC26F7554C0089C30B /* NetworkDataManagerService.swift */,
 				5F6A836826F4F21C000F9AD2 /* Storage Services */,
-				5F25F6CA26EE698A00F98608 /* AuthorizationStateProvider */,
-				5F7F997326D7FEEC00482485 /* NetworkService */,
+				5F25F6CA26EE698A00F98608 /* Coordinator */,
+				5F7F997326D7FEEC00482485 /* Network */,
 				5F7F997226D7FEDA00482485 /* Helpers */,
-				5FFEC0CB26CD4FAD000A0BAB /* FlickrOAuthService.swift */,
-				5F25F68D26E9322000F98608 /* AuthorizationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -435,7 +440,6 @@
 				5F97D9CD26F7554C0089C30B /* NetworkDataManagerService.swift in Sources */,
 				5FA9B2F026E4B0F20060DAE8 /* ProfileViewController.swift in Sources */,
 				5F7F996826D6AE1000482485 /* Comment.swift in Sources */,
-				5F25F6CC26EE69A300F98608 /* AuthorizationStateProvider.swift in Sources */,
 				5F7F996626D69AE900482485 /* Profile.swift in Sources */,
 				5FFEC0CC26CD4FAD000A0BAB /* FlickrOAuthService.swift in Sources */,
 				5FA9B2F226E4B1020060DAE8 /* HomeViewController.swift in Sources */,
@@ -444,7 +448,7 @@
 				5FA9B2FE26E669400060DAE8 /* NetworkService+Flickr.swift in Sources */,
 				5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */,
 				5F155EA226F13988007E2859 /* PostDescriptionView.swift in Sources */,
-				5FF2241C26F1204E0026BAF4 /* NetworkService+ImageDownload.swift in Sources */,
+				5FF2241C26F1204E0026BAF4 /* NetworkService+Image.swift in Sources */,
 				5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */,
 				5F71301126D40D32001A3762 /* NetworkService.swift in Sources */,
 				5F7F997E26D8023300482485 /* NetworkService+Tags.swift in Sources */,

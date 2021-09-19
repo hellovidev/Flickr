@@ -24,7 +24,9 @@ struct CoordinatorService {
         let viewController = getInitialViewController()
         makeKeyAndVisible(viewController)
         
-        UIView.transition(with: window!, duration: 0.2, options: [.transitionCrossDissolve], animations: {}, completion: nil)
+        if let window = self.window {
+        UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve], animations: {}, completion: nil)
+        }
     }
     
     private func makeKeyAndVisible(_ viewController: UIViewController) {
@@ -35,6 +37,7 @@ struct CoordinatorService {
     private func getInitialViewController() -> UIViewController {
         do {
             let state = try storageService.get(for: Bool.self, with: "state")
+            print(state)
             return state ? try getTableViewController() : getAuthorizationViewController()
         } catch {
             return getAuthorizationViewController()
@@ -48,7 +51,6 @@ struct CoordinatorService {
     
     private func getAuthorizationViewController() -> UIViewController {
         let viewController = createViewController(type: AuthorizationViewController.self)
-        viewController.authorizationService = AuthorizationService(storageService: UserDefaultsStorageService())
         return viewController
     }
     
