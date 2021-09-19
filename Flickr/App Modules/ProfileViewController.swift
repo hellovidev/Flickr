@@ -22,11 +22,13 @@ class ProfileViewController: UIViewController {
         
         guard let window = UIApplication.shared.windows.first else { return }
         
-        let authorizationStateProvider = AuthorizationStateProvider(storageService: UserDefaultsStorageService())
-        let viewController = authorizationStateProvider.getInitialViewController()
-        
-        let coordinator = CoordinatorService()
-        coordinator.makeKeyAndVisible(viewController, window: window)
+        let coordinator = CoordinatorService(storageService: UserDefaultsStorageService())
+        coordinator.redirectToInitialViewController()
+//        let authorizationStateProvider = AuthorizationStateProvider(storageService: UserDefaultsStorageService())
+//        let viewController = authorizationStateProvider.getInitialViewController()
+//
+//        let coordinator = CoordinatorService()
+//        coordinator.makeKeyAndVisible(viewController, window: window)
         
         UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve], animations: {}, completion: nil)
     }

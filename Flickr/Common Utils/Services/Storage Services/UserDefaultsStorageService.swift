@@ -1,48 +1,13 @@
 //
-//  CacheService.swift
+//  UserDefaultsStorageService.swift
 //  Flickr
 //
-//  Created by Sergei Romanchuk on 17.09.2021.
+//  Created by Sergei Romanchuk on 19.09.2021.
 //
 
 import Foundation
 
-// MARK: - Cache Error
-
-enum StorageServiceError: Error {
-    
-    case nilObject(key: AnyObject)
-    
-}
-
-extension StorageServiceError: LocalizedError {
-    
-    var errorDescription: String? {
-        switch self {
-        case .nilObject(key: let key):
-            return "Nil object for key \(key)"
-        }
-    }
-    
-}
-
-// MARK: - Cache Protocol
-
-protocol CacheStorageServiceProtocol {
-    
-    associatedtype KeyType
-    
-    associatedtype ObjectType
-        
-    func set(for object: ObjectType, with key: KeyType)
-    
-    func get(for key: KeyType) throws -> ObjectType
-    
-    func remove(for key: KeyType)
-    
-    func removeAll()
-    
-}
+// MARK: - LocalStorageServiceProtocol
 
 protocol LocalStorageServiceProtocol {
         
@@ -56,34 +21,7 @@ protocol LocalStorageServiceProtocol {
     
 }
 
-struct CacheStorageService: CacheStorageServiceProtocol {
-    
-    typealias KeyType = AnyObject
-    
-    typealias ObjectType = AnyObject
-    
-    private let storage: NSCache<AnyObject, AnyObject> = .init()
-    
-    func set(for object: AnyObject, with key: AnyObject) {
-        storage.setObject(object, forKey: key)
-    }
-    
-    func get(for key: AnyObject) throws -> AnyObject {
-        guard let object = storage.object(forKey: key) else {
-            throw StorageServiceError.nilObject(key: key)
-        }
-        return object
-    }
-
-    func remove(for key: AnyObject) {
-        storage.removeObject(forKey: key)
-    }
-    
-    func removeAll() {
-        storage.removeAllObjects()
-    }
-    
-}
+// MARK: - UserDefaultsStorageService
 
 struct UserDefaultsStorageService: LocalStorageServiceProtocol {
     

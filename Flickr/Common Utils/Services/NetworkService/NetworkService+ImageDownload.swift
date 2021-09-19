@@ -63,7 +63,7 @@ enum URLError: Error {
 
 extension NetworkService {
     
-    mutating func image(postId: String, postSecret: String, serverId: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage?, Error>) -> Void) {
+    func image(postId: String, postSecret: String, serverId: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage?, Error>) -> Void) {
         guard
             let url = URL(string: "https://live.staticflickr.com/\(serverId)/\(postId)_\(postSecret)_\(size.rawValue).\(format.rawValue)")
         else {
@@ -86,7 +86,7 @@ extension NetworkService {
         }
     }
     
-    mutating func buddyicon(iconFarm: Int, iconServer: String, nsid: String, completionHandler: @escaping (Result<UIImage?, Error>) -> Void) {
+    func buddyicon(iconFarm: Int, iconServer: String, nsid: String, completionHandler: @escaping (Result<UIImage?, Error>) -> Void) {
         guard
             let url = URL(string: Int(iconServer) == 0 ? "https://www.flickr.com/images/buddyicon.gif" : "http://farm\(iconFarm).staticflickr.com/\(iconServer)/buddyicons/\(nsid).jpg")
         else {

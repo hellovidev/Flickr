@@ -19,7 +19,8 @@ class HomeViewController: UIViewController {
 
     private var postsId: [String] = .init()
     
-    var networkService: NetworkService!
+    var manager: NetworkDataManagerService!
+    //var networkService: NetworkService!
     private var pageNumber = 1
     
     
@@ -46,7 +47,7 @@ class HomeViewController: UIViewController {
         postsId.removeAll()
         activityIndicator.stopAnimating()
         tableView.reloadData()
-        networkService.cacheService.removeAll()
+        manager.cache.removeAll()
         requestListOfPosts(for: pageNumber)
     }
     
@@ -76,7 +77,7 @@ class HomeViewController: UIViewController {
     }
     
     private func requestListOfPosts(for page: Int) {
-        networkService.getRecentPosts(page: page) { [weak self] result in
+        manager.network.getRecentPosts(page: page) { [weak self] result in
             switch result {
             case .success(let posts):
                 guard var postIds = self?.postsId else { return }
@@ -129,7 +130,7 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomePostCell", for: indexPath) as! PostTableViewCell
 
-        networkService?.getPhotoById(with: postsId[indexPath.row]) { [weak self] result in
+        manager.network.getPhotoById(with: postsId[indexPath.row]) { [weak self] result in
             switch result {
             case .success(let post):
                 // Set current data of post to cell
@@ -142,7 +143,7 @@ extension HomeViewController: UITableViewDataSource {
                     let iconServer = post.owner?.iconServer,
                     let nsid = post.owner?.nsid {
                     
-                    self?.networkService?.buddyicon(iconFarm: iconFarm, iconServer: iconServer, nsid: nsid) { result in
+                    self?.manager.network.buddyicon(iconFarm: iconFarm, iconServer: iconServer, nsid: nsid) { result in
                         switch result {
                         case .success(let image):
                             let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell
@@ -159,7 +160,7 @@ extension HomeViewController: UITableViewDataSource {
                 if
                     let postSecret = post.secret,
                     let serverId = post.server {
-                    self?.networkService?.image(postId: post.id, postSecret: postSecret, serverId: serverId) { result in
+                    self?.manager.network.image(postId: post.id, postSecret: postSecret, serverId: serverId) { result in
                         switch result {
                         case .success(let image):
                             let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell

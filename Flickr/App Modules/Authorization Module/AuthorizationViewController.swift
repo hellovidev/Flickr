@@ -50,12 +50,15 @@ class AuthorizationViewController: UIViewController {
             case .success:
                 guard let window = UIApplication.shared.windows.first else { return }
                 
-                let authorizationStateProvider = AuthorizationStateProvider(storageService: UserDefaultsStorageService())
-                let viewController = authorizationStateProvider.getInitialViewController()
+                let coordinator = CoordinatorService(storageService: UserDefaultsStorageService())
+                coordinator.redirectToInitialViewController()
                 
-                let coordinator = CoordinatorService()
-                coordinator.makeKeyAndVisible(viewController, window: window)
-                
+//                let authorizationStateProvider = AuthorizationStateProvider(storageService: UserDefaultsStorageService())
+//                let viewController = authorizationStateProvider.getInitialViewController()
+//                
+//                let coordinator = CoordinatorService()
+//                coordinator.makeKeyAndVisible(viewController, window: window)
+//                
                 UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve], animations: {}, completion: nil)
             case .failure(let error):
                 self?.showAlert(title: "Authorize error", message: error.localizedDescription, button: "OK")

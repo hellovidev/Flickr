@@ -32,9 +32,13 @@ struct NetworkService {
     private let signatureHelper: SignatureHelper
 
     // Without access token 'NetworkService' do not work
-    init(accessTokenAPI: AccessTokenAPI, publicConsumerKey: String, secretConsumerKey: String) {
-        self.accessTokenAPI = accessTokenAPI
-        self.consumerKeyAPI = (publicConsumerKey, secretConsumerKey)
+    /// Initialization of network service
+    /// - token: Access token of API
+    /// - public: Public API key of your account
+    /// - secret: Public API key of your account
+    init(token: AccessTokenAPI, publicKey: String, secretKey: String) {
+        self.accessTokenAPI = token
+        self.consumerKeyAPI = (publicKey, secretKey)
         self.signatureHelper = .init(consumerSecretKey: consumerKeyAPI.secretKey, accessSecretToken: accessTokenAPI.secret)
     }
     
@@ -202,11 +206,11 @@ struct NetworkService {
     }
     
     func request(for url: URL, completionHandler: @escaping (Result<Data, Error>) -> Void) {
-        if let cachedData = try? cacheService.get(for: url.absoluteString as NSString) {//ImageCache.shared.get(with: url.absoluteString as NSString) {
-            print("IMAGE USE CACHE")
-            completionHandler(.success(cachedData as! Data))
-            return
-        }
+//        if let cachedData = try? cacheService.get(for: url.absoluteString as NSString) {//ImageCache.shared.get(with: url.absoluteString as NSString) {
+//            print("IMAGE USE CACHE")
+//            completionHandler(.success(cachedData as! Data))
+//            return
+//        }
 
         let task = session.downloadTask(with: url) { fileURL, response, error in
             if let error = error {
@@ -226,7 +230,7 @@ struct NetworkService {
             
             do {
                 let data = try Data(contentsOf: fileURL)
-                self.cacheService.set(for: data as NSData, with: url.absoluteString as NSString)
+                //self.cacheService.set(for: data as NSData, with: url.absoluteString as NSString)
                 //ImageCache.shared.set(for: data as NSData, with: url.absoluteString as NSString)
                 completionHandler(.success(data))
             } catch {
