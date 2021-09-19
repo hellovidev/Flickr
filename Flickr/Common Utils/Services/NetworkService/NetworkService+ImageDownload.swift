@@ -75,21 +75,8 @@ extension NetworkService {
             return
         }
         
-        request(for: url) { result in
-            switch result {
-            case .success(let data):
-                DispatchQueue.main.async {
-                    guard let image = UIImage(data: data) else {
-                        completionHandler(.failure(ImageError.couldNotInit))
-                        return
-                    }
-                    completionHandler(.success(image))
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    completionHandler(.failure(error))
-                }
-            }
+        requestImage(url: url) { result in
+            completionHandler(result.map { $0 })
         }
     }
     
@@ -101,6 +88,12 @@ extension NetworkService {
             return
         }
         
+        requestImage(url: url) { result in
+            completionHandler(result.map { $0 })
+        }
+    }
+    
+    private func requestImage(url: URL, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         request(for: url) { result in
             switch result {
             case .success(let data):
