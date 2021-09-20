@@ -9,14 +9,8 @@ import Foundation
 
 // MARK: - StorageServiceError
 
-/// Storage Service Error
-/// - Note: Storage error provider
 enum StorageServiceError: Error {
-    
-    /// Error for 'nil' object
-    /// - key: Key of empty object
     case nilObject(key: AnyObject)
-    
 }
 
 extension StorageServiceError: LocalizedError {
