@@ -13,6 +13,8 @@ class HomeViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    private var fromAnother: Bool = false
+    
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
     private let refreshControl: UIRefreshControl = .init()
     
@@ -67,6 +69,7 @@ class HomeViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        tabBarController?.delegate = self
         
         tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
         
@@ -266,4 +269,23 @@ extension HomeViewController {
         }
     }
     
+}
+
+extension HomeViewController: UITabBarControllerDelegate {
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+         let tabBarIndex = tabBarController.selectedIndex
+         if tabBarIndex == 0 && fromAnother == false {
+            //tableView.setContentOffset(.zero, animated: true)
+            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+         }
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        if tabBarController.selectedIndex != 0 {
+            fromAnother = true
+        } else {fromAnother = false}
+        return true
+    }
+
 }
