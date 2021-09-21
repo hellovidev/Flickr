@@ -60,7 +60,7 @@ struct CoordinatorService {
         let viewController = navigationController.topViewController as! HomeViewController
         
         let token = try storageService.get(for: AccessTokenAPI.self, with: "token")
-        viewController.manager = .init(token)
+        viewController.tableNetworkDataManager = .init(token)
         
         return tabBarController
     }

@@ -11,6 +11,21 @@ enum NetworkManagerError: Error {
     case invalidParameters
 }
 
+enum ResponseSource {
+    case cache
+    case network
+}
+
+struct PostImage {
+    let image: UIImage
+    let type: ResponseSource
+}
+
+struct PostInformation {
+    let information: PostDetails
+    let type: ResponseSource
+}
+
 class NetworkPostInformation {
     
     private let networkService: NetworkService
@@ -57,22 +72,24 @@ class NetworkPostInformation {
         }
     }
     
-    func requestPostInformation(position: Int, completionHandler: @escaping (Result<PostDetails, Error>) -> Void) {
+    func requestPostInformation(position: Int, completionHandler: @escaping (Result<PostInformation, Error>) -> Void) {
         let cachePostInformationIdentifier = ids[position] as NSString
         if let postInformationCache = try? cachePostInformation.get(for: cachePostInformationIdentifier) {
-            completionHandler(.success(postInformationCache))
+            let postInformation = PostInformation(information: postInformationCache, type: .cache)
+            completionHandler(.success(postInformation))
             return
         }
         
         networkService.getPhotoById(with: ids[position]) { [weak self] result in
             completionHandler(result.map {
                 self?.cachePostInformation.set(for: $0, with: cachePostInformationIdentifier)
-                return $0
+                let postInformation = PostInformation(information: $0, type: .network)
+                return postInformation
             })
         }
     }
     
-    func requestImage(post: PostDetails, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    func requestImage(post: PostDetails, completionHandler: @escaping (Result<PostImage, Error>) -> Void) {
         guard
             let id = post.id,
             let secret = post.secret,
@@ -84,19 +101,21 @@ class NetworkPostInformation {
         
         let cacheImageIdentifier = id + secret + server as NSString
         if let imageCache = try? cacheImages.get(for: cacheImageIdentifier) {
-            completionHandler(.success(imageCache))
+            let postImage = PostImage(image: imageCache, type: .cache)
+            completionHandler(.success(postImage))
             return
         }
         
         networkService.image(postId: id, postSecret: secret, serverId: server) { [weak self] result in
             completionHandler(result.map {
                 self?.cacheImages.set(for: $0, with: cacheImageIdentifier)
-                return $0
+                let postImage = PostImage(image: $0, type: .network)
+                return postImage
             })
         }
     }
     
-    func requestBuddyicon(post: PostDetails, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    func requestBuddyicon(post: PostDetails, completionHandler: @escaping (Result<PostImage, Error>) -> Void) {
         guard
             let farm = post.owner?.iconFarm,
             let server = post.owner?.iconServer,
@@ -108,14 +127,16 @@ class NetworkPostInformation {
         
         let cacheBuddyiconIdentifier = String(farm) + server + nsid as NSString
         if let buddyiconCache = try? cacheBuddyicons.get(for: cacheBuddyiconIdentifier) {
-            completionHandler(.success(buddyiconCache))
+            let postBuddyicon = PostImage(image: buddyiconCache, type: .cache)
+            completionHandler(.success(postBuddyicon))
             return
         }
         
         networkService.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { [weak self] result in
             completionHandler(result.map {
                 self?.cacheBuddyicons.set(for: $0, with: cacheBuddyiconIdentifier)
-                return $0
+                let postBuddyicon = PostImage(image: $0, type: .network)
+                return postBuddyicon
             })
         }
     }

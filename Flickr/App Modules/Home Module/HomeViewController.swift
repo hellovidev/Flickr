@@ -12,43 +12,45 @@ import UIKit
 class HomeViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var filtersStackView: UIStackView!
     
-    private var fromAnother: Bool = false
-    
-    private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
+    @IBOutlet weak var filterStackView: UIStackView!
     private let refreshControl: UIRefreshControl = .init()
+    private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
     
-    //private var postsId: [String] = .init()
-    
-    var manager: NetworkPostInformation!
-    // private var pageNumber = 1
-    
+    var tableNetworkDataManager: NetworkPostInformation!
+
+    //???
+    private var fromAnother: Bool = false
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         tableView.showsVerticalScrollIndicator = false
         
-        // Adding loading view to table view
+        setupTableRefreshIndicator()
+        setupNextPageLoadingIndicator()
+    }
+    
+    private func setupNextPageLoadingIndicator() {
         activityIndicator.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
         tableView.tableFooterView = activityIndicator
         activityIndicator.startAnimating()
         tableView.tableFooterView?.isHidden = false
-        
+    }
+    
+    private func setupTableRefreshIndicator() {
         refreshControl.transform = CGAffineTransform(scaleX: 0.75, y: 0.75)
         tableView.refreshControl = refreshControl
         tableView.addSubview(refreshControl)
-        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(refreshTable), for: .valueChanged)
     }
     
-    @objc
-    private func refresh() {
-        //pageNumber = 1
-        //postsId.removeAll()
+    @objc private func refreshTable() {
         activityIndicator.stopAnimating()
+        tableNetworkDataManager.refresh()
         tableView.reloadData()
-        
-        manager.refresh()
-        req()
+        requestTableData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -65,6 +67,27 @@ class HomeViewController: UIViewController {
         navigationItem.titleView = view
     }
     
+    private func setupStackView() {
+//        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 0))
+//        scrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100).isActive = true
+//        
+//        let stackView = UIStackView()
+//        stackView.axis = .horizontal
+//        stackView.distribution = .equalSpacing
+//        stackView.spacing = 6
+//        
+//        scrollView.addSubview(stackView)
+//        stackView.
+    }
+    
+    struct Filter {
+        let image: UIImage
+        let title: String
+    }
+    
+    let filters: [String] = ["Faves", "Views", "Comments", "Faves", "Views", "Comments",]
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -74,19 +97,38 @@ class HomeViewController: UIViewController {
         
         tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
         
-        req()
+        requestTableData()
+        
+        filters.forEach {
+            let filterView = FilterView()
+            filterView.filterImage.image = UIImage(named: $0)
+            filterView.filterImage.layer.cornerRadius = 8
+            filterView.filterName.text = $0
+            //filterView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+            //filterView.widthAnchor.constraint(equalToConstant: 80).isActive = true
+
+            filterStackView.addArrangedSubview(filterView)
+            filterStackView.translatesAutoresizingMaskIntoConstraints = false;
+            //filterView.topAnchor.constraint(greaterThanOrEqualTo: filtersStackView.topAnchor, constant: 12).isActive = true
+            //filterView.topAnchor.constraint(equalTo: filtersStackView.topAnchor, constant: 12).isActive = true
+            //filterView.safeAreaInsets.top.constraint(greaterThanOrEqualTo: filtersStackView.safeAreaInsets.top, constant: 12).isActive = true
+            //filterView.centerYAnchor.constraint(equalTo: filtersStackView.centerYAnchor).isActive = true
+            //filtersStackView.setNeedsLayout()
+            //filtersStackView.layoutIfNeeded()
+            //filtersStackView.reloadInputViews()
+        }
     }
     
-    func req() {
-        
-        manager.requestPostsId { [weak self] result in
+    func requestTableData() {
+        tableNetworkDataManager.requestPostsId { [weak self] result in
             switch result {
             case .success(_):
-                self?.refreshControl.endRefreshing()
                 self?.activityIndicator.stopAnimating()
+                self?.refreshControl.endRefreshing()
                 self?.tableView.reloadData()
             case .failure(let error):
                 self?.activityIndicator.stopAnimating()
+                self?.refreshControl.endRefreshing()
                 self?.tableView.tableFooterView?.isHidden = true
                 self?.showAlert(title: "Error", message: error.localizedDescription, button: "OK")
             }
@@ -99,57 +141,56 @@ class HomeViewController: UIViewController {
     
 }
 
-
-
 // MARK: - UITableViewDataSource
 
 extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return manager.idsCount
+        return tableNetworkDataManager.idsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomePostCell", for: indexPath) as! PostTableViewCell
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let cell = cell as! PostTableViewCell
-        manager.requestPostInformation(position: indexPath.row) { [weak self] result in
+        tableNetworkDataManager.requestPostInformation(position: indexPath.row) { [weak self] result in
             switch result {
-            case .success(let postinformation):
-                if let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-                    cellForRow.configure(for: postinformation)
+            case .success(let postInformation):
+                if postInformation.type == .network {
+                    if let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell {
+                        cellForRow.configure(for: postInformation.information)
+                    } //else {
+                       // cell.configure(for: postInformation.information)
+                    //}
                 } else {
-                    cell.configure(for: postinformation)
+                    cell.configure(for: postInformation.information)
                 }
                 
-                
-                self?.manager.requestBuddyicon(post: postinformation) { [weak self] result in
+                self?.tableNetworkDataManager.requestBuddyicon(post: postInformation.information) { [weak self] result in
                     switch result {
-                    case .success(let image):
-                        if let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-                            cellForRow.setupBuddyicon(image: image)
+                    case .success(let postBuddyicon):
+                        if postBuddyicon.type == .network {
+                            if let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell {
+                                cellForRow.setupBuddyicon(image: postBuddyicon.image)
+                            } //else {
+                              //  cell.setupBuddyicon(image: postBuddyicon.image)
+                            //}
                         } else {
-                            //cell.setupBuddyicon(image: image)
+                            cell.setupBuddyicon(image: postBuddyicon.image)
                         }
+
                     case .failure(let error):
                         print("Download buddyicon error: \(error)")
                     }
                 }
                 
-                self?.manager.requestImage(post: postinformation) { [weak self] result in
+                self?.tableNetworkDataManager.requestImage(post: postInformation.information) { [weak self] result in
                     switch result {
-                    case .success(let image):
-                        if let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-                            cellForRow.setupPostImage(image: image)
+                    case .success(let postImage):
+                        if postImage.type == .network {
+                            guard let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
+                            cellForRow.setupPostImage(image: postImage.image)
                         } else {
-                            //cell.setupPostImage(image: image)
+                            cell.setupPostImage(image: postImage.image)
                         }
-                        //guard let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
-                        //cellForRow.setupPostImage(image: image)
-                    
                     case .failure(let error):
                         print("Download image error: \(error)")
                     }
@@ -158,13 +199,15 @@ extension HomeViewController: UITableViewDataSource {
                 print("\(#function) has error: \(error.localizedDescription)")
             }
         }
-        
-        //        requestPost(id: postsId[indexPath.row], indexPath: indexPath, cell: cell)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let lastSectionIndex = tableView.numberOfSections - 1
         let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
         if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
             activityIndicator.startAnimating()
-            req()
+            requestTableData()
         }
     }
     
