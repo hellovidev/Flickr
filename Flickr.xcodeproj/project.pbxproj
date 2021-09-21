@@ -35,7 +35,7 @@
 		5F7F998426D8E89200482485 /* DeserializeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F998326D8E89200482485 /* DeserializeHelper.swift */; };
 		5F7F998626D8F78F00482485 /* NetworkService+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F998526D8F78F00482485 /* NetworkService+Upload.swift */; };
 		5F8AA85226F3749700E48706 /* CoordinatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AA85126F3749700E48706 /* CoordinatorService.swift */; };
-		5F97D9CD26F7554C0089C30B /* NetworkDataManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F97D9CC26F7554C0089C30B /* NetworkDataManagerService.swift */; };
+		5F97D9CD26F7554C0089C30B /* NetworkPostInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F97D9CC26F7554C0089C30B /* NetworkPostInformation.swift */; };
 		5F97D9D026F75CF40089C30B /* StorageServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F97D9CF26F75CF40089C30B /* StorageServiceError.swift */; };
 		5F97D9D226F75D3A0089C30B /* UserDefaultsStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F97D9D126F75D3A0089C30B /* UserDefaultsStorageService.swift */; };
 		5FA9B2F026E4B0F20060DAE8 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9B2EF26E4B0F20060DAE8 /* ProfileViewController.swift */; };
@@ -85,7 +85,7 @@
 		5F7F998326D8E89200482485 /* DeserializeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeserializeHelper.swift; sourceTree = "<group>"; };
 		5F7F998526D8F78F00482485 /* NetworkService+Upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Upload.swift"; sourceTree = "<group>"; };
 		5F8AA85126F3749700E48706 /* CoordinatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorService.swift; sourceTree = "<group>"; };
-		5F97D9CC26F7554C0089C30B /* NetworkDataManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDataManagerService.swift; sourceTree = "<group>"; };
+		5F97D9CC26F7554C0089C30B /* NetworkPostInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkPostInformation.swift; sourceTree = "<group>"; };
 		5F97D9CF26F75CF40089C30B /* StorageServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageServiceError.swift; sourceTree = "<group>"; };
 		5F97D9D126F75D3A0089C30B /* UserDefaultsStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStorageService.swift; sourceTree = "<group>"; };
 		5FA9B2EF26E4B0F20060DAE8 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -329,8 +329,8 @@
 		5FFEC0C926CD4F87000A0BAB /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				5F97D9CC26F7554C0089C30B /* NetworkPostInformation.swift */,
 				5FD81F7E26F7A62600622B10 /* Authorization */,
-				5F97D9CC26F7554C0089C30B /* NetworkDataManagerService.swift */,
 				5F6A836826F4F21C000F9AD2 /* Storage Services */,
 				5F25F6CA26EE698A00F98608 /* Coordinator */,
 				5F7F997326D7FEEC00482485 /* Network */,
@@ -437,7 +437,7 @@
 				5F7F998626D8F78F00482485 /* NetworkService+Upload.swift in Sources */,
 				5F25F6BD26EE08B800F98608 /* PostTableViewCell.swift in Sources */,
 				5F97D9D226F75D3A0089C30B /* UserDefaultsStorageService.swift in Sources */,
-				5F97D9CD26F7554C0089C30B /* NetworkDataManagerService.swift in Sources */,
+				5F97D9CD26F7554C0089C30B /* NetworkPostInformation.swift in Sources */,
 				5FA9B2F026E4B0F20060DAE8 /* ProfileViewController.swift in Sources */,
 				5F7F996826D6AE1000482485 /* Comment.swift in Sources */,
 				5F7F996626D69AE900482485 /* Profile.swift in Sources */,

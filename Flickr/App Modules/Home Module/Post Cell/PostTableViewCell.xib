@@ -16,20 +16,20 @@
                 <rect key="frame" x="0.0" y="0.0" width="565" height="750"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9lg-7R-mdp" customClass="AccountView" customModule="Flickr" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="565" height="56"/>
+                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9lg-7R-mdp" customClass="AccountView" customModule="Flickr" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="565" height="125"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="BtO-0U-aFG"/>
                         </constraints>
                     </view>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RYM-af-tNk">
-                        <rect key="frame" x="0.0" y="56" width="565" height="565"/>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="RYM-af-tNk">
+                        <rect key="frame" x="0.0" y="125" width="565" height="565"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="RYM-af-tNk" secondAttribute="height" multiplier="1:1" id="1fQ-b5-H5U"/>
                         </constraints>
                     </imageView>
-                    <view clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jyk-I6-i4j" userLabel="PostDescription View" customClass="PostDescriptionView" customModule="Flickr" customModuleProvider="target">
-                        <rect key="frame" x="15" y="633" width="535" height="105"/>
+                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jyk-I6-i4j" userLabel="PostDescription View" customClass="PostDescriptionView" customModule="Flickr" customModuleProvider="target">
+                        <rect key="frame" x="15" y="702" width="535" height="36"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="35" id="n12-3i-rGN"/>
                         </constraints>

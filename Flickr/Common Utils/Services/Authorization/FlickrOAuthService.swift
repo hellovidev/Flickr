@@ -37,13 +37,13 @@ class FlickrOAuthService: NSObject {
         }
     }
     
-    private var state: AuthorizationState? {
+    private var isAutherized: AuthorizationState? {
         didSet {
             do {
-                if case .successfullyAuthenticated = state {
-                    try storageService.set(for: true, with: "state")
+                if case .successfullyAuthenticated = isAutherized {
+                    try storageService.set(for: true, with: "isAutherized")
                 } else {
-                    try storageService.set(for: false, with: "state")
+                    try storageService.set(for: false, with: "isAutherized")
                 }
             } catch(let storageError) {
                 print(storageError)
@@ -54,7 +54,7 @@ class FlickrOAuthService: NSObject {
     // MARK: - Additional Methods
     
     func isAuthorized() -> Bool {
-        switch state {
+        switch isAutherized {
         case .successfullyAuthenticated:
             return true
         default:
@@ -89,7 +89,7 @@ class FlickrOAuthService: NSObject {
     
     func flickrLogin(presenter: UIViewController, completion: @escaping (Result<AccessTokenOAuth, Error>) -> Void) {
         // Check authorization state
-        guard state == nil else {
+        guard isAutherized == nil else {
             completion(.failure(ErrorMessage.error("User is already logged in.")))
             return
         }
@@ -109,7 +109,7 @@ class FlickrOAuthService: NSObject {
                         self?.getAccessToken(arguments: arguments) { [weak self] result in
                             switch result {
                             case .success(let accessToken):
-                                self?.state = .successfullyAuthenticated
+                                self?.isAutherized = .successfullyAuthenticated
                                 DispatchQueue.main.async {
                                     completion(.success(accessToken))
                                 }
@@ -134,7 +134,7 @@ class FlickrOAuthService: NSObject {
     }
     
     func flickrLogout() {
-        state = nil
+        isAutherized = nil
     }
     
     // MARK: - Steps OAuth1.0 Methods
@@ -142,7 +142,7 @@ class FlickrOAuthService: NSObject {
     // Step #1: Getting Request Token
     private func getRequestToken(completion: @escaping (Result<RequestTokenOAuth, Error>) -> Void) {
         // Change authorization state
-        state = .requestTokenRequested
+        isAutherized = .requestTokenRequested
         
         // Set extra parameters
         let parameters: [String: String] = [
@@ -158,14 +158,14 @@ class FlickrOAuthService: NSObject {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"] else {
-                    self.state = nil
+                    self.isAutherized = nil
                     completion(.failure(ErrorMessage.error("Request token was not found.")))
                     return
                 }
                 
                 completion(.success(RequestTokenOAuth(token: token, secretToken: secretToken)))
             case .failure(let error):
-                self.state = nil
+                self.isAutherized = nil
                 completion(.failure(error))
             }
         }
@@ -197,7 +197,7 @@ class FlickrOAuthService: NSObject {
         let safari = SFSafariViewController(url: websiteConfirmationURL)
         safari.delegate = self
         // Return 'ArgumentsAccessToken' after callback URL
-        state = .authorizeRequested() { [weak self] url in
+        isAutherized = .authorizeRequested() { [weak self] url in
             // Dismiss the 'Safari' ViewController
             safari.dismiss(animated: true, completion: nil)
             
@@ -226,8 +226,8 @@ class FlickrOAuthService: NSObject {
     
     // Catch URL callback after confirmed authorization (Step #2: Website Confirmation)
     func handleURL(_ url: URL) {
-        guard case let .authorizeRequested(handler) = state else {
-            self.state = nil
+        guard case let .authorizeRequested(handler) = isAutherized else {
+            self.isAutherized = nil
             fatalError("Invalid authorization state.")
         }
         
@@ -237,7 +237,7 @@ class FlickrOAuthService: NSObject {
     // Step #3: Getting Access Token
     private func getAccessToken(arguments: ArgumentsAccessToken, completion: @escaping (Result<AccessTokenOAuth, Error>) -> Void) {
         // Change authorization state
-        state = .accessTokenRequested
+        isAutherized = .accessTokenRequested
         
         // Set extra parameters
         let parameters: [String: String] = [
@@ -254,14 +254,14 @@ class FlickrOAuthService: NSObject {
                 // Convert response data to parameters
                 let attributes = self.convertStringToParameters(dataString)
                 guard let token = attributes["oauth_token"], let secretToken = attributes["oauth_token_secret"], let userNSID = attributes["user_nsid"], let username = attributes["username"] else {
-                    self.state = nil
+                    self.isAutherized = nil
                     completion(.failure(ErrorMessage.error("Access token was not found.")))
                     return
                 }
                 
                 completion(.success(AccessTokenOAuth(token: token, secretToken: secretToken, userNSID: userNSID, username: username)))
             case .failure(let error):
-                self.state = nil
+                self.isAutherized = nil
                 completion(.failure(error))
             }
         }
@@ -367,7 +367,7 @@ class FlickrOAuthService: NSObject {
 extension FlickrOAuthService: SFSafariViewControllerDelegate {
     
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        self.state = nil
+        self.isAutherized = nil
     }
     
 }

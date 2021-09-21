@@ -10,7 +10,7 @@ import Foundation
 // MARK: - LocalStorageServiceProtocol
 
 protocol LocalStorageServiceProtocol {
-        
+    
     func set<Object: Codable>(for object: Object, with key: String) throws
     
     func get<Object: Codable>(for type: Object.Type, with key: String) throws -> Object
@@ -40,7 +40,7 @@ struct UserDefaultsStorageService: LocalStorageServiceProtocol {
     func get<Object>(for type: Object.Type = Object.self, with key: String) throws -> Object where Object : Decodable, Object : Encodable {
         do {
             guard let data = storage.data(forKey: key) else {
-                throw StorageServiceError.nilObject(key: key as NSString)
+                throw StorageServiceError.nilObject(key: key)
             }
             let decoder = JSONDecoder()
             let object = try decoder.decode(type, from: data)
@@ -52,7 +52,7 @@ struct UserDefaultsStorageService: LocalStorageServiceProtocol {
     
     func remove(for key: String) {
         storage.removeObject(forKey: key)
-
+        
     }
     
     func removeAll() {

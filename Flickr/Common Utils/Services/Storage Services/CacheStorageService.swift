@@ -1,5 +1,5 @@
 //
-//  CacheService.swift
+//  CacheStorageService.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 17.09.2021.
@@ -14,7 +14,7 @@ protocol CacheStorageServiceProtocol {
     associatedtype KeyType
     
     associatedtype ObjectType
-        
+    
     func set(for object: ObjectType, with key: KeyType)
     
     func get(for key: KeyType) throws -> ObjectType
@@ -27,27 +27,28 @@ protocol CacheStorageServiceProtocol {
 
 // MARK: - CacheStorageService
 
-struct CacheStorageService: CacheStorageServiceProtocol {
+struct CacheStorageService<Key: AnyObject, Object: AnyObject>: CacheStorageServiceProtocol {
     
-    typealias KeyType = AnyObject
+    typealias KeyType = Key
     
-    typealias ObjectType = AnyObject
+    typealias ObjectType = Object
     
-    private let storage: NSCache<AnyObject, AnyObject> = .init()
+    private let storage: NSCache<Key, Object> = .init()
     
-    func set(for object: AnyObject, with key: AnyObject) {
+    func set(for object: Object, with key: Key) {
         storage.setObject(object, forKey: key)
     }
     
-    func get(for key: AnyObject) throws -> AnyObject {
+    func get(for key: Key) throws -> Object {
         guard let object = storage.object(forKey: key) else {
             throw StorageServiceError.nilObject(key: key)
         }
         return object
     }
-
-    func remove(for key: AnyObject) {
+    
+    func remove(for key: Key) {
         storage.removeObject(forKey: key)
+        
     }
     
     func removeAll() {

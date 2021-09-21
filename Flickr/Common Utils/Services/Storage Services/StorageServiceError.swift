@@ -9,8 +9,8 @@ import Foundation
 
 // MARK: - StorageServiceError
 
-enum StorageServiceError: Error {
-    case nilObject(key: AnyObject)
+enum StorageServiceError<Key>: Error {
+    case nilObject(key: Key)
 }
 
 extension StorageServiceError: LocalizedError {
