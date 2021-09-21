@@ -49,6 +49,36 @@ class NetworkPostInformation {
         self.page = 1
     }
     
+    // MARK: - TEST
+    private var posts: [PostDetails] = .init()
+    
+    func filter(by filterType: FilterType, completionHandler: @escaping () -> Void) {
+        switch filterType {
+        case .faves:
+            posts.sort { element, nextElement in
+                let elementViews = Int(element.views ?? "0")
+                let nextElementViews = Int(nextElement.views ?? "0")
+                return elementViews ?? 0 > nextElementViews ?? 0
+            }
+            let temp = posts.compactMap { $0.id }
+            ids = temp.uniques
+            completionHandler()
+        case .views:
+            posts.sort { element, nextElement in
+                let elementViews = Int(element.views ?? "0")
+                let nextElementViews = Int(nextElement.views ?? "0")
+                return elementViews ?? 0 > nextElementViews ?? 0
+            }
+        case .comments:
+            posts.sort { element, nextElement in
+                let elementViews = Int(element.views ?? "0")
+                let nextElementViews = Int(nextElement.views ?? "0")
+                return elementViews ?? 0 > nextElementViews ?? 0
+            }
+        }
+    }
+    // MARK: - END
+    
     private func addUniqValues(_ array: [Photo]) {
         ids += array.compactMap { $0.id }
         ids = ids.uniques
@@ -82,6 +112,7 @@ class NetworkPostInformation {
         
         networkService.getPhotoById(with: ids[position]) { [weak self] result in
             completionHandler(result.map {
+                self?.posts.append($0)
                 self?.cachePostInformation.set(for: $0, with: cachePostInformationIdentifier)
                 let postInformation = PostInformation(information: $0, type: .network)
                 return postInformation

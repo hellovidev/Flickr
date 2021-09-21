@@ -7,6 +7,13 @@
 
 import UIKit
 
+enum FilterType: String {
+    case faves = "Faves"
+    case views = "Views"
+    case comments = "Comments"
+}
+
+
 // MARK: - HomeViewController
 
 class HomeViewController: UIViewController {
@@ -19,6 +26,8 @@ class HomeViewController: UIViewController {
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
     
     var tableNetworkDataManager: NetworkPostInformation!
+    
+    let filters: [String] = ["Faves", "Views", "Comments", "Faves", "Views", "Comments",]
 
     //???
     private var fromAnother: Bool = false
@@ -67,27 +76,6 @@ class HomeViewController: UIViewController {
         navigationItem.titleView = view
     }
     
-    private func setupStackView() {
-//        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 0))
-//        scrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100).isActive = true
-//        
-//        let stackView = UIStackView()
-//        stackView.axis = .horizontal
-//        stackView.distribution = .equalSpacing
-//        stackView.spacing = 6
-//        
-//        scrollView.addSubview(stackView)
-//        stackView.
-    }
-    
-    struct Filter {
-        let image: UIImage
-        let title: String
-    }
-    
-    let filters: [String] = ["Faves", "Views", "Comments", "Faves", "Views", "Comments",]
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -104,18 +92,22 @@ class HomeViewController: UIViewController {
             filterView.filterImage.image = UIImage(named: $0)
             filterView.filterImage.layer.cornerRadius = 8
             filterView.filterName.text = $0
-            //filterView.heightAnchor.constraint(equalToConstant: 80).isActive = true
-            //filterView.widthAnchor.constraint(equalToConstant: 80).isActive = true
-
+            
+            let filterAction = UITapGestureRecognizer(target: self, action: #selector(filter(sender:)))
+            filterView.isUserInteractionEnabled = true
+            filterView.addGestureRecognizer(filterAction)
+            
             filterStackView.addArrangedSubview(filterView)
-            filterStackView.translatesAutoresizingMaskIntoConstraints = false;
-            //filterView.topAnchor.constraint(greaterThanOrEqualTo: filtersStackView.topAnchor, constant: 12).isActive = true
-            //filterView.topAnchor.constraint(equalTo: filtersStackView.topAnchor, constant: 12).isActive = true
-            //filterView.safeAreaInsets.top.constraint(greaterThanOrEqualTo: filtersStackView.safeAreaInsets.top, constant: 12).isActive = true
-            //filterView.centerYAnchor.constraint(equalTo: filtersStackView.centerYAnchor).isActive = true
-            //filtersStackView.setNeedsLayout()
-            //filtersStackView.layoutIfNeeded()
-            //filtersStackView.reloadInputViews()
+        }
+    }
+    
+    @IBAction private func filter(sender: UITapGestureRecognizer) {
+        guard let filterView = sender.view as? FilterView else { return }
+        guard let filterName = filterView.filterName.text else { return }
+        guard let filterType = FilterType(rawValue: filterName) else { return }
+
+        tableNetworkDataManager.filter(by: filterType) { [weak self] in
+            self?.tableView.reloadData()
         }
     }
     
