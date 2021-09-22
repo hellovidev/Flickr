@@ -92,6 +92,57 @@ class NetworkPostInformation {
         cachePostInformation.removeAll()
     }
     
+    func requestAndSetupPostIntoTable(tableView: UITableView, postCell: PostTableViewCell, indexPath: IndexPath) {
+        requestPostInformation(position: indexPath.row) { [weak self] result in
+            switch result {
+            case .success(let postInformation):
+                if postInformation.type == .network {
+                    if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
+                        cellForRow.configure(for: postInformation.information)
+                    } //else {
+                       // cell.configure(for: postInformation.information)
+                    //}
+                } else {
+                    postCell.configure(for: postInformation.information)
+                }
+                
+                self?.requestBuddyicon(post: postInformation.information) { [weak self] result in
+                    switch result {
+                    case .success(let postBuddyicon):
+                        if postBuddyicon.type == .network {
+                            if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
+                                cellForRow.setupBuddyicon(image: postBuddyicon.image)
+                            } //else {
+                              //  cell.setupBuddyicon(image: postBuddyicon.image)
+                            //}
+                        } else {
+                            postCell.setupBuddyicon(image: postBuddyicon.image)
+                        }
+
+                    case .failure(let error):
+                        print("Download buddyicon error: \(error)")
+                    }
+                }
+                
+                self?.requestImage(post: postInformation.information) { [weak self] result in
+                    switch result {
+                    case .success(let postImage):
+                        if postImage.type == .network {
+                            guard let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
+                            cellForRow.setupPostImage(image: postImage.image)
+                        } else {
+                            postCell.setupPostImage(image: postImage.image)
+                        }
+                    case .failure(let error):
+                        print("Download image error: \(error)")
+                    }
+                }
+            case .failure(let error):
+                print("\(#function) has error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     func requestPostsId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
         networkService.getRecentPosts(page: page) { [weak self] result in
             completionHandler(result.map {

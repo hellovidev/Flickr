@@ -7,16 +7,17 @@
 
 import UIKit
 
-enum FilterType: String {
-    case faves = "Faves"
-    case views = "Views"
-    case comments = "Comments"
-}
-
-
 // MARK: - HomeViewController
 
 class HomeViewController: UIViewController {
+    
+    let filters: [String] = ["Faves", "Views", "Comments", "Faves", "Views", "Comments",]
+
+    //???
+    private var fromAnother: Bool = false
+    
+    
+    // MARK: - Properties
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var filtersStackView: UIStackView!
@@ -27,10 +28,22 @@ class HomeViewController: UIViewController {
     
     var tableNetworkDataManager: NetworkPostInformation!
     
-    let filters: [String] = ["Faves", "Views", "Comments", "Faves", "Views", "Comments",]
-
-    //???
-    private var fromAnother: Bool = false
+    // MARK: - UIViewController Life Cycle Methods
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tabBarController?.delegate = self
+        
+        let nibName = String(describing: PostTableViewCell.self)
+        let reusableCellNib = UINib(nibName: nibName, bundle: nil)
+        tableView.register(reusableCellNib, forCellReuseIdentifier: ReuseIdentifier.homePostCell.rawValue)
+        
+        setupFilterViews()
+        requestTableData()
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -39,7 +52,10 @@ class HomeViewController: UIViewController {
         
         setupTableRefreshIndicator()
         setupNextPageLoadingIndicator()
+        setupNavigationTitle()
     }
+    
+    // MARK: - Setup UI Methods
     
     private func setupNextPageLoadingIndicator() {
         activityIndicator.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
@@ -55,19 +71,10 @@ class HomeViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(refreshTable), for: .valueChanged)
     }
     
-    @objc private func refreshTable() {
-        activityIndicator.stopAnimating()
-        tableNetworkDataManager.refresh()
-        tableView.reloadData()
-        requestTableData()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
+    private func setupNavigationTitle() {
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 25))
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "FlickrLogotype")
+        imageView.image = UIImage(named: ImageName.logotype.rawValue)
         
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 25))
         imageView.center = view.convert(view.center, from: imageView);
@@ -76,34 +83,32 @@ class HomeViewController: UIViewController {
         navigationItem.titleView = view
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tabBarController?.delegate = self
-        
-        tableView.register(UINib(nibName: "PostTableViewCell", bundle: nil), forCellReuseIdentifier: "HomePostCell")
-        
-        requestTableData()
-        
+    private func setupFilterViews() {
         filters.forEach {
             let filterView = FilterView()
             filterView.filterImage.image = UIImage(named: $0)
             filterView.filterImage.layer.cornerRadius = 8
             filterView.filterName.text = $0
             
-            let filterAction = UITapGestureRecognizer(target: self, action: #selector(filter(sender:)))
+            let filterAction = UITapGestureRecognizer(target: self, action: #selector(filter))
             filterView.isUserInteractionEnabled = true
             filterView.addGestureRecognizer(filterAction)
             
             filterStackView.addArrangedSubview(filterView)
         }
     }
+
+    @objc
+    private func refreshTable() {
+        activityIndicator.stopAnimating()
+        tableNetworkDataManager.refresh()
+        tableView.reloadData()
+        requestTableData()
+    }
     
-    @IBAction private func filter(sender: UITapGestureRecognizer) {
-        guard let filterView = sender.view as? FilterView else { return }
-        guard let filterName = filterView.filterName.text else { return }
+    @objc
+    private func filter(_ sender: UITapGestureRecognizer) {
+        guard let filterName = (sender.view as? FilterView)?.filterName.text else { return }
         guard let filterType = FilterType(rawValue: filterName) else { return }
 
         tableNetworkDataManager.filter(by: filterType) { [weak self] in
@@ -111,7 +116,7 @@ class HomeViewController: UIViewController {
         }
     }
     
-    func requestTableData() {
+    private func requestTableData() {
         tableNetworkDataManager.requestPostsId { [weak self] result in
             switch result {
             case .success(_):
@@ -142,61 +147,15 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "HomePostCell", for: indexPath) as! PostTableViewCell
-        tableNetworkDataManager.requestPostInformation(position: indexPath.row) { [weak self] result in
-            switch result {
-            case .success(let postInformation):
-                if postInformation.type == .network {
-                    if let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-                        cellForRow.configure(for: postInformation.information)
-                    } //else {
-                       // cell.configure(for: postInformation.information)
-                    //}
-                } else {
-                    cell.configure(for: postInformation.information)
-                }
-                
-                self?.tableNetworkDataManager.requestBuddyicon(post: postInformation.information) { [weak self] result in
-                    switch result {
-                    case .success(let postBuddyicon):
-                        if postBuddyicon.type == .network {
-                            if let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-                                cellForRow.setupBuddyicon(image: postBuddyicon.image)
-                            } //else {
-                              //  cell.setupBuddyicon(image: postBuddyicon.image)
-                            //}
-                        } else {
-                            cell.setupBuddyicon(image: postBuddyicon.image)
-                        }
-
-                    case .failure(let error):
-                        print("Download buddyicon error: \(error)")
-                    }
-                }
-                
-                self?.tableNetworkDataManager.requestImage(post: postInformation.information) { [weak self] result in
-                    switch result {
-                    case .success(let postImage):
-                        if postImage.type == .network {
-                            guard let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
-                            cellForRow.setupPostImage(image: postImage.image)
-                        } else {
-                            cell.setupPostImage(image: postImage.image)
-                        }
-                    case .failure(let error):
-                        print("Download image error: \(error)")
-                    }
-                }
-            case .failure(let error):
-                print("\(#function) has error: \(error.localizedDescription)")
-            }
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.homePostCell.rawValue, for: indexPath) as! PostTableViewCell
+        tableNetworkDataManager.requestAndSetupPostIntoTable(tableView: tableView, postCell: cell, indexPath: indexPath)
         return cell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let lastSectionIndex = tableView.numberOfSections - 1
         let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
+        
         if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
             activityIndicator.startAnimating()
             requestTableData()
@@ -210,8 +169,13 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let postViewController = storyboard.instantiateViewController(withIdentifier: "PostViewController") as! PostViewController
+        let storyboard = UIStoryboard(name: Storyboard.main.rawValue, bundle: Bundle.main)
+        guard
+            let postViewController = storyboard.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as? PostViewController
+        else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
         postViewController.delegate = self
         navigationController?.pushViewController(postViewController, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
@@ -229,138 +193,25 @@ extension HomeViewController: PostViewControllerDelegate {
     
 }
 
-// MARK: - Network Requests
 
-//extension HomeViewController {
-//
-//        private func requestPostIds(for page: Int) {
-//            manager.network.getRecentPosts(page: page) { [weak self] result in
-//                switch result {
-//                case .success(let posts):
-//                    self?.pageNumber += 1
-//
-//                    guard var postIds = self?.postsId else { return }
-//                    postIds += posts.compactMap { $0.id }
-//                    self?.postsId = postIds.uniques
-//
-//                    self?.refreshControl.endRefreshing()
-//                    self?.activityIndicator.stopAnimating()
-//                    self?.tableView.reloadData()
-//                case .failure(let error):
-//                    self?.activityIndicator.stopAnimating()
-//                    self?.tableView.tableFooterView?.isHidden = true
-//                    self?.showAlert(title: "Error", message: error.localizedDescription, button: "OK")
-//                }
-//            }
-//        }
-//
-//        private func requestPost(id: String, indexPath: IndexPath, cell: UITableViewCell) {
-//            if let cachedPost = try? manager.cache.get(for: id as NSString) {
-//                if let cachedPost = cachedPost as? PostDetails {
-//                    //if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-//                    // cellForRow.configure(for: cachedPost)
-//                    if let cell = cell as? PostTableViewCell {
-//                        cell.configure(for: cachedPost)
-//                        // Request buddyicon
-//    //                    if let iconFarm = cachedPost.owner?.iconFarm, let iconServer = cachedPost.owner?.iconServer, let nsid = cachedPost.owner?.nsid {
-//    //                        self.requestPostBuddyicon(farm: iconFarm, server: iconServer, nsid: nsid, indexPath: indexPath, cell: cell)
-//    //                    }
-//
-//                        // Request post image
-//    //                    if let postSecret = cachedPost.secret, let serverId = cachedPost.server {
-//    //                        self.requestPostImage(id: cachedPost.id, secret: postSecret, server: serverId, indexPath: indexPath, cell: cell)
-//    //                    }
-//                        print("Cache: [POST OBJECT][ID: \(id)]")
-//                        return
-//                    }
-//                }
-//            }
-//
-//            manager.network.getPhotoById(with: id) { [weak self] result in
-//                switch result {
-//                case .success(let post):
-//                    self?.manager.cache.set(for: post as AnyObject, with: id as NSString)
-//
-//                    if let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-//                        cellForRow.configure(for: post)
-//
-//                        // Request buddyicon
-//                        if let iconFarm = post.owner?.iconFarm, let iconServer = post.owner?.iconServer, let nsid = post.owner?.nsid {
-//                            self?.requestPostBuddyicon(farm: iconFarm, server: iconServer, nsid: nsid, indexPath: indexPath, cell: cellForRow)
-//                        }
-//
-//                        // Request post image
-//                        if let postSecret = post.secret, let serverId = post.server {
-//                            self?.requestPostImage(id: post.id, secret: postSecret, server: serverId, indexPath: indexPath, cell: cellForRow)
-//                        }
-//                    }
-//                case .failure(let error):
-//                    print("\(#function) has error: \(error.localizedDescription)")
-//                }
-//            }
-//        }
-//
-//    / - Parameter id: Post id
-//    / - Parameter secret: Post secret code
-//    / - Parameter server: Post server
-//        private func requestPostImage(id: String, secret: String, server: String, indexPath: IndexPath, cell: UITableViewCell) {
-//            if let cachedPostImage = try? manager.cache.get(for: id + secret + server as NSString) {
-//                if let cachedPostImage = cachedPostImage as? UIImage {
-//                    //guard let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
-//                    //cellForRow.setupPostImage(image: cachedPostImage)
-//                    if let cell = cell as? PostTableViewCell {
-//                        cell.setupPostImage(image: cachedPostImage)
-//                        print("Cache: [POST IMAGE][ID: \(id)]")
-//                        return
-//                    }
-//                }
-//            }
-//
-//            manager.network.image(postId: id, postSecret: secret, serverId: server) { [weak self] result in
-//                switch result {
-//                case .success(let image):
-//                    self?.manager.cache.set(for: image as AnyObject, with: id + secret + server as NSString)
-//                    guard let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
-//                    cellForRow.setupPostImage(image: image)
-//                case .failure(let error):
-//                    print("Download image error: \(error)")
-//                }
-//            }
-//        }
-//
-//        private func requestPostBuddyicon(farm: Int, server: String, nsid: String, indexPath: IndexPath, cell: UITableViewCell) {
-//            if let cachedPostBuddyicon = try? manager.cache.get(for: String(farm) + server + nsid as NSString) {
-//                if let cachedPostBuddyicon = cachedPostBuddyicon as? UIImage {
-//                    //guard let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
-//                    //cellForRow.setupBuddyicon(image: cachedPostBuddyicon)
-//                    if let cell = cell as? PostTableViewCell {
-//                        cell.setupBuddyicon(image: cachedPostBuddyicon)
-//                        print("Cache: [POST BUDDYICON][NSID: \(nsid)]")
-//                        return
-//                    }
-//                }
-//            }
-//
-//            manager.network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { [weak self] result in
-//                switch result {
-//                case .success(let image):
-//                    self?.manager.cache.set(for: image as AnyObject, with: String(farm) + server + nsid as NSString)
-//                    let cellForRow = self?.tableView.cellForRow(at: indexPath) as? PostTableViewCell
-//                    cellForRow?.setupBuddyicon(image: image)
-//                case .failure(let error):
-//                    print("Download buddyicon error: \(error)")
-//                }
-//            }
-//        }
-//
-//}
+
+
+
+
+
+
+
+
+
+
+
+
 
 extension HomeViewController: UITabBarControllerDelegate {
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         let tabBarIndex = tabBarController.selectedIndex
         if tabBarIndex == 0 && fromAnother == false {
-            //tableView.setContentOffset(.zero, animated: true)
             tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         }
     }

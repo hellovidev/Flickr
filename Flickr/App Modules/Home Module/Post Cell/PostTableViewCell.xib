@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,41 +17,48 @@
                 <rect key="frame" x="0.0" y="0.0" width="565" height="750"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9lg-7R-mdp" customClass="AccountView" customModule="Flickr" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="565" height="125"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Qdh-eq-Qil">
+                        <rect key="frame" x="0.0" y="0.0" width="565" height="750"/>
+                        <subviews>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9lg-7R-mdp" customClass="AccountView" customModule="Flickr" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="565" height="125"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="CGe-zI-bft"/>
+                                </constraints>
+                            </view>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="RYM-af-tNk">
+                                <rect key="frame" x="0.0" y="125" width="565" height="565"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="RYM-af-tNk" secondAttribute="height" multiplier="1:1" id="1fQ-b5-H5U"/>
+                                </constraints>
+                            </imageView>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jyk-I6-i4j" userLabel="PostDescription View" customClass="PostDescriptionView" customModule="Flickr" customModuleProvider="target">
+                                <rect key="frame" x="15" y="702" width="2899" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="35" id="n12-3i-rGN"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="BtO-0U-aFG"/>
+                            <constraint firstAttribute="bottom" secondItem="Jyk-I6-i4j" secondAttribute="bottom" constant="12" id="1Pk-h1-Sp0"/>
+                            <constraint firstItem="RYM-af-tNk" firstAttribute="top" secondItem="9lg-7R-mdp" secondAttribute="bottom" id="82Z-Ku-YVx"/>
+                            <constraint firstItem="Jyk-I6-i4j" firstAttribute="leading" secondItem="Qdh-eq-Qil" secondAttribute="leading" constant="15" id="AVi-RG-4WM"/>
+                            <constraint firstItem="RYM-af-tNk" firstAttribute="leading" secondItem="Qdh-eq-Qil" secondAttribute="leading" id="J9M-Zr-HD7"/>
+                            <constraint firstItem="Jyk-I6-i4j" firstAttribute="top" secondItem="RYM-af-tNk" secondAttribute="bottom" constant="12" id="TJc-rz-y3Y"/>
+                            <constraint firstItem="9lg-7R-mdp" firstAttribute="leading" secondItem="Qdh-eq-Qil" secondAttribute="leading" id="WBa-xU-ios"/>
+                            <constraint firstItem="9lg-7R-mdp" firstAttribute="top" secondItem="Qdh-eq-Qil" secondAttribute="top" id="fEq-xl-te0"/>
+                            <constraint firstAttribute="trailing" secondItem="RYM-af-tNk" secondAttribute="trailing" id="nTd-dF-cjl"/>
+                            <constraint firstAttribute="trailing" secondItem="9lg-7R-mdp" secondAttribute="trailing" id="oVT-66-47K"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Jyk-I6-i4j" secondAttribute="trailing" constant="15" id="s6H-KF-JNW"/>
                         </constraints>
-                    </view>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="RYM-af-tNk">
-                        <rect key="frame" x="0.0" y="125" width="565" height="565"/>
-                        <constraints>
-                            <constraint firstAttribute="width" secondItem="RYM-af-tNk" secondAttribute="height" multiplier="1:1" id="1fQ-b5-H5U"/>
-                        </constraints>
-                    </imageView>
-                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jyk-I6-i4j" userLabel="PostDescription View" customClass="PostDescriptionView" customModule="Flickr" customModuleProvider="target">
-                        <rect key="frame" x="15" y="702" width="535" height="36"/>
-                        <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="35" id="n12-3i-rGN"/>
-                        </constraints>
-                    </view>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="Jyk-I6-i4j" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="0CO-dH-ahe"/>
-                    <constraint firstItem="9lg-7R-mdp" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="0aj-mb-N59"/>
-                    <constraint firstAttribute="trailing" secondItem="RYM-af-tNk" secondAttribute="trailing" id="2Y8-hJ-C2m"/>
-                    <constraint firstItem="Jyk-I6-i4j" firstAttribute="top" secondItem="RYM-af-tNk" secondAttribute="bottom" constant="12" id="CQT-oX-2jL"/>
-                    <constraint firstItem="9lg-7R-mdp" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="HpQ-2B-6NQ"/>
-                    <constraint firstItem="RYM-af-tNk" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="K4s-Jc-fDM"/>
-                    <constraint firstItem="RYM-af-tNk" firstAttribute="centerX" secondItem="9lg-7R-mdp" secondAttribute="centerX" id="NX3-nG-4sH"/>
-                    <constraint firstItem="Jyk-I6-i4j" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="Nrs-4t-ntZ"/>
-                    <constraint firstItem="Jyk-I6-i4j" firstAttribute="centerX" secondItem="9lg-7R-mdp" secondAttribute="centerX" id="P4G-cv-0qw"/>
-                    <constraint firstAttribute="bottom" secondItem="Jyk-I6-i4j" secondAttribute="bottom" constant="12" id="RgF-RI-uW7"/>
-                    <constraint firstItem="RYM-af-tNk" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="Yob-yz-8Nc"/>
-                    <constraint firstItem="RYM-af-tNk" firstAttribute="top" secondItem="9lg-7R-mdp" secondAttribute="bottom" id="Znj-1d-NSG"/>
-                    <constraint firstItem="9lg-7R-mdp" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="aSA-XY-0L4"/>
-                    <constraint firstAttribute="trailing" secondItem="Jyk-I6-i4j" secondAttribute="trailing" constant="15" id="eB2-7y-uJh"/>
-                    <constraint firstAttribute="trailing" secondItem="9lg-7R-mdp" secondAttribute="trailing" id="so6-yR-eRu"/>
+                    <constraint firstItem="Qdh-eq-Qil" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="42d-KK-tnD"/>
+                    <constraint firstItem="Qdh-eq-Qil" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="9yt-a3-PJS"/>
+                    <constraint firstAttribute="bottom" secondItem="Qdh-eq-Qil" secondAttribute="bottom" id="FoT-h3-fqY"/>
+                    <constraint firstItem="Qdh-eq-Qil" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="aJX-Ae-Ml7"/>
+                    <constraint firstAttribute="trailing" secondItem="Qdh-eq-Qil" secondAttribute="trailing" id="wbP-q1-jvP"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
