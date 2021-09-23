@@ -12,6 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     private let userDefaultsStorageService: UserDefaultsStorageService = .init()
+    private let authorizationService: AuthorizationService = .init()
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
@@ -19,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Catch callback link with 'verifier' parameter
-        AuthorizationService.shared.handleURL(url)
+        authorizationService.handleURL(url)
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -30,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         
-        let coordinator = CoordinatorService(storageService: userDefaultsStorageService)
+        let coordinator = CoordinatorService(storageService: userDefaultsStorageService, authorizationService: authorizationService)
         coordinator.redirectToInitialViewController()
     }
     

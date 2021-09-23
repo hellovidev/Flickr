@@ -14,6 +14,10 @@ class AuthorizationViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signupLabel: UILabel!
     
+    var authorizationService: AuthorizationService!
+    var coordinator: CoordinatorService!
+    var storageService: LocalStorageServiceProtocol!
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         let loginButtonTextAttributes: [NSAttributedString.Key : Any] = [
@@ -43,11 +47,10 @@ class AuthorizationViewController: UIViewController {
     }
     
     @IBAction func loginAction(_ sender: UIButton) {
-        AuthorizationService.shared.login(presenter: self) { [weak self] result in
+        authorizationService.login(presenter: self) { [weak self] result in
             switch result {
             case .success:
-                let coordinator = CoordinatorService(storageService: UserDefaultsStorageService())
-                coordinator.redirectToInitialViewController()
+                self?.coordinator.redirectToInitialViewController()
             case .failure(let error):
                 self?.showAlert(title: "Authorize error", message: error.localizedDescription, button: "OK")
             }
@@ -55,7 +58,7 @@ class AuthorizationViewController: UIViewController {
     }
     
     @IBAction func signupAction(sender: UITapGestureRecognizer) {
-        AuthorizationService.shared.signup(presenter: self)
+        authorizationService.signup(presenter: self)
     }
     
     deinit {

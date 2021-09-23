@@ -14,16 +14,22 @@ class PostTableViewCell: UITableViewCell {
     @IBOutlet weak var accountView: AccountView!
     @IBOutlet weak var postDescriptionView: PostDescriptionView!
     @IBOutlet weak var postImage: UIImageView!
-    
+        
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        accountView.nicknameLabel.text = nil
-        accountView.locationLabel.text = nil
         
         startSkeletonAnimation(view: accountView.ownerAvatar)
         startSkeletonAnimation(view: postImage)
         startSkeletonAnimation(view: postDescriptionView)
+        
+        accountView.ownerAvatar.image = nil
+        accountView.nicknameLabel.text = nil
+        accountView.locationLabel.text = nil
+        
+        postImage.image = nil
+        
+        postDescriptionView.postTitleLabel.text = nil
+        postDescriptionView.publishedDateLabel.text = nil
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -52,38 +58,48 @@ class PostTableViewCell: UITableViewCell {
         return nickname
     }
     
+    private func buildDescription(nickname: String?, title: String?) -> NSMutableAttributedString {
+        let postDescriptionNicknameLabelAttributes: [NSAttributedString.Key : Any] = [
+            .font: UIFont.systemFont(ofSize: 14, weight: .bold)
+        ]
+        
+        let postDescriptionLabelAttributes: [NSAttributedString.Key : Any] = [
+            .font: UIFont.systemFont(ofSize: 14, weight: .regular)
+        ]
+        
+        let description = NSMutableAttributedString(string: nickname ?? "", attributes: postDescriptionNicknameLabelAttributes)
+        let title = NSAttributedString(string: " " + (title ?? ""), attributes: postDescriptionLabelAttributes)
+        description.append(title)
+        return description
+    }
+    
     func configure(for post: PostDetails) {
-        // Setup header of cell
         let nickname = buildNickname(fullName: post.owner?.realName, username: post.owner?.username)
         accountView.nicknameLabel.text = nickname
         
-        accountView.nicknameLabel.backgroundColor = .clear
-        accountView.locationLabel.text = post.owner?.location.flatMap { $0 }
-        accountView.locationLabel.backgroundColor = .clear
+        let ownerLocation = post.owner?.location.flatMap { $0 }
+        accountView.locationLabel.text = ownerLocation
         
-        // Setup footer of cell
-        postDescriptionView.nicknameLabel.text = post.owner?.username.flatMap { $0 }
-        postDescriptionView.nicknameLabel.backgroundColor = .clear
+        let description = buildDescription(nickname: post.owner?.username, title: post.title?.content)
+        postDescriptionView.postTitleLabel.attributedText = description
+
+        let publishedDate = post.dateUploaded.flatMap { changeDateFormat($0, to: "dd MMM yyyy") }
+        postDescriptionView.publishedDateLabel.text = publishedDate
         
-        postDescriptionView.postTitleLabel.text = post.title?.content.flatMap { $0 }
-        postDescriptionView.postTitleLabel.backgroundColor = .clear
-        postDescriptionView.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
-        
-        postDescriptionView.publishedDateLabel.text = post.dateUploaded.flatMap { changeDateFormat($0, to: "dd MMM yyyy") }
-        postDescriptionView.publishedDateLabel.backgroundColor = .clear
+    
+        postDescriptionView.frame.size.height = postDescriptionView.postTitleLabel.frame.height + postDescriptionView.publishedDateLabel.frame.height
+        postDescriptionView.layoutIfNeeded()
+        self.layoutIfNeeded()
         
         stopSkeletonAnimation()
-        postDescriptionView.layoutIfNeeded()
     }
     
     func setupBuddyicon(image: UIImage) {
         accountView.ownerAvatar.image = image
-        accountView.ownerAvatar.backgroundColor = .clear
     }
     
     func setupPostImage(image: UIImage) {
         postImage.image = image
-        postImage.backgroundColor = .clear
     }
     
     override func prepareForReuse() {
@@ -94,25 +110,13 @@ class PostTableViewCell: UITableViewCell {
         startSkeletonAnimation(view: postDescriptionView)
         
         accountView.ownerAvatar.image = nil
-        accountView.ownerAvatar.backgroundColor = .systemGray5
-        
         accountView.nicknameLabel.text = nil
-        accountView.nicknameLabel.backgroundColor = .systemGray5
-        
         accountView.locationLabel.text = nil
-        accountView.locationLabel.backgroundColor = .systemGray5
         
         postImage.image = nil
-        postImage.backgroundColor = .systemGray5
-        
-        postDescriptionView.nicknameLabel.text = nil
-        postDescriptionView.nicknameLabel.backgroundColor = .systemGray5
         
         postDescriptionView.postTitleLabel.text = nil
-        postDescriptionView.postTitleLabel.backgroundColor = .systemGray5
-        
         postDescriptionView.publishedDateLabel.text = nil
-        postDescriptionView.publishedDateLabel.backgroundColor = .systemGray5
     }
     
     // MARK: - Animation

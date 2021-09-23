@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,11 +18,11 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="417" height="121"/>
+            <rect key="frame" x="0.0" y="0.0" width="400" height="56"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" semanticContentAttribute="spatial" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QRo-gn-Yle">
-                    <rect key="frame" x="12" y="44.5" width="32" height="32"/>
+                    <rect key="frame" x="12" y="12" width="32" height="32"/>
                     <color key="backgroundColor" systemColor="systemGray5Color"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="QRo-gn-Yle" secondAttribute="height" multiplier="1:1" id="11c-GR-Nal"/>
@@ -30,16 +31,16 @@
                     </constraints>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ujf-En-lR5">
-                    <rect key="frame" x="54" y="43.5" width="85" height="34"/>
+                    <rect key="frame" x="54" y="12" width="85" height="32"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nickname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n8e-Js-JqC">
-                            <rect key="frame" x="0.0" y="0.0" width="85" height="16"/>
+                            <rect key="frame" x="0.0" y="0.0" width="85" height="15"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New York, USA" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DQl-G3-NHL">
-                            <rect key="frame" x="0.0" y="18" width="85" height="16"/>
+                            <rect key="frame" x="0.0" y="17" width="85" height="15"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -64,20 +65,18 @@
             </subviews>
             <constraints>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Ujf-En-lR5" secondAttribute="trailing" constant="12" id="9WM-jd-UZB"/>
-                <constraint firstItem="QRo-gn-Yle" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="BKE-qK-Vtv"/>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="BKE-qK-Vtv"/>
                 <constraint firstItem="QRo-gn-Yle" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="BQa-fK-neb"/>
-                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="QRo-gn-Yle" secondAttribute="bottom" constant="12" id="E8f-jj-JEj"/>
+                <constraint firstAttribute="bottom" secondItem="QRo-gn-Yle" secondAttribute="bottom" constant="12" id="E8f-jj-JEj"/>
                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Ujf-En-lR5" secondAttribute="bottom" constant="12" id="FCD-RK-5kc"/>
                 <constraint firstItem="Ujf-En-lR5" firstAttribute="centerY" secondItem="QRo-gn-Yle" secondAttribute="centerY" id="GmJ-kg-lhG"/>
                 <constraint firstItem="Ujf-En-lR5" firstAttribute="leading" secondItem="QRo-gn-Yle" secondAttribute="trailing" constant="10" id="Mle-ik-KbQ"/>
-                <constraint firstItem="QRo-gn-Yle" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="aO0-h9-fQa"/>
                 <constraint firstItem="Ujf-En-lR5" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="ozg-Lc-JSD"/>
-                <constraint firstItem="Ujf-En-lR5" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="pc4-TM-PR0"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="729.71014492753625" y="-36.495535714285715"/>
+            <point key="canvasLocation" x="607.24637681159425" y="-58.258928571428569"/>
         </view>
     </objects>
     <resources>

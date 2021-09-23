@@ -19,7 +19,7 @@ protocol AuthorizationProtocol {
 
 class AuthorizationService: AuthorizationProtocol {
     
-    static let shared = AuthorizationService()
+    //static let shared = AuthorizationService()
     
     private let storageService: LocalStorageServiceProtocol
     private let flickrOAuthService: FlickrOAuthService
@@ -36,7 +36,7 @@ class AuthorizationService: AuthorizationProtocol {
             case .success(let accessOAuthToken):
                 do {
                     let token = AccessTokenAPI(token: accessOAuthToken.token, secret: accessOAuthToken.secretToken, nsid: accessOAuthToken.userNSID)
-                    try self?.storageService.set(for: token, with: "token")
+                    try self?.storageService.set(for: token, with: UserDefaultsKey.tokenAPI.rawValue)
                     completion(.success(Void()))
                 } catch {
                     completion(.failure(error))

@@ -13,7 +13,6 @@ import UIKit
 class PostDescriptionView: UIView {
     
     @IBOutlet var view: UIView!
-    @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var postTitleLabel: UILabel!
     @IBOutlet weak var publishedDateLabel: UILabel!
     
