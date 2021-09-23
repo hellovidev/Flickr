@@ -175,7 +175,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="DTf-Ok-Gdu">
-                                            <rect key="frame" x="12" y="12" width="414" height="82"/>
+                                            <rect key="frame" x="12" y="12" width="372.5" height="82"/>
                                         </stackView>
                                     </subviews>
                                     <constraints>
@@ -184,7 +184,7 @@
                                         <constraint firstItem="DTf-Ok-Gdu" firstAttribute="leading" secondItem="ZbD-Gk-H4R" secondAttribute="leading" constant="12" id="NoR-td-GDG"/>
                                         <constraint firstAttribute="trailing" secondItem="DTf-Ok-Gdu" secondAttribute="trailing" constant="12" id="QAP-E3-BgZ"/>
                                         <constraint firstItem="DTf-Ok-Gdu" firstAttribute="top" secondItem="ZbD-Gk-H4R" secondAttribute="top" constant="12" id="cLa-HU-Hzh"/>
-                                        <constraint firstItem="DTf-Ok-Gdu" firstAttribute="width" secondItem="0Gg-Aq-BBb" secondAttribute="width" id="cbh-eY-cso"/>
+                                        <constraint firstItem="DTf-Ok-Gdu" firstAttribute="width" secondItem="0Gg-Aq-BBb" secondAttribute="width" multiplier="0.9" id="cbh-eY-cso"/>
                                         <constraint firstItem="ZbD-Gk-H4R" firstAttribute="bottom" secondItem="DTf-Ok-Gdu" secondAttribute="bottom" id="jvv-yh-k49"/>
                                         <constraint firstAttribute="bottom" secondItem="DTf-Ok-Gdu" secondAttribute="bottom" id="lI7-1g-CIj"/>
                                     </constraints>

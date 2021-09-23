@@ -16,9 +16,8 @@ class HomeViewController: UIViewController {
     private let viewModel: HomeViewModel
 
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var filtersStackView: UIStackView!
-    
     @IBOutlet weak var filterStackView: UIStackView!
+    
     private let refreshControl: UIRefreshControl = .init()
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
         
@@ -41,8 +40,7 @@ class HomeViewController: UIViewController {
         switch router {
         case .self:
             break
-        case .fullPost(id: let id):
-            print(id)
+        case .fullPost(id: _):
             let storyboard = UIStoryboard(name: Storyboard.main.rawValue, bundle: Bundle.main)
             let postViewController = storyboard.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as! PostViewController
             postViewController.delegate = self
@@ -60,7 +58,6 @@ class HomeViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
-        //tabBarController?.delegate = self
         
         let nibName = String(describing: PostTableViewCell.self)
         let reusableCellNib = UINib(nibName: nibName, bundle: nil)
@@ -229,6 +226,7 @@ extension HomeViewController: PostViewControllerDelegate {
 
 
 
+//tabBarController?.delegate = self
 
 /*
 
