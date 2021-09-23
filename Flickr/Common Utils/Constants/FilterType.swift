@@ -8,7 +8,8 @@
 import Foundation
 
 enum FilterType: String {
-    case faves = "Faves"
-    case views = "Views"
-    case comments = "Comments"
+    case per50 = "50"
+    case per100 = "100"
+    case per200 = "200"
+    case per400 = "400"
 }

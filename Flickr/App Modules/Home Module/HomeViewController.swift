@@ -10,32 +10,57 @@ import UIKit
 // MARK: - HomeViewController
 
 class HomeViewController: UIViewController {
-    
-    let filters: [String] = ["Faves", "Views", "Comments", "Faves", "Views", "Comments",]
 
-    //???
-    private var fromAnother: Bool = false
-    
-    
     // MARK: - Properties
     
+    private let viewModel: HomeViewModel
+
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var filtersStackView: UIStackView!
     
     @IBOutlet weak var filterStackView: UIStackView!
     private let refreshControl: UIRefreshControl = .init()
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
+        
+    // MARK: - Custom Init
     
-    var tableNetworkDataManager: NetworkPostInformation!
+    init?(coder: NSCoder, viewModel: HomeViewModel) {
+        self.viewModel = viewModel
+        super.init(coder: coder)
+        
+        self.viewModel.router.addObserver { [weak self] router in
+            self?.show(router)
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func show(_ router: HomeRoute) {
+        switch router {
+        case .self:
+            break
+        case .fullPost(id: let id):
+            print(id)
+            let storyboard = UIStoryboard(name: Storyboard.main.rawValue, bundle: Bundle.main)
+            let postViewController = storyboard.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as! PostViewController
+            postViewController.delegate = self
+            navigationController?.pushViewController(postViewController, animated: true)
+        }
+    }
     
     // MARK: - UIViewController Life Cycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 400
+        
         tableView.delegate = self
         tableView.dataSource = self
-        tabBarController?.delegate = self
+        //tabBarController?.delegate = self
         
         let nibName = String(describing: PostTableViewCell.self)
         let reusableCellNib = UINib(nibName: nibName, bundle: nil)
@@ -84,11 +109,11 @@ class HomeViewController: UIViewController {
     }
     
     private func setupFilterViews() {
-        filters.forEach {
+        viewModel.filters.forEach {
             let filterView = FilterView()
-            filterView.filterImage.image = UIImage(named: $0)
+            filterView.filterImage.backgroundColor = $0.color
             filterView.filterImage.layer.cornerRadius = 8
-            filterView.filterName.text = $0
+            filterView.filterName.text = $0.title
             
             let filterAction = UITapGestureRecognizer(target: self, action: #selector(filter))
             filterView.isUserInteractionEnabled = true
@@ -101,7 +126,7 @@ class HomeViewController: UIViewController {
     @objc
     private func refreshTable() {
         activityIndicator.stopAnimating()
-        tableNetworkDataManager.refresh()
+        viewModel.postsNetworkManager.refresh()
         tableView.reloadData()
         requestTableData()
     }
@@ -111,13 +136,13 @@ class HomeViewController: UIViewController {
         guard let filterName = (sender.view as? FilterView)?.filterName.text else { return }
         guard let filterType = FilterType(rawValue: filterName) else { return }
 
-        tableNetworkDataManager.filter(by: filterType) { [weak self] in
+        viewModel.postsNetworkManager.filter(by: filterType) { [weak self] in
             self?.tableView.reloadData()
         }
     }
     
     private func requestTableData() {
-        tableNetworkDataManager.requestPostsId { [weak self] result in
+        viewModel.postsNetworkManager.requestPostsId { [weak self] result in
             switch result {
             case .success(_):
                 self?.activityIndicator.stopAnimating()
@@ -143,12 +168,12 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableNetworkDataManager.idsCount
+        return viewModel.postsNetworkManager.idsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.homePostCell.rawValue, for: indexPath) as! PostTableViewCell
-        tableNetworkDataManager.requestAndSetupPostIntoTable(tableView: tableView, postCell: cell, indexPath: indexPath)
+        viewModel.postsNetworkManager.requestAndSetupPostIntoTable(tableView: tableView, postCell: cell, indexPath: indexPath)
         return cell
     }
     
@@ -169,15 +194,16 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let storyboard = UIStoryboard(name: Storyboard.main.rawValue, bundle: Bundle.main)
-        guard
-            let postViewController = storyboard.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as? PostViewController
-        else {
-            tableView.deselectRow(at: indexPath, animated: true)
-            return
-        }
-        postViewController.delegate = self
-        navigationController?.pushViewController(postViewController, animated: true)
+        viewModel.router.value = .fullPost(id: "\(indexPath.row)")
+//        let storyboard = UIStoryboard(name: Storyboard.main.rawValue, bundle: Bundle.main)
+//        guard
+//            let postViewController = storyboard.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as? PostViewController
+//        else {
+//            tableView.deselectRow(at: indexPath, animated: true)
+//            return
+//        }
+//        postViewController.delegate = self
+//        navigationController?.pushViewController(postViewController, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -204,7 +230,10 @@ extension HomeViewController: PostViewControllerDelegate {
 
 
 
+/*
 
+//???
+private var fromAnother: Bool = false
 
 
 extension HomeViewController: UITabBarControllerDelegate {
@@ -226,3 +255,4 @@ extension HomeViewController: UITabBarControllerDelegate {
     }
     
 }
+*/

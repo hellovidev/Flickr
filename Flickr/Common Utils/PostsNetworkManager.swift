@@ -1,5 +1,5 @@
 //
-//  Network.swift
+//  PostsNetworkManager.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 19.09.2021.
@@ -26,7 +26,7 @@ struct PostInformation {
     let type: ResponseSource
 }
 
-class NetworkPostInformation {
+class PostsNetworkManager {
     
     private let networkService: NetworkService
     private let cacheImages: CacheStorageService<NSString, UIImage>
@@ -35,6 +35,7 @@ class NetworkPostInformation {
     
     private var ids: [String]
     private var page: Int
+    private var perPage: Int = 20
     
     var idsCount: Int {
         ids.count
@@ -54,28 +55,37 @@ class NetworkPostInformation {
     
     func filter(by filterType: FilterType, completionHandler: @escaping () -> Void) {
         switch filterType {
-        case .faves:
-            posts.sort { element, nextElement in
-                let elementViews = Int(element.views ?? "0")
-                let nextElementViews = Int(nextElement.views ?? "0")
-                return elementViews ?? 0 > nextElementViews ?? 0
-            }
-            let temp = posts.compactMap { $0.id }
-            ids = temp.uniques
-            completionHandler()
-        case .views:
-            posts.sort { element, nextElement in
-                let elementViews = Int(element.views ?? "0")
-                let nextElementViews = Int(nextElement.views ?? "0")
-                return elementViews ?? 0 > nextElementViews ?? 0
-            }
-        case .comments:
-            posts.sort { element, nextElement in
-                let elementViews = Int(element.views ?? "0")
-                let nextElementViews = Int(nextElement.views ?? "0")
-                return elementViews ?? 0 > nextElementViews ?? 0
-            }
+        case .per50:
+            perPage = 50
+        case .per100:
+            perPage = 100
+        case .per200:
+            perPage = 200
+        case .per400:
+            perPage = 400
         }
+//        case .faves:
+//            posts.sort { element, nextElement in
+//                let elementViews = Int(element.views ?? "0")
+//                let nextElementViews = Int(nextElement.views ?? "0")
+//                return elementViews ?? 0 > nextElementViews ?? 0
+//            }
+//            let temp = posts.compactMap { $0.id }
+//            ids = temp.uniques
+//            completionHandler()
+//        case .views:
+//            posts.sort { element, nextElement in
+//                let elementViews = Int(element.views ?? "0")
+//                let nextElementViews = Int(nextElement.views ?? "0")
+//                return elementViews ?? 0 > nextElementViews ?? 0
+//            }
+//        case .comments:
+//            posts.sort { element, nextElement in
+//                let elementViews = Int(element.views ?? "0")
+//                let nextElementViews = Int(nextElement.views ?? "0")
+//                return elementViews ?? 0 > nextElementViews ?? 0
+//            }
+//        }
     }
     // MARK: - END
     
@@ -144,7 +154,7 @@ class NetworkPostInformation {
     }
     
     func requestPostsId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        networkService.getRecentPosts(page: page) { [weak self] result in
+        networkService.getRecentPosts(page: page, perPage: perPage) { [weak self] result in
             completionHandler(result.map {
                 self?.page += 1
                 self?.addUniqValues($0)

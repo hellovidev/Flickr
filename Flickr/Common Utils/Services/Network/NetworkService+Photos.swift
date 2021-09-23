@@ -10,10 +10,10 @@ import Foundation
 extension NetworkService {
     
     // Get list of popular photos 'flickr.photos.getPopular' (General screen)
-    func getRecentPosts(page: Int, completion: @escaping (Result<[Photo], Error>) -> Void) {
+    func getRecentPosts(page: Int, perPage: Int, completion: @escaping (Result<[Photo], Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
-            "per_page": "20",
+            "per_page": String(perPage),
             "page": String(page)
         ]
 

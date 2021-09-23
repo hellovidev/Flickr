@@ -45,37 +45,44 @@ struct CoordinatorService {
         }
     }
     
-    private func createViewController<T: UIViewController>(type: T.Type) -> T {
-        let initialViewController = storyboard.instantiateViewController(withIdentifier: "\(type)") as! T
-        return initialViewController
-    }
-    
     private func getAuthorizationViewController() -> UIViewController {
-        let viewController = createViewController(type: AuthorizationViewController.self)
+        let viewController: AuthorizationViewController = storyboard.instantiateViewController()
         viewController.authorizationService = authorizationService
         viewController.coordinator = self
         return viewController
     }
     
     private func getTableViewController() throws -> UIViewController {
-        let tabBarController = UITabBarController()
-        let navigationController = createViewController(type: UINavigationController.self)
         
-        let homeViewController = navigationController.topViewController as! HomeViewController
         let token = try storageService.get(for: AccessTokenAPI.self, with: UserDefaultsKey.tokenAPI.rawValue)
-        homeViewController.tableNetworkDataManager = .init(token)
+
+        let homeViewController = storyboard.instantiateViewController(identifier: String(describing: HomeViewController.self)) { coder -> HomeViewController? in
+            let homeViewModel = HomeViewModel()
+            homeViewModel.postsNetworkManager = .init(token)
+            return HomeViewController(coder: coder, viewModel: homeViewModel)
+        }
         
-        navigationController.viewControllers = [homeViewController]
+        let navigationController = UINavigationController.init(rootViewController: homeViewController)
         
-        let galleryViewController = createViewController(type: GalleryViewController.self)
+        let galleryViewController: GalleryViewController = storyboard.instantiateViewController()
         
-        let profileViewController = createViewController(type: ProfileViewController.self)
+        let profileViewController: ProfileViewController = storyboard.instantiateViewController()
         profileViewController.authorizationService = authorizationService
         profileViewController.coordinator = self
 
+        let tabBarController: UITabBarController = .init()
         tabBarController.viewControllers = [navigationController, galleryViewController, profileViewController]
         
         return tabBarController
+    }
+    
+}
+
+extension UIStoryboard {
+    
+    func instantiateViewController<T>() -> T {
+        let id = String(describing: T.self)
+        return self.instantiateViewController(withIdentifier: id) as! T
     }
     
 }
