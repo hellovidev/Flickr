@@ -12,24 +12,25 @@ import UIKit
 class PostTableViewCell: UITableViewCell {
     
     @IBOutlet weak var accountView: AccountView!
-    @IBOutlet weak var postDescriptionView: PostDescriptionView!
     @IBOutlet weak var postImage: UIImageView!
+    @IBOutlet weak var postPublishedDate: UILabel!
+    @IBOutlet weak var postDescription: UILabel!
         
     override func awakeFromNib() {
         super.awakeFromNib()
         
         startSkeletonAnimation(view: accountView.ownerAvatar)
         startSkeletonAnimation(view: postImage)
-        startSkeletonAnimation(view: postDescriptionView)
-        
+        startSkeletonAnimation(view: postDescription)
+
         accountView.ownerAvatar.image = nil
         accountView.nicknameLabel.text = nil
         accountView.locationLabel.text = nil
         
         postImage.image = nil
         
-        postDescriptionView.postTitleLabel.text = nil
-        postDescriptionView.publishedDateLabel.text = nil
+        postDescription.text = nil
+        postPublishedDate.text = nil
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -84,46 +85,12 @@ class PostTableViewCell: UITableViewCell {
         accountView.locationLabel.text = ownerLocation
         
         let description = buildDescription(nickname: details?.owner?.username, title: details?.title?.content)
-        postDescriptionView.postTitleLabel.attributedText = description
+        postDescription.attributedText = description
 
         let publishedDate = details?.dateUploaded.flatMap { changeDateFormat($0, to: "dd MMM yyyy") }
-        postDescriptionView.publishedDateLabel.text = publishedDate
-        
-    
-        postDescriptionView.frame.size.height = postDescriptionView.postTitleLabel.frame.height + postDescriptionView.publishedDateLabel.frame.height
-        postDescriptionView.layoutIfNeeded()
-        self.layoutIfNeeded()
+        postPublishedDate.text = publishedDate
         
         stopSkeletonAnimation()
-    }
-    
-    func configure(for post: PostDetails) {
-        let nickname = buildNickname(fullName: post.owner?.realName, username: post.owner?.username)
-        accountView.nicknameLabel.text = nickname
-        
-        let ownerLocation = post.owner?.location.flatMap { $0 }
-        accountView.locationLabel.text = ownerLocation
-        
-        let description = buildDescription(nickname: post.owner?.username, title: post.title?.content)
-        postDescriptionView.postTitleLabel.attributedText = description
-
-        let publishedDate = post.dateUploaded.flatMap { changeDateFormat($0, to: "dd MMM yyyy") }
-        postDescriptionView.publishedDateLabel.text = publishedDate
-        
-    
-        postDescriptionView.frame.size.height = postDescriptionView.postTitleLabel.frame.height + postDescriptionView.publishedDateLabel.frame.height
-        postDescriptionView.layoutIfNeeded()
-        self.layoutIfNeeded()
-        
-        stopSkeletonAnimation()
-    }
-    
-    func setupBuddyicon(image: UIImage) {
-        accountView.ownerAvatar.image = image
-    }
-    
-    func setupPostImage(image: UIImage) {
-        postImage.image = image
     }
     
     override func prepareForReuse() {
@@ -131,7 +98,7 @@ class PostTableViewCell: UITableViewCell {
         
         startSkeletonAnimation(view: accountView.ownerAvatar)
         startSkeletonAnimation(view: postImage)
-        startSkeletonAnimation(view: postDescriptionView)
+        startSkeletonAnimation(view: postDescription)
         
         accountView.ownerAvatar.image = nil
         accountView.nicknameLabel.text = nil
@@ -139,8 +106,8 @@ class PostTableViewCell: UITableViewCell {
         
         postImage.image = nil
         
-        postDescriptionView.postTitleLabel.text = nil
-        postDescriptionView.publishedDateLabel.text = nil
+        postDescription.text = nil
+        postPublishedDate.text = nil
     }
     
     // MARK: - Animation
