@@ -23,7 +23,7 @@ class HomeViewController: UIViewController {
 
     private func show(_ router: HomeRoute) {
         switch router {
-        case .fullPost(id: _):
+        case .openPost(id: _):
             let postViewController = Storyboard.main.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as! PostViewController
             postViewController.viewModel = PostViewModel()
             postViewController.delegate = self
@@ -184,16 +184,7 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.router.send(.fullPost(id: "\(indexPath.row)")) //= .fullPost(id: "\(indexPath.row)")
-//        let storyboard = UIStoryboard(name: Storyboard.main.rawValue, bundle: Bundle.main)
-//        guard
-//            let postViewController = storyboard.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as? PostViewController
-//        else {
-//            tableView.deselectRow(at: indexPath, animated: true)
-//            return
-//        }
-//        postViewController.delegate = self
-//        navigationController?.pushViewController(postViewController, animated: true)
+        viewModel.router.send(.openPost(id: "\(indexPath.row)"))
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

@@ -13,25 +13,13 @@ struct Filter {
 }
 
 enum HomeRoute {
-    //case `self`
-    case fullPost(id: String)
-}
-
-struct Post {
-    var details: PostDetails?
-    var image: UIImage?
-    var buddyicon: UIImage?
-//    let owner: String
-//    let ownerLocation: String
-//    let description: String
-//    let publishedAt: String
-    
+    case openPost(id: String)
 }
 
 class HomeViewModel {
     
     var postsNetworkManager: PostsNetworkManager!
-    var router: Observable<HomeRoute> = .init()//.init(.`self`)
+    var router: Observable<HomeRoute> = .init()
     
     let filters: [Filter] = [
         Filter(title: "50", color: .systemBlue),
@@ -40,102 +28,85 @@ class HomeViewModel {
         Filter(title: "400", color: .systemTeal)
     ]
     
-
-    
     func requestPost(indexPath: IndexPath, completionHandler: @escaping (_ details: PostDetails?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
         let group = DispatchGroup()
+        
         var details: PostDetails?
         var buddyicon: UIImage?
         var image: UIImage?
         
-        postsNetworkManager.requestPostInformation(position: indexPath.row, group: group) { [weak self] result in
+        postsNetworkManager.requestPostInformation(position: indexPath.row, group: group) { result in
             switch result {
-            case .success(let postInformation):
-                details = postInformation.information
-//                if postInformation.type == .network {
-//                    if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-//                        cellForRow.configure(for: postInformation.information)
-//                    }
-//                } else {
-//                    postCell.configure(for: postInformation.information)
-//                }
-
+            case .success(let information):
+                details = information
             case .failure(let error):
-                print("\(#function) has error: \(error.localizedDescription)")
+                completionHandler(nil, nil, nil)
+                print("Download post information in \(#function) has error: \(error)")
+                return
             }
         }
         
-
-
-        group.notify(queue: DispatchQueue.global()) {
-          print("Completed work: \(details)")
+        group.notify(queue: DispatchQueue.main) { [weak self] in
             
-            guard let postDetails = details else {
+            guard let details = details else {
                 completionHandler(nil, nil, nil)
+                print("Line \(#line) has empty post details")
                 return
             }
             
-            
-            self.postsNetworkManager.requestBuddyicon(post: postDetails, group: group) { result in
+            self?.postsNetworkManager.requestBuddyicon(post: details, group: group) { result in
                 switch result {
-                case .success(let postBuddyicon):
-                    buddyicon = postBuddyicon.image
-    //                if postBuddyicon.type == .network {
-    //                    if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-    //                        cellForRow.setupBuddyicon(image: postBuddyicon.image)
-    //                    }
-    //                } else {
-    //                    postCell.setupBuddyicon(image: postBuddyicon.image)
-    //                }
-
+                case .success(let avatar):
+                    buddyicon = avatar
                 case .failure(let error):
                     print("Download buddyicon error: \(error)")
                 }
             }
             
-            self.postsNetworkManager.requestImage(post: postDetails, group: group) { result in
+            self?.postsNetworkManager.requestImage(post: details, group: group) { result in
                 switch result {
-                case .success(let postImage):
-                    image = postImage.image
-    //                if postImage.type == .network {
-    //                    guard let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
-    //                    cellForRow.setupPostImage(image: postImage.image)
-    //                } else {
-    //                    postCell.setupPostImage(image: postImage.image)
-    //                }
+                case .success(let cover):
+                    image = cover
                 case .failure(let error):
                     print("Download image error: \(error)")
                 }
             }
             
-            group.notify(queue: DispatchQueue.global()) {
-              //print("Completed work: \(post)")
+            group.notify(queue: DispatchQueue.main) {
+                //print("Post constructed: (\(details), \(String(describing: buddyicon)), \(String(describing: image))")
                 DispatchQueue.main.async {
-                    
-                
-                completionHandler(details, buddyicon, image)
+                    completionHandler(details, buddyicon, image)
                 }
             }
-            
-          // Kick off the movies API calls
-          //PlaygroundPage.current.finishExecution()
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//    func requestAndSetupPostIntoTable(tableView: UITableView, postCell: PostTableViewCell, indexPath: IndexPath) {
-//
-//    }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -149,25 +120,25 @@ class HomeViewModel {
 /*
  
  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     if segue.identifier == "HomePath" {
-         print("Go to home screen.")
-     }
+ if segue.identifier == "HomePath" {
+ print("Go to home screen.")
+ }
  }
  
  // Initialization 'NetworkService'
  self?.networkService = .init(accessTokenAPI: AccessTokenAPI(token: accessToken.token, secret: accessToken.secretToken, nsid: accessToken.userNSID.removingPercentEncoding!), publicConsumerKey: FlickrConstant.Key.consumerKey.rawValue, secretConsumerKey: FlickrConstant.Key.consumerSecretKey.rawValue)
  
  if let data = UserDefaults.standard.data(forKey: "token") {
-     do {
-         // Create JSON Decoder
-         let decoder = JSONDecoder()
-
-         // Decode Note
-         let note = try decoder.decode(Note.self, from: data)
-
-     } catch {
-         print("Unable to Decode Note (\(error))")
-     }
+ do {
+ // Create JSON Decoder
+ let decoder = JSONDecoder()
+ 
+ // Decode Note
+ let note = try decoder.decode(Note.self, from: data)
+ 
+ } catch {
+ print("Unable to Decode Note (\(error))")
+ }
  }
  */
 
