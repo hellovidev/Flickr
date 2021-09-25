@@ -73,6 +73,30 @@ class PostTableViewCell: UITableViewCell {
         return description
     }
     
+    func config(details: PostDetails?, buddyicon: UIImage?, image: UIImage?) {
+        accountView.ownerAvatar.image = buddyicon
+        postImage.image = image
+        
+        let nickname = buildNickname(fullName: details?.owner?.realName, username: details?.owner?.username)
+        accountView.nicknameLabel.text = nickname
+        
+        let ownerLocation = details?.owner?.location.flatMap { $0 }
+        accountView.locationLabel.text = ownerLocation
+        
+        let description = buildDescription(nickname: details?.owner?.username, title: details?.title?.content)
+        postDescriptionView.postTitleLabel.attributedText = description
+
+        let publishedDate = details?.dateUploaded.flatMap { changeDateFormat($0, to: "dd MMM yyyy") }
+        postDescriptionView.publishedDateLabel.text = publishedDate
+        
+    
+        postDescriptionView.frame.size.height = postDescriptionView.postTitleLabel.frame.height + postDescriptionView.publishedDateLabel.frame.height
+        postDescriptionView.layoutIfNeeded()
+        self.layoutIfNeeded()
+        
+        stopSkeletonAnimation()
+    }
+    
     func configure(for post: PostDetails) {
         let nickname = buildNickname(fullName: post.owner?.realName, username: post.owner?.username)
         accountView.nicknameLabel.text = nickname

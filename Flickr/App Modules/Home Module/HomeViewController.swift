@@ -157,7 +157,13 @@ extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.homePostCell.rawValue, for: indexPath) as! PostTableViewCell
-        viewModel.requestAndSetupPostIntoTable(tableView: tableView, postCell: cell, indexPath: indexPath)
+        
+        viewModel.requestPost(indexPath: indexPath) { details, buddyicon, image  in
+            tableView.beginUpdates()
+            cell.config(details: details, buddyicon: buddyicon, image: image)
+            tableView.endUpdates()
+        }
+        
         return cell
     }
     

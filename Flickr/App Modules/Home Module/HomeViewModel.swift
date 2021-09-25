@@ -17,6 +17,17 @@ enum HomeRoute {
     case fullPost(id: String)
 }
 
+struct Post {
+    var details: PostDetails?
+    var image: UIImage?
+    var buddyicon: UIImage?
+//    let owner: String
+//    let ownerLocation: String
+//    let description: String
+//    let publishedAt: String
+    
+}
+
 class HomeViewModel {
     
     var postsNetworkManager: PostsNetworkManager!
@@ -29,52 +40,100 @@ class HomeViewModel {
         Filter(title: "400", color: .systemTeal)
     ]
     
-    func requestAndSetupPostIntoTable(tableView: UITableView, postCell: PostTableViewCell, indexPath: IndexPath) {
-        postsNetworkManager.requestPostInformation(position: indexPath.row) { [weak self] result in
+
+    
+    func requestPost(indexPath: IndexPath, completionHandler: @escaping (_ details: PostDetails?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
+        let group = DispatchGroup()
+        var details: PostDetails?
+        var buddyicon: UIImage?
+        var image: UIImage?
+        
+        postsNetworkManager.requestPostInformation(position: indexPath.row, group: group) { [weak self] result in
             switch result {
             case .success(let postInformation):
-                if postInformation.type == .network {
-                    if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-                        cellForRow.configure(for: postInformation.information)
-                    }
-                } else {
-                    postCell.configure(for: postInformation.information)
-                }
-                
-                self?.postsNetworkManager.requestBuddyicon(post: postInformation.information) { result in
-                    switch result {
-                    case .success(let postBuddyicon):
-                        if postBuddyicon.type == .network {
-                            if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
-                                cellForRow.setupBuddyicon(image: postBuddyicon.image)
-                            }
-                        } else {
-                            postCell.setupBuddyicon(image: postBuddyicon.image)
-                        }
+                details = postInformation.information
+//                if postInformation.type == .network {
+//                    if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
+//                        cellForRow.configure(for: postInformation.information)
+//                    }
+//                } else {
+//                    postCell.configure(for: postInformation.information)
+//                }
 
-                    case .failure(let error):
-                        print("Download buddyicon error: \(error)")
-                    }
-                }
-                
-                self?.postsNetworkManager.requestImage(post: postInformation.information) { result in
-                    switch result {
-                    case .success(let postImage):
-                        if postImage.type == .network {
-                            guard let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
-                            cellForRow.setupPostImage(image: postImage.image)
-                        } else {
-                            postCell.setupPostImage(image: postImage.image)
-                        }
-                    case .failure(let error):
-                        print("Download image error: \(error)")
-                    }
-                }
             case .failure(let error):
                 print("\(#function) has error: \(error.localizedDescription)")
             }
         }
+        
+
+
+        group.notify(queue: DispatchQueue.global()) {
+          print("Completed work: \(details)")
+            
+            guard let postDetails = details else {
+                completionHandler(nil, nil, nil)
+                return
+            }
+            
+            
+            self.postsNetworkManager.requestBuddyicon(post: postDetails, group: group) { result in
+                switch result {
+                case .success(let postBuddyicon):
+                    buddyicon = postBuddyicon.image
+    //                if postBuddyicon.type == .network {
+    //                    if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
+    //                        cellForRow.setupBuddyicon(image: postBuddyicon.image)
+    //                    }
+    //                } else {
+    //                    postCell.setupBuddyicon(image: postBuddyicon.image)
+    //                }
+
+                case .failure(let error):
+                    print("Download buddyicon error: \(error)")
+                }
+            }
+            
+            self.postsNetworkManager.requestImage(post: postDetails, group: group) { result in
+                switch result {
+                case .success(let postImage):
+                    image = postImage.image
+    //                if postImage.type == .network {
+    //                    guard let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell else { return }
+    //                    cellForRow.setupPostImage(image: postImage.image)
+    //                } else {
+    //                    postCell.setupPostImage(image: postImage.image)
+    //                }
+                case .failure(let error):
+                    print("Download image error: \(error)")
+                }
+            }
+            
+            group.notify(queue: DispatchQueue.global()) {
+              //print("Completed work: \(post)")
+                DispatchQueue.main.async {
+                    
+                
+                completionHandler(details, buddyicon, image)
+                }
+            }
+            
+          // Kick off the movies API calls
+          //PlaygroundPage.current.finishExecution()
+        }
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+//    func requestAndSetupPostIntoTable(tableView: UITableView, postCell: PostTableViewCell, indexPath: IndexPath) {
+//
+//    }
 
 }
 

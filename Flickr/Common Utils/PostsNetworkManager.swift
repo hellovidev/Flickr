@@ -91,11 +91,14 @@ class PostsNetworkManager {
         }
     }
     
-    func requestPostInformation(position: Int, completionHandler: @escaping (Result<PostInformation, Error>) -> Void) {
+    func requestPostInformation(position: Int, group: DispatchGroup, completionHandler: @escaping (Result<PostInformation, Error>) -> Void) {
+        group.enter()
+
         let cachePostInformationIdentifier = ids[position] as NSString
         if let postInformationCache = try? cachePostInformation.get(for: cachePostInformationIdentifier) {
             let postInformation = PostInformation(information: postInformationCache, type: .cache)
             completionHandler(.success(postInformation))
+            group.leave()
             return
         }
         
@@ -104,18 +107,21 @@ class PostsNetworkManager {
                 self?.posts.append($0)
                 self?.cachePostInformation.set(for: $0, with: cachePostInformationIdentifier)
                 let postInformation = PostInformation(information: $0, type: .network)
+                group.leave()
                 return postInformation
             })
         }
     }
     
-    func requestImage(post: PostDetails, completionHandler: @escaping (Result<PostImage, Error>) -> Void) {
+    func requestImage(post: PostDetails, group: DispatchGroup, completionHandler: @escaping (Result<PostImage, Error>) -> Void) {
+        group.enter()
         guard
             let id = post.id,
             let secret = post.secret,
             let server = post.server
         else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))
+            group.leave()
             return
         }
         
@@ -123,6 +129,7 @@ class PostsNetworkManager {
         if let imageCache = try? cacheImages.get(for: cacheImageIdentifier) {
             let postImage = PostImage(image: imageCache, type: .cache)
             completionHandler(.success(postImage))
+            group.leave()
             return
         }
         
@@ -130,18 +137,21 @@ class PostsNetworkManager {
             completionHandler(result.map {
                 self?.cacheImages.set(for: $0, with: cacheImageIdentifier)
                 let postImage = PostImage(image: $0, type: .network)
+                group.leave()
                 return postImage
             })
         }
     }
     
-    func requestBuddyicon(post: PostDetails, completionHandler: @escaping (Result<PostImage, Error>) -> Void) {
+    func requestBuddyicon(post: PostDetails, group: DispatchGroup, completionHandler: @escaping (Result<PostImage, Error>) -> Void) {
+        group.enter()
         guard
             let farm = post.owner?.iconFarm,
             let server = post.owner?.iconServer,
             let nsid = post.owner?.nsid
         else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))
+            group.leave()
             return
         }
         
@@ -149,6 +159,7 @@ class PostsNetworkManager {
         if let buddyiconCache = try? cacheBuddyicons.get(for: cacheBuddyiconIdentifier) {
             let postBuddyicon = PostImage(image: buddyiconCache, type: .cache)
             completionHandler(.success(postBuddyicon))
+            group.leave()
             return
         }
         
@@ -156,6 +167,7 @@ class PostsNetworkManager {
             completionHandler(result.map {
                 self?.cacheBuddyicons.set(for: $0, with: cacheBuddyiconIdentifier)
                 let postBuddyicon = PostImage(image: $0, type: .network)
+                group.leave()
                 return postBuddyicon
             })
         }
