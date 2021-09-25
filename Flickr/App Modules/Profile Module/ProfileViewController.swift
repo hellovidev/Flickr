@@ -11,16 +11,14 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
-    var coordinator: CoordinatorService!
-    var authorizationService: AuthorizationService!
+    var viewModel: ProfileViewModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     @IBAction func logoutAction(_ sender: UIButton) {
-        authorizationService.logout()
-        coordinator.redirectToInitialViewController()
+        viewModel.logout()
     }
     
     deinit {

@@ -11,54 +11,52 @@ import UIKit
 
 class AuthorizationViewController: UIViewController {
     
-    @IBOutlet weak var loginButton: UIButton!
+    var viewModel: AuthorizationViewModel!
+
+    @IBOutlet weak var signinButton: UIButton!
     @IBOutlet weak var signupLabel: UILabel!
     
-    var authorizationService: AuthorizationService!
-    var coordinator: CoordinatorService!
-    var storageService: LocalStorageServiceProtocol!
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        let loginButtonTextAttributes: [NSAttributedString.Key : Any] = [
-            .font: UIFont.systemFont(ofSize: 18, weight: .bold)
-        ]
-        
-        let loginButtonText = NSMutableAttributedString(string: "Log in with ", attributes: nil)
-        let flickrLinkText = NSAttributedString(string: "flickr.com", attributes: loginButtonTextAttributes)
-        loginButtonText.append(flickrLinkText)
-        loginButton.setAttributedTitle(loginButtonText, for: .normal)
-        loginButton.layer.cornerRadius = 5
-        
-        let signupLabelTextAttributes: [NSAttributedString.Key : Any] = [
-            .foregroundColor: UIColor.black,
-            .font: UIFont.systemFont(ofSize: 12, weight: .bold)
-        ]
-        
-        signupLabel.sizeToFit()
-        signupLabel.attributedText = NSAttributedString(string: "Sign up.", attributes: signupLabelTextAttributes)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupSignInButton()
+        setupSignUpButton()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let signupAction = UITapGestureRecognizer(target: self, action: #selector(signupAction(sender:)))
+    }
+    
+    @IBAction func signinAction(_ sender: UIButton) {
+        viewModel.signin(presenter: self)
+    }
+    
+    @IBAction func signupAction(_ sender: UITapGestureRecognizer) {
+        viewModel.signup(presenter: self)
+    }
+    
+    private func setupSignInButton() {
+        let signinButtonTextAttributes: [NSAttributedString.Key : Any] = [
+            .font: UIFont.systemFont(ofSize: 18, weight: .bold)
+        ]
+        
+        let signinButtonText = NSMutableAttributedString(string: "Log in with ", attributes: nil)
+        let additionalText = NSAttributedString(string: "flickr.com", attributes: signinButtonTextAttributes)
+        signinButtonText.append(additionalText)
+        signinButton.setAttributedTitle(signinButtonText, for: .normal)
+        signinButton.layer.cornerRadius = 5
+    }
+    
+    private func setupSignUpButton() {
+        let signupButtonTextAttributes: [NSAttributedString.Key : Any] = [
+            .foregroundColor: UIColor.black,
+            .font: UIFont.systemFont(ofSize: 12, weight: .bold)
+        ]
+        
+        signupLabel.attributedText = NSAttributedString(string: "Sign up.", attributes: signupButtonTextAttributes)
+        
+        let signupAction = UITapGestureRecognizer(target: self, action: #selector(signupAction))
         signupLabel.isUserInteractionEnabled = true
         signupLabel.addGestureRecognizer(signupAction)
-    }
-    
-    @IBAction func loginAction(_ sender: UIButton) {
-        authorizationService.login(presenter: self) { [weak self] result in
-            switch result {
-            case .success:
-                self?.coordinator.redirectToInitialViewController()
-            case .failure(let error):
-                self?.showAlert(title: "Authorize error", message: error.localizedDescription, button: "OK")
-            }
-        }
-    }
-    
-    @IBAction func signupAction(sender: UITapGestureRecognizer) {
-        authorizationService.signup(presenter: self)
     }
     
     deinit {

@@ -16,6 +16,7 @@ protocol ObservableProtocol {
 }
 
 final class Observable<T>: ObservableProtocol {
+    
     typealias ValueType = T
 
     var observers: [(T) -> Void] = []
@@ -25,6 +26,10 @@ final class Observable<T>: ObservableProtocol {
             observers.forEach { $0(value) }
         }
     }
+    
+//    func send(_ value: T) {
+//        observers.forEach { $0(value) }
+//    }
     
     init(_ defaultValue: T) {
         value = defaultValue

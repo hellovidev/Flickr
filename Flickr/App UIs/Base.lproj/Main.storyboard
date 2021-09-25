@@ -41,7 +41,7 @@
                                     </attributedString>
                                 </state>
                                 <connections>
-                                    <action selector="loginAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9Ve-NG-44a"/>
+                                    <action selector="signinAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QQb-g6-2Lk"/>
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FlickrLogotype" translatesAutoresizingMaskIntoConstraints="NO" id="zoj-hL-Yqa">
@@ -122,7 +122,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="FkQ-yF-a6h"/>
                     <connections>
-                        <outlet property="loginButton" destination="BSu-sB-DSE" id="d11-og-eab"/>
+                        <outlet property="signinButton" destination="BSu-sB-DSE" id="sUN-ab-Nwo"/>
                         <outlet property="signupLabel" destination="3Fb-5B-hoq" id="QVb-fF-dV9"/>
                     </connections>
                 </viewController>
@@ -174,19 +174,29 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="100"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="DTf-Ok-Gdu">
-                                            <rect key="frame" x="12" y="12" width="372.5" height="82"/>
-                                        </stackView>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dwo-gl-lZf">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="100"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="DTf-Ok-Gdu">
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="100"/>
+                                                </stackView>
+                                            </subviews>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="DTf-Ok-Gdu" secondAttribute="bottom" id="Ggx-ir-aCz"/>
+                                                <constraint firstItem="DTf-Ok-Gdu" firstAttribute="top" secondItem="Dwo-gl-lZf" secondAttribute="top" id="IbB-Wl-mxB"/>
+                                                <constraint firstItem="DTf-Ok-Gdu" firstAttribute="leading" secondItem="Dwo-gl-lZf" secondAttribute="leading" id="Zfd-Zc-wBX"/>
+                                                <constraint firstAttribute="trailing" secondItem="DTf-Ok-Gdu" secondAttribute="trailing" id="dQz-yL-5gR"/>
+                                            </constraints>
+                                        </view>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="DTf-Ok-Gdu" firstAttribute="top" secondItem="0Gg-Aq-BBb" secondAttribute="top" constant="12" id="87U-WM-uFC"/>
-                                        <constraint firstItem="0Gg-Aq-BBb" firstAttribute="bottom" secondItem="DTf-Ok-Gdu" secondAttribute="bottom" constant="6" id="MNT-fC-c42"/>
-                                        <constraint firstItem="DTf-Ok-Gdu" firstAttribute="leading" secondItem="ZbD-Gk-H4R" secondAttribute="leading" constant="12" id="NoR-td-GDG"/>
-                                        <constraint firstAttribute="trailing" secondItem="DTf-Ok-Gdu" secondAttribute="trailing" constant="12" id="QAP-E3-BgZ"/>
-                                        <constraint firstItem="DTf-Ok-Gdu" firstAttribute="top" secondItem="ZbD-Gk-H4R" secondAttribute="top" constant="12" id="cLa-HU-Hzh"/>
-                                        <constraint firstItem="DTf-Ok-Gdu" firstAttribute="width" secondItem="0Gg-Aq-BBb" secondAttribute="width" multiplier="0.9" id="cbh-eY-cso"/>
-                                        <constraint firstItem="ZbD-Gk-H4R" firstAttribute="bottom" secondItem="DTf-Ok-Gdu" secondAttribute="bottom" id="jvv-yh-k49"/>
-                                        <constraint firstAttribute="bottom" secondItem="DTf-Ok-Gdu" secondAttribute="bottom" id="lI7-1g-CIj"/>
+                                        <constraint firstItem="Dwo-gl-lZf" firstAttribute="top" secondItem="M4A-lV-084" secondAttribute="top" id="03M-ZS-Oxw"/>
+                                        <constraint firstItem="Dwo-gl-lZf" firstAttribute="centerX" secondItem="M4A-lV-084" secondAttribute="centerX" id="A2j-A8-lnr"/>
+                                        <constraint firstAttribute="bottom" secondItem="Dwo-gl-lZf" secondAttribute="bottom" id="EWk-OQ-KuL"/>
+                                        <constraint firstItem="Dwo-gl-lZf" firstAttribute="height" secondItem="M4A-lV-084" secondAttribute="height" id="Kzg-Z3-Tqf"/>
+                                        <constraint firstAttribute="trailing" secondItem="Dwo-gl-lZf" secondAttribute="trailing" id="RF6-eA-Tb6"/>
+                                        <constraint firstItem="Dwo-gl-lZf" firstAttribute="leading" secondItem="M4A-lV-084" secondAttribute="leading" id="z3A-pq-YaS"/>
                                     </constraints>
                                     <viewLayoutGuide key="contentLayoutGuide" id="ZbD-Gk-H4R"/>
                                     <viewLayoutGuide key="frameLayoutGuide" id="0Gg-Aq-BBb"/>

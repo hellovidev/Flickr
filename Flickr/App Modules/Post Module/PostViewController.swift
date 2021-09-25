@@ -11,6 +11,7 @@ import UIKit
 
 class PostViewController: UIViewController {
     
+    var viewModel: PostViewModel!
     weak var delegate: PostViewControllerDelegate?
 
     override func viewDidLoad() {

@@ -13,36 +13,21 @@ class HomeViewController: UIViewController {
 
     // MARK: - Properties
     
-    private let viewModel: HomeViewModel
+    var viewModel: HomeViewModel!
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var filterStackView: UIStackView!
     
     private let refreshControl: UIRefreshControl = .init()
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
-        
-    // MARK: - Custom Init
-    
-    init?(coder: NSCoder, viewModel: HomeViewModel) {
-        self.viewModel = viewModel
-        super.init(coder: coder)
-        
-        self.viewModel.router.addObserver { [weak self] router in
-            self?.show(router)
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     private func show(_ router: HomeRoute) {
         switch router {
         case .self:
             break
         case .fullPost(id: _):
-            let storyboard = UIStoryboard(name: Storyboard.main.rawValue, bundle: Bundle.main)
-            let postViewController = storyboard.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as! PostViewController
+            let postViewController = Storyboard.main.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as! PostViewController
+            postViewController.viewModel = PostViewModel()
             postViewController.delegate = self
             navigationController?.pushViewController(postViewController, animated: true)
         }
@@ -52,6 +37,10 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.viewModel.router.addObserver { [weak self] router in
+            self?.show(router)
+        }
         
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 400
@@ -170,7 +159,7 @@ extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.homePostCell.rawValue, for: indexPath) as! PostTableViewCell
-        viewModel.postsNetworkManager.requestAndSetupPostIntoTable(tableView: tableView, postCell: cell, indexPath: indexPath)
+        viewModel.requestAndSetupPostIntoTable(tableView: tableView, postCell: cell, indexPath: indexPath)
         return cell
     }
     
