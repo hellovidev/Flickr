@@ -13,14 +13,14 @@ struct Filter {
 }
 
 enum HomeRoute {
-    case `self`
+    //case `self`
     case fullPost(id: String)
 }
 
 class HomeViewModel {
     
     var postsNetworkManager: PostsNetworkManager!
-    var router: Observable<HomeRoute> = .init(.`self`)
+    var router: Observable<HomeRoute> = .init()//.init(.`self`)
     
     let filters: [Filter] = [
         Filter(title: "50", color: .systemBlue),
@@ -36,22 +36,18 @@ class HomeViewModel {
                 if postInformation.type == .network {
                     if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
                         cellForRow.configure(for: postInformation.information)
-                    } //else {
-                       // cell.configure(for: postInformation.information)
-                    //}
+                    }
                 } else {
                     postCell.configure(for: postInformation.information)
                 }
                 
-                self?.postsNetworkManager.requestBuddyicon(post: postInformation.information) { [weak self] result in
+                self?.postsNetworkManager.requestBuddyicon(post: postInformation.information) { result in
                     switch result {
                     case .success(let postBuddyicon):
                         if postBuddyicon.type == .network {
                             if let cellForRow = tableView.cellForRow(at: indexPath) as? PostTableViewCell {
                                 cellForRow.setupBuddyicon(image: postBuddyicon.image)
-                            } //else {
-                              //  cell.setupBuddyicon(image: postBuddyicon.image)
-                            //}
+                            }
                         } else {
                             postCell.setupBuddyicon(image: postBuddyicon.image)
                         }
@@ -61,7 +57,7 @@ class HomeViewModel {
                     }
                 }
                 
-                self?.postsNetworkManager.requestImage(post: postInformation.information) { [weak self] result in
+                self?.postsNetworkManager.requestImage(post: postInformation.information) { result in
                     switch result {
                     case .success(let postImage):
                         if postImage.type == .network {

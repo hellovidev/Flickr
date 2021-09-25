@@ -23,8 +23,6 @@ class HomeViewController: UIViewController {
 
     private func show(_ router: HomeRoute) {
         switch router {
-        case .self:
-            break
         case .fullPost(id: _):
             let postViewController = Storyboard.main.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as! PostViewController
             postViewController.viewModel = PostViewModel()
@@ -180,7 +178,7 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.router.value = .fullPost(id: "\(indexPath.row)")
+        viewModel.router.send(.fullPost(id: "\(indexPath.row)")) //= .fullPost(id: "\(indexPath.row)")
 //        let storyboard = UIStoryboard(name: Storyboard.main.rawValue, bundle: Bundle.main)
 //        guard
 //            let postViewController = storyboard.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as? PostViewController

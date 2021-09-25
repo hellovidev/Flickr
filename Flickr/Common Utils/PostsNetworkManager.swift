@@ -35,7 +35,7 @@ class PostsNetworkManager {
     
     private var ids: [String]
     private var page: Int
-    private var perPage: Int = 20
+    private var perPage: Int
     
     var idsCount: Int {
         ids.count
@@ -48,6 +48,7 @@ class PostsNetworkManager {
         self.cachePostInformation = .init()
         self.ids = .init()
         self.page = 1
+        self.perPage = 20
     }
     
     // MARK: - TEST
@@ -64,28 +65,6 @@ class PostsNetworkManager {
         case .per400:
             perPage = 400
         }
-//        case .faves:
-//            posts.sort { element, nextElement in
-//                let elementViews = Int(element.views ?? "0")
-//                let nextElementViews = Int(nextElement.views ?? "0")
-//                return elementViews ?? 0 > nextElementViews ?? 0
-//            }
-//            let temp = posts.compactMap { $0.id }
-//            ids = temp.uniques
-//            completionHandler()
-//        case .views:
-//            posts.sort { element, nextElement in
-//                let elementViews = Int(element.views ?? "0")
-//                let nextElementViews = Int(nextElement.views ?? "0")
-//                return elementViews ?? 0 > nextElementViews ?? 0
-//            }
-//        case .comments:
-//            posts.sort { element, nextElement in
-//                let elementViews = Int(element.views ?? "0")
-//                let nextElementViews = Int(nextElement.views ?? "0")
-//                return elementViews ?? 0 > nextElementViews ?? 0
-//            }
-//        }
     }
     // MARK: - END
     

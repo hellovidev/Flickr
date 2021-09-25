@@ -11,7 +11,6 @@ protocol ObservableProtocol {
     associatedtype ValueType
     associatedtype Observer = (ValueType) -> Void
     var observers: [Observer] { get set }
-    var value: ValueType { get set }
     func addObserver(_ observer: Observer)
 }
 
@@ -20,19 +19,9 @@ final class Observable<T>: ObservableProtocol {
     typealias ValueType = T
 
     var observers: [(T) -> Void] = []
-
-    var value: T {
-        didSet {
-            observers.forEach { $0(value) }
-        }
-    }
     
-//    func send(_ value: T) {
-//        observers.forEach { $0(value) }
-//    }
-    
-    init(_ defaultValue: T) {
-        value = defaultValue
+    func send(_ value: T) {
+        observers.forEach { $0(value) }
     }
     
     func addObserver(_ observer: @escaping (T) -> Void) {
