@@ -177,15 +177,15 @@
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dwo-gl-lZf">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="100"/>
                                             <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="DTf-Ok-Gdu">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="100"/>
+                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="DTf-Ok-Gdu">
+                                                    <rect key="frame" x="12" y="0.0" width="402" height="100"/>
                                                 </stackView>
                                             </subviews>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="DTf-Ok-Gdu" secondAttribute="bottom" id="Ggx-ir-aCz"/>
                                                 <constraint firstItem="DTf-Ok-Gdu" firstAttribute="top" secondItem="Dwo-gl-lZf" secondAttribute="top" id="IbB-Wl-mxB"/>
-                                                <constraint firstItem="DTf-Ok-Gdu" firstAttribute="leading" secondItem="Dwo-gl-lZf" secondAttribute="leading" id="Zfd-Zc-wBX"/>
+                                                <constraint firstItem="DTf-Ok-Gdu" firstAttribute="leading" secondItem="Dwo-gl-lZf" secondAttribute="leading" constant="12" id="Zfd-Zc-wBX"/>
                                                 <constraint firstAttribute="trailing" secondItem="DTf-Ok-Gdu" secondAttribute="trailing" id="dQz-yL-5gR"/>
                                             </constraints>
                                         </view>

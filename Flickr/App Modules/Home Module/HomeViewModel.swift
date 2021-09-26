@@ -7,11 +7,6 @@
 
 import UIKit
 
-struct Filter {
-    let title: String
-    let color: UIColor
-}
-
 enum HomeRoute {
     case openPost(id: String)
 }
@@ -21,12 +16,7 @@ class HomeViewModel {
     var postsNetworkManager: PostsNetworkManager!
     var router: Observable<HomeRoute> = .init()
     
-    let filters: [Filter] = [
-        Filter(title: "50", color: .systemBlue),
-        Filter(title: "100", color: .systemPink),
-        Filter(title: "200", color: .systemRed),
-        Filter(title: "400", color: .systemTeal)
-    ]
+    let filters: [String] = ["50", "100", "200", "400"]
     
     func requestPost(indexPath: IndexPath, completionHandler: @escaping (_ details: PostDetails?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
         let group = DispatchGroup()

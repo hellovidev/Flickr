@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F1EE6B026F9FD4E0049A5A2 /* FilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F1EE6AF26F9FD4E0049A5A2 /* FilterView.xib */; };
-		5F1EE6B226F9FD5D0049A5A2 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1EE6B126F9FD5D0049A5A2 /* FilterView.swift */; };
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
 		5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */; };
@@ -68,8 +66,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5F1EE6AF26F9FD4E0049A5A2 /* FilterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FilterView.xib; sourceTree = "<group>"; };
-		5F1EE6B126F9FD5D0049A5A2 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
 		5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+UIAlertController.swift"; sourceTree = "<group>"; };
@@ -141,15 +137,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5F1EE6AE26F9FD180049A5A2 /* Filter View */ = {
-			isa = PBXGroup;
-			children = (
-				5F1EE6AF26F9FD4E0049A5A2 /* FilterView.xib */,
-				5F1EE6B126F9FD5D0049A5A2 /* FilterView.swift */,
-			);
-			path = "Filter View";
-			sourceTree = "<group>";
-		};
 		5F25F69126EA13C800F98608 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -292,7 +279,6 @@
 		5FF2241D26F125810026BAF4 /* Reusable Views */ = {
 			isa = PBXGroup;
 			children = (
-				5F1EE6AE26F9FD180049A5A2 /* Filter View */,
 				5F25F6C026EE0A9900F98608 /* Account View */,
 			);
 			path = "Reusable Views";
@@ -467,7 +453,6 @@
 				5FFEC0BD26CD4DDC000A0BAB /* LaunchScreen.storyboard in Resources */,
 				5FFEC0BA26CD4DDC000A0BAB /* Assets.xcassets in Resources */,
 				5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */,
-				5F1EE6B026F9FD4E0049A5A2 /* FilterView.xib in Resources */,
 				5FFEC0B826CD4DDB000A0BAB /* Main.storyboard in Resources */,
 				5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */,
 			);
@@ -518,7 +503,6 @@
 				5F4A773626FB493700D1EB00 /* ReuseIdentifier.swift in Sources */,
 				5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */,
 				5F71301126D40D32001A3762 /* NetworkService.swift in Sources */,
-				5F1EE6B226F9FD5D0049A5A2 /* FilterView.swift in Sources */,
 				5F7F997E26D8023300482485 /* NetworkService+Tags.swift in Sources */,
 				5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */,
 				5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */,

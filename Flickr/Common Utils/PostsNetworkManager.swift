@@ -39,7 +39,12 @@ class PostsNetworkManager {
     // MARK: - TEST
     private var posts: [PostDetails] = .init()
     
-    func filter(by filterType: FilterType, completionHandler: @escaping () -> Void) {
+    func filter(by filterType: FilterType?, completionHandler: @escaping () -> Void) {
+        guard let filterType = filterType else {
+            perPage = 20
+            return
+        }
+
         switch filterType {
         case .per50:
             perPage = 50

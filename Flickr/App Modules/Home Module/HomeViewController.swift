@@ -21,6 +21,8 @@ class HomeViewController: UIViewController {
     private let refreshControl: UIRefreshControl = .init()
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
 
+    private var filterButtons: [UIButton] = .init()
+    
     private func show(_ router: HomeRoute) {
         switch router {
         case .openPost(id: _):
@@ -94,16 +96,25 @@ class HomeViewController: UIViewController {
     
     private func setupFilterViews() {
         viewModel.filters.forEach {
-            let filterView = FilterView()
-            filterView.filterImage.backgroundColor = $0.color
-            filterView.filterImage.layer.cornerRadius = 8
-            filterView.filterName.text = $0.title
+            let filterButton = UIButton(type: .custom)
             
-            let filterAction = UITapGestureRecognizer(target: self, action: #selector(filter))
-            filterView.isUserInteractionEnabled = true
-            filterView.addGestureRecognizer(filterAction)
+            let filterButtonTextAttributes: [NSAttributedString.Key : Any] = [
+                .font: UIFont.systemFont(ofSize: 24, weight: .bold),
+                .foregroundColor: UIColor.white
+            ]
             
-            filterStackView.addArrangedSubview(filterView)
+            let text = NSAttributedString(string: $0, attributes: filterButtonTextAttributes)
+            filterButton.setAttributedTitle(text, for: .normal)
+
+            filterButton.backgroundColor = .systemBlue
+            filterButton.layer.cornerRadius = 8
+            filterButton.contentHorizontalAlignment = .left
+            filterButton.contentVerticalAlignment = .bottom
+            filterButton.titleEdgeInsets.left = 10
+            
+            filterButton.addTarget(self, action: #selector(filter), for: .touchUpInside)
+            filterButtons.append(filterButton)
+            filterStackView.addArrangedSubview(filterButton)
         }
     }
 
@@ -116,9 +127,21 @@ class HomeViewController: UIViewController {
     }
     
     @objc
-    private func filter(_ sender: UITapGestureRecognizer) {
-        guard let filterName = (sender.view as? FilterView)?.filterName.text else { return }
-        guard let filterType = FilterType(rawValue: filterName) else { return }
+    private func filter(_ sender: UIButton) {
+        var filterType: FilterType? = nil
+        let selectedState = sender.isSelected
+        
+        filterButtons.forEach {
+            $0.isSelected = false
+            $0.backgroundColor = .systemBlue
+        }
+
+        if !selectedState {
+            sender.isSelected = true
+            sender.backgroundColor = .systemPink
+            guard let filterName = sender.currentAttributedTitle?.string else { return }
+            filterType = FilterType(rawValue: filterName)
+        }
 
         viewModel.postsNetworkManager.filter(by: filterType) { [weak self] in
             self?.tableView.reloadData()
