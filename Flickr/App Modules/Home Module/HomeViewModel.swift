@@ -13,10 +13,15 @@ enum HomeRoute {
 
 class HomeViewModel {
     
-    var postsNetworkManager: PostsNetworkManager!
-    var router: Observable<HomeRoute> = .init()
+    let postsNetworkManager: PostsNetworkManager
+    let router: Observable<HomeRoute>
     
     let filters: [String] = ["50", "100", "200", "400"]
+    
+    init(networkService: NetworkService) {
+        self.postsNetworkManager = .init(networkService: networkService)
+        self.router = .init()
+    }
     
     func requestPost(indexPath: IndexPath, completionHandler: @escaping (_ details: PostDetails?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
         let group = DispatchGroup()

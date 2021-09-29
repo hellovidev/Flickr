@@ -15,13 +15,19 @@ class PostTableViewCell: UITableViewCell {
     @IBOutlet weak var postImage: UIImageView!
     @IBOutlet weak var postPublishedDate: UILabel!
     @IBOutlet weak var postDescription: UILabel!
+    
+    private let skeletonAnimation: SkeletonAnimation = .init()
         
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        startSkeletonAnimation(view: accountView.ownerAvatar)
-        startSkeletonAnimation(view: postImage)
-        startSkeletonAnimation(view: postDescription)
+        skeletonAnimation.startAnimationFor(view: accountView.ownerAvatar)
+        skeletonAnimation.startAnimationFor(view: postImage)
+        skeletonAnimation.startAnimationFor(view: postDescription)
+        
+//        startSkeletonAnimation(view: accountView.ownerAvatar)
+//        startSkeletonAnimation(view: postImage)
+//        startSkeletonAnimation(view: postDescription)
 
         accountView.ownerAvatar.image = nil
         accountView.nicknameLabel.text = nil
@@ -90,15 +96,20 @@ class PostTableViewCell: UITableViewCell {
         let publishedDate = details?.dateUploaded.flatMap { changeDateFormat($0, to: "dd MMM yyyy") }
         postPublishedDate.text = publishedDate
         
-        stopSkeletonAnimation()
+        skeletonAnimation.stopAllAnimations()
+        //stopSkeletonAnimation()
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        startSkeletonAnimation(view: accountView.ownerAvatar)
-        startSkeletonAnimation(view: postImage)
-        startSkeletonAnimation(view: postDescription)
+        skeletonAnimation.startAnimationFor(view: accountView.ownerAvatar)
+        skeletonAnimation.startAnimationFor(view: postImage)
+        skeletonAnimation.startAnimationFor(view: postDescription)
+//
+//        startSkeletonAnimation(view: accountView.ownerAvatar)
+//        startSkeletonAnimation(view: postImage)
+//        startSkeletonAnimation(view: postDescription)
         
         accountView.ownerAvatar.image = nil
         accountView.nicknameLabel.text = nil
@@ -112,42 +123,42 @@ class PostTableViewCell: UITableViewCell {
     
     // MARK: - Animation
     
-    private var gradientLayerArray: [CAGradientLayer] = .init()
-    
-    private func startSkeletonAnimation(view: UIView) {
-        let gradientLayer: CAGradientLayer = .init()
-        gradientLayer.frame = view.bounds
-        gradientLayer.startPoint = CGPoint(x: -1.5, y: 0.25)
-        gradientLayer.endPoint = CGPoint(x: 2.5, y: 0.75)
-        gradientLayer.drawsAsynchronously = true
-        
-        let colors = [
-            UIColor.systemGray4.cgColor,
-            UIColor.systemGray5.cgColor,
-            UIColor.systemGray6.cgColor,
-        ]
-        gradientLayer.colors = colors.reversed()
-        
-        let locations: [NSNumber] = [0.0, 0.25, 1.0]
-        gradientLayer.locations = locations
-        gradientLayer.frame = bounds
-        view.layer.addSublayer(gradientLayer)
-        
-        let gradientAnimation = CABasicAnimation(keyPath: #keyPath(CAGradientLayer.locations))
-        gradientAnimation.fromValue = [0.0, 0.0, 0.25]
-        gradientAnimation.toValue = [0.75 ,1.0, 1.0]
-        gradientAnimation.duration = 0.75
-        gradientAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
-        gradientAnimation.repeatCount = .infinity
-        gradientAnimation.autoreverses = true
-        gradientAnimation.isRemovedOnCompletion = false
-        
-        gradientLayer.add(gradientAnimation, forKey: "gradientAnimation")
-        gradientLayerArray.append(gradientLayer)
-    }
-    
-    private func stopSkeletonAnimation() {
-        gradientLayerArray.forEach { $0.removeFromSuperlayer() } 
-    }
-    
+//    private var gradientLayerArray: [CAGradientLayer] = .init()
+//
+//    private func startSkeletonAnimation(view: UIView) {
+//        let gradientLayer: CAGradientLayer = .init()
+//        gradientLayer.frame = view.bounds
+//        gradientLayer.startPoint = CGPoint(x: -1.5, y: 0.25)
+//        gradientLayer.endPoint = CGPoint(x: 2.5, y: 0.75)
+//        gradientLayer.drawsAsynchronously = true
+//
+//        let colors = [
+//            UIColor.systemGray4.cgColor,
+//            UIColor.systemGray5.cgColor,
+//            UIColor.systemGray6.cgColor,
+//        ]
+//        gradientLayer.colors = colors.reversed()
+//
+//        let locations: [NSNumber] = [0.0, 0.25, 1.0]
+//        gradientLayer.locations = locations
+//        gradientLayer.frame = bounds
+//        view.layer.addSublayer(gradientLayer)
+//
+//        let gradientAnimation = CABasicAnimation(keyPath: #keyPath(CAGradientLayer.locations))
+//        gradientAnimation.fromValue = [0.0, 0.0, 0.25]
+//        gradientAnimation.toValue = [0.75 ,1.0, 1.0]
+//        gradientAnimation.duration = 0.75
+//        gradientAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeIn)
+//        gradientAnimation.repeatCount = .infinity
+//        gradientAnimation.autoreverses = true
+//        gradientAnimation.isRemovedOnCompletion = false
+//
+//        gradientLayer.add(gradientAnimation, forKey: "gradientAnimation")
+//        gradientLayerArray.append(gradientLayer)
+//    }
+//
+//    private func stopSkeletonAnimation() {
+//        gradientLayerArray.forEach { $0.removeFromSuperlayer() }
+//    }
+//
 }

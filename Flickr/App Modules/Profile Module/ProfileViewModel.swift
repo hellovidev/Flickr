@@ -13,10 +13,10 @@ class ProfileViewModel {
     private let authorization: AuthorizationService
     private let profileNetworkManager: ProfileNetworkManager
     
-    init(coordinator: CoordinatorService, authorization: AuthorizationService, token: AccessTokenAPI) {
+    init(coordinator: CoordinatorService, authorization: AuthorizationService, networkService: NetworkService, nsid: String) {
         self.coordinator = coordinator
         self.authorization = authorization
-        self.profileNetworkManager = .init(token)
+        self.profileNetworkManager = .init(nsid: nsid, networkService: networkService)
     }
     
     func logout() {
@@ -25,9 +25,6 @@ class ProfileViewModel {
     }
     
     func requestProfile(completionHandler: @escaping (_ profile: Profile?, _ avatar: UIImage?) -> Void) {
-        //var profile: Profile?
-        //var avatar: UIImage?
-        
         profileNetworkManager.requestProfile { result in
             switch result {
             case .success(let profileInformation):
@@ -37,13 +34,13 @@ class ProfileViewModel {
                         completionHandler(profileInformation, avatarImage)
                     case .failure(let error):
                         completionHandler(profileInformation, nil)
-                        print("Download post information in \(#function) has error: \(error)")
+                        print("Download avatar in \(#function) has error: \(error)")
                         return
                     }
                 }
             case .failure(let error):
                 completionHandler(nil, nil)
-                print("Download post information in \(#function) has error: \(error)")
+                print("Download profile information in \(#function) has error: \(error)")
                 return
             }
         }

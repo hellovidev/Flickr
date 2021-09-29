@@ -52,11 +52,15 @@ struct CoordinatorService {
     private func getTableViewController() throws -> UIViewController {
         
         let token = try storageService.get(for: AccessTokenAPI.self, with: UserDefaultsKey.tokenAPI.rawValue)
+        
+        guard let nsid = token.nsid.removingPercentEncoding else {
+            fatalError("Invalid NSID")
+        }
+        
+        let networkService = NetworkService(token: token, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
 
         let homeViewController: HomeViewController = Storyboard.main.instantiateViewController(identifier: String(describing: HomeViewController.self))
-        let homeViewModel = HomeViewModel()
-        homeViewModel.postsNetworkManager = .init(token)
-        homeViewController.viewModel = homeViewModel
+        homeViewController.viewModel = .init(networkService: networkService)
         
         let homeNavigationController = UINavigationController.init(rootViewController: homeViewController)
         
@@ -65,7 +69,7 @@ struct CoordinatorService {
         let galleryNavigationController = UINavigationController.init(rootViewController: galleryViewController)
         
         let profileViewController: ProfileViewController = Storyboard.main.instantiateViewController()
-        profileViewController.viewModel = .init(coordinator: self, authorization: authorizationService, token: token)
+        profileViewController.viewModel = .init(coordinator: self, authorization: authorizationService, networkService: networkService, nsid: nsid)
         let profileNavigationController = UINavigationController.init(rootViewController: profileViewController)
 
         let tabBarController: UITabBarController = .init()

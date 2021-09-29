@@ -26,8 +26,8 @@ class PostsNetworkManager {
         ids.count
     }
     
-    init(_ token: AccessTokenAPI) {
-        self.networkService = .init(token: token, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
+    init(networkService: NetworkService) {
+        self.networkService = networkService
         self.cacheImages = .init()
         self.cacheBuddyicons = .init()
         self.cachePostInformation = .init()

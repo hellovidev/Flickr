@@ -249,14 +249,14 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xIl-Fz-bv4">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="306"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Full Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="20h-SS-3eZ">
-                                                <rect key="frame" x="178" y="176" width="58.5" height="14.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No real name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="20h-SS-3eZ">
+                                                <rect key="frame" x="168.5" y="176" width="77.5" height="14.5"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iif-to-A7C">
-                                                <rect key="frame" x="174.5" y="192.5" width="65" height="14.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No description" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iif-to-A7C">
+                                                <rect key="frame" x="165.5" y="192.5" width="83" height="14.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -331,9 +331,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="mnI-Ve-i4l" firstAttribute="leading" secondItem="4XV-3F-Ipx" secondAttribute="leading" id="Wgx-cZ-bAA"/>
-                            <constraint firstItem="mnI-Ve-i4l" firstAttribute="top" secondItem="4XV-3F-Ipx" secondAttribute="top" id="ZI5-ck-ayc"/>
                             <constraint firstItem="4XV-3F-Ipx" firstAttribute="bottom" secondItem="mnI-Ve-i4l" secondAttribute="bottom" id="eNL-Yb-rDh"/>
                             <constraint firstItem="4XV-3F-Ipx" firstAttribute="trailing" secondItem="mnI-Ve-i4l" secondAttribute="trailing" id="foC-nN-idF"/>
+                            <constraint firstItem="mnI-Ve-i4l" firstAttribute="top" secondItem="4XV-3F-Ipx" secondAttribute="top" id="ge0-8h-RMV"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Profile" image="person.circle" catalog="system" id="1XW-cW-1sD"/>
