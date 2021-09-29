@@ -22,7 +22,7 @@ enum FlickrConstant {
     
     enum Method: String {
         // Profile screen
-        case getProfile = "flickr.profile.getProfile"
+        case getProfile = "flickr.people.getInfo" //"flickr.profile.getProfile"
         
         // Home screen
         case getHotTags = "flickr.tags.getHotList"

@@ -22,13 +22,13 @@ extension NetworkService {
             method: .GET,
             parser: ModelDeserializer<ProfileResponse>()
         ) { result in
-            completion(result.map { $0.profile })
+            completion(result.map { $0.person })
         }
     }
     
     // The server JSON response decoder
     private struct ProfileResponse: Decodable {
-        let profile: Profile
+        let person: Profile
     }
     
 }

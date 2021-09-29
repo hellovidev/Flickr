@@ -58,16 +58,18 @@ struct CoordinatorService {
         homeViewModel.postsNetworkManager = .init(token)
         homeViewController.viewModel = homeViewModel
         
-        let navigationController = UINavigationController.init(rootViewController: homeViewController)
+        let homeNavigationController = UINavigationController.init(rootViewController: homeViewController)
         
         let galleryViewController: GalleryViewController = Storyboard.main.instantiateViewController()
         galleryViewController.viewModel = .init()
+        let galleryNavigationController = UINavigationController.init(rootViewController: galleryViewController)
         
         let profileViewController: ProfileViewController = Storyboard.main.instantiateViewController()
-        profileViewController.viewModel = .init(coordinator: self, authorization: authorizationService)
+        profileViewController.viewModel = .init(coordinator: self, authorization: authorizationService, token: token)
+        let profileNavigationController = UINavigationController.init(rootViewController: profileViewController)
 
         let tabBarController: UITabBarController = .init()
-        tabBarController.viewControllers = [navigationController, galleryViewController, profileViewController]
+        tabBarController.viewControllers = [homeNavigationController, galleryNavigationController, profileNavigationController]
         
         return tabBarController
     }
