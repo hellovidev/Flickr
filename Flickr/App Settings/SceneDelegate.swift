@@ -11,13 +11,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
+    private let userDefaultsStorageService: UserDefaultsStorageService = .init()
+    private let authorizationService: AuthorizationService = .init()
+    
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
             fatalError("Could not get url on \(#line) in \(#function)")
         }
         
         // Catch callback link with 'verifier' parameter
-        FlickrOAuthService.shared.handleURL(url)
+        authorizationService.handleURL(url)
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -27,13 +30,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-
-        let initialViewController = storyboard.instantiateViewController(withIdentifier: "AuthorizationViewController") as! AuthorizationViewController
-        initialViewController.authorizationService = AuthorizationService()
-
-        window?.rootViewController = initialViewController
-        window?.makeKeyAndVisible()
+        
+        let coordinator = CoordinatorService(storageService: userDefaultsStorageService, authorizationService: authorizationService)
+        coordinator.redirectToInitialViewController()
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

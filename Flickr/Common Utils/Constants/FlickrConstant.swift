@@ -22,7 +22,7 @@ enum FlickrConstant {
     
     enum Method: String {
         // Profile screen
-        case getProfile = "flickr.profile.getProfile"
+        case getProfile = "flickr.people.getInfo" //"flickr.profile.getProfile"
         
         // Home screen
         case getHotTags = "flickr.tags.getHotList"
@@ -46,8 +46,8 @@ enum FlickrConstant {
     /// - Parameter consumerKey: You must replace 'PUBLIC_API_KEY' with your valid public API key
     /// - Parameter consumerSecretKey: You must replace 'PRIVATE_API_KEY' with your valid private API key
     enum Key: String {
-        case consumerKey = "PUBLIC_API_KEY"
-        case consumerSecretKey = "PRIVATE_API_KEY"
+        case consumerKey = "b01bf2906c64ed00736de70ad1238d5f"
+        case consumerSecretKey = "d99635136dadab3c"
     }
     
     // MARK: - Request OAuth1.0 Path

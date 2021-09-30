@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AccountView" customModule="Flickr" customModuleProvider="target">
+            <connections>
+                <outlet property="locationLabel" destination="DQl-G3-NHL" id="j0C-LO-Cjn"/>
+                <outlet property="nicknameLabel" destination="n8e-Js-JqC" id="FJG-YC-Tps"/>
+                <outlet property="ownerAvatar" destination="QRo-gn-Yle" id="AjF-1L-p5e"/>
+                <outlet property="view" destination="iN0-l3-epB" id="4gD-xG-Hv7"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="400" height="56"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" semanticContentAttribute="spatial" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QRo-gn-Yle">
+                    <rect key="frame" x="12" y="12" width="32" height="32"/>
+                    <color key="backgroundColor" systemColor="systemGray5Color"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="QRo-gn-Yle" secondAttribute="height" multiplier="1:1" id="11c-GR-Nal"/>
+                        <constraint firstAttribute="width" constant="32" id="7CI-gr-UOK"/>
+                        <constraint firstAttribute="height" constant="32" id="iDB-bk-cDN"/>
+                    </constraints>
+                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ujf-En-lR5">
+                    <rect key="frame" x="54" y="12" width="85" height="32"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nickname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n8e-Js-JqC">
+                            <rect key="frame" x="0.0" y="0.0" width="85" height="15"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New York, USA" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DQl-G3-NHL">
+                            <rect key="frame" x="0.0" y="17" width="85" height="15"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="centerX" secondItem="n8e-Js-JqC" secondAttribute="centerX" id="2rt-do-jQk"/>
+                        <constraint firstAttribute="bottom" secondItem="DQl-G3-NHL" secondAttribute="bottom" id="3Pc-vb-LSi"/>
+                        <constraint firstItem="n8e-Js-JqC" firstAttribute="centerX" secondItem="Ujf-En-lR5" secondAttribute="centerX" id="6wi-jU-nVk"/>
+                        <constraint firstAttribute="trailing" secondItem="n8e-Js-JqC" secondAttribute="trailing" id="AeG-uQ-htj"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="height" secondItem="n8e-Js-JqC" secondAttribute="height" id="H4Q-Cq-Bhi"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="leading" secondItem="n8e-Js-JqC" secondAttribute="leading" id="Oee-Xh-zKm"/>
+                        <constraint firstAttribute="trailing" secondItem="DQl-G3-NHL" secondAttribute="trailing" id="SgE-g3-Lj1"/>
+                        <constraint firstItem="n8e-Js-JqC" firstAttribute="top" secondItem="Ujf-En-lR5" secondAttribute="top" id="Ujn-84-E4O"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="centerX" secondItem="Ujf-En-lR5" secondAttribute="centerX" id="bqt-Ah-aTT"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="top" secondItem="n8e-Js-JqC" secondAttribute="bottom" constant="2" id="eHJ-Ja-GvN"/>
+                        <constraint firstItem="n8e-Js-JqC" firstAttribute="leading" secondItem="Ujf-En-lR5" secondAttribute="leading" id="jW4-Gb-ogR"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="leading" secondItem="Ujf-En-lR5" secondAttribute="leading" id="sAR-hk-oi9"/>
+                        <constraint firstItem="DQl-G3-NHL" firstAttribute="width" secondItem="n8e-Js-JqC" secondAttribute="width" id="seh-hu-5vh"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Ujf-En-lR5" secondAttribute="trailing" constant="12" id="9WM-jd-UZB"/>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="BKE-qK-Vtv"/>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="BQa-fK-neb"/>
+                <constraint firstAttribute="bottom" secondItem="QRo-gn-Yle" secondAttribute="bottom" constant="12" id="E8f-jj-JEj"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Ujf-En-lR5" secondAttribute="bottom" constant="12" id="FCD-RK-5kc"/>
+                <constraint firstItem="Ujf-En-lR5" firstAttribute="centerY" secondItem="QRo-gn-Yle" secondAttribute="centerY" id="GmJ-kg-lhG"/>
+                <constraint firstItem="Ujf-En-lR5" firstAttribute="leading" secondItem="QRo-gn-Yle" secondAttribute="trailing" constant="10" id="Mle-ik-KbQ"/>
+                <constraint firstItem="Ujf-En-lR5" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="ozg-Lc-JSD"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="607.24637681159425" y="-58.258928571428569"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

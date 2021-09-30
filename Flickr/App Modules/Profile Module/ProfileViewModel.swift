@@ -1,0 +1,49 @@
+//
+//  ProfileViewModel.swift
+//  Flickr
+//
+//  Created by Sergei Romanchuk on 25.09.2021.
+//
+
+import UIKit
+
+class ProfileViewModel {
+
+    private let coordinator: CoordinatorService
+    private let authorization: AuthorizationService
+    private let profileNetworkManager: ProfileNetworkManager
+    
+    init(coordinator: CoordinatorService, authorization: AuthorizationService, networkService: NetworkService, nsid: String) {
+        self.coordinator = coordinator
+        self.authorization = authorization
+        self.profileNetworkManager = .init(nsid: nsid, networkService: networkService)
+    }
+    
+    func logout() {
+        authorization.logout()
+        coordinator.redirectToInitialViewController()
+    }
+    
+    func requestProfile(completionHandler: @escaping (_ profile: Profile?, _ avatar: UIImage?) -> Void) {
+        profileNetworkManager.requestProfile { result in
+            switch result {
+            case .success(let profileInformation):
+                self.profileNetworkManager.requestAvatar(profile: profileInformation) { result in
+                    switch result {
+                    case .success(let avatarImage):
+                        completionHandler(profileInformation, avatarImage)
+                    case .failure(let error):
+                        completionHandler(profileInformation, nil)
+                        print("Download avatar in \(#function) has error: \(error)")
+                        return
+                    }
+                }
+            case .failure(let error):
+                completionHandler(nil, nil)
+                print("Download profile information in \(#function) has error: \(error)")
+                return
+            }
+        }
+    }
+    
+}
