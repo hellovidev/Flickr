@@ -9,7 +9,7 @@ import UIKit
 
 class GalleryViewModel {
     
-    private var gallery: [Photo] = .init()
+    var gallery: [Photo] = .init()
     
     var numberOfItems: Int {
         gallery.count

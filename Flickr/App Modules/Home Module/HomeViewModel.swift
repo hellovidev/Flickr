@@ -211,13 +211,7 @@ class HomeViewModel {
 //
 
 
-//                self?.networkService?.uploadNewPhoto(title: "New poster", description: "Added photo from iOS application.") {result in
-//                    switch result {
-//                    case .success(_): break
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
+
 
 //                self?.networkService?.getUserPhotos(for: "me") {result in
 //                    switch result {

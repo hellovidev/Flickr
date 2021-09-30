@@ -10,7 +10,7 @@ import UIKit
 extension NetworkService {
         
     // Upload photo: https://www.flickr.com/services/api/upload.api.html
-    func uploadNewPhoto(_ image: UIImage = UIImage(named: "TestImage")!, title: String, description: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func uploadNewPhoto(_ data: Data, title: String, description: String, completion: @escaping (Result<Void, Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
             "title": title,
@@ -19,11 +19,11 @@ extension NetworkService {
             "perms": "write"
         ]
         
-        guard let imageData: Data = image.pngData() else { return }
+//        guard let imageData: Data = image.pngData() else { return }
         
         upload(
             parameters: parameters,
-            file: imageData,
+            file: data,
             parser: VoidDeserializer(),
             completion: completion
         )
