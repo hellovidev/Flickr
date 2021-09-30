@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F090BFB2705C04100843515 /* AddButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F090BFA2705C04100843515 /* AddButtonView.xib */; };
+		5F090BFD2705C05400843515 /* AddButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F090BFC2705C05400843515 /* AddButtonView.swift */; };
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
 		5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */; };
@@ -68,6 +70,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F090BFA2705C04100843515 /* AddButtonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddButtonView.xib; sourceTree = "<group>"; };
+		5F090BFC2705C05400843515 /* AddButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButtonView.swift; sourceTree = "<group>"; };
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
 		5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+UIAlertController.swift"; sourceTree = "<group>"; };
@@ -147,6 +151,15 @@
 				5FE3F8EF27046F2200ADAA6B /* SkeletonAnimation.swift */,
 			);
 			path = "Animation Group";
+			sourceTree = "<group>";
+		};
+		5F090BFE2705C05700843515 /* Add Button View */ = {
+			isa = PBXGroup;
+			children = (
+				5F090BFA2705C04100843515 /* AddButtonView.xib */,
+				5F090BFC2705C05400843515 /* AddButtonView.swift */,
+			);
+			path = "Add Button View";
 			sourceTree = "<group>";
 		};
 		5F25F69126EA13C800F98608 /* Extensions */ = {
@@ -294,6 +307,7 @@
 			isa = PBXGroup;
 			children = (
 				5F25F6C026EE0A9900F98608 /* Account View */,
+				5F090BFE2705C05700843515 /* Add Button View */,
 			);
 			path = "Reusable Views";
 			sourceTree = "<group>";
@@ -464,6 +478,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F090BFB2705C04100843515 /* AddButtonView.xib in Resources */,
 				5FFEC0BD26CD4DDC000A0BAB /* LaunchScreen.storyboard in Resources */,
 				5FFEC0BA26CD4DDC000A0BAB /* Assets.xcassets in Resources */,
 				5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */,
@@ -531,6 +546,7 @@
 				5F41F0A1270374400044F54A /* ProfileNetworkManager.swift in Sources */,
 				5FA9B2F626E4B12A0060DAE8 /* PostViewController.swift in Sources */,
 				5F97D9D026F75CF40089C30B /* StorageServiceError.swift in Sources */,
+				5F090BFD2705C05400843515 /* AddButtonView.swift in Sources */,
 				5FA9B2FA26E533700060DAE8 /* HTTPMethod.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

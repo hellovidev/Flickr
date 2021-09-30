@@ -65,7 +65,7 @@ struct CoordinatorService {
         let homeNavigationController = UINavigationController.init(rootViewController: homeViewController)
         
         let galleryViewController: GalleryViewController = Storyboard.main.instantiateViewController()
-        galleryViewController.viewModel = .init()
+        galleryViewController.viewModel = .init(nsid: nsid, networkService: networkService)
         let galleryNavigationController = UINavigationController.init(rootViewController: galleryViewController)
         
         let profileViewController: ProfileViewController = Storyboard.main.instantiateViewController()
