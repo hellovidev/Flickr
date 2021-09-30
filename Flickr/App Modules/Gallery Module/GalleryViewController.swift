@@ -55,32 +55,10 @@ extension GalleryViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionCellReuseIdentifier, for: indexPath)
         
         if indexPath.row == .zero {
-            let addNewButtonView = AddButtonView()
-            addNewButtonView.frame = cell.bounds
-            cell.backgroundView = addNewButtonView
-//            let stackView = UIStackView()
-//            stackView.distribution = .equalSpacing
-//            stackView.axis = .vertical
-//            stackView.center = cell.convert(cell.center, from: stackView)
-//
-//            let button = UIButton()
-//            stackView.addArrangedSubview(button)
-//            cell.backgroundView = stackView
-//
-//            button.widthAnchor.constraint(equalTo: button.heightAnchor, constant: 64).isActive = true
-
-            //button.frame = cell.bounds
-//            button.layer.cornerRadius = button.frame.width / 2
-//            button.layer.borderWidth = 1
-//            button.layer.borderColor = UIColor.gray.cgColor
-//            button.backgroundColor = .orange
-            
-//            let lableButton = UILabel(frame: CGRect(x: 0, y: 0, width: stackView.frame.width, height: 0))
-//            lableButton.text = "New"
-//
-//            stackView.addArrangedSubview(lableButton)
-            //cell.backgroundView = button
-            //cell.backgroundColor = .black
+            let newPhotoView: AddButtonView = .init()
+            newPhotoView.addNewButton.addTarget(self, action: #selector(onTapAddNewPhoto), for: .touchUpInside)
+            newPhotoView.frame = cell.bounds
+            cell.addSubview(newPhotoView)
         } else {
             if viewModel.numberOfItems != .zero {
             self.viewModel.requsetPhoto(index: indexPath.row - 1) { result in
@@ -100,6 +78,10 @@ extension GalleryViewController: UICollectionViewDataSource {
         return cell
     }
     
+    @objc
+    func onTapAddNewPhoto(_ sender: UIButton) {
+        print("Add New Photo!")
+    }
     
 }
 
