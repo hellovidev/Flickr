@@ -64,8 +64,25 @@ class GalleryViewController: UIViewController, UINavigationControllerDelegate {
             }
         }
         
+        NotificationCenter.default.addObserver(self, selector: #selector(imageUploadNotification), name: Notification.Name("ImageUpload"), object: nil)
         
+        
+
     }
+    
+    
+    
+    
+    
+    
+    @objc
+    func imageUploadNotification() {
+        loadData()
+        viewModel.networkService.uploadProgress = 0
+    }
+    
+
+
     
     deinit {
         print("\(type(of: self)) deinited.")
@@ -161,6 +178,8 @@ extension GalleryViewController: PHPickerViewControllerDelegate {
                 self?.viewModel.networkService.uploadNewPhoto(data, title: "New poster", description: "Added photo from iOS application.") { result in
                                     switch result {
                                     case .success(_):
+                                        NotificationCenter.default.post(name: Notification.Name("ImageUpload"), object: nil)
+
                                         break
                                     case .failure(let error):
                                         print(error)
@@ -191,6 +210,8 @@ extension GalleryViewController: UIImagePickerControllerDelegate {
         viewModel.networkService.uploadNewPhoto(data, title: "New poster", description: "Added photo from iOS application.") { result in
                             switch result {
                             case .success(_):
+                                NotificationCenter.default.post(name: Notification.Name("ImageUpload"), object: nil)
+
                                 break
                             case .failure(let error):
                                 print(error)

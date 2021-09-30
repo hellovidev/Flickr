@@ -18,9 +18,14 @@ struct AccessTokenAPI: Codable {
 // MARK: - Network Layer (REST)
 
 /// https://www.flickr.com/services/api/
-struct NetworkService {
+class NetworkService: NSObject, ProgressDelegate {
+    func onProgressCanceled() {
+        progressAlert.dismiss(completion: nil)
+    }
     
-    private let session: URLSession = .init(configuration: .default)
+    
+    private lazy var progressAlert: ProgressAlert = .init(title: "Uploading...", delegate: self)
+    private lazy var session: URLSession = .init(configuration: .default, delegate: self, delegateQueue: .main)
     
     // Token to get access to 'Flickr API'
     private var accessTokenAPI: AccessTokenAPI
@@ -228,6 +233,14 @@ struct NetworkService {
         
         task.resume()
     }
+    
+    var uploadProgress: Float = 0 {
+        didSet {
+            let percentProgress = uploadProgress * 100
+            progressAlert.setProgress(uploadProgress)
+            //print(uploadProgress)
+        }
+    }
  
     // MARK: - Response Decoders Entities
     
@@ -237,4 +250,118 @@ struct NetworkService {
         let code: Int
     }
     
+    var count = false
+    
+}
+
+
+extension NetworkService: URLSessionTaskDelegate {
+
+    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+        showAlert(title: "Upload Error", message: "Uploading image complete with failure.", button: "OK")
+    }
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        let uploadProgress: Float = Float(totalBytesSent) / Float(totalBytesExpectedToSend)
+        //let progressPercent = Int(uploadProgress*100)
+
+        self.uploadProgress = uploadProgress
+
+        if count == false {
+        var rootViewController = UIApplication.shared.windows.first?.rootViewController
+        if let navigationController = rootViewController as? UINavigationController {
+            rootViewController = navigationController.viewControllers.first
+        }
+        if let tabBarController = rootViewController as? UITabBarController {
+            rootViewController = tabBarController.selectedViewController
+        }
+        
+            guard let vc = rootViewController else {return}
+        progressAlert.present(from: vc)
+                count = true
+        }
+    }
+    
+}
+
+import UIKit
+
+func showAlert(title: String, message: String, button: String) {
+    let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    alertController.addAction(.init(title: button, style: .default, handler: nil))
+    UIApplication.shared.windows.first?.rootViewController?.present(alertController, animated: true, completion: nil)
+}
+
+//func showAlert() {
+//    let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+//
+//    let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
+//    loadingIndicator.hidesWhenStopped = true
+//    loadingIndicator.style = UIActivityIndicatorView.Style.gray
+//    loadingIndicator.startAnimating();
+//
+//    alert.view.addSubview(loadingIndicator)
+//    present(alert, animated: true, completion: nil)
+//
+//    alertController.addAction(.init(title: button, style: .default, handler: nil))
+//    UIApplication.shared.windows.first?.rootViewController?.present(alertController, animated: true, completion: nil)
+//}
+
+
+
+protocol ProgressDelegate: AnyObject {
+    func onProgressCanceled()
+}
+
+class ProgressAlert {
+
+private let alert: UIAlertController
+private var progressBar: UIProgressView
+    
+    private weak var delegate: ProgressDelegate?
+    
+    private let labelPercent: UILabel
+
+init(title: String, delegate: ProgressDelegate?) {
+    self.delegate = delegate
+    alert = UIAlertController(title: title, message: "",
+                              preferredStyle: .alert)
+    
+    progressBar = UIProgressView(progressViewStyle: .default)
+    labelPercent = UILabel()
+    labelPercent.font = .systemFont(ofSize: 10)
+    labelPercent.textAlignment = .center
+    
+//    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { alertAction in
+//        delegate?.onProgressCanceled()
+//    })
+}
+
+func present(from viewController: UIViewController) {
+    viewController.present(alert, animated: true) { [weak self] in
+        let margin: CGFloat = 24.0
+        let rectangle = CGRect(x: margin, y: 55.0, width: (self?.alert.view.frame.width)! - margin * 2.0, height: 2.0)
+        self?.progressBar.frame = rectangle
+        
+        let rectangleLabel = CGRect(x: margin, y: 40.0, width: (self?.alert.view.frame.width)! - margin * 2.0, height: 15.0)
+        self?.labelPercent.frame = rectangleLabel
+        
+        self?.alert.view.addSubview(self!.progressBar)
+        self?.alert.view.addSubview(self!.labelPercent)
+    }
+}
+
+func dismiss(completion: (() -> Void)?) {
+    
+    alert.dismiss(animated: true, completion: completion)
+}
+
+func setProgress(_ value: Float) {
+    labelPercent.text = "\(Int(value * 100))%"
+    progressBar.setProgress(value, animated: true)
+    if value == 1.0 {
+        delegate?.onProgressCanceled()
+    }
+    print("Updating download: \(value)")
+}
 }
