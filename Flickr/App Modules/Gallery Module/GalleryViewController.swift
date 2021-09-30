@@ -179,10 +179,25 @@ extension GalleryViewController: UIImagePickerControllerDelegate {
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         print("Cancel")
+        dismiss(animated: true, completion: nil)
     }
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let image = info[.originalImage]
+        guard let selectedImage = info[.originalImage] as? UIImage else {
+            return
+        }
         
+        if let data = selectedImage.pngData() {
+        
+        viewModel.networkService.uploadNewPhoto(data, title: "New poster", description: "Added photo from iOS application.") { result in
+                            switch result {
+                            case .success(_):
+                                break
+                            case .failure(let error):
+                                print(error)
+                            }
+                        }
+        }
+        dismiss(animated: true, completion: nil)
 //        guard let image = info[.editedImage] as? UIImage else { return }
 //
 //        let imageName = UUID().uuidString
