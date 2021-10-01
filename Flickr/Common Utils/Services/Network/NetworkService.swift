@@ -179,11 +179,11 @@ class NetworkService: NSObject, ProgressDelegate {
                 return
             }
             
-//            print(String(data: data, encoding: .utf8))
-//            if let errorMessage = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
-//                completion(.failure(ErrorMessage.error("Error Server Response: \(errorMessage.message)")))
-//                return
-//            }
+            //print(String(data: data, encoding: .utf8))
+            if let errorMessage = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                completion(.failure(ErrorMessage.error("Error Callback by Flickr: \(errorMessage.message)")))
+                return
+            }
 
             switch httpResponse.statusCode {
             case ..<200:
@@ -246,6 +246,7 @@ class NetworkService: NSObject, ProgressDelegate {
     
     // Error Response: ["message": Invalid NSID provided, "code": 1, "stat": fail]
     private struct ErrorResponse: Decodable {
+        let stat: String
         let message: String
         let code: Int
     }

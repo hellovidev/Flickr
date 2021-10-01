@@ -59,7 +59,9 @@ extension NetworkService {
     func getUserPhotos(for userId: String, completion: @escaping (Result<[Photo], Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
-            "user_id": userId
+            "user_id": userId,
+            "privacy_filter": "1",
+            "per_page": "100"
         ]
         
         request(

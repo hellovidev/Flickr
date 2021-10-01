@@ -10,10 +10,8 @@ import Foundation
 extension NetworkService {
     
     func deletePhotoById(_ id: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        // Push some additional parameters
         let parameters: [String: String] = [
-            "photo_id": id,
-            "perms": "delete"
+            "photo_id": id
         ]
         
         request(

@@ -26,6 +26,17 @@ class GalleryViewModel {
         self.nsid = nsid
     }
     
+    func uploadLibraryPhoto(data: Data, title: String = "Image", description: String = "This image uploaded from iOS application.", completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        networkService.uploadNewPhoto(data, title: title, description: description) { result in
+            switch result {
+            case .success():
+                completionHandler(.success(Void()))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
     func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         guard let id = gallery[index].id else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))

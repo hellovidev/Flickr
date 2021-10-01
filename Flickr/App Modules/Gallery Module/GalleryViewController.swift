@@ -24,9 +24,11 @@ class GalleryViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
+        collectionView.register(GalleryCollectionReusableCell.self, forCellWithReuseIdentifier: "GalleryCollectionReusableCell")
+        
         setupNavigationTitle()
         setupCollectionRefreshIndicator()
-
+        
         requestPhotos()
         
         // Add observer to image upload completion
@@ -51,10 +53,15 @@ class GalleryViewController: UIViewController {
         viewModel.requestPhotoLinkInfoArray { [weak self] result in
             switch result {
             case .success():
-                self?.collectionView.reloadData()
                 self?.collectionView.refreshControl?.endRefreshing()
+                self?.collectionView.reloadData()
             case .failure(_):
                 self?.collectionView.refreshControl?.endRefreshing()
+                self?.showAlert(
+                    title: "Gallery Error",
+                    message: "Loading gallery photos failed.\nTry to check your internet connection and pull to refresh.",
+                    button: "OK"
+                )
                 break
             }
         }
@@ -64,7 +71,6 @@ class GalleryViewController: UIViewController {
         let refreshControl: UIRefreshControl = .init()
         refreshControl.transform = CGAffineTransform(scaleX: 0.75, y: 0.75)
         collectionView.refreshControl = refreshControl
-        collectionView.addSubview(refreshControl)
         refreshControl.addTarget(self, action: #selector(refreshCollectionView), for: .valueChanged)
     }
     
@@ -80,25 +86,42 @@ class GalleryViewController: UIViewController {
         navigationItem.titleView = view
     }
     
+    @objc
+    private func onTapAddButtonAction(_ sender: UIButton) {
+        let picker: UIViewController
+        if #available(iOS 14, *) {
+            picker = configurePhotoPicker()
+        } else {
+            picker = configureImagePicker()
+        }
+        present(picker, animated: true, completion: nil)
+    }
+    
+    @available(iOS 14, *)
+    private func configurePhotoPicker() -> PHPickerViewController {
+        var configuration: PHPickerConfiguration = .init()
+        configuration.selectionLimit = 1
+        configuration.filter = .images
+        
+        let photoPicker: PHPickerViewController = .init(configuration: configuration)
+        photoPicker.delegate = self
+        
+        return photoPicker
+    }
+    
+    private func configureImagePicker() -> UIImagePickerController {
+        let imagePicker: UIImagePickerController = .init()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        
+        return imagePicker
+    }
+    
     deinit {
         print("\(type(of: self)) deinited.")
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // MARK: - UICollectionViewDataSource
 
@@ -113,83 +136,58 @@ extension GalleryViewController: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.galleryCell.rawValue, for: indexPath)
-        
-
-        
-        for subview in cell.subviews {
-            // you can place "if" condition to remove image view, labels, etc.
-            //it will remove subviews of cell's content view
-            subview.removeFromSuperview()
-        }
-        cell.backgroundView = nil
-        cell.backgroundColor = nil
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.galleryCell.rawValue, for: indexPath) as! GalleryCollectionReusableCell
         
         if indexPath.row == .zero {
-            let newPhotoView: AddButtonView = .init()
-            newPhotoView.addNewButton.addTarget(self, action: #selector(onTapAddNewPhoto), for: .touchUpInside)
-            newPhotoView.frame = cell.bounds
-            cell.addSubview(newPhotoView)
+            let buttonView: AddButtonView = .init()
+            buttonView.addNewButton.addTarget(self, action: #selector(onTapAddButtonAction), for: .touchUpInside)
+            cell.view = buttonView
         } else {
-            
-            
-            cell.isUserInteractionEnabled = true
-            
             let interaction = UIContextMenuInteraction(delegate: self)
-            cell.addInteraction(interaction)
+            cell.interaction = interaction
             
-            if viewModel.numberOfItems != .zero {
-                self.viewModel.requsetPhoto(index: indexPath.row - 1) { result in
-                    switch result {
-                    case .success(let image):
-                        let imageView: UIImageView = .init(image: image)
-                        imageView.frame = cell.bounds
-                        cell.addSubview(imageView)
-                        //cell.backgroundView = imageView
-                    case .failure(let error):
-                        print(error)
-                    }
+            self.viewModel.requsetPhoto(index: indexPath.row - 1) { result in
+                switch result {
+                case .success(let image):
+                    let imageView: UIImageView = .init(image: image)
+                    cell.view = imageView
+                case .failure(let error):
+                    print("Photo loading error: \(error)")
                 }
             }
-            cell.backgroundColor = .orange
         }
-        //viewModel.getItem(index: indexPath.row)
+        
         return cell
-    }
-    
-
-    
-    
-    
-    @objc
-    private func onTapAddNewPhoto(_ sender: UIButton) {
-        if #available(iOS 14, *) {
-            var configuration = PHPickerConfiguration()
-            configuration.selectionLimit = 1
-            configuration.filter = .images
-            
-            let photoPicker: PHPickerViewController = .init(configuration: configuration)
-            photoPicker.delegate = self
-            
-            present(photoPicker, animated: true, completion: nil)
-        } else {
-            let imagePicker: UIImagePickerController = .init()
-            imagePicker.delegate = self
-            
-            imagePicker.sourceType = .photoLibrary
-            
-            present(imagePicker, animated: true, completion: nil)
-            
-        }
     }
     
 }
 
+// MARK: - UICollectionViewCell
 
-
-
-
-
+class GalleryCollectionReusableCell: UICollectionViewCell {
+    
+    var view: UIView = .init() {
+        didSet {
+            view.frame = self.bounds
+            self.addSubview(view)
+        }
+    }
+    
+    var interaction: UIContextMenuInteraction? {
+        didSet {
+            guard let interaction = interaction else { return }
+            self.addInteraction(interaction)
+        }
+    }
+    
+    override func prepareForReuse() {
+        for subView in self.subviews {
+            subView.removeFromSuperview()
+        }
+        self.interactions.removeAll()
+    }
+    
+}
 
 // MARK: - UICollectionViewDelegateFlowLayout
 
@@ -238,13 +236,12 @@ extension GalleryViewController: UIContextMenuInteractionDelegate {
                         case .success():
                             self?.collectionView.deleteItems(at: [indexPath])
                         case .failure(let error):
-                            print("Delete item with index path \(indexPath) failed with error [\(error)]")
+                            print("Delete item with index path \(indexPath.row) failed with error [\(error)]")
                         }
                     }
                 } else {
                     print("Couldn't find index path")
                 }
-                
             }
             
             let menu = UIMenu(title: "", options: .displayInline, children: [removeItem])
@@ -256,113 +253,71 @@ extension GalleryViewController: UIContextMenuInteractionDelegate {
     
 }
 
+// MARK: - UIImagePickerControllerDelegate & UINavigationControllerDelegate
 
+extension GalleryViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if
+            let selectedImage = info[.originalImage] as? UIImage,
+            let data = selectedImage.pngData()
+        {
+            self.viewModel.uploadLibraryPhoto(data: data) { [weak self] result in
+                switch result {
+                case .success():
+                    NotificationCenter.default.post(name: Notification.Name("ImageUpload"), object: nil) // ???
+                case .failure(let error):
+                    self?.showAlert(
+                        title: "Upload Failed",
+                        message: "Failed to upload photo to flickr.\nTry to check your internet connection and try again.",
+                        button: "OK"
+                    )
+                    print("Upload image error: \(error)")
+                }
+            }
+        }
+        dismiss(animated: true)
+    }
+    
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// MARK: - PHPickerViewControllerDelegate
 
 extension GalleryViewController: PHPickerViewControllerDelegate {
     
     @available(iOS 14, *)
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        results.forEach { result in
-            // "public.image"
-            //print(result)
-            //guard let typeIdentifer = result.itemProvider.registeredTypeIdentifiers.first else { return }
-            //print(typeIdentifer)
-            result.itemProvider.loadDataRepresentation(forTypeIdentifier: "public.image", completionHandler: { [weak self] data, _ in
-                guard let data = data else { return }
-                
-                self?.viewModel.networkService.uploadNewPhoto(data, title: "New poster", description: "Added photo from iOS application.") { result in
-                    switch result {
-                    case .success(_):
-                        NotificationCenter.default.post(name: Notification.Name("ImageUpload"), object: nil)
-                        
-                        break
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
-            })
-        }
-        
-        dismiss(animated: true, completion: nil)
-        guard !results.isEmpty else { return }
-    }
-    
-}
-
-extension GalleryViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        print("Cancel")
-        dismiss(animated: true, completion: nil)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let selectedImage = info[.originalImage] as? UIImage else {
-            return
-        }
-        
-        if let data = selectedImage.pngData() {
+        results.forEach { [weak self] result in
             
-            viewModel.networkService.uploadNewPhoto(data, title: "New poster", description: "Added photo from iOS application.") { result in
-                switch result {
-                case .success(_):
-                    NotificationCenter.default.post(name: Notification.Name("ImageUpload"), object: nil)
-                    
-                    break
-                case .failure(let error):
-                    print(error)
+            result.itemProvider.loadDataRepresentation(forTypeIdentifier: "public.image") { [weak self] data, _ in
+                guard let data = data else {
+                    DispatchQueue.main.async {
+                        self?.dismiss(animated: true)
+                    }
+                    return
+                }
+                
+                self?.viewModel.uploadLibraryPhoto(data: data) { [weak self] result in
+                    switch result {
+                    case .success():
+                        NotificationCenter.default.post(name: Notification.Name("ImageUpload"), object: nil) // ???
+                    case .failure(let error):
+                        self?.showAlert(
+                            title: "Upload Failed",
+                            message: "Failed to upload photo to flickr.\nTry to check your internet connection and try again.",
+                            button: "OK"
+                        )
+                        print("Upload image error: \(error)")
+                    }
                 }
             }
         }
-        dismiss(animated: true, completion: nil)
-        //        guard let image = info[.editedImage] as? UIImage else { return }
-        //
-        //        let imageName = UUID().uuidString
-        //        let imagePath = getDocumentsDirectory().appendingPathComponent(imageName)
-        //
-        //        if let jpegData = image.jpegData(compressionQuality: 0.8) {
-        //            try? jpegData.write(to: imagePath)
-        //        }
-        //
-        //        dismiss(animated: true)
         
-        //        guard let image = info[.editedImage] as? UIImage else {
-        //            return self.pickerController(picker, didSelect: nil)
-        //        }
+        dismiss(animated: true)
     }
     
 }
-
-
-
-
