@@ -7,27 +7,36 @@
 
 import UIKit
 
+// MARK: - GalleryViewModel
+
 class GalleryViewModel {
     
-    var gallery: [Photo] = .init()
+    private var gallery: [Photo] = .init()
+    
+    private let networkService: NetworkService
+    
+    private let userId: String
     
     var numberOfItems: Int {
         gallery.count
     }
     
-    func getItem(index: Int) -> Photo? {
-        return gallery[index]
+    func refresh() {
+        gallery.removeAll()
     }
     
-    let networkService: NetworkService
-    let nsid: String
     init(nsid: String, networkService: NetworkService) {
         self.networkService = networkService
-        self.nsid = nsid
+        self.userId = nsid
     }
     
-    func uploadLibraryPhoto(data: Data, title: String = "Image", description: String = "This image uploaded from iOS application.", completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        networkService.uploadNewPhoto(data, title: title, description: description) { result in
+    func uploadLibraryPhoto(
+        data: Data,
+        title: String = "Image",
+        description: String = "This image uploaded from iOS application.",
+        completionHandler: @escaping (Result<Void, Error>) -> Void
+    ) {
+        networkService.uploadImage(data, title: title, description: description) { result in
             switch result {
             case .success():
                 completionHandler(.success(Void()))
@@ -38,7 +47,9 @@ class GalleryViewModel {
     }
     
     func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        guard let id = gallery[index].id else {
+        guard
+            let id = gallery[index].id
+        else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))
             return
         }
@@ -59,10 +70,10 @@ class GalleryViewModel {
     }
     
     func requestPhotoLinkInfoArray(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        networkService.getUserPhotos(for: nsid) { [weak self] result in
+        networkService.getUserPhotos(for: userId) { [weak self] result in
             switch result {
-            case .success(let photoRequestInfoArray):
-                self?.gallery = photoRequestInfoArray
+            case .success(let photoArray):
+                self?.gallery = photoArray
                 completionHandler(.success(Void()))
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -73,9 +84,9 @@ class GalleryViewModel {
     
     func requsetPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         guard
-        let id = gallery[index].id,
-        let secret = gallery[index].secret,
-        let server = gallery[index].server
+            let id = gallery[index].id,
+            let secret = gallery[index].secret,
+            let server = gallery[index].server
         else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))
             return
@@ -85,7 +96,5 @@ class GalleryViewModel {
             completionHandler(result.map { $0 })
         }
     }
-    
-    
     
 }

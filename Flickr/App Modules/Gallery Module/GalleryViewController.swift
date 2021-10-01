@@ -37,7 +37,7 @@ class GalleryViewController: UIViewController {
     
     @objc
     private func refreshCollectionView() {
-        viewModel.gallery = [] // ???
+        viewModel.refresh()
         collectionView.reloadData()
         requestPhotos()
     }
@@ -45,7 +45,6 @@ class GalleryViewController: UIViewController {
     @objc
     private func imageUploadNotification() {
         refreshCollectionView()
-        viewModel.networkService.uploadProgress = 0 // ???
     }
     
     private func requestPhotos() {
@@ -169,6 +168,8 @@ class GalleryCollectionReusableCell: UICollectionViewCell {
     var view: UIView = .init() {
         didSet {
             view.frame = self.bounds
+            view.contentMode = .scaleAspectFill
+            self.clipsToBounds = true
             self.addSubview(view)
         }
     }
@@ -195,7 +196,6 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.bounds.width
-        
         let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
         let inset = collectionViewFlowLayout?.sectionInset.top
         let insetCell = collectionViewFlowLayout?.minimumInteritemSpacing
@@ -231,11 +231,22 @@ extension GalleryViewController: UIContextMenuInteractionDelegate {
                 // Getting IndexPath of pressed item and do action
                 let item = interaction.location(in: self?.collectionView)
                 if let indexPath = self?.collectionView.indexPathForItem(at: item) {
+                    
+                    let activitiyIndicator: ActivityViewController = .init()
+                    self?.present(activitiyIndicator, animated: true)
+                    
                     self?.viewModel.removePhotoAt(index: indexPath.row - 1) { [weak self] result in
                         switch result {
                         case .success():
                             self?.collectionView.deleteItems(at: [indexPath])
+                            self?.dismiss(animated: true)
                         case .failure(let error):
+                            self?.dismiss(animated: true)
+                            self?.showAlert(
+                                title: "Delete Failed",
+                                message: "Failed to delete photo.\nTry again.",
+                                button: "OK"
+                            )
                             print("Delete item with index path \(indexPath.row) failed with error [\(error)]")
                         }
                     }
@@ -325,7 +336,7 @@ extension GalleryViewController: PHPickerViewControllerDelegate {
 // MARK: - Notification.Name
 
 extension Notification.Name {
-
+    
     static let imageUpload = Notification.Name("ImageUpload")
-
+    
 }

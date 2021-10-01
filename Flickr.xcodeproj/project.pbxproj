@@ -26,6 +26,7 @@
 		5F6A836726F4EE19000F9AD2 /* CacheStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */; };
 		5F71301126D40D32001A3762 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71301026D40D32001A3762 /* NetworkService.swift */; };
 		5F71DB1127072BD8006094B4 /* NetworkService+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71DB1027072BD8006094B4 /* NetworkService+Delete.swift */; };
+		5F71DB1527077990006094B4 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71DB1427077990006094B4 /* ActivityViewController.swift */; };
 		5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996226D66DE300482485 /* ErrorMessage.swift */; };
 		5F7F996626D69AE900482485 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996526D69AE900482485 /* Profile.swift */; };
 		5F7F996826D6AE1000482485 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996726D6AE1000482485 /* Comment.swift */; };
@@ -90,6 +91,7 @@
 		5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheStorageService.swift; sourceTree = "<group>"; };
 		5F71301026D40D32001A3762 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5F71DB1027072BD8006094B4 /* NetworkService+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Delete.swift"; sourceTree = "<group>"; };
+		5F71DB1427077990006094B4 /* ActivityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewController.swift; sourceTree = "<group>"; };
 		5F7F996226D66DE300482485 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		5F7F996526D69AE900482485 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		5F7F996726D6AE1000482485 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -392,6 +394,7 @@
 				5FFEC0C926CD4F87000A0BAB /* Services */,
 				5F4A774626FCEAFB00D1EB00 /* Observable.swift */,
 				5F8A441126FF3F4E0027217F /* Storyboard.swift */,
+				5F71DB1427077990006094B4 /* ActivityViewController.swift */,
 			);
 			path = "Common Utils";
 			sourceTree = "<group>";
@@ -508,6 +511,7 @@
 				5F7F998426D8E89200482485 /* DeserializeHelper.swift in Sources */,
 				5F7F996C26D6CBC700482485 /* Photo.swift in Sources */,
 				5F4A773C26FB5EEC00D1EB00 /* UserDefaultsKey.swift in Sources */,
+				5F71DB1527077990006094B4 /* ActivityViewController.swift in Sources */,
 				5F7F996A26D6C05800482485 /* Favorite.swift in Sources */,
 				5FFEC0B526CD4DDB000A0BAB /* AuthorizationViewController.swift in Sources */,
 				5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */,
