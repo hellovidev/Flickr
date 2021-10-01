@@ -10,85 +10,93 @@ import PhotosUI
 
 // MARK: - GalleryViewController
 
-class GalleryViewController: UIViewController, UINavigationControllerDelegate {
+class GalleryViewController: UIViewController {
+    
+    // MARK: - Properties
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    private let collectionCellReuseIdentifier: String = "CollectionReusableCell"
-    
     var viewModel: GalleryViewModel!
-    
-    var refresher:UIRefreshControl!
-    
-    @objc
-    func loadData() {
-        refresher.beginRefreshing()
-        //code to execute during refresher
-        
-        viewModel.gallery = []
-        collectionView.reloadData()
-        
-        
-        viewModel.requestPhotoLinkInfoArray { [weak self] result in
-            switch result {
-            case .success():
-                self?.collectionView.reloadData()
-                self?.refresher.endRefreshing()
-            case .failure(_):
-                break
-            }
-        }
-        
-    }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.refresher = UIRefreshControl()
-        self.collectionView.alwaysBounceVertical = true
-        self.refresher.tintColor = UIColor.red
-        self.refresher.addTarget(self, action: #selector(loadData), for: .valueChanged)
-        self.collectionView.addSubview(refresher)
-        
-        
         collectionView.dataSource = self
         collectionView.delegate = self
         
+        setupNavigationTitle()
+        setupCollectionRefreshIndicator()
+
+        requestPhotos()
+        
+        // Add observer to image upload completion
+        NotificationCenter.default.addObserver(self, selector: #selector(imageUploadNotification), name: Notification.Name("ImageUpload"), object: nil) // ???
+    }
+    
+    @objc
+    private func refreshCollectionView() {
+        viewModel.gallery = [] // ???
+        collectionView.reloadData()
+        requestPhotos()
+    }
+    
+    @objc
+    private func imageUploadNotification() {
+        refreshCollectionView()
+        viewModel.networkService.uploadProgress = 0 // ???
+    }
+    
+    private func requestPhotos() {
+        collectionView.refreshControl?.beginRefreshing()
         viewModel.requestPhotoLinkInfoArray { [weak self] result in
             switch result {
             case .success():
                 self?.collectionView.reloadData()
+                self?.collectionView.refreshControl?.endRefreshing()
             case .failure(_):
+                self?.collectionView.refreshControl?.endRefreshing()
                 break
             }
         }
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(imageUploadNotification), name: Notification.Name("ImageUpload"), object: nil)
-        
-        
-        
     }
     
-    
-    
-    
-    
-    
-    @objc
-    func imageUploadNotification() {
-        loadData()
-        viewModel.networkService.uploadProgress = 0
+    private func setupCollectionRefreshIndicator() {
+        let refreshControl: UIRefreshControl = .init()
+        refreshControl.transform = CGAffineTransform(scaleX: 0.75, y: 0.75)
+        collectionView.refreshControl = refreshControl
+        collectionView.addSubview(refreshControl)
+        refreshControl.addTarget(self, action: #selector(refreshCollectionView), for: .valueChanged)
     }
     
-    
-    
+    private func setupNavigationTitle() {
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 25))
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: ImageName.logotype.rawValue)
+        
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 25))
+        imageView.center = view.convert(view.center, from: imageView);
+        view.addSubview(imageView)
+        
+        navigationItem.titleView = view
+    }
     
     deinit {
         print("\(type(of: self)) deinited.")
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 // MARK: - UICollectionViewDataSource
 
@@ -103,7 +111,7 @@ extension GalleryViewController: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionCellReuseIdentifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.galleryCell.rawValue, for: indexPath)
         
         let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
         cell.addGestureRecognizer(lpgr)
@@ -224,7 +232,7 @@ extension GalleryViewController: PHPickerViewControllerDelegate {
     
 }
 
-extension GalleryViewController: UIImagePickerControllerDelegate {
+extension GalleryViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         print("Cancel")

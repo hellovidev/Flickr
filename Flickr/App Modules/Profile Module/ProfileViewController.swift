@@ -24,12 +24,6 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        realNameLabel.text = nil
-        descriptionLabel.text = nil
-        
-        //view.setNeedsLayout()
-        //view.layoutIfNeeded()
-        
         skeletonAnimation.startAnimationFor(view: avatarImage)
         skeletonAnimation.startAnimationFor(view: realNameLabel, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: descriptionLabel, cornerRadius: true)
@@ -39,10 +33,13 @@ class ProfileViewController: UIViewController {
         setupNavigationTitle()
         
         viewModel.requestProfile { [weak self] profile, avatar in
+            
+            // Set values of request
             self?.avatarImage.image = avatar
             self?.realNameLabel.text = profile?.realName?.content ?? "No real name"
             self?.descriptionLabel.text = profile?.description?.content ?? "No description"
             
+            // Stop skeleton animations
             self?.skeletonAnimation.stopAllAnimations()
         }
     }
@@ -56,12 +53,6 @@ class ProfileViewController: UIViewController {
         avatarImage.layer.cornerRadius = avatarImage.frame.height / 2
         avatarContainer.layer.borderColor = UIColor.systemGray3.cgColor
         avatarContainer.layer.borderWidth = 1.5
-        
-        avatarContainer.layer.shadowColor = UIColor.gray.cgColor
-        avatarContainer.layer.shadowOpacity = 1
-        avatarContainer.layer.shadowOffset = .zero
-        avatarContainer.layer.shadowRadius = 15
-        avatarContainer.layer.shouldRasterize = true
     }
     
     private func setupLogoutButton() {
