@@ -24,15 +24,15 @@ class GalleryViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        collectionView.register(GalleryCollectionReusableCell.self, forCellWithReuseIdentifier: "GalleryCollectionReusableCell")
+        collectionView.register(GalleryCollectionReusableCell.self, forCellWithReuseIdentifier: ReuseIdentifier.galleryCell.rawValue)
         
         setupNavigationTitle()
         setupCollectionRefreshIndicator()
         
-        requestPhotos()
-        
         // Add observer to image upload completion
-        NotificationCenter.default.addObserver(self, selector: #selector(imageUploadNotification), name: Notification.Name("ImageUpload"), object: nil) // ???
+        NotificationCenter.default.addObserver(self, selector: #selector(imageUploadNotification), name: Notification.Name.imageUpload, object: nil)
+        
+        requestPhotos()
     }
     
     @objc
@@ -269,7 +269,7 @@ extension GalleryViewController: UIImagePickerControllerDelegate, UINavigationCo
             self.viewModel.uploadLibraryPhoto(data: data) { [weak self] result in
                 switch result {
                 case .success():
-                    NotificationCenter.default.post(name: Notification.Name("ImageUpload"), object: nil) // ???
+                    NotificationCenter.default.post(name: Notification.Name.imageUpload, object: nil)
                 case .failure(let error):
                     self?.showAlert(
                         title: "Upload Failed",
@@ -304,7 +304,7 @@ extension GalleryViewController: PHPickerViewControllerDelegate {
                 self?.viewModel.uploadLibraryPhoto(data: data) { [weak self] result in
                     switch result {
                     case .success():
-                        NotificationCenter.default.post(name: Notification.Name("ImageUpload"), object: nil) // ???
+                        NotificationCenter.default.post(name: Notification.Name.imageUpload, object: nil)
                     case .failure(let error):
                         self?.showAlert(
                             title: "Upload Failed",
@@ -320,4 +320,12 @@ extension GalleryViewController: PHPickerViewControllerDelegate {
         dismiss(animated: true)
     }
     
+}
+
+// MARK: - Notification.Name
+
+extension Notification.Name {
+
+    static let imageUpload = Notification.Name("ImageUpload")
+
 }
