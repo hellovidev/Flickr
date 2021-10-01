@@ -37,7 +37,7 @@ enum FlickrConstant {
         
         // Gallery screen
         case getUserPhotos = "flickr.people.getPhotos" // => "flickr.___.getUserPhotos"
-        case deleteUserPhotoById = "flickr.photos.delete"
+        case deletePhotoById = "flickr.photos.delete"
     }
     
     // MARK: - Private Keys

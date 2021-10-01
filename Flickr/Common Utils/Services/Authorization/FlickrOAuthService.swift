@@ -190,7 +190,7 @@ class FlickrOAuthService: NSObject {
     // Step #2: Website Confirmation
     private func requestAuthorize(with token: String, presenter: UIViewController, completion: @escaping (Result<String, Error>) -> Void) {
         // Build website confirmation link for 'Safari'
-        let urlString = "\(FlickrConstant.URL.base.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=write"
+        let urlString = "\(FlickrConstant.URL.base.rawValue)/services/oauth/authorize?oauth_token=\(token)&perms=delete" //write
         guard let websiteConfirmationURL = URL(string: urlString) else { return }
         
         // Initialization 'Safari' object

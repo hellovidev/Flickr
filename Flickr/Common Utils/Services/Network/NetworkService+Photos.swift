@@ -82,7 +82,7 @@ extension NetworkService {
         
         request(
             parameters: parameters,
-            type: .deleteUserPhotoById,
+            type: .deletePhotoById,
             method: .POST,
             parser: VoidDeserializer(),
             completion: completion

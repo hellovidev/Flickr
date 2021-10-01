@@ -26,6 +26,27 @@ class GalleryViewModel {
         self.nsid = nsid
     }
     
+    func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        guard let id = gallery[index].id else {
+            completionHandler(.failure(NetworkManagerError.invalidParameters))
+            return
+        }
+        
+        removePhotoById(id) { [weak self] result in
+            switch result {
+            case .success():
+                self?.gallery.remove(at: index)
+                completionHandler(.success(Void()))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    private func removePhotoById(_ id: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        networkService.deletePhotoById(id, completion: completionHandler)
+    }
+    
     func requestPhotoLinkInfoArray(completionHandler: @escaping (Result<Void, Error>) -> Void) {
         networkService.getUserPhotos(for: nsid) { [weak self] result in
             switch result {

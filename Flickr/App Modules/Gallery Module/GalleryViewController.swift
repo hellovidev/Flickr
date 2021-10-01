@@ -98,6 +98,8 @@ class GalleryViewController: UIViewController {
 
 
 
+
+
 // MARK: - UICollectionViewDataSource
 
 extension GalleryViewController: UICollectionViewDataSource {
@@ -107,14 +109,13 @@ extension GalleryViewController: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfItems != .zero ? viewModel.numberOfItems + 1 : 0
+        return viewModel.numberOfItems > .zero ? viewModel.numberOfItems + 1 : .zero
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.galleryCell.rawValue, for: indexPath)
         
-        let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
-        cell.addGestureRecognizer(lpgr)
+
         
         for subview in cell.subviews {
             // you can place "if" condition to remove image view, labels, etc.
@@ -143,7 +144,8 @@ extension GalleryViewController: UICollectionViewDataSource {
                     case .success(let image):
                         let imageView: UIImageView = .init(image: image)
                         imageView.frame = cell.bounds
-                        cell.backgroundView = imageView
+                        cell.addSubview(imageView)
+                        //cell.backgroundView = imageView
                     case .failure(let error):
                         print(error)
                     }
@@ -155,28 +157,12 @@ extension GalleryViewController: UICollectionViewDataSource {
         return cell
     }
     
-    @objc func handleLongPress(gesture : UILongPressGestureRecognizer!) {
-        if gesture.state != .ended {
-            return
-        }
-        
-        let p = gesture.location(in: self.collectionView)
-        
-        if let indexPath = self.collectionView.indexPathForItem(at: p) {
-            // get the cell at indexPath (the one you long pressed)
-            let cell = self.collectionView.cellForItem(at: indexPath)
-            
-            // collectionView.deleteItems(at: [indexPath])
-            // do stuff with the cell
-        } else {
-            print("couldn't find index path")
-        }
-    }
+
     
     
     
     @objc
-    func onTapAddNewPhoto(_ sender: UIButton) {
+    private func onTapAddNewPhoto(_ sender: UIButton) {
         if #available(iOS 14, *) {
             var configuration = PHPickerConfiguration()
             configuration.selectionLimit = 1
@@ -198,6 +184,107 @@ extension GalleryViewController: UICollectionViewDataSource {
     }
     
 }
+
+
+
+
+
+
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension GalleryViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.bounds.width
+        
+        let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
+        let inset = collectionViewFlowLayout?.sectionInset.top
+        let insetCell = collectionViewFlowLayout?.minimumInteritemSpacing
+        let cellCount: CGFloat = 3
+        let targetWidth: CGFloat = (width - inset! * CGFloat(2) - insetCell! * CGFloat(3)) / cellCount
+        return CGSize(width:  targetWidth, height: targetWidth)
+    }
+    
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension GalleryViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        // ...
+    }
+    
+}
+
+// MARK: - UIContextMenuInteractionDelegate
+
+extension GalleryViewController: UIContextMenuInteractionDelegate {
+    
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        
+        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] actions -> UIMenu? in
+            
+            // Building item of menu
+            let removeIcon = UIImage(systemName: "trash")
+            let removeItem = UIAction(title: "Delete", image: removeIcon, attributes: .destructive) { [weak self] action in
+                
+                // Getting IndexPath of pressed item and do action
+                let item = interaction.location(in: self?.collectionView)
+                if let indexPath = self?.collectionView.indexPathForItem(at: item) {
+                    self?.viewModel.removePhotoAt(index: indexPath.row - 1) { [weak self] result in
+                        switch result {
+                        case .success():
+                            self?.collectionView.deleteItems(at: [indexPath])
+                        case .failure(let error):
+                            print("Delete item with index path \(indexPath) failed with error [\(error)]")
+                        }
+                    }
+                } else {
+                    print("Couldn't find index path")
+                }
+                
+            }
+            
+            let menu = UIMenu(title: "", options: .displayInline, children: [removeItem])
+            return menu
+        }
+        
+        return configuration
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -276,157 +363,6 @@ extension GalleryViewController: UIImagePickerControllerDelegate, UINavigationCo
     
 }
 
-// MARK: - UICollectionViewDelegateFlowLayout
 
-extension GalleryViewController: UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.bounds.width
-        
-        let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
-        let inset = collectionViewFlowLayout?.sectionInset.top
-        let insetCell = collectionViewFlowLayout?.minimumInteritemSpacing
-        let cellCount: CGFloat = 3
-        let targetWidth: CGFloat = (width - inset! * CGFloat(2) - insetCell! * CGFloat(3)) / cellCount
-        return CGSize(width:  targetWidth, height: targetWidth)
-    }
-    
-}
 
-// MARK: - UICollectionViewDelegate
 
-extension GalleryViewController: UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        // ...
-    }
-    
-}
-
-extension GalleryViewController: UIContextMenuInteractionDelegate {
-    
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions -> UIMenu? in
-            
-            let removeIcon = UIImage(systemName: "trash")//?.withTintColor(.red, renderingMode: .alwaysOriginal)
-            
-            let removeItem = UIAction(title: "Delete", image: removeIcon, attributes: .destructive) { action in
-                let item = interaction.location(in: self.collectionView)
-                
-                if let indexPath = self.collectionView.indexPathForItem(at: item) {
-                    // get the cell at indexPath (the one you long pressed)
-                    //let cell = self.collectionView.cellForItem(at: indexPath)
-                    
-                    self.viewModel.gallery.remove(at: indexPath.row - 1)
-                    self.collectionView.deleteItems(at: [indexPath])
-                    // do stuff with the cell
-                } else {
-                    print("couldn't find index path")
-                }
-                print("Remove User action was tapped")
-            }
-            let menu = UIMenu(title: "", options: .displayInline, children: [removeItem])
-            return menu
-        }
-        return configuration
-    }
-    
-}
-
-/*
- 
- class Some {
- 
- @objc func handleLongPress(gesture : UILongPressGestureRecognizer!) {
- if gesture.state != .ended {
- return
- }
- 
- let p = gesture.location(in: self.collectionView)
- 
- if let indexPath = self.collectionView.indexPathForItem(at: p) {
- // get the cell at indexPath (the one you long pressed)
- let cell = self.collectionView.cellForItem(at: indexPath)
- // do stuff with the cell
- } else {
- print("couldn't find index path")
- }
- }
- }
- 
- let some = Some()
- let lpgr = UILongPressGestureRecognizer(target: some, action: #selector(Some.handleLongPress))
- 
- 
- 
- 
- -(void) handleLongPress:(UILongPressGestureRecognizer *)sender
- {
- if (sender.state == UIGestureRecognizerStateBegan)
- {
- //Start a timer and perform action after whatever time interval you want.
- }
- if (sender.state == UIGestureRecognizerStateEnded)
- {
- //Check the duration and if it is less than what you wanted, invalidate the timer.
- }
- }
- 
- // DELETE
- 
- 
- 
- @IBAction func deleteItem(_ sender: Any) {
- if let selectedCells = collectionView.indexPathsForSelectedItems {
- // 1
- let items = selectedCells.map { $0.item }.sorted().reversed()
- // 2
- for item in items {
- modelData.remove(at: item)
- }
- // 3
- collectionView.deleteItems(at: selectedCells)
- deleteButton.isEnabled = false
- }
- }
- 
- 
- // POP UP
- 
- let usersItem = UIAction(title: "Users", image: UIImage(systemName: "person.fill")) { (action) in
- 
- print("Users action was tapped")
- }
- 
- let addUserItem = UIAction(title: "Add User", image: UIImage(systemName: "person.badge.plus")) { (action) in
- 
- print("Add User action was tapped")
- }
- 
- let removeUserItem = UIAction(title: "Remove User", image: UIImage(systemName: "person.fill.xmark.rtl")) { (action) in
- print("Remove User action was tapped")
- }
- 
- let menu = UIMenu(title: "My Menu", options: .displayInline, children: [usersItem , addUserItem , removeUserItem])
- 
- 
- 
- 
- 
- showButton.menu = menu
- showButton.showsMenuAsPrimaryAction = true
- 
- 
- 
- let navItems = [UIBarButtonItem(image:  UIImage(systemName: "plus"), primaryAction: plusAction, menu: menu) ,
- .fixedSpace(10),
- UIBarButtonItem(systemItem: .search , menu: menu)]
- 
- let plusAction = UIAction(title: "plusAction"){ (action) in
- print("Plus Action action was tapped ")
- }
- 
- self.navigationItem.leftBarButtonItems = navItems
- 
- 
- */
