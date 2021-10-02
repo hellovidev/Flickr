@@ -8,24 +8,25 @@
 import UIKit
 
 class ProfileViewModel {
-
+    
     private weak var coordinator: GeneralCoordinator?
+    
     private let profileNetworkManager: ProfileNetworkManager
-
+    
     init(coordinator: GeneralCoordinator, nsid: String, networkService: NetworkService) {
         self.coordinator = coordinator
         self.profileNetworkManager = .init(nsid: nsid, networkService: networkService)
     }
     
-    func logout() {
+    func didLogout() {
         coordinator?.didLogout()
     }
     
-    func requestProfile(completionHandler: @escaping (_ profile: Profile?, _ avatar: UIImage?) -> Void) {
-        profileNetworkManager.requestProfile { result in
+    func requestProfile(completionHandler: @escaping (_ profile: ProfileEntity?, _ avatar: UIImage?) -> Void) {
+        profileNetworkManager.requestProfile { [weak self] result in
             switch result {
             case .success(let profileInformation):
-                self.profileNetworkManager.requestAvatar(profile: profileInformation) { result in
+                self?.profileNetworkManager.requestAvatar(profile: profileInformation) { result in
                     switch result {
                     case .success(let avatarImage):
                         completionHandler(profileInformation, avatarImage)
@@ -44,10 +45,3 @@ class ProfileViewModel {
     }
     
 }
-
-//// MARK: - Delegate Main View  Controller
-//extension ProfileViewModel: SettingsViewControllerDelegate {
-//    func didLogout() {
-//
-//    }
-//}

@@ -10,7 +10,7 @@ import Foundation
 extension NetworkService {
     
     // Get current user profile 'flickr.profile.getProfile' (User screen)
-    func getProfile(for userId: String, completion: @escaping (Result<Profile, Error>) -> Void) {
+    func getProfile(for userId: String, completion: @escaping (Result<ProfileEntity, Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
             "user_id": userId,
@@ -28,7 +28,7 @@ extension NetworkService {
     
     // The server JSON response decoder
     private struct ProfileResponse: Decodable {
-        let person: Profile
+        let person: ProfileEntity
     }
     
 }

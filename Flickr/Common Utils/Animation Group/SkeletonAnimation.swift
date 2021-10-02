@@ -7,12 +7,14 @@
 
 import UIKit
 
-// MARK: - SkeletonAnimation
+// MARK: - SkeletonAnimationProtocol
 
 protocol SkeletonAnimationProtocol {
     func startAnimationFor(view: UIView, cornerRadius: Bool)
     func stopAllAnimations()
 }
+
+// MARK: - SkeletonAnimation
 
 final class SkeletonAnimation: SkeletonAnimationProtocol {
     
@@ -23,6 +25,9 @@ final class SkeletonAnimation: SkeletonAnimationProtocol {
     private let animationLayerKey: String = "gradientAnimation"
     
     func startAnimationFor(view: UIView, cornerRadius: Bool = false) {
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+        
         let gradientLayer: CAGradientLayer = .init()
         gradientLayer.frame = view.bounds
         gradientLayer.startPoint = CGPoint(x: -1.5, y: 0.25)

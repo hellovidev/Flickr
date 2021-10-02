@@ -24,6 +24,9 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        realNameLabel.text = nil
+//        descriptionLabel.text = nil
+        
         skeletonAnimation.startAnimationFor(view: avatarImage)
         skeletonAnimation.startAnimationFor(view: realNameLabel, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: descriptionLabel, cornerRadius: true)
@@ -45,7 +48,7 @@ class ProfileViewController: UIViewController {
     }
     
     @IBAction func logoutAction(_ sender: UIButton) {
-        viewModel.logout()
+        viewModel.didLogout()
     }
     
     private func setupAvatar() {
