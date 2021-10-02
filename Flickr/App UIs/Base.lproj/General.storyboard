@@ -10,127 +10,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Authorization View Controller-->
-        <scene sceneID="tne-QT-ifu">
-            <objects>
-                <viewController storyboardIdentifier="AuthorizationViewController" id="BYZ-38-t0r" customClass="AuthorizationViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC" customClass="Auth" customModule="Flickr" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BSu-sB-DSE">
-                                <rect key="frame" x="35" y="426" width="344" height="44"/>
-                                <color key="backgroundColor" red="0.65099853279999997" green="0.058895207939999999" blue="0.57640361790000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="QA1-zR-4Pl"/>
-                                </constraints>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal">
-                                    <attributedString key="attributedTitle">
-                                        <fragment content="Log in with ">
-                                            <attributes>
-                                                <font key="NSFont" size="14" name="SFProText-Regular"/>
-                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                            </attributes>
-                                        </fragment>
-                                        <fragment content="flickr.com">
-                                            <attributes>
-                                                <font key="NSFont" size="18" name="SFProText-Semibold"/>
-                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                            </attributes>
-                                        </fragment>
-                                    </attributedString>
-                                </state>
-                                <connections>
-                                    <action selector="signinAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QQb-g6-2Lk"/>
-                                </connections>
-                            </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FlickrLogotype" translatesAutoresizingMaskIntoConstraints="NO" id="zoj-hL-Yqa">
-                                <rect key="frame" x="90" y="174" width="234" height="64"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="hAq-so-YQz"/>
-                                </constraints>
-                            </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3hO-Cn-TwD">
-                                <rect key="frame" x="0.0" y="777" width="414" height="1"/>
-                                <color key="backgroundColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.23529411764705882" alpha="0.29761670622580721" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="ctw-ts-eFM"/>
-                                </constraints>
-                            </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" distribution="equalSpacing" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="cqO-Ca-1HG">
-                                <rect key="frame" x="118.5" y="798" width="177.5" height="14"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KZu-E1-zWJ">
-                                        <rect key="frame" x="0.0" y="0.0" width="128" height="14"/>
-                                        <attributedString key="attributedText">
-                                            <fragment content="Don’t have an account?">
-                                                <attributes>
-                                                    <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="0.40098038872203079" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <font key="NSFont" size="12" name="SFProText-Regular"/>
-                                                    <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                </attributes>
-                                            </fragment>
-                                        </attributedString>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Fb-5B-hoq">
-                                        <rect key="frame" x="133" y="0.0" width="44.5" height="14"/>
-                                        <attributedString key="attributedText">
-                                            <fragment content="Sign up.">
-                                                <attributes>
-                                                    <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="0.40098038872203079" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <font key="NSFont" size="12" name="SFProText-Regular"/>
-                                                    <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                </attributes>
-                                            </fragment>
-                                        </attributedString>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="3Fb-5B-hoq" secondAttribute="bottom" id="2Nz-iV-h1I"/>
-                                    <constraint firstItem="KZu-E1-zWJ" firstAttribute="centerY" secondItem="cqO-Ca-1HG" secondAttribute="centerY" id="3xI-Ng-dMF"/>
-                                    <constraint firstAttribute="bottom" secondItem="KZu-E1-zWJ" secondAttribute="bottom" id="HBP-ye-CiO"/>
-                                    <constraint firstAttribute="trailing" secondItem="3Fb-5B-hoq" secondAttribute="trailing" id="Hp2-Qa-5ei"/>
-                                    <constraint firstItem="KZu-E1-zWJ" firstAttribute="top" secondItem="cqO-Ca-1HG" secondAttribute="top" id="J7m-dU-b40"/>
-                                    <constraint firstItem="KZu-E1-zWJ" firstAttribute="leading" secondItem="cqO-Ca-1HG" secondAttribute="leading" id="tKR-2t-ye6"/>
-                                    <constraint firstItem="3Fb-5B-hoq" firstAttribute="centerY" secondItem="cqO-Ca-1HG" secondAttribute="centerY" id="tcF-Qv-2OT"/>
-                                    <constraint firstItem="3Fb-5B-hoq" firstAttribute="top" secondItem="cqO-Ca-1HG" secondAttribute="top" id="yks-1m-h7Z"/>
-                                </constraints>
-                            </stackView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="cqO-Ca-1HG" secondAttribute="bottom" constant="50" id="2cH-s6-gsn"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3hO-Cn-TwD" secondAttribute="trailing" id="BBZ-ko-rz4"/>
-                            <constraint firstItem="zoj-hL-Yqa" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Cln-a7-vDB"/>
-                            <constraint firstItem="zoj-hL-Yqa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="130" id="Dbh-Yq-IGb"/>
-                            <constraint firstItem="cqO-Ca-1HG" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="90" id="EwO-1B-qau"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BSu-sB-DSE" secondAttribute="trailing" constant="35" id="OqY-De-QW9"/>
-                            <constraint firstItem="BSu-sB-DSE" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="35" id="aNZ-wm-Hmk"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="cqO-Ca-1HG" secondAttribute="trailing" constant="90" id="bj9-2h-fcK"/>
-                            <constraint firstItem="BSu-sB-DSE" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="cls-5H-hNt"/>
-                            <constraint firstItem="cqO-Ca-1HG" firstAttribute="top" secondItem="3hO-Cn-TwD" secondAttribute="bottom" constant="20" id="iEO-oh-I3u"/>
-                            <constraint firstItem="3hO-Cn-TwD" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="jnu-q4-jE2"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zoj-hL-Yqa" secondAttribute="trailing" constant="90" id="kyI-zH-sV0"/>
-                            <constraint firstItem="3hO-Cn-TwD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="tk5-WJ-qDe"/>
-                            <constraint firstItem="zoj-hL-Yqa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="90" id="uTU-7a-caX"/>
-                            <constraint firstItem="cqO-Ca-1HG" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="wi4-1H-gWy"/>
-                            <constraint firstItem="BSu-sB-DSE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zyI-F7-7Xj"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="FkQ-yF-a6h"/>
-                    <connections>
-                        <outlet property="signinButton" destination="BSu-sB-DSE" id="sUN-ab-Nwo"/>
-                        <outlet property="signupLabel" destination="3Fb-5B-hoq" id="QVb-fF-dV9"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1047.8260869565217" y="36.830357142857139"/>
-        </scene>
         <!--Gallery-->
         <scene sceneID="eiP-c6-SsD">
             <objects>
@@ -169,7 +48,7 @@
                             <constraint firstItem="bOs-Co-eHc" firstAttribute="top" secondItem="2c7-hy-0C8" secondAttribute="top" id="hUf-EE-P0Q"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Gallery" image="square.grid.2x2.fill" catalog="system" id="fDT-La-W4t"/>
+                    <tabBarItem key="tabBarItem" title="Gallery" image="star" catalog="system" id="fDT-La-W4t"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="bOs-Co-eHc" id="dbF-eT-WMM"/>
@@ -356,7 +235,7 @@
                             <constraint firstItem="mnI-Ve-i4l" firstAttribute="top" secondItem="4XV-3F-Ipx" secondAttribute="top" id="ge0-8h-RMV"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Profile" image="person.circle" catalog="system" id="1XW-cW-1sD"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="person" catalog="system" id="1XW-cW-1sD"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="avatarContainer" destination="WMy-Bs-GND" id="RdZ-Oh-qTU"/>
@@ -400,10 +279,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="FlickrLogotype" width="189" height="64"/>
         <image name="house" catalog="system" width="128" height="106"/>
-        <image name="person.circle" catalog="system" width="128" height="121"/>
-        <image name="square.grid.2x2.fill" catalog="system" width="128" height="114"/>
+        <image name="person" catalog="system" width="128" height="117"/>
+        <image name="star" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

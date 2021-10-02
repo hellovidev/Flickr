@@ -1,28 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17150" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17122"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="s0d-6b-0kx">
+        <!--Authorization View Controller-->
+        <scene sceneID="piS-cB-5OY">
             <objects>
-                <viewController id="Y6W-OH-hqX" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                <viewController storyboardIdentifier="AuthorizationViewController" id="dmH-gV-gx8" customClass="AuthorizationViewController" customModule="Flickr" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="goB-tb-Ugf" customClass="Auth" customModule="Flickr" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rkx-Kg-wA1">
+                                <rect key="frame" x="35" y="426" width="344" height="44"/>
+                                <color key="backgroundColor" red="0.65099853279999997" green="0.058895207939999999" blue="0.57640361790000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="ggQ-hF-ZZ3"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal">
+                                    <attributedString key="attributedTitle">
+                                        <fragment content="Log in with ">
+                                            <attributes>
+                                                <font key="NSFont" size="14" name="SFProText-Regular"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                            </attributes>
+                                        </fragment>
+                                        <fragment content="flickr.com">
+                                            <attributes>
+                                                <font key="NSFont" size="18" name="SFProText-Semibold"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                            </attributes>
+                                        </fragment>
+                                    </attributedString>
+                                </state>
+                                <connections>
+                                    <action selector="signinAction:" destination="dmH-gV-gx8" eventType="touchUpInside" id="IJX-ZA-5lK"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FlickrLogotype" translatesAutoresizingMaskIntoConstraints="NO" id="XJC-75-RaK">
+                                <rect key="frame" x="90" y="174" width="234" height="64"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="OwE-KF-xXJ"/>
+                                </constraints>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pqy-4m-DvU">
+                                <rect key="frame" x="0.0" y="777" width="414" height="1"/>
+                                <color key="backgroundColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="0.29761670620000003" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="yTu-mv-N7s"/>
+                                </constraints>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" distribution="equalSpacing" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="vsH-7y-ZNm">
+                                <rect key="frame" x="118.5" y="798" width="177.5" height="14"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ggg-bJ-DEl">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="14"/>
+                                        <attributedString key="attributedText">
+                                            <fragment content="Don’t have an account?">
+                                                <attributes>
+                                                    <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="0.40098038872203079" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <font key="NSFont" size="12" name="SFProText-Regular"/>
+                                                    <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                </attributes>
+                                            </fragment>
+                                        </attributedString>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ehs-mn-stt">
+                                        <rect key="frame" x="133" y="0.0" width="44.5" height="14"/>
+                                        <attributedString key="attributedText">
+                                            <fragment content="Sign up.">
+                                                <attributes>
+                                                    <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="0.40098038872203079" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <font key="NSFont" size="12" name="SFProText-Regular"/>
+                                                    <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                </attributes>
+                                            </fragment>
+                                        </attributedString>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="ggg-bJ-DEl" firstAttribute="top" secondItem="vsH-7y-ZNm" secondAttribute="top" id="4Wr-rX-SEV"/>
+                                    <constraint firstAttribute="bottom" secondItem="ggg-bJ-DEl" secondAttribute="bottom" id="T58-FB-JXv"/>
+                                    <constraint firstItem="ggg-bJ-DEl" firstAttribute="leading" secondItem="vsH-7y-ZNm" secondAttribute="leading" id="f65-5z-F76"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ehs-mn-stt" secondAttribute="bottom" id="jWi-eD-i7N"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ehs-mn-stt" secondAttribute="trailing" id="jrY-Wc-kgY"/>
+                                    <constraint firstItem="ggg-bJ-DEl" firstAttribute="centerY" secondItem="vsH-7y-ZNm" secondAttribute="centerY" id="n1X-cy-z5N"/>
+                                    <constraint firstItem="Ehs-mn-stt" firstAttribute="top" secondItem="vsH-7y-ZNm" secondAttribute="top" id="sIY-2t-9xT"/>
+                                    <constraint firstItem="Ehs-mn-stt" firstAttribute="centerY" secondItem="vsH-7y-ZNm" secondAttribute="centerY" id="tCb-wf-Mip"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="GL5-55-F8h"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="XJC-75-RaK" firstAttribute="centerX" secondItem="goB-tb-Ugf" secondAttribute="centerX" id="6cR-Gw-30u"/>
+                            <constraint firstItem="pqy-4m-DvU" firstAttribute="centerX" secondItem="goB-tb-Ugf" secondAttribute="centerX" id="6rD-Uo-GWz"/>
+                            <constraint firstItem="XJC-75-RaK" firstAttribute="leading" secondItem="GL5-55-F8h" secondAttribute="leading" constant="90" id="6wB-6s-1mA"/>
+                            <constraint firstItem="vsH-7y-ZNm" firstAttribute="centerX" secondItem="goB-tb-Ugf" secondAttribute="centerX" id="7tv-RA-Vek"/>
+                            <constraint firstItem="pqy-4m-DvU" firstAttribute="leading" secondItem="GL5-55-F8h" secondAttribute="leading" id="IAl-EC-qq5"/>
+                            <constraint firstItem="GL5-55-F8h" firstAttribute="bottom" secondItem="vsH-7y-ZNm" secondAttribute="bottom" constant="50" id="IBQ-nC-6am"/>
+                            <constraint firstItem="rkx-Kg-wA1" firstAttribute="centerX" secondItem="goB-tb-Ugf" secondAttribute="centerX" id="PQY-fy-DEy"/>
+                            <constraint firstItem="rkx-Kg-wA1" firstAttribute="leading" secondItem="GL5-55-F8h" secondAttribute="leading" constant="35" id="WPY-VU-x6x"/>
+                            <constraint firstItem="GL5-55-F8h" firstAttribute="trailing" secondItem="XJC-75-RaK" secondAttribute="trailing" constant="90" id="XpG-Mn-KO2"/>
+                            <constraint firstItem="vsH-7y-ZNm" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="GL5-55-F8h" secondAttribute="leading" constant="90" id="ZDl-3L-UXT"/>
+                            <constraint firstItem="GL5-55-F8h" firstAttribute="trailing" secondItem="pqy-4m-DvU" secondAttribute="trailing" id="ZMN-JK-SS6"/>
+                            <constraint firstItem="XJC-75-RaK" firstAttribute="top" secondItem="GL5-55-F8h" secondAttribute="top" constant="130" id="awm-gW-gQg"/>
+                            <constraint firstItem="vsH-7y-ZNm" firstAttribute="top" secondItem="pqy-4m-DvU" secondAttribute="bottom" constant="20" id="cR7-M4-UaY"/>
+                            <constraint firstItem="GL5-55-F8h" firstAttribute="trailing" secondItem="rkx-Kg-wA1" secondAttribute="trailing" constant="35" id="dgM-fx-hrT"/>
+                            <constraint firstItem="rkx-Kg-wA1" firstAttribute="centerY" secondItem="goB-tb-Ugf" secondAttribute="centerY" id="e7z-RS-dxm"/>
+                            <constraint firstItem="GL5-55-F8h" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="vsH-7y-ZNm" secondAttribute="trailing" constant="90" id="x0T-A5-WFw"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="LEq-H9-FGM"/>
+                    <connections>
+                        <outlet property="signinButton" destination="rkx-Kg-wA1" id="IrH-0j-tT8"/>
+                        <outlet property="signupLabel" destination="Ehs-mn-stt" id="b1g-dC-Z0R"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YYy-ga-hDJ" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="36" y="103"/>
         </scene>
     </scenes>
     <resources>
+        <image name="FlickrLogotype" width="189" height="64"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

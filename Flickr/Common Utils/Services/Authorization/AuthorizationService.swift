@@ -36,7 +36,7 @@ class AuthorizationService: AuthorizationProtocol {
             case .success(let accessOAuthToken):
                 do {
                     let token = AccessTokenAPI(token: accessOAuthToken.token, secret: accessOAuthToken.secretToken, nsid: accessOAuthToken.userNSID)
-                    try self?.storageService.set(for: token, with: UserDefaultsKey.tokenAPI.rawValue)
+                    try self?.storageService.set(for: token, with: UserDefaults.Keys.tokenAPI.rawValue)
                     completion(.success(Void()))
                 } catch {
                     completion(.failure(error))

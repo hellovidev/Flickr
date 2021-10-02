@@ -56,9 +56,26 @@ struct UserDefaultsStorageService: LocalStorageServiceProtocol {
     }
     
     func removeAll() {
+        storage.reset() // ???
         guard let domain = Bundle.main.bundleIdentifier else { return }
         storage.removePersistentDomain(forName: domain)
         storage.synchronize()
     }
     
+}
+
+extension UserDefaults {
+
+    enum Keys: String, CaseIterable {
+
+        case tokenAPI
+        
+        case isAuthorized
+
+    }
+
+    func reset() {
+        Keys.allCases.forEach { removeObject(forKey: $0.rawValue) }
+    }
+
 }

@@ -29,8 +29,10 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
     
     func start() {
         do {
-            let isAutherized = try storageService.get(for: Bool.self, with: UserDefaultsKey.isAuthorized.rawValue)
-            let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaultsKey.tokenAPI.rawValue)
+            let isAutherized = try storageService.get(for: Bool.self, with: UserDefaults.Keys.isAuthorized.rawValue)
+            print(isAutherized)
+            let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaults.Keys.tokenAPI.rawValue)
+            print(accessTokenAPI)
             
             self.networkService = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
             
@@ -91,7 +93,7 @@ extension ApplicationCoordinator: AuthorizationCoordinatorDelegate {
     
     func coordinatorDidAuthenticate(coordinator: AuthorizationCoordinator) {
         do {
-            let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaultsKey.tokenAPI.rawValue)
+            let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaults.Keys.tokenAPI.rawValue)
             
             self.networkService = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
             

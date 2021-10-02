@@ -41,9 +41,9 @@ class FlickrOAuthService: NSObject {
         didSet {
             do {
                 if case .successfullyAuthenticated = isAutherized {
-                    try storageService.set(for: true, with: UserDefaultsKey.isAuthorized.rawValue)
+                    try storageService.set(for: true, with: UserDefaults.Keys.isAuthorized.rawValue)
                 } else {
-                    try storageService.set(for: false, with: UserDefaultsKey.isAuthorized.rawValue)
+                    try storageService.set(for: false, with: UserDefaults.Keys.isAuthorized.rawValue)
                 }
             } catch(let storageError) {
                 print(storageError)

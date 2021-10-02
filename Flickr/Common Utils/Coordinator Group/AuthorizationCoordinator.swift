@@ -29,7 +29,7 @@ class AuthorizationCoordinator: CoordinatorProtocol {
     }
     
     func start() {
-        let authorizationViewController: AuthorizationViewController = Storyboard.main.instantiateViewController()
+        let authorizationViewController: AuthorizationViewController = Storyboard.authorization.instantiateViewController()
         authorizationViewController.viewModel = .init(coordinator: self)
         navigationController.setViewControllers([authorizationViewController], animated: true)
     }

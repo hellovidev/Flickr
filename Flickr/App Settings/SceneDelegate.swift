@@ -10,12 +10,12 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
+    var coordinator: ApplicationCoordinator?
     
-    private let userDefaultsStorageService: UserDefaultsStorageService = .init()
+    private let navigationController: UINavigationController = .init()
     private let authorizationService: AuthorizationService = .init()
-    
-    private var coordinator: ApplicationCoordinator?
-        
+    private let userDefaultsStorageService: UserDefaultsStorageService = .init()
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
             fatalError("Could not get url on \(#line) in \(#function)")
@@ -29,18 +29,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-//        guard let windowScene = (scene as? UIWindowScene) else { return }
-//
-//        window = UIWindow(windowScene: windowScene)
-//
-//        let coordinator = CoordinatorService(storageService: userDefaultsStorageService, authorizationService: authorizationService)
-//        coordinator.redirectToInitialViewController()
-        
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = .init(windowScene: windowScene)
         
-        let navigationController: UINavigationController = .init()
         navigationController.setNavigationBarHidden(true, animated: false)
         
         coordinator = .init(navigationController, storageService: userDefaultsStorageService, authorizationService: authorizationService)

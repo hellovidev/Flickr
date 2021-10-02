@@ -35,15 +35,15 @@ class GeneralCoordinator: CoordinatorProtocol {
     }
 
     func start() {
-        let homeViewController: HomeViewController = Storyboard.main.instantiateViewController(identifier: String(describing: HomeViewController.self))
+        let homeViewController: HomeViewController = Storyboard.general.instantiateViewController()
         homeViewController.viewModel = .init(coordinator: self, networkService: networkService)
         let homeNavigationController = UINavigationController.init(rootViewController: homeViewController)
         
-        let galleryViewController: GalleryViewController = Storyboard.main.instantiateViewController()
+        let galleryViewController: GalleryViewController = Storyboard.general.instantiateViewController()
         galleryViewController.viewModel = .init(coordinator: self, nsid: nsid, networkService: networkService)
         let galleryNavigationController = UINavigationController.init(rootViewController: galleryViewController)
         
-        let profileViewController: ProfileViewController = Storyboard.main.instantiateViewController()
+        let profileViewController: ProfileViewController = Storyboard.general.instantiateViewController()
         profileViewController.viewModel = .init(coordinator: self, nsid: nsid, networkService: networkService)
         let profileNavigationController = UINavigationController.init(rootViewController: profileViewController)
 

@@ -7,19 +7,24 @@
 
 import UIKit
 
-enum StoryboardType: String {
-    case main = "Main"
+enum StoryboardIdentifier: String {
+    case authorization = "Authorization"
+    case general = "General"
 }
 
 struct Storyboard {
-    static let main: UIStoryboard = .init(name: StoryboardType.main.rawValue, bundle: Bundle.main)
+    
+    static let authorization: UIStoryboard = .init(name: StoryboardIdentifier.authorization.rawValue, bundle: Bundle.main)
+
+    static let general: UIStoryboard = .init(name: StoryboardIdentifier.general.rawValue, bundle: Bundle.main)
+    
 }
 
 extension UIStoryboard {
     
-    func instantiateViewController<T>() -> T {
-        let id = String(describing: T.self)
-        return self.instantiateViewController(withIdentifier: id) as! T
+    func instantiateViewController<T: UIViewController>() -> T {
+        let className = String(describing: T.self)
+        return self.instantiateViewController(withIdentifier: className) as! T
     }
     
 }

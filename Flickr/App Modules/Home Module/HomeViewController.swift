@@ -26,7 +26,7 @@ class HomeViewController: UIViewController {
     private func show(_ router: HomeRoute) {
         switch router {
         case .openPost(id: _):
-            let postViewController = Storyboard.main.instantiateViewController(withIdentifier: ReuseIdentifier.postViewController.rawValue) as! PostViewController
+            let postViewController: PostViewController = Storyboard.general.instantiateViewController()
             postViewController.viewModel = PostViewModel()
             postViewController.delegate = self
             navigationController?.pushViewController(postViewController, animated: true)
