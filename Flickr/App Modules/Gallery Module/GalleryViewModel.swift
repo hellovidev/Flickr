@@ -25,7 +25,11 @@ class GalleryViewModel {
         gallery.removeAll()
     }
     
-    init(nsid: String, networkService: NetworkService) {
+    private weak var coordinator: GeneralCoordinator?
+
+    
+    init(coordinator: GeneralCoordinator, nsid: String, networkService: NetworkService) {
+        self.coordinator = coordinator
         self.networkService = networkService
         self.userId = nsid
     }

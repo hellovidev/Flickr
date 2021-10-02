@@ -18,7 +18,10 @@ class HomeViewModel {
     
     let filters: [String] = ["50", "100", "200", "400"]
     
-    init(networkService: NetworkService) {
+    private weak var coordinator: GeneralCoordinator?
+
+    init(coordinator: GeneralCoordinator, networkService: NetworkService) {
+        self.coordinator = coordinator
         self.postsNetworkManager = .init(networkService: networkService)
         self.router = .init()
     }

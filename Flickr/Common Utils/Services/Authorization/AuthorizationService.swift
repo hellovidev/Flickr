@@ -11,7 +11,7 @@ import UIKit
 
 protocol AuthorizationProtocol {
     func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)
-    func signup(presenter: UIViewController)
+    //func signup(presenter: UIViewController)
     func logout()
 }
 
@@ -47,11 +47,11 @@ class AuthorizationService: AuthorizationProtocol {
         }
     }
     
-    func signup(presenter: UIViewController) {
-        let signupWebView: WKWebViewController = .init(endpoint: FlickrConstant.URL.signup.rawValue)
-        signupWebView.delegate = self
-        presenter.present(signupWebView, animated: true, completion: nil)
-    }
+//    func signup(presenter: UIViewController) {
+//        let signupWebView: WKWebViewController = .init(endpoint: FlickrConstant.URL.signup.rawValue)
+//        signupWebView.delegate = self
+//        presenter.present(signupWebView, animated: true, completion: nil)
+//    }
     
     func logout() {
         flickrOAuthService.flickrLogout()
@@ -60,16 +60,6 @@ class AuthorizationService: AuthorizationProtocol {
     
     func handleURL(_ url: URL) {
         flickrOAuthService.handleURL(url)
-    }
-    
-}
-
-// MARK: - WKWebViewDelegate
-
-extension AuthorizationService: WKWebViewControllerDelegate {
-    
-    func close(viewController: WKWebViewController) {
-        viewController.dismiss(animated: true, completion: nil)
     }
     
 }

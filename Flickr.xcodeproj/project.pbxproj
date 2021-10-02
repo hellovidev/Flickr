@@ -27,6 +27,11 @@
 		5F71301126D40D32001A3762 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71301026D40D32001A3762 /* NetworkService.swift */; };
 		5F71DB1127072BD8006094B4 /* NetworkService+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71DB1027072BD8006094B4 /* NetworkService+Delete.swift */; };
 		5F71DB1527077990006094B4 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71DB1427077990006094B4 /* ActivityViewController.swift */; };
+		5F73C37D2708B9FC00CDFC8F /* CoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F73C37C2708B9FC00CDFC8F /* CoordinatorProtocol.swift */; };
+		5F73C37F2708BA4E00CDFC8F /* ApplicationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F73C37E2708BA4E00CDFC8F /* ApplicationCoordinator.swift */; };
+		5F73C3812708BA9300CDFC8F /* AuthorizationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F73C3802708BA9300CDFC8F /* AuthorizationCoordinator.swift */; };
+		5F73C3832708BAD700CDFC8F /* StoryboardProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F73C3822708BAD700CDFC8F /* StoryboardProtocol.swift */; };
+		5F73C3852708BAFB00CDFC8F /* GeneralCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F73C3842708BAFB00CDFC8F /* GeneralCoordinator.swift */; };
 		5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996226D66DE300482485 /* ErrorMessage.swift */; };
 		5F7F996626D69AE900482485 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996526D69AE900482485 /* Profile.swift */; };
 		5F7F996826D6AE1000482485 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996726D6AE1000482485 /* Comment.swift */; };
@@ -48,7 +53,6 @@
 		5F8A441626FF4EA80027217F /* GalleryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8A441526FF4EA80027217F /* GalleryViewModel.swift */; };
 		5F8A441826FF4F240027217F /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8A441726FF4F240027217F /* PostViewModel.swift */; };
 		5F8A441A26FF4FD50027217F /* AuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8A441926FF4FD50027217F /* AuthorizationViewModel.swift */; };
-		5F8AA85226F3749700E48706 /* CoordinatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AA85126F3749700E48706 /* CoordinatorService.swift */; };
 		5F97D9CD26F7554C0089C30B /* PostsNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F97D9CC26F7554C0089C30B /* PostsNetworkManager.swift */; };
 		5F97D9D026F75CF40089C30B /* StorageServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F97D9CF26F75CF40089C30B /* StorageServiceError.swift */; };
 		5F97D9D226F75D3A0089C30B /* UserDefaultsStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F97D9D126F75D3A0089C30B /* UserDefaultsStorageService.swift */; };
@@ -92,6 +96,11 @@
 		5F71301026D40D32001A3762 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5F71DB1027072BD8006094B4 /* NetworkService+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Delete.swift"; sourceTree = "<group>"; };
 		5F71DB1427077990006094B4 /* ActivityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewController.swift; sourceTree = "<group>"; };
+		5F73C37C2708B9FC00CDFC8F /* CoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorProtocol.swift; sourceTree = "<group>"; };
+		5F73C37E2708BA4E00CDFC8F /* ApplicationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinator.swift; sourceTree = "<group>"; };
+		5F73C3802708BA9300CDFC8F /* AuthorizationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationCoordinator.swift; sourceTree = "<group>"; };
+		5F73C3822708BAD700CDFC8F /* StoryboardProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardProtocol.swift; sourceTree = "<group>"; };
+		5F73C3842708BAFB00CDFC8F /* GeneralCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralCoordinator.swift; sourceTree = "<group>"; };
 		5F7F996226D66DE300482485 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		5F7F996526D69AE900482485 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		5F7F996726D6AE1000482485 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -113,7 +122,6 @@
 		5F8A441526FF4EA80027217F /* GalleryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewModel.swift; sourceTree = "<group>"; };
 		5F8A441726FF4F240027217F /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		5F8A441926FF4FD50027217F /* AuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewModel.swift; sourceTree = "<group>"; };
-		5F8AA85126F3749700E48706 /* CoordinatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorService.swift; sourceTree = "<group>"; };
 		5F97D9CC26F7554C0089C30B /* PostsNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsNetworkManager.swift; sourceTree = "<group>"; };
 		5F97D9CF26F75CF40089C30B /* StorageServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageServiceError.swift; sourceTree = "<group>"; };
 		5F97D9D126F75D3A0089C30B /* UserDefaultsStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsStorageService.swift; sourceTree = "<group>"; };
@@ -203,14 +211,6 @@
 			path = "Account View";
 			sourceTree = "<group>";
 		};
-		5F25F6CA26EE698A00F98608 /* Coordinator */ = {
-			isa = PBXGroup;
-			children = (
-				5F8AA85126F3749700E48706 /* CoordinatorService.swift */,
-			);
-			path = Coordinator;
-			sourceTree = "<group>";
-		};
 		5F4A774126FCEA1300D1EB00 /* Gallery Module */ = {
 			isa = PBXGroup;
 			children = (
@@ -239,14 +239,27 @@
 			path = "Post Module";
 			sourceTree = "<group>";
 		};
-		5F6A836826F4F21C000F9AD2 /* Storage Services */ = {
+		5F6A836826F4F21C000F9AD2 /* Storage Group */ = {
 			isa = PBXGroup;
 			children = (
 				5F97D9CF26F75CF40089C30B /* StorageServiceError.swift */,
 				5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */,
 				5F97D9D126F75D3A0089C30B /* UserDefaultsStorageService.swift */,
 			);
-			path = "Storage Services";
+			path = "Storage Group";
+			sourceTree = "<group>";
+		};
+		5F73C37B2708B9DE00CDFC8F /* Coordinator Group */ = {
+			isa = PBXGroup;
+			children = (
+				5F73C37C2708B9FC00CDFC8F /* CoordinatorProtocol.swift */,
+				5F73C3822708BAD700CDFC8F /* StoryboardProtocol.swift */,
+				5F8A441126FF3F4E0027217F /* Storyboard.swift */,
+				5F73C37E2708BA4E00CDFC8F /* ApplicationCoordinator.swift */,
+				5F73C3802708BA9300CDFC8F /* AuthorizationCoordinator.swift */,
+				5F73C3842708BAFB00CDFC8F /* GeneralCoordinator.swift */,
+			);
+			path = "Coordinator Group";
 			sourceTree = "<group>";
 		};
 		5F7F996426D69ACF00482485 /* App Entities */ = {
@@ -389,11 +402,12 @@
 		5FFEC0C826CD4F43000A0BAB /* Common Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5F6A836826F4F21C000F9AD2 /* Storage Group */,
+				5F73C37B2708B9DE00CDFC8F /* Coordinator Group */,
 				5F25F69126EA13C800F98608 /* Extensions */,
 				5FFEC0CA26CD4F8D000A0BAB /* Constants */,
 				5FFEC0C926CD4F87000A0BAB /* Services */,
 				5F4A774626FCEAFB00D1EB00 /* Observable.swift */,
-				5F8A441126FF3F4E0027217F /* Storyboard.swift */,
 				5F71DB1427077990006094B4 /* ActivityViewController.swift */,
 			);
 			path = "Common Utils";
@@ -404,8 +418,6 @@
 			children = (
 				5F090BF9270479EC00843515 /* Animation Group */,
 				5FD81F7E26F7A62600622B10 /* Authorization */,
-				5F6A836826F4F21C000F9AD2 /* Storage Services */,
-				5F25F6CA26EE698A00F98608 /* Coordinator */,
 				5F7F997326D7FEEC00482485 /* Network */,
 				5F7F997226D7FEDA00482485 /* Helpers */,
 			);
@@ -505,8 +517,8 @@
 				5FA9B2F426E4B1180060DAE8 /* GalleryViewController.swift in Sources */,
 				5F4A774726FCEAFB00D1EB00 /* Observable.swift in Sources */,
 				5F8A441226FF3F4E0027217F /* Storyboard.swift in Sources */,
-				5F8AA85226F3749700E48706 /* CoordinatorService.swift in Sources */,
 				5F7F996E26D6D26300482485 /* Tag.swift in Sources */,
+				5F73C3812708BA9300CDFC8F /* AuthorizationCoordinator.swift in Sources */,
 				5F7F998226D8064A00482485 /* SignatureHelper.swift in Sources */,
 				5F7F998426D8E89200482485 /* DeserializeHelper.swift in Sources */,
 				5F7F996C26D6CBC700482485 /* Photo.swift in Sources */,
@@ -519,6 +531,7 @@
 				5F8A441426FF4C7B0027217F /* ProfileViewModel.swift in Sources */,
 				5F7F998626D8F78F00482485 /* NetworkService+Upload.swift in Sources */,
 				5F25F6BD26EE08B800F98608 /* PostTableViewCell.swift in Sources */,
+				5F73C3852708BAFB00CDFC8F /* GeneralCoordinator.swift in Sources */,
 				5F97D9D226F75D3A0089C30B /* UserDefaultsStorageService.swift in Sources */,
 				5F8A441A26FF4FD50027217F /* AuthorizationViewModel.swift in Sources */,
 				5F97D9CD26F7554C0089C30B /* PostsNetworkManager.swift in Sources */,
@@ -532,10 +545,12 @@
 				5F7F998026D805EA00482485 /* MultipartHelper.swift in Sources */,
 				5F4A773826FB498700D1EB00 /* ImageName.swift in Sources */,
 				5F4A773426FB47B600D1EB00 /* FilterType.swift in Sources */,
+				5F73C37D2708B9FC00CDFC8F /* CoordinatorProtocol.swift in Sources */,
 				5F7F997526D7FF0C00482485 /* NetworkService+Favorites.swift in Sources */,
 				5FA9B2FE26E669400060DAE8 /* NetworkService+Flickr.swift in Sources */,
 				5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */,
 				5FE3F8F027046F2200ADAA6B /* SkeletonAnimation.swift in Sources */,
+				5F73C3832708BAD700CDFC8F /* StoryboardProtocol.swift in Sources */,
 				5FF2241C26F1204E0026BAF4 /* NetworkService+Image.swift in Sources */,
 				5F71DB1127072BD8006094B4 /* NetworkService+Delete.swift in Sources */,
 				5F4A773626FB493700D1EB00 /* ReuseIdentifier.swift in Sources */,
@@ -544,6 +559,7 @@
 				5F7F997E26D8023300482485 /* NetworkService+Tags.swift in Sources */,
 				5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */,
 				5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */,
+				5F73C37F2708BA4E00CDFC8F /* ApplicationCoordinator.swift in Sources */,
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* FlickrConstant.swift in Sources */,
 				5F7F997C26D8003700482485 /* NetworkService+Photos.swift in Sources */,

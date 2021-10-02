@@ -9,19 +9,16 @@ import UIKit
 
 class ProfileViewModel {
 
-    private let coordinator: CoordinatorService
-    private let authorization: AuthorizationService
+    private weak var coordinator: GeneralCoordinator?
     private let profileNetworkManager: ProfileNetworkManager
-    
-    init(coordinator: CoordinatorService, authorization: AuthorizationService, networkService: NetworkService, nsid: String) {
+
+    init(coordinator: GeneralCoordinator, nsid: String, networkService: NetworkService) {
         self.coordinator = coordinator
-        self.authorization = authorization
         self.profileNetworkManager = .init(nsid: nsid, networkService: networkService)
     }
     
     func logout() {
-        authorization.logout()
-        coordinator.redirectToInitialViewController()
+        coordinator?.didLogout()
     }
     
     func requestProfile(completionHandler: @escaping (_ profile: Profile?, _ avatar: UIImage?) -> Void) {
@@ -47,3 +44,10 @@ class ProfileViewModel {
     }
     
 }
+
+//// MARK: - Delegate Main View  Controller
+//extension ProfileViewModel: SettingsViewControllerDelegate {
+//    func didLogout() {
+//
+//    }
+//}
