@@ -40,14 +40,7 @@ class GalleryViewModel {
         description: String = "This image uploaded from iOS application.",
         completionHandler: @escaping (Result<Void, Error>) -> Void
     ) {
-        networkService.uploadImage(data, title: title, description: description) { result in
-            switch result {
-            case .success():
-                completionHandler(.success(Void()))
-            case .failure(let error):
-                completionHandler(.failure(error))
-            }
-        }
+        networkService.uploadImage(data, title: title, description: description, completion: completionHandler)
     }
     
     func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
@@ -86,6 +79,8 @@ class GalleryViewModel {
         }
     }
     
+    private let cacheImages: CacheStorageService<NSString, UIImage> = .init()
+
     func requsetPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         guard
             let id = gallery[index].id,
@@ -96,8 +91,17 @@ class GalleryViewModel {
             return
         }
         
+        let cacheImageIdentifier = id + secret + server as NSString
+        if let imageCache = try? cacheImages.get(for: cacheImageIdentifier) {
+            completionHandler(.success(imageCache))
+            return
+        }
+        
         networkService.image(postId: id, postSecret: secret, serverId: server) { result in
-            completionHandler(result.map { $0 })
+            completionHandler(result.map { [weak self] in
+                self?.cacheImages.set(for: $0, with: cacheImageIdentifier)
+                return $0
+            })
         }
     }
     

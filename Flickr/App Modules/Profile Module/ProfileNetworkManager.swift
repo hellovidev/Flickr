@@ -19,9 +19,7 @@ class ProfileNetworkManager {
     }
     
     func requestProfile(completionHandler: @escaping (Result<ProfileEntity, Error>) -> Void) {
-        networkService.getProfile(for: nsid) { result in
-            completionHandler(result.map { $0 })
-        }
+        networkService.getProfile(for: nsid, completionHandler: completionHandler)
     }
     
     func requestAvatar(profile: ProfileEntity, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
@@ -34,9 +32,7 @@ class ProfileNetworkManager {
             return
         }
         
-        networkService.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { result in
-            completionHandler(result.map { $0 })
-        }
+        networkService.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid, completionHandler: completionHandler)
     }
     
 }

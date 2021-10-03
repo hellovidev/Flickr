@@ -211,7 +211,21 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
 extension GalleryViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        // ...
+        guard indexPath.row == .zero else {
+            animateOpacity(view: cell)
+            return
+        }
+    }
+    
+    private func animateOpacity(view: UIView) {
+        let animation = CABasicAnimation(keyPath: #keyPath(CALayer.opacity))
+        animation.fromValue = 0.0
+        animation.toValue = 1.0
+        animation.duration = 0.7
+        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        animation.fillMode = .forwards
+        animation.isRemovedOnCompletion = true
+        view.layer.add(animation, forKey: "fade")
     }
     
 }
