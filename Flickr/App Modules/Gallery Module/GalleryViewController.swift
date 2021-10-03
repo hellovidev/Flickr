@@ -37,7 +37,7 @@ class GalleryViewController: UIViewController {
     
     @objc
     private func refreshCollectionView() {
-        viewModel.refresh()
+        viewModel.removeAll()
         collectionView.reloadData()
         requestPhotos()
     }
@@ -136,7 +136,7 @@ extension GalleryViewController: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.galleryCell.rawValue, for: indexPath) as! GalleryCollectionReusableCell
-        
+
         if indexPath.row == .zero {
             let buttonView: AddButtonView = .init()
             buttonView.addNewButton.addTarget(self, action: #selector(onTapAddButtonAction), for: .touchUpInside)
@@ -203,7 +203,7 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
         let targetWidth: CGFloat = (width - inset! * CGFloat(2) - insetCell! * CGFloat(3)) / cellCount
         return CGSize(width:  targetWidth, height: targetWidth)
     }
-    
+        
 }
 
 // MARK: - UICollectionViewDelegate
@@ -221,7 +221,7 @@ extension GalleryViewController: UICollectionViewDelegate {
         let animation = CABasicAnimation(keyPath: #keyPath(CALayer.opacity))
         animation.fromValue = 0.0
         animation.toValue = 1.0
-        animation.duration = 0.7
+        animation.duration = 0.5
         animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         animation.fillMode = .forwards
         animation.isRemovedOnCompletion = true

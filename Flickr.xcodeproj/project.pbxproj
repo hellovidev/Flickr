@@ -31,6 +31,7 @@
 		5F73C3812708BA9300CDFC8F /* AuthorizationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F73C3802708BA9300CDFC8F /* AuthorizationCoordinator.swift */; };
 		5F73C3852708BAFB00CDFC8F /* GeneralCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F73C3842708BAFB00CDFC8F /* GeneralCoordinator.swift */; };
 		5F73C3872708D3BF00CDFC8F /* Authorization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F73C3862708D3BF00CDFC8F /* Authorization.storyboard */; };
+		5F73C389270996FF00CDFC8F /* GalleryNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F73C388270996FF00CDFC8F /* GalleryNetworkManager.swift */; };
 		5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996226D66DE300482485 /* ErrorMessage.swift */; };
 		5F7F996626D69AE900482485 /* ProfileEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996526D69AE900482485 /* ProfileEntity.swift */; };
 		5F7F996826D6AE1000482485 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996726D6AE1000482485 /* Comment.swift */; };
@@ -99,6 +100,7 @@
 		5F73C3802708BA9300CDFC8F /* AuthorizationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationCoordinator.swift; sourceTree = "<group>"; };
 		5F73C3842708BAFB00CDFC8F /* GeneralCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralCoordinator.swift; sourceTree = "<group>"; };
 		5F73C3862708D3BF00CDFC8F /* Authorization.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authorization.storyboard; sourceTree = "<group>"; };
+		5F73C388270996FF00CDFC8F /* GalleryNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryNetworkManager.swift; sourceTree = "<group>"; };
 		5F7F996226D66DE300482485 /* ErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessage.swift; sourceTree = "<group>"; };
 		5F7F996526D69AE900482485 /* ProfileEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEntity.swift; sourceTree = "<group>"; };
 		5F7F996726D6AE1000482485 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 				5F7F996B26D6CBC700482485 /* Photo.swift */,
 				5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */,
 				5F8A441526FF4EA80027217F /* GalleryViewModel.swift */,
+				5F73C388270996FF00CDFC8F /* GalleryNetworkManager.swift */,
 			);
 			path = "Gallery Module";
 			sourceTree = "<group>";
@@ -524,6 +527,7 @@
 				5F7F996A26D6C05800482485 /* Favorite.swift in Sources */,
 				5FFEC0B526CD4DDB000A0BAB /* AuthorizationViewController.swift in Sources */,
 				5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */,
+				5F73C389270996FF00CDFC8F /* GalleryNetworkManager.swift in Sources */,
 				5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */,
 				5F8A441426FF4C7B0027217F /* ProfileViewModel.swift in Sources */,
 				5F7F998626D8F78F00482485 /* NetworkService+Upload.swift in Sources */,

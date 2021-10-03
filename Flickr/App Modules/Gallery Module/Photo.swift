@@ -8,19 +8,23 @@
 import Foundation
 
 struct Photo: Decodable {
-    // Identifiers
+    
     let id: String?
     
-    // Content
     var title: String?
+    
     var owner: String?
+    
     var isPublic: Int?
+    
     var isFriend: Int?
 
-    // Other
     var secret: String?
+    
     var server: String?
+    
     var farm: Int?
+    
     var isFamily: Int?
 
     enum CodingKeys: String, CodingKey {
@@ -36,22 +40,3 @@ struct Photo: Decodable {
     }
     
 }
-
-/*
-Response: ["stat": ok, "photos": {
-    page = 1;
-    pages = 10;
-    perpage = 100;
-    photo =     (
-                {
-            farm = 66;
-            id = 51401462177;
-            isfamily = 0;
-            isfriend = 0;
-            ispublic = 1;
-            owner = "132825197@N06";
-            secret = 68975fa3a5;
-            server = 65535;
-            title = "Camping Sunsets";
-        },
-*/
