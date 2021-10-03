@@ -35,4 +35,8 @@ class ProfileNetworkManager {
         networkService.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid, completionHandler: completionHandler)
     }
     
+    deinit {
+        print("\(type(of: self)) deinited.")
+    }
+    
 }

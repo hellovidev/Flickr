@@ -13,9 +13,11 @@ import WebKit
 class WKWebViewController: UIViewController {
     
     private let webView: WKWebView = .init(frame: CGRect(x: 0, y: 55, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 55))
+    
     private let progressView: UIProgressView = .init(progressViewStyle: .default)
     
     weak var delegate: WKWebViewControllerDelegate?
+    
     private let endpoint: String
     
     init(endpoint: String) {

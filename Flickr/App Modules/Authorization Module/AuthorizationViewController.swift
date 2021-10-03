@@ -11,19 +11,16 @@ import UIKit
 
 class AuthorizationViewController: UIViewController {
     
-    var viewModel: AuthorizationViewModel!
-
     @IBOutlet weak var signinButton: UIButton!
     @IBOutlet weak var signupLabel: UILabel!
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setupSignInButton()
-        setupSignUpButton()
-    }
+    var viewModel: AuthorizationViewModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupSignInButton()
+        setupSignUpButton()
     }
     
     @IBAction func signinAction(_ sender: UIButton) {

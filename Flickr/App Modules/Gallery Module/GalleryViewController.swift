@@ -8,9 +8,23 @@
 import UIKit
 import PhotosUI
 
+
+//extension GalleryViewController: GalleryCollectionViewLayoutDelegate {
+//    func collectionView(_ collectionView: UICollectionView, widthForPhotoAtIndexPath indexPath: IndexPath) -> CGSize {
+//        return CGSize(width: 100, height: 50)//photos[indexPath.item].image.size.width
+//    }
+//    
+//}
+
 // MARK: - GalleryViewController
 
 class GalleryViewController: UIViewController {
+    
+
+
+ 
+
+
     
     // MARK: - Properties
     
@@ -21,8 +35,15 @@ class GalleryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+
+        
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+        //collectionView.collectionViewLayout = GalleryCollectionViewLayout()
+//        if let layout = collectionView?.collectionViewLayout as? GalleryCollectionViewLayout {
+//          layout.delegate = self
+//        }
         
         collectionView.register(GalleryCollectionReusableCell.self, forCellWithReuseIdentifier: ReuseIdentifier.galleryCell.rawValue)
         
@@ -193,7 +214,7 @@ class GalleryCollectionReusableCell: UICollectionViewCell {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension GalleryViewController: UICollectionViewDelegateFlowLayout {
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.bounds.width
         let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
@@ -203,7 +224,7 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
         let targetWidth: CGFloat = (width - inset! * CGFloat(2) - insetCell! * CGFloat(3)) / cellCount
         return CGSize(width:  targetWidth, height: targetWidth)
     }
-        
+
 }
 
 // MARK: - UICollectionViewDelegate

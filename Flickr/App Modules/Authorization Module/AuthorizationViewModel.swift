@@ -30,5 +30,9 @@ class AuthorizationViewModel {
         coordinator?.redirectBrowserRegister(presenter: presenter)
     }
     
+    deinit {
+        print("\(type(of: self)) deinited.")
+    }
+    
 }
 

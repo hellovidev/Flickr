@@ -44,4 +44,8 @@ class ProfileViewModel {
         }
     }
     
+    deinit {
+        print("\(type(of: self)) deinited.")
+    }
+    
 }

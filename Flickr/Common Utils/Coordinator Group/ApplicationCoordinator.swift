@@ -57,6 +57,10 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
         }
     }
     
+    deinit {
+        print("\(type(of: self)) deinited.")
+    }
+    
 }
 
 extension ApplicationCoordinator: UINavigationControllerDelegate {

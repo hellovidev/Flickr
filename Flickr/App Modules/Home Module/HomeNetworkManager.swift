@@ -1,5 +1,5 @@
 //
-//  PostsNetworkManager.swift
+//  HomeNetworkManager.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 19.09.2021.
@@ -11,7 +11,7 @@ enum NetworkManagerError: Error {
     case invalidParameters
 }
 
-class PostsNetworkManager {
+class HomeNetworkManager {
     
     private let networkService: NetworkService
     private let cacheImages: CacheStorageService<NSString, UIImage>
@@ -157,6 +157,10 @@ class PostsNetworkManager {
                 return $0
             })
         }
+    }
+    
+    deinit {
+        print("\(type(of: self)) deinited.")
     }
     
 }

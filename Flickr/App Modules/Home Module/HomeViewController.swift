@@ -121,7 +121,7 @@ class HomeViewController: UIViewController {
     @objc
     private func refreshTable() {
         activityIndicator.stopAnimating()
-        viewModel.postsNetworkManager.refresh()
+        viewModel.homeNetworkManager.refresh()
         tableView.reloadData()
         requestTableData()
     }
@@ -143,13 +143,13 @@ class HomeViewController: UIViewController {
             filterType = FilterType(rawValue: filterName)
         }
 
-        viewModel.postsNetworkManager.filter(by: filterType) { [weak self] in
+        viewModel.homeNetworkManager.filter(by: filterType) { [weak self] in
             self?.tableView.reloadData()
         }
     }
     
     private func requestTableData() {
-        viewModel.postsNetworkManager.requestPostsId { [weak self] result in
+        viewModel.homeNetworkManager.requestPostsId { [weak self] result in
             switch result {
             case .success(_):
                 self?.activityIndicator.stopAnimating()
@@ -175,7 +175,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.postsNetworkManager.idsCount
+        return viewModel.homeNetworkManager.idsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
