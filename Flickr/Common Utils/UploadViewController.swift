@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ProgressDelegate: AnyObject {
+    func onProgressCanceled()
+}
+
 class UploadViewController: UIViewController {
 
     private let uploadView: UploadView = .init()
