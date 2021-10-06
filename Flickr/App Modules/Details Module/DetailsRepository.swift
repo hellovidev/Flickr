@@ -31,25 +31,9 @@ class DetailsRepository {
         self.isFavourite
     }
     
-//    func requestPostInformation(position: Int, group: DispatchGroup, completionHandler: @escaping (Result<PostDetails, Error>) -> Void) {
-//        group.enter()
-//
-//        let cachePostInformationIdentifier = ids[position] as NSString
-//        if let postInformationCache = try? cachePostInformation.get(for: cachePostInformationIdentifier) {
-//            completionHandler(.success(postInformationCache))
-//            group.leave()
-//            return
-//        }
-//
-//        networkService.getPhotoById(with: ids[position]) { [weak self] result in
-//            completionHandler(result.map {
-//                self?.posts.append($0)
-//                self?.cachePostInformation.set(for: $0, with: cachePostInformationIdentifier)
-//                group.leave()
-//                return $0
-//            })
-//        }
-//    }
+    func requestDetails(id: String, completionHandler: @escaping (Result<PostDetails, Error>) -> Void) {
+        networkService.getPhotoById(with: id, completion: completionHandler)
+    }
     
     func requestImage(post: PostDetails, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         group.enter()

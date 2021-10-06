@@ -29,7 +29,7 @@ class HomeCoordinator: CoordinatorProtocol {
     }
     
     func redirectDetails(details: PostDetails) {
-        let detailsViewController: DeatilsViewController = Storyboard.general.instantiateViewController()
+        let detailsViewController: DetailsViewController = Storyboard.general.instantiateViewController()
         detailsViewController.viewModel = .init(coordinator: self, details: details, networkService: networkService)
         detailsViewController.viewModel.delegate = self //???
         navigationController.pushViewController(detailsViewController, animated: true)
@@ -44,7 +44,7 @@ class HomeCoordinator: CoordinatorProtocol {
 
 // MARK: - PostViewControllerDelegate
 
-extension HomeCoordinator: PostViewControllerDelegate {
+extension HomeCoordinator: DetailsViewControllerDelegate {
     
     func close() {
         navigationController.popViewController(animated: true)

@@ -170,6 +170,8 @@ class DetailsViewController: UITableViewController {
                 self?.refreshControl?.endRefreshing()
                 self?.activityIndicator.stopAnimating()
                 self?.skeletonAnimation.stopAllAnimations()
+            case .failure(let error):
+                print(error) //????
             }
         }
     }

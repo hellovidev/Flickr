@@ -14,10 +14,17 @@ class DetailsViewModel {
     
     private weak var coordinator: HomeCoordinator?
 
+    weak var delegate: DetailsViewControllerDelegate?
+    
+    
+    
+    
+    
+    
     
     private let details: PostDetails
     
-    weak var delegate: PostViewControllerDelegate?
+    
     
     
     init(coordinator: HomeCoordinator, details: PostDetails, networkService: NetworkService) {
@@ -75,15 +82,25 @@ class DetailsViewModel {
         completionHandler(comment)
     }
     
-    func requestPost(completionHandler: @escaping (Result<Post, Never>) -> Void) {
-        let builder: PostBuilder = .init(details: details, postNetworkManager: repository)
+    func requestPost(completionHandler: @escaping (Result<Post, Error>) -> Void) {
+        let builder: DetailBuilder = .init(detailId: details.id!, repository: repository)
         let director: PostDirector = .init()
         director.update(builder: builder)
         
-        director.buildPost {
-            let post = builder.retrievePost()
-            completionHandler(.success(post))
+        director.startProduction { result in
+            switch result {
+                
+            case .success:
+                let post = builder.retrievePost()
+                completionHandler(.success(post))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
         }
+//        director.buildPost {
+//            let post = builder.retrievePost()
+//            completionHandler(.success(post))
+//        }
     }
     
     func requestAddFavourite(completionHandler: @escaping (Result<Void, Error>) -> Void) {
@@ -97,6 +114,10 @@ class DetailsViewModel {
     func requestOwnerAvatar(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         //guard let comment = postNetworkManager.getComment(index: index) else { return }
         //postNetworkManager.requestOwnerAvatar(comment: comment, completionHandler: completionHandler)
+    }
+    
+    deinit {
+        print("\(type(of: self)) deinited.")
     }
     
 }
@@ -127,25 +148,41 @@ struct Post {
     }
 }
 
-protocol Builder {
+protocol DetailsBuilderProtocol {
 
     func produceOwner(group: DispatchGroup)
     func produceImage(group: DispatchGroup)
     func produceDetails(group: DispatchGroup)
     func produceComments(group: DispatchGroup)
+    func startProduction(completionHandler: @escaping (Result<Void, Error>) -> Void)
 }
 
-class PostBuilder: Builder {
+class DetailBuilder: DetailsBuilderProtocol {
+    
+    func startProduction(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        repository.requestDetails(id: detailId) { [weak self] result in
+            switch result {
+            case .success(let details):
+                self?.details = details
+                completionHandler(.success(Void()))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
 
-    private let postNetworkManager: DetailsRepository
-    private let details: PostDetails
+    private let repository: DetailsRepository
+    private let detailId: String
     
     private var product: Post = .init()
     
-    init(details: PostDetails, postNetworkManager: DetailsRepository) {
-        self.postNetworkManager = postNetworkManager
-        self.details = details
+    init(detailId: String, repository: DetailsRepository) {
+        self.repository = repository
+        self.detailId = detailId
     }
+    
+    private var details: PostDetails!
 
     func reset() {
         product = Post()
@@ -154,7 +191,7 @@ class PostBuilder: Builder {
     func produceOwner(group: DispatchGroup) {
         product.owner = .init(realName: details.owner?.realName, username: details.owner?.username, location: details.owner?.location)
         
-        postNetworkManager.requestBuddyicon(post: details, group: group) { [weak self] result in
+        repository.requestBuddyicon(post: details, group: group) { [weak self] result in
             switch result {
             case .success(let avatar):
                 self?.product.owner?.avatar = avatar
@@ -165,7 +202,7 @@ class PostBuilder: Builder {
     }
     
     func produceImage(group: DispatchGroup) {
-        postNetworkManager.requestImage(post: details, group: group) { [weak self] result in
+        repository.requestImage(post: details, group: group) { [weak self] result in
             switch result {
             case .success(let image):
                 self?.product.image = image
@@ -181,7 +218,7 @@ class PostBuilder: Builder {
         product.description = details.description?.content
         product.publishedAt = details.dateUploaded
         
-        postNetworkManager.requestIsFavourite(group: group) { [weak self] result in
+        repository.requestIsFavourite(group: group) { [weak self] result in
             switch result {
             case .success(let isFavourite):
                 self?.product.isFavourite = isFavourite
@@ -192,7 +229,7 @@ class PostBuilder: Builder {
     }
     
     func produceComments(group: DispatchGroup) {
-        postNetworkManager.requestComments(post: details, group: group) { [weak self] result in
+        repository.requestComments(post: details, group: group) { [weak self] result in
             switch result {
             case .success(let comments):
                 if let comments = comments {
@@ -205,6 +242,7 @@ class PostBuilder: Builder {
             }
         }
     }
+    
     
 //    func produceIsFavourite(group: DispatchGroup) {
 //
@@ -228,17 +266,34 @@ class PostBuilder: Builder {
         return result
     }
     
+    deinit {
+        print("\(type(of: self)) deinited.")
+    }
+    
 }
 
 class PostDirector {
 
-    private var builder: Builder?
+    private var builder: DetailsBuilderProtocol?
 
-    func update(builder: Builder) {
+    func update(builder: DetailsBuilderProtocol) {
         self.builder = builder
     }
+    
+    func startProduction(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        builder?.startProduction { result in
+            switch result {
+            case .success:
+                self.buildPost {
+                    completionHandler(.success(Void()))
+                }
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
 
-    func buildPost(completionHandler: @escaping () -> Void) {
+    private func buildPost(completionHandler: @escaping () -> Void) {
         let group: DispatchGroup = .init()
         
         builder?.produceOwner(group: group)
@@ -251,10 +306,19 @@ class PostDirector {
         }
     }
     
+    deinit {
+        print("\(type(of: self)) deinited.")
+    }
+    
 }
 
-// MARK: - PostViewControllerDelegate
+// MARK: - DetailsViewControllerDelegate
 
-protocol PostViewControllerDelegate: AnyObject {
+protocol DetailsViewControllerDelegate: AnyObject {
     func close()
+}
+
+
+protocol DetailsProtocol {
+    
 }
