@@ -1,5 +1,5 @@
 //
-//  PostViewModel.swift
+//  DetailsViewModel.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 25.09.2021.
@@ -8,19 +8,21 @@
 import Foundation
 import UIKit
 
-class PostViewModel {
+class DetailsViewModel {
     
-    private let postNetworkManager: PostNetworkManager
+    private let repository: DetailsRepository
     
-    private let details:PostDetails
+    private weak var coordinator: HomeCoordinator?
+
+    
+    private let details: PostDetails
     
     weak var delegate: PostViewControllerDelegate?
     
-    weak var coordinator: HomeCoordinator?
     
     init(coordinator: HomeCoordinator, details: PostDetails, networkService: NetworkService) {
         self.coordinator = coordinator
-        self.postNetworkManager = .init(details: details, networkService: networkService)
+        self.repository = .init(details: details, networkService: networkService)
         
         self.details = details //??
     }
@@ -30,11 +32,51 @@ class PostViewModel {
     }
     
     var isFavourite: Bool {
-        postNetworkManager.getIsFavourite()
+        repository.getIsFavourite()
+    }
+    
+    var numberOfComments: Int {
+        return 5
+        //postNetworkManager.numberOfComments
+    }
+    
+
+    
+    func refresh() {
+        repository.removeAllComments()
+    }
+    
+    func requestNextComments(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        completionHandler(.success(Void()))
+    }
+    
+    func commentForRowAt(index: Int, completionHandler: @escaping (CommentProtocol) -> Void) {
+        //let commentNetwork = postNetworkManager.getComment(index: index)
+        
+        var comment: PhotoComment
+        if Bool.random() {
+            comment = .init(ownerAvatar: nil, username: "samkitty", commentContent: "The game in Japan was amazing and I want to share some photos. The game in Japan was amazing and I want to share some photos", publishedAt: "2135123213")
+        } else {
+            comment = .init(ownerAvatar: nil, username: "sally69", commentContent: "I want to share some photos! Japan was amazing and I want to share some photos. The game in Japan was amazing and .... I want to share some photos! Japan was amazing and I want to share some photos. The game in Japan was amazing and ....", publishedAt: "2135123213")
+        }
+        
+        //var comment: PhotoComment = .init(ownerAvatar: nil, username: commentNetwork?.authorName, commentContent: commentNetwork?.content, publishedAt: commentNetwork?.dateCreate)
+        
+        requestOwnerAvatar(index: index) { result in
+            switch result {
+            case .success(let ownerAvatar):
+                comment.ownerAvatar = ownerAvatar
+            case .failure(let error):
+                print("Download owner avatar for comment with index \(index) failed. Error: \(error)")
+            }
+            completionHandler(comment)
+        }
+        
+        completionHandler(comment)
     }
     
     func requestPost(completionHandler: @escaping (Result<Post, Never>) -> Void) {
-        let builder: PostBuilder = .init(details: details, postNetworkManager: postNetworkManager)
+        let builder: PostBuilder = .init(details: details, postNetworkManager: repository)
         let director: PostDirector = .init()
         director.update(builder: builder)
         
@@ -45,16 +87,16 @@ class PostViewModel {
     }
     
     func requestAddFavourite(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        postNetworkManager.requestAddFavourite(id: details.id!, completionHandler: completionHandler)
+        repository.requestAddFavourite(id: details.id!, completionHandler: completionHandler)
     }
     
     func requestRemoveFavourite(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        postNetworkManager.requestRemoveFavourite(id: details.id!, completionHandler: completionHandler)
+        repository.requestRemoveFavourite(id: details.id!, completionHandler: completionHandler)
     }
     
     func requestOwnerAvatar(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
-        guard let comment = postNetworkManager.getComment(index: index) else { return }
-        postNetworkManager.requestOwnerAvatar(comment: comment, completionHandler: completionHandler)
+        //guard let comment = postNetworkManager.getComment(index: index) else { return }
+        //postNetworkManager.requestOwnerAvatar(comment: comment, completionHandler: completionHandler)
     }
     
 }
@@ -95,12 +137,12 @@ protocol Builder {
 
 class PostBuilder: Builder {
 
-    private let postNetworkManager: PostNetworkManager
+    private let postNetworkManager: DetailsRepository
     private let details: PostDetails
     
     private var product: Post = .init()
     
-    init(details: PostDetails, postNetworkManager: PostNetworkManager) {
+    init(details: PostDetails, postNetworkManager: DetailsRepository) {
         self.postNetworkManager = postNetworkManager
         self.details = details
     }

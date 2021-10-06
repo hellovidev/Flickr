@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PostNetworkManager {
+class DetailsRepository {
     
     private let details: PostDetails
     private let networkService: NetworkService
@@ -109,6 +109,10 @@ class PostNetworkManager {
         }
     }
     
+    func removeAllComments() {
+        comments.removeAll()
+    }
+    
     func requestOwnerAvatar(comment: Comment, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         
         guard
@@ -128,10 +132,14 @@ class PostNetworkManager {
         }
     }
     
-    private var comments: [Comment]? = []
+    private var comments: [Comment] = []
+    
+    var numberOfComments: Int {
+        comments.count
+    }
     
     func getComment(index: Int) -> Comment? {
-        comments?[index]
+        comments[index] ?? nil
     }
     
     func requestComments(post: PostDetails, group: DispatchGroup, completionHandler: @escaping (Result<[Comment]?, Error>) -> Void) {
@@ -147,7 +155,7 @@ class PostNetworkManager {
         
         networkService.getPhotoComments(for: post.id!) { [weak self] result in
             completionHandler(result.map {
-                self?.comments = $0
+                self?.comments = $0 ?? []
                 //self?.cachePostInformation.set(for: $0, with: cachePostInformationIdentifier)
                 group.leave()
                 return $0
