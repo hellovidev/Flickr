@@ -39,6 +39,10 @@ class HomeNetworkManager {
     // MARK: - TEST
     private var posts: [PostDetails] = .init()
     
+    func getPostDetails(index: Int) -> PostDetails {
+        posts[index]
+    }
+    
     func filter(by filterType: FilterType?, completionHandler: @escaping () -> Void) {
         guard let filterType = filterType else {
             perPage = 20

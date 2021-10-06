@@ -8,7 +8,7 @@
 import UIKit
 
 enum HomeRoute {
-    case openPost(id: String)
+    case openPost(details: PostDetails)
 }
 
 class HomeViewModel {
@@ -19,12 +19,27 @@ class HomeViewModel {
     
     let filters: [String] = ["50", "100", "200", "400"]
     
-    private weak var coordinator: GeneralCoordinator?
+    private weak var coordinator: HomeCoordinator?
 
-    init(coordinator: GeneralCoordinator, networkService: NetworkService) {
+    init(coordinator: HomeCoordinator, networkService: NetworkService) {
         self.coordinator = coordinator
         self.homeNetworkManager = .init(networkService: networkService)
         self.router = .init()
+        
+        self.router.addObserver { [weak self] router in
+            self?.show(router)
+        }
+    }
+    
+    private func show(_ router: HomeRoute) {
+        switch router {
+        case .openPost(details: let details):
+            coordinator?.redirectDetails(details: details)
+//            let postViewController: PostViewController = Storyboard.general.instantiateViewController()
+//            postViewController.viewModel = PostViewModel(postId: postId, networkService: NetworkService())
+//            postViewController.delegate = self
+//            navigationController?.pushViewController(postViewController, animated: true)
+        }
     }
     
     func requestPost(indexPath: IndexPath, completionHandler: @escaping (_ details: PostDetails?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {

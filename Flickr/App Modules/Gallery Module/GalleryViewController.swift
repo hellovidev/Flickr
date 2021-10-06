@@ -20,11 +20,11 @@ import PhotosUI
 
 class GalleryViewController: UIViewController {
     
-
-
- 
-
-
+    
+    
+    
+    
+    
     
     // MARK: - Properties
     
@@ -35,15 +35,15 @@ class GalleryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-
+        
         
         collectionView.dataSource = self
         collectionView.delegate = self
         
         //collectionView.collectionViewLayout = GalleryCollectionViewLayout()
-//        if let layout = collectionView?.collectionViewLayout as? GalleryCollectionViewLayout {
-//          layout.delegate = self
-//        }
+        //        if let layout = collectionView?.collectionViewLayout as? GalleryCollectionViewLayout {
+        //          layout.delegate = self
+        //        }
         
         collectionView.register(GalleryCollectionReusableCell.self, forCellWithReuseIdentifier: ReuseIdentifier.galleryCell.rawValue)
         
@@ -71,18 +71,16 @@ class GalleryViewController: UIViewController {
     private func requestPhotos() {
         collectionView.refreshControl?.beginRefreshing()
         viewModel.requestPhotoLinkInfoArray { [weak self] result in
+            self?.collectionView.refreshControl?.endRefreshing()
             switch result {
-            case .success():
-                self?.collectionView.refreshControl?.endRefreshing()
+            case .success:
                 self?.collectionView.reloadData()
             case .failure(_):
-                self?.collectionView.refreshControl?.endRefreshing()
                 self?.showAlert(
                     title: "Gallery Error",
                     message: "Loading gallery photos failed.\nTry to check your internet connection and pull to refresh.",
                     button: "OK"
                 )
-                break
             }
         }
     }
@@ -152,17 +150,18 @@ extension GalleryViewController: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfItems > .zero ? viewModel.numberOfItems + 1 : .zero
+        return viewModel.numberOfItems + 1
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.galleryCell.rawValue, for: indexPath) as! GalleryCollectionReusableCell
-
-        if indexPath.row == .zero {
+        
+        switch viewModel.itemAt(indexPath: indexPath) {
+        case .addNewPhoto:
             let buttonView: AddButtonView = .init()
             buttonView.addNewButton.addTarget(self, action: #selector(onTapAddButtonAction), for: .touchUpInside)
             cell.view = buttonView
-        } else {
+        case .galleryPhoto:
             let interaction = UIContextMenuInteraction(delegate: self)
             cell.interaction = interaction
             
@@ -214,17 +213,21 @@ class GalleryCollectionReusableCell: UICollectionViewCell {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension GalleryViewController: UICollectionViewDelegateFlowLayout {
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let randomCellCount = CGFloat(Int.random(in: 1...3))
+        
         let width = collectionView.bounds.width
-        let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
-        let inset = collectionViewFlowLayout?.sectionInset.top
-        let insetCell = collectionViewFlowLayout?.minimumInteritemSpacing
-        let cellCount: CGFloat = 3
-        let targetWidth: CGFloat = (width - inset! * CGFloat(2) - insetCell! * CGFloat(3)) / cellCount
-        return CGSize(width:  targetWidth, height: targetWidth)
+        guard let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
+        let insetLeft = collectionViewFlowLayout.sectionInset.left
+        let insetRight = collectionViewFlowLayout.sectionInset.right
+        let insetCell = collectionViewFlowLayout.minimumInteritemSpacing
+        //let cellCount: CGFloat = 3
+        let sideSize: CGFloat = (width - (insetLeft + insetRight) - insetCell * CGFloat(2)) / CGFloat(3) - 1.0
+        let newWidth = sideSize * randomCellCount + (insetCell * (randomCellCount - 1))
+        return CGSize(width: newWidth, height: sideSize)
     }
-
+    
 }
 
 // MARK: - UICollectionViewDelegate
@@ -256,40 +259,35 @@ extension GalleryViewController: UICollectionViewDelegate {
 extension GalleryViewController: UIContextMenuInteractionDelegate {
     
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        
-        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] actions -> UIMenu? in
+        // Building item of menu
+        let removeIcon = UIImage(systemName: "trash")
+        let removeItem = UIAction(title: "Delete", image: removeIcon, attributes: .destructive) { [weak self] action in
             
-            // Building item of menu
-            let removeIcon = UIImage(systemName: "trash")
-            let removeItem = UIAction(title: "Delete", image: removeIcon, attributes: .destructive) { [weak self] action in
-                
-                // Getting IndexPath of pressed item and do action
-                let item = interaction.location(in: self?.collectionView)
-                if let indexPath = self?.collectionView.indexPathForItem(at: item) {
-                    
-                    let activitiyIndicator: ActivityViewController = .init()
-                    self?.present(activitiyIndicator, animated: true)
-                    
-                    self?.viewModel.removePhotoAt(index: indexPath.row - 1) { [weak self] result in
-                        switch result {
-                        case .success():
-                            self?.collectionView.deleteItems(at: [indexPath])
-                            self?.dismiss(animated: true)
-                        case .failure(let error):
-                            self?.dismiss(animated: true)
-                            self?.showAlert(
-                                title: "Delete Failed",
-                                message: "Failed to delete photo.\nTry again.",
-                                button: "OK"
-                            )
-                            print("Delete item with index path \(indexPath.row) failed with error [\(error)]")
-                        }
-                    }
-                } else {
-                    print("Couldn't find index path")
+            // Getting IndexPath of pressed item and do action
+            let item = interaction.location(in: self?.collectionView)
+            guard let indexPath = self?.collectionView.indexPathForItem(at: item) else { return }
+            
+            let activitiyIndicator: ActivityViewController = .init()
+            self?.present(activitiyIndicator, animated: true)
+            
+            self?.viewModel.removePhotoAt(index: indexPath.row - 1) { [weak self] result in
+                switch result {
+                case .success():
+                    self?.collectionView.deleteItems(at: [indexPath])
+                case .failure(let error):
+                    self?.showAlert(
+                        title: "Delete Failed",
+                        message: "Failed to delete photo.\nTry again.",
+                        button: "OK"
+                    )
+                    print("Delete item with index path \(indexPath.row) failed with error [\(error)]")
                 }
+                self?.dismiss(animated: true)
             }
             
+        }
+        
+        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions -> UIMenu? in
             let menu = UIMenu(title: "", options: .displayInline, children: [removeItem])
             return menu
         }
@@ -304,7 +302,7 @@ extension GalleryViewController: UIContextMenuInteractionDelegate {
 extension GalleryViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -315,7 +313,7 @@ extension GalleryViewController: UIImagePickerControllerDelegate, UINavigationCo
             self.viewModel.uploadLibraryPhoto(data: data) { [weak self] result in
                 switch result {
                 case .success():
-                    NotificationCenter.default.post(name: Notification.Name.imageUpload, object: nil)
+                    self?.refreshCollectionView()
                 case .failure(let error):
                     self?.showAlert(
                         title: "Upload Failed",
@@ -337,8 +335,7 @@ extension GalleryViewController: PHPickerViewControllerDelegate {
     
     @available(iOS 14, *)
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        results.forEach { [weak self] result in
-            
+        results.forEach { result in
             result.itemProvider.loadDataRepresentation(forTypeIdentifier: "public.image") { [weak self] data, _ in
                 guard let data = data else {
                     DispatchQueue.main.async {
@@ -349,8 +346,8 @@ extension GalleryViewController: PHPickerViewControllerDelegate {
                 
                 self?.viewModel.uploadLibraryPhoto(data: data) { [weak self] result in
                     switch result {
-                    case .success():
-                        NotificationCenter.default.post(name: Notification.Name.imageUpload, object: nil)
+                    case .success:
+                        self?.refreshCollectionView()
                     case .failure(let error):
                         self?.showAlert(
                             title: "Upload Failed",

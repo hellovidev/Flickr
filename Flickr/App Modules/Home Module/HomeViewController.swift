@@ -23,24 +23,14 @@ class HomeViewController: UIViewController {
 
     private var filterButtons: [UIButton] = .init()
     
-    private func show(_ router: HomeRoute) {
-        switch router {
-        case .openPost(id: _):
-            let postViewController: PostViewController = Storyboard.general.instantiateViewController()
-            postViewController.viewModel = PostViewModel()
-            postViewController.delegate = self
-            navigationController?.pushViewController(postViewController, animated: true)
-        }
-    }
-    
     // MARK: - UIViewController Life Cycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.viewModel.router.addObserver { [weak self] router in
-            self?.show(router)
-        }
+//        self.viewModel.router.addObserver { [weak self] router in
+//            self?.show(router)
+//        }
         
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 400
@@ -207,21 +197,21 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.router.send(.openPost(id: "\(indexPath.row)"))
+        viewModel.router.send(.openPost(details: viewModel.homeNetworkManager.getPostDetails(index: indexPath.row)))
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
 }
 
-// MARK: - PostViewControllerDelegate
-
-extension HomeViewController: PostViewControllerDelegate {
-    
-    func close(viewController: PostViewController) {
-        navigationController?.popViewController(animated: true)
-    }
-    
-}
+//// MARK: - PostViewControllerDelegate
+//
+//extension HomeViewController: PostViewControllerDelegate {
+//    
+//    func close(viewController: PostViewController) {
+//        navigationController?.popViewController(animated: true)
+//    }
+//    
+//}
 
 
 

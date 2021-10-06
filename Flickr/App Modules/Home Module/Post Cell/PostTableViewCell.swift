@@ -30,8 +30,8 @@ class PostTableViewCell: UITableViewCell {
 //        startSkeletonAnimation(view: postDescription)
 
         accountView.ownerAvatar.image = nil
-        accountView.nicknameLabel.text = nil
-        accountView.locationLabel.text = nil
+        accountView.ownerAccountName.text = nil
+        accountView.ownerLocation.text = nil
         
         postImage.image = nil
         
@@ -85,10 +85,10 @@ class PostTableViewCell: UITableViewCell {
         postImage.image = image
         
         let nickname = buildNickname(fullName: details?.owner?.realName, username: details?.owner?.username)
-        accountView.nicknameLabel.text = nickname
+        accountView.ownerAccountName.text = nickname
         
         let ownerLocation = details?.owner?.location.flatMap { $0 }
-        accountView.locationLabel.text = ownerLocation
+        accountView.ownerLocation.text = ownerLocation
         
         let description = buildDescription(nickname: details?.owner?.username, title: details?.title?.content)
         postDescription.attributedText = description
@@ -112,8 +112,8 @@ class PostTableViewCell: UITableViewCell {
 //        startSkeletonAnimation(view: postDescription)
         
         accountView.ownerAvatar.image = nil
-        accountView.nicknameLabel.text = nil
-        accountView.locationLabel.text = nil
+        accountView.ownerAccountName.text = nil
+        accountView.ownerLocation.text = nil
         
         postImage.image = nil
         

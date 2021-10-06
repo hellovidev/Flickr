@@ -49,4 +49,16 @@ class GalleryViewModel {
         print("\(type(of: self)) deinited.")
     }
     
+    enum DataSourceItem {
+        case addNewPhoto
+        case galleryPhoto
+    }
+    
+    func itemAt(indexPath: IndexPath) -> DataSourceItem {
+        if indexPath.row == 0 {
+            return .addNewPhoto
+        }
+        return .galleryPhoto
+    }
+    
 }

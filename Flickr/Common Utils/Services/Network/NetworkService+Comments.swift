@@ -10,7 +10,7 @@ import Foundation
 extension NetworkService {
     
     // Get photo comments list 'flickr.photos.comments.getList' (Post screen)
-    func getPhotoComments(for photoId: String, completion: @escaping (Result<[Comment], Error>) -> Void) {
+    func getPhotoComments(for photoId: String, completion: @escaping (Result<[Comment]?, Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
             "photo_id": photoId
@@ -22,7 +22,7 @@ extension NetworkService {
             method: .GET,
             parser: ModelDeserializer<CommentsResponse>()
         ) { result in
-            completion(result.map { $0.data.comments })
+            completion(result.map { $0.comments?.comment })
         }
     }
     
@@ -61,18 +61,10 @@ extension NetworkService {
     
     // The server JSON response decoder
     private struct CommentsResponse: Decodable {
-        let data: Comments
+        let comments: Comments?
         
         struct Comments: Decodable {
-            let comments: [Comment]
-            
-            enum CodingKeys: String, CodingKey {
-                case comments = "comment"
-            }
-        }
-        
-        private enum CodingKeys: String, CodingKey {
-            case data = "comments"
+            let comment: [Comment]?
         }
     }
     

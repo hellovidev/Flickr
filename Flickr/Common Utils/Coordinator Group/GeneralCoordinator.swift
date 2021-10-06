@@ -35,9 +35,11 @@ class GeneralCoordinator: CoordinatorProtocol {
     }
 
     func start() {
-        let homeViewController: HomeViewController = Storyboard.general.instantiateViewController()
-        homeViewController.viewModel = .init(coordinator: self, networkService: networkService)
-        let homeNavigationController = UINavigationController.init(rootViewController: homeViewController)
+        let homeNavigationController: UINavigationController = .init()
+        let childHome = HomeCoordinator(homeNavigationController, networkService: networkService)
+        childHome.parentCoordinator = self
+        childCoordinators.append(childHome)
+        childHome.start()
         
         let galleryViewController: GalleryViewController = Storyboard.general.instantiateViewController()
         galleryViewController.viewModel = .init(coordinator: self, nsid: nsid, networkService: networkService)

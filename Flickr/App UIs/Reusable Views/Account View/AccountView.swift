@@ -12,10 +12,10 @@ import UIKit
 @IBDesignable
 class AccountView: UIView {
     
-    @IBOutlet var view: UIView!
+    @IBOutlet weak var view: UIView!
     @IBOutlet weak var ownerAvatar: UIImageView!
-    @IBOutlet weak var nicknameLabel: UILabel!
-    @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var ownerAccountName: UILabel!
+    @IBOutlet weak var ownerLocation: UILabel!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
