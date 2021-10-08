@@ -242,7 +242,7 @@ extension GalleryViewController: UIContextMenuInteractionDelegate {
             
             self?.viewModel.removePhotoAt(index: indexPath.row - 1) { [weak self] result in
                 switch result {
-                case .success():
+                case .success:
                     self?.collectionView.deleteItems(at: [indexPath])
                 case .failure(let error):
                     self?.showAlert(
@@ -282,7 +282,7 @@ extension GalleryViewController: UIImagePickerControllerDelegate, UINavigationCo
         {
             self.viewModel.uploadLibraryPhoto(data: data) { [weak self] result in
                 switch result {
-                case .success():
+                case .success:
                     self?.refreshCollectionView()
                 case .failure(let error):
                     self?.showAlert(

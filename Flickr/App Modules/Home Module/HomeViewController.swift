@@ -145,7 +145,7 @@ class HomeViewController: UIViewController {
             }
             self?.activityIndicator.stopAnimating()
             switch result {
-            case .success(_):
+            case .success:
                 self?.tableView.reloadData()
             case .failure(let error):
                 self?.tableView.tableFooterView?.isHidden = true

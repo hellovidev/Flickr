@@ -51,7 +51,7 @@ class GalleryRepository {
         
         removePhotoById(id) { [weak self] result in
             switch result {
-            case .success():
+            case .success:
                 self?.gallery.remove(at: index)
                 completionHandler(.success(Void()))
             case .failure(let error):
