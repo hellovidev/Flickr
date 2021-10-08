@@ -187,36 +187,31 @@ class GalleryCollectionReusableCell: UICollectionViewCell {
 extension GalleryViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellCount: CGFloat = 3
-        
-        let width = collectionView.bounds.width
-        guard let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
-        
-        let inset = collectionViewFlowLayout.minimumInteritemSpacing * (cellCount - 1)
-        let sideSize = (width - inset) / cellCount - 0.3
-                
-        return CGSize(width: sideSize, height: sideSize)
+        let cellSideSize = calculateCellSideSize()
+        return CGSize(width: cellSideSize, height: cellSideSize)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        if collectionView.numberOfItems(inSection: .zero) == 1 {
+        let numberOfItemsInSection: CGFloat = CGFloat(collectionView.numberOfItems(inSection: .zero))
+        guard numberOfItemsInSection == 1 else { return .zero }
+
+        let cellSideSize = calculateCellSideSize()
+
+        guard let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
+        let totalSpacingWidth = collectionViewFlowLayout.minimumInteritemSpacing * numberOfItemsInSection
+        let totalWidth = cellSideSize * numberOfItemsInSection
         
-        let totalCellWidth = Int(collectionView.layer.frame.size.width) / 3 * collectionView.numberOfItems(inSection: 0)
-        let totalSpacingWidth = (collectionView.numberOfItems(inSection: 0) - 1)
-
-
-        let leftInset = (collectionView.layer.frame.size.width - CGFloat(totalCellWidth + totalSpacingWidth))
+        let rightInset = collectionView.frame.width - (totalWidth + totalSpacingWidth)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: rightInset)
+    }
+    
+    private func calculateCellSideSize(cellColumns: CGFloat = 3) -> CGFloat {
+        guard let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
         
-//        let totalWidth = cellWidth * numberOfItems
-//        let totalSpacingWidth = spaceBetweenCell * (numberOfItems - 1)
-//        let leftInset = (collectionView.frame.width - CGFloat(totalWidth + totalSpacingWidth)) / 2
-//        let rightInset = leftInset
-//        return UIEdgeInsets(top: 0, left: leftInset, bottom: 0, right: rightInset)
-            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: leftInset)
-
-        } else {
-            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        }
+        let inset = collectionViewFlowLayout.minimumInteritemSpacing * (cellColumns - 1)
+        let cellSideSize = (collectionView.bounds.width - inset) / cellColumns
+        
+        return round(cellSideSize)
     }
         
 }
