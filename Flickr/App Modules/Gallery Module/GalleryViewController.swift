@@ -198,6 +198,27 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: sideSize, height: sideSize)
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if collectionView.numberOfItems(inSection: .zero) == 1 {
+        
+        let totalCellWidth = Int(collectionView.layer.frame.size.width) / 3 * collectionView.numberOfItems(inSection: 0)
+        let totalSpacingWidth = (collectionView.numberOfItems(inSection: 0) - 1)
+
+
+        let leftInset = (collectionView.layer.frame.size.width - CGFloat(totalCellWidth + totalSpacingWidth))
+        
+//        let totalWidth = cellWidth * numberOfItems
+//        let totalSpacingWidth = spaceBetweenCell * (numberOfItems - 1)
+//        let leftInset = (collectionView.frame.width - CGFloat(totalWidth + totalSpacingWidth)) / 2
+//        let rightInset = leftInset
+//        return UIEdgeInsets(top: 0, left: leftInset, bottom: 0, right: rightInset)
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: leftInset)
+
+        } else {
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
+    }
+        
 }
 
 // MARK: - UICollectionViewDelegate
