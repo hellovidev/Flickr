@@ -78,8 +78,7 @@ extension NetworkService {
     func deletePhotoById(with photoId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
-            "photo_id": photoId,
-            "perms": "delete"
+            "photo_id": photoId
         ]
         
         request(

@@ -8,23 +8,9 @@
 import UIKit
 import PhotosUI
 
-
-//extension GalleryViewController: GalleryCollectionViewLayoutDelegate {
-//    func collectionView(_ collectionView: UICollectionView, widthForPhotoAtIndexPath indexPath: IndexPath) -> CGSize {
-//        return CGSize(width: 100, height: 50)//photos[indexPath.item].image.size.width
-//    }
-//    
-//}
-
 // MARK: - GalleryViewController
 
 class GalleryViewController: UIViewController {
-    
-    
-    
-    
-    
-    
     
     // MARK: - Properties
     
@@ -35,15 +21,8 @@ class GalleryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        
         collectionView.dataSource = self
         collectionView.delegate = self
-        
-        //collectionView.collectionViewLayout = GalleryCollectionViewLayout()
-        //        if let layout = collectionView?.collectionViewLayout as? GalleryCollectionViewLayout {
-        //          layout.delegate = self
-        //        }
         
         collectionView.register(GalleryCollectionReusableCell.self, forCellWithReuseIdentifier: ReuseIdentifier.galleryCell.rawValue)
         
@@ -217,17 +196,15 @@ class GalleryCollectionReusableCell: UICollectionViewCell {
 extension GalleryViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let randomCellCount = CGFloat(Int.random(in: 1...3))
+        let cellCount: CGFloat = 3
         
         let width = collectionView.bounds.width
         guard let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
-        let insetLeft = collectionViewFlowLayout.sectionInset.left
-        let insetRight = collectionViewFlowLayout.sectionInset.right
-        let insetCell = collectionViewFlowLayout.minimumInteritemSpacing
-        //let cellCount: CGFloat = 3
-        let sideSize: CGFloat = (width - (insetLeft + insetRight) - insetCell * CGFloat(2)) / CGFloat(3) - 1.0
-        let newWidth = sideSize * randomCellCount + (insetCell * (randomCellCount - 1))
-        return CGSize(width: newWidth, height: sideSize)
+        
+        let inset = collectionViewFlowLayout.minimumInteritemSpacing * (cellCount - 1)
+        let sideSize = (width - inset) / cellCount - 0.3
+                
+        return CGSize(width: sideSize, height: sideSize)
     }
     
 }

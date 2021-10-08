@@ -64,7 +64,8 @@ class NetworkService: NSObject, ProgressDelegate {
             "oauth_nonce": UUID().uuidString,
             "oauth_signature_method": "HMAC-SHA1",
             "oauth_timestamp": String(Int(Date().timeIntervalSince1970)),
-            "oauth_version": "1.0"
+            "oauth_version": "1.0",
+            "perms": "delete"
         ]
         
         // Add to parameters extra values
@@ -186,7 +187,7 @@ class NetworkService: NSObject, ProgressDelegate {
                 return
             }
             
-            //print(String(data: data, encoding: .utf8))
+            print(String(data: data, encoding: .utf8))
             if let errorMessage = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
                 completion(.failure(ErrorMessage.error("Error Callback by Flickr: \(errorMessage.message)")))
                 return
