@@ -24,8 +24,8 @@ class GalleryViewModel {
         repository.getGallaryCount()
     }
     
-    func removeAll() {
-        repository.removeAll()
+    func refresh() {
+        repository.refresh()
     }
     
     func uploadLibraryPhoto(data: Data, completionHandler: @escaping (Result<Void, Error>) -> Void) {
@@ -41,8 +41,8 @@ class GalleryViewModel {
     }
     
     
-    func requsetPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
-        repository.requsetPhoto(index: index, completionHandler: completionHandler)
+    func requestPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        repository.requestPhoto(index: index, completionHandler: completionHandler)
     }
     
     deinit {

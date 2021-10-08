@@ -34,14 +34,7 @@ struct SignatureHelper {
         let baseSignature = method + "&" + encodeString(endpoint) + "&" + encodeString(stringParameters)
         
         // Build 'Signature' using HMAC-SHA1
-        let sign = baseSignature.hmac(algorithm: .SHA1, key: signingKey)//hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
-        print("Defore: \(sign)")
-        
-        var charset: CharacterSet = .urlQueryAllowed
-        charset.remove(charactersIn: "+")
-        let s = sign.addingPercentEncoding(withAllowedCharacters: charset)!
-        print(s)
-        return s
+        return hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
     }
     
     // Prepare string value to signature view: 'https://www.flickr.com/services/oauth/request_token' => 'https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token'
@@ -119,8 +112,8 @@ extension String {
         let cData = self.cString(using: String.Encoding.utf8)
         var result = [CUnsignedChar](repeating: 0, count: Int(algorithm.digestLength()))
         CCHmac(algorithm.toCCHmacAlgorithm(), cKey!, strlen(cKey!), cData!, strlen(cData!), &result)
-        var hmacData:NSData = NSData(bytes: result, length: (Int(algorithm.digestLength())))
-        var hmacBase64 = hmacData.base64EncodedString(options: .lineLength76Characters)
+        let hmacData: NSData = NSData(bytes: result, length: (Int(algorithm.digestLength())))
+        let hmacBase64 = hmacData.base64EncodedString(options: .lineLength76Characters)
         return hmacBase64
     }
 }

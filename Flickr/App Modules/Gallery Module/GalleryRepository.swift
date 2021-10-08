@@ -28,8 +28,8 @@ class GalleryRepository {
         gallery.count
     }
     
-    func removeAll() {
-        gallery.removeAll()
+    func refresh() {
+        cacheImages.removeAll()
     }
     
     func uploadLibraryPhoto(
@@ -77,7 +77,7 @@ class GalleryRepository {
         }
     }
     
-    func requsetPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    func requestPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         guard
             let id = gallery[index].id,
             let secret = gallery[index].secret,

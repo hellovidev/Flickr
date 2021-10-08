@@ -37,8 +37,7 @@ class GalleryViewController: UIViewController {
     
     @objc
     private func refreshCollectionView() {
-        viewModel.removeAll()
-        collectionView.reloadData()
+        viewModel.refresh()
         requestPhotos()
     }
     
@@ -146,7 +145,7 @@ extension GalleryViewController: UICollectionViewDataSource {
             let interaction = UIContextMenuInteraction(delegate: self)
             cell.interaction = interaction
             
-            self.viewModel.requsetPhoto(index: indexPath.row - 1) { result in
+            self.viewModel.requestPhoto(index: indexPath.row - 1) { result in
                 switch result {
                 case .success(let image):
                     let imageView: UIImageView = .init(image: image)
