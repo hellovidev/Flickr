@@ -29,9 +29,6 @@ class GalleryViewController: UIViewController {
         setupNavigationTitle()
         setupCollectionRefreshIndicator()
         
-        // Add observer to image upload completion
-        NotificationCenter.default.addObserver(self, selector: #selector(imageUploadNotification), name: Notification.Name.imageUpload, object: nil)
-        
         requestPhotos()
     }
     
@@ -39,11 +36,6 @@ class GalleryViewController: UIViewController {
     private func refreshCollectionView() {
         viewModel.refresh()
         requestPhotos()
-    }
-    
-    @objc
-    private func imageUploadNotification() {
-        refreshCollectionView()
     }
     
     private func requestPhotos() {
@@ -340,13 +332,5 @@ extension GalleryViewController: PHPickerViewControllerDelegate {
         
         dismiss(animated: true)
     }
-    
-}
-
-// MARK: - Notification.Name
-
-extension Notification.Name {
-    
-    static let imageUpload = Notification.Name("ImageUpload")
     
 }
