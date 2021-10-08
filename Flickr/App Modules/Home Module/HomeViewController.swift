@@ -140,14 +140,14 @@ class HomeViewController: UIViewController {
     
     private func requestTableData() {
         viewModel.homeNetworkManager.requestPostsId { [weak self] result in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self?.refreshControl.endRefreshing()
+            }
+            self?.activityIndicator.stopAnimating()
             switch result {
             case .success(_):
-                self?.activityIndicator.stopAnimating()
-                self?.refreshControl.endRefreshing()
                 self?.tableView.reloadData()
             case .failure(let error):
-                self?.activityIndicator.stopAnimating()
-                self?.refreshControl.endRefreshing()
                 self?.tableView.tableFooterView?.isHidden = true
                 self?.showAlert(title: "Error", message: error.localizedDescription, button: "OK")
             }
