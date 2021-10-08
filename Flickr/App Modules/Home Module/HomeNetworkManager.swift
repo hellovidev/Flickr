@@ -9,6 +9,7 @@ import UIKit
 
 enum NetworkManagerError: Error {
     case invalidParameters
+    case nilResponseData
 }
 
 class HomeNetworkManager {
@@ -95,7 +96,7 @@ class HomeNetworkManager {
             return
         }
         
-        networkService.getPhotoById(with: ids[position]) { [weak self] result in
+        networkService.getPhotoById(id: ids[position]) { [weak self] result in
             completionHandler(result.map {
                 self?.posts.append($0)
                 self?.cachePostInformation.set(for: $0, with: cachePostInformationIdentifier)

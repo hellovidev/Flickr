@@ -8,7 +8,14 @@
 import Foundation
 import UIKit
 
-struct Comment: Decodable {
+protocol CommentOwnerProtocol {
+    var iconFarm: Int? { get set }
+    var iconServer: String? { get set }
+    var nsid: String? { get set }
+}
+
+
+struct Comment: Decodable, CommentOwnerProtocol {
     // Identifiers
     let id: String?
 
@@ -18,7 +25,7 @@ struct Comment: Decodable {
     var permalink: String?
     
     // Author
-    var author: String?
+    var nsid: String?
     var authorIsDeleted: Int?
     var authorName: String?
     var realName: String?
@@ -33,7 +40,7 @@ struct Comment: Decodable {
         case content = "_content"
         case dateCreate = "datecreate"
         case permalink = "permalink"
-        case author = "author"
+        case nsid = "author"
         case authorIsDeleted = "author_is_deleted"
         case authorName = "authorname"
         case realName = "realname"
@@ -60,3 +67,40 @@ Response: ["stat": ok, "comments": {
              = "Daniel Catt";
         },
 */
+
+
+struct Post {
+    
+    var id: String?
+    var secret: String?
+    var server: String?
+    
+    var image: UIImage?
+    var title: String?
+    var description: String?
+    var publishedAt: String?
+    var isFavourite: Bool?
+    var owner: Owner?
+    
+    struct Owner {
+        var avatar: UIImage?
+        var realName: String?
+        var username: String?
+        var location: String?
+        var iconFarm: Int?
+        var iconServer: String?
+        var nsid: String?
+    }
+    
+    var comments: [CommentProtocol & CommentOwnerProtocol]?
+    
+//    struct Comment {
+//        let owner: Owner?
+//        var content: String?
+//        let publishedAt: String?
+//    }
+}
+
+protocol DetailsProtocol {
+    
+}

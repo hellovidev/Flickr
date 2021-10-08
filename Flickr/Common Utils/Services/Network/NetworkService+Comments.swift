@@ -65,7 +65,9 @@ extension NetworkService {
         
         struct Comments: Decodable {
             let comment: [Comment]?
+    
         }
+        
     }
     
 }

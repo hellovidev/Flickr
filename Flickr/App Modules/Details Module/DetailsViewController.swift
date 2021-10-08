@@ -20,7 +20,6 @@ class DetailsViewController: UITableViewController {
     @IBOutlet weak var postIsFavorite: UIButton!
     
     private let postOwnerView: AccountView = .init()
-    private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
     private let skeletonAnimation: SkeletonAnimation = .init()
     
     // MARK: - ViewModel
@@ -34,7 +33,6 @@ class DetailsViewController: UITableViewController {
         
         tableView.tableHeaderView?.addBottomBorderWithColor(color: .systemGray3, width: 0.5)
         setupTableRefreshIndicator()
-        setupNextCommentsPageLoadingIndicator()
         setupSkeletonAnimation()
         setupDetailsOwnerView()
         registerReusableCell()
@@ -60,11 +58,13 @@ class DetailsViewController: UITableViewController {
     }
     
     private func requestRemoveFavourite() {
+        postIsFavorite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
         viewModel.requestRemoveFavourite { [weak self] result in
             switch result {
             case .success:
-                self?.postIsFavorite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
+                break
             case .failure(let error):
+                self?.postIsFavorite.setImage(FavouriteState.isFavourite.image, for: .normal)
                 print("Request to remove post from favourites complete with error: \(error)")
                 self?.showAlert(title: "Favourite Error", message: "Request to remove post from favourite failed. Try again.", button: "OK")
             }
@@ -72,11 +72,13 @@ class DetailsViewController: UITableViewController {
     }
     
     private func requestAddFavourite() {
+        postIsFavorite.setImage(FavouriteState.isFavourite.image, for: .normal)
         viewModel.requestAddFavourite { [weak self] result in
             switch result {
             case .success:
-                self?.postIsFavorite.setImage(FavouriteState.isFavourite.image, for: .normal)
+                break
             case .failure(let error):
+                self?.postIsFavorite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
                 print("Request to add post to favourites complete with error: \(error)")
                 self?.showAlert(title: "Favourite Error", message: "Request to add post to favourite failed. Try again.", button: "OK")
             }
@@ -107,13 +109,6 @@ class DetailsViewController: UITableViewController {
         navigationItem.leftBarButtonItem = backButton
     }
     
-    private func setupNextCommentsPageLoadingIndicator() {
-        activityIndicator.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
-        tableView.tableFooterView = activityIndicator
-        activityIndicator.startAnimating()
-        tableView.tableFooterView?.isHidden = false
-    }
-    
     private func setupTableRefreshIndicator() {
         refreshControl = .init()
         refreshControl?.transform = CGAffineTransform(scaleX: 0.75, y: 0.75)
@@ -142,11 +137,12 @@ class DetailsViewController: UITableViewController {
     @objc private func refreshTable() {
         refreshControl?.beginRefreshing()
         viewModel.refresh()
+        tableView.reloadData() // ???
         requestDetails()
     }
     
     private func requestDetails() {
-        viewModel.requestPost { [weak self] result in
+        viewModel.requestDetails { [weak self] result in
             switch result {
             case .success(let post):
                 // Setup Post Owner View
@@ -158,8 +154,17 @@ class DetailsViewController: UITableViewController {
                 self?.postImage.image = post.image
                 
                 // Setup Post Description
-                self?.postTitle.text = (post.title == nil || ((post.title?.isEmpty) != nil)) ? "No title" : post.title
-                self?.postDescription.text = (post.description == nil || ((post.description?.isEmpty) != nil)) ? "No description" : post.description
+                if let title = post.title, !title.isEmpty {
+                    self?.postTitle.text = title
+                } else {
+                    self?.postTitle.text = "No title"
+                }
+                
+                if let description = post.description, !description.isEmpty {
+                    self?.postDescription.text = description
+                } else {
+                    self?.postDescription.text = "No description"
+                }
                 self?.postDate.text = post.publishedAt?.prepareStringAsDate()
 
                 // Setup Favourite Icon
@@ -168,23 +173,9 @@ class DetailsViewController: UITableViewController {
                 
                 self?.tableView.reloadData()
                 self?.refreshControl?.endRefreshing()
-                self?.activityIndicator.stopAnimating()
                 self?.skeletonAnimation.stopAllAnimations()
             case .failure(let error):
                 print(error) //????
-            }
-        }
-    }
-    
-    private func requestNextComments() {
-        viewModel.requestNextComments { [weak self] result in
-            //self?.activityIndicator.stopAnimating()
-            switch result {
-            case .success:
-                self?.tableView.reloadData()
-            case .failure(let error):
-                print("Load comments request failed with error: \(error)")
-                self?.showAlert(title: "Comments Load Error", message: "Load comments request failed. Try again after refresh page.", button: "OK")
             }
         }
     }
@@ -209,21 +200,6 @@ class DetailsViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-//    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        let lastSectionIndex = tableView.numberOfSections - 1
-//        let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 3
-//
-//        if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
-//            activityIndicator.startAnimating()
-//            requestNextComments()
-//        }
-//    }
-    
-    override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-        activityIndicator.stopAnimating()
-        requestNextComments()
     }
     
     deinit {

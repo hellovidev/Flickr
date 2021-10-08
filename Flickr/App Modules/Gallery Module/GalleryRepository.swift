@@ -1,5 +1,5 @@
 //
-//  GalleryNetworkManager.swift
+//  GalleryRepository.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 03.10.2021.
@@ -7,18 +7,18 @@
 
 import UIKit
 
-class GalleryNetworkManager {
+class GalleryRepository {
     
     private var gallery: [Photo]
     
-    private let networkService: NetworkService
+    private let network: NetworkService
     
     private let cacheImages: CacheStorageService<NSString, UIImage>
     
     private let nsid: String
     
-    init(nsid: String, networkService: NetworkService) {
-        self.networkService = networkService
+    init(nsid: String, network: NetworkService) {
+        self.network = network
         self.nsid = nsid
         self.cacheImages = .init()
         self.gallery = .init()
@@ -38,7 +38,7 @@ class GalleryNetworkManager {
         description: String = "This image uploaded from iOS application.",
         completionHandler: @escaping (Result<Void, Error>) -> Void
     ) {
-        networkService.uploadImage(data, title: title, description: description, completion: completionHandler)
+        network.uploadImage(data, title: title, description: description, completion: completionHandler)
     }
     
     func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
@@ -61,11 +61,11 @@ class GalleryNetworkManager {
     }
     
     private func removePhotoById(_ id: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        networkService.deletePhotoById(id, completion: completionHandler)
+        network.deletePhotoById(id, completion: completionHandler)
     }
     
     func requestPhotoLinkInfoArray(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        networkService.getUserPhotos(for: nsid) { [weak self] result in
+        network.getUserPhotos(for: nsid) { [weak self] result in
             switch result {
             case .success(let photoArray):
                 self?.gallery = photoArray
@@ -93,7 +93,7 @@ class GalleryNetworkManager {
             return
         }
         
-        networkService.image(postId: id, postSecret: secret, serverId: server) { result in
+        network.image(postId: id, postSecret: secret, serverId: server) { result in
             completionHandler(result.map { [weak self] in
                 self?.cacheImages.set(for: $0, with: cacheImageIdentifier)
                 return $0

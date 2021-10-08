@@ -13,36 +13,36 @@ class GalleryViewModel {
     
     private weak var coordinator: GeneralCoordinator?
     
-    private let galleryNetworkManager: GalleryNetworkManager
+    private let repository: GalleryRepository
     
-    init(coordinator: GeneralCoordinator, nsid: String, networkService: NetworkService) {
+    init(coordinator: GeneralCoordinator, nsid: String, network: NetworkService) {
         self.coordinator = coordinator
-        self.galleryNetworkManager = .init(nsid: nsid, networkService: networkService)
+        self.repository = .init(nsid: nsid, network: network)
     }
     
     var numberOfItems: Int {
-        galleryNetworkManager.getGallaryCount()
+        repository.getGallaryCount()
     }
     
     func removeAll() {
-        galleryNetworkManager.removeAll()
+        repository.removeAll()
     }
     
     func uploadLibraryPhoto(data: Data, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        galleryNetworkManager.uploadLibraryPhoto(data: data, completionHandler: completionHandler)
+        repository.uploadLibraryPhoto(data: data, completionHandler: completionHandler)
     }
     
     func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        galleryNetworkManager.removePhotoAt(index: index, completionHandler: completionHandler)
+        repository.removePhotoAt(index: index, completionHandler: completionHandler)
     }
     
     func requestPhotoLinkInfoArray(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        galleryNetworkManager.requestPhotoLinkInfoArray(completionHandler: completionHandler)
+        repository.requestPhotoLinkInfoArray(completionHandler: completionHandler)
     }
     
     
     func requsetPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
-        galleryNetworkManager.requsetPhoto(index: index, completionHandler: completionHandler)
+        repository.requsetPhoto(index: index, completionHandler: completionHandler)
     }
     
     deinit {

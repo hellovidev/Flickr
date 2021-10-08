@@ -9,62 +9,60 @@ import UIKit
 
 class DetailsRepository {
     
-    private let details: PostDetails
-    private let networkService: NetworkService
-    
-    private let cacheImages: CacheStorageService<NSString, UIImage>
-    private let cacheBuddyicons: CacheStorageService<NSString, UIImage>
-    private let cachePostInformation: CacheStorageService<NSString, PostDetails>
-    
+    private let id: String
     private var isFavourite: Bool = false
+    private var details: Post = .init()
+
+    private let network: NetworkService
     
-    init(details: PostDetails, networkService: NetworkService) {
-        self.details = details
-        self.networkService = networkService
+    private let cacheDetailsOwnerAvatar: CacheStorageService<NSString, UIImage>
+    private let cacheDetailsImage: CacheStorageService<NSString, UIImage>
+    private let cacheCommentOwnerAvatar: CacheStorageService<NSString, UIImage>
+    
+    //private let cacheDetails: CacheStorageService<NSString, Post>
+    //private let cacheComment: CacheStorageService<NSString, CommentProtocol>
+
+    init(id: String, network: NetworkService) {
+        self.id = id
+        self.network = network
         
-        cacheImages = .init()
-        cacheBuddyicons = .init()
-        cachePostInformation = .init()
+        cacheDetailsOwnerAvatar = .init()
+        cacheDetailsImage = .init()
+        cacheCommentOwnerAvatar = .init()
     }
-    
-    func getIsFavourite() -> Bool {
-        self.isFavourite
-    }
-    
-    func requestDetails(id: String, completionHandler: @escaping (Result<PostDetails, Error>) -> Void) {
-        networkService.getPhotoById(with: id, completion: completionHandler)
-    }
-    
-    func requestImage(post: PostDetails, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
-        group.enter()
         
-        guard
-            let id = post.id,
-            let secret = post.secret,
-            let server = post.server
-        else {
-            completionHandler(.failure(NetworkManagerError.invalidParameters))
-            group.leave()
-            return
-        }
-        
-        let cacheImageIdentifier = id + secret + server as NSString
-        if let imageCache = try? cacheImages.get(for: cacheImageIdentifier) {
-            completionHandler(.success(imageCache))
-            group.leave()
-            return
-        }
-        
-        networkService.image(postId: id, postSecret: secret, serverId: server) { [weak self] result in
-            completionHandler(result.map {
-                self?.cacheImages.set(for: $0, with: cacheImageIdentifier)
-                group.leave()
-                return $0
-            })
+    // MARK: - Request Methods
+    
+    func requestPreparatoryDataOfDetails(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        network.getPhotoById(id: id) { [weak self] result in
+            switch result {
+            case .success(let details):
+                self?.details.id = details.id
+                self?.details.secret = details.secret
+                self?.details.server = details.server
+                self?.details.title = details.title?.content
+                self?.details.description = details.description?.content
+                self?.details.publishedAt = details.dateUploaded
+                self?.details.owner = .init(realName: details.owner?.realName, username: details.owner?.username, location: details.owner?.location, iconFarm: details.owner?.iconFarm, iconServer: details.owner?.iconServer, nsid: details.owner?.nsid)
+                completionHandler(.success(Void()))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
         }
     }
     
-    func requestBuddyicon(post: PostDetails, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    func collectDetailsOwnerAvatar(group: DispatchGroup) {
+        requestDetailsOwnerAvatar(post: details, group: group) { [weak self] result in
+            switch result {
+            case .success(let avatar):
+                self?.details.owner?.avatar = avatar
+            case .failure(let error):
+                print("Post owner avatar download failed: \(error)")
+            }
+        }
+    }
+    
+    private func requestDetailsOwnerAvatar(post: Post, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         group.enter()
         
         guard
@@ -77,90 +75,91 @@ class DetailsRepository {
             return
         }
         
-        let cacheBuddyiconIdentifier = String(farm) + server + nsid as NSString
-        if let buddyiconCache = try? cacheBuddyicons.get(for: cacheBuddyiconIdentifier) {
-            completionHandler(.success(buddyiconCache))
+        let cacheDetailsOwnerAvatarIdentifier = String(farm) + server + nsid as NSString
+        if let ownerAvatarCache = try? cacheDetailsOwnerAvatar.get(for: cacheDetailsOwnerAvatarIdentifier) {
+            completionHandler(.success(ownerAvatarCache))
             group.leave()
             return
         }
         
-        networkService.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { [weak self] result in
+        network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { [weak self] result in
+            group.leave()
+            
             completionHandler(result.map {
-                self?.cacheBuddyicons.set(for: $0, with: cacheBuddyiconIdentifier)
-                group.leave()
+                self?.cacheDetailsOwnerAvatar.set(for: $0, with: cacheDetailsOwnerAvatarIdentifier)
                 return $0
             })
         }
     }
     
-    func removeAllComments() {
-        comments.removeAll()
+    func collectDetailsImage(group: DispatchGroup) {
+        requestDetailsImage(post: details, group: group) { [weak self] result in
+            switch result {
+            case .success(let image):
+                self?.details.image = image
+            case .failure(let error):
+                print("Post image download failed: \(error)")
+            }
+        }
     }
     
-    func requestOwnerAvatar(comment: Comment, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    private func requestDetailsImage(post: Post, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        group.enter()
         
         guard
-            let farm = comment.iconFarm,
-            let server = comment.iconServer,
-            let nsid = comment.author
+            let id = post.id,
+            let secret = post.secret,
+            let server = post.server
         else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))
+            group.leave()
             return
         }
         
-        
-        networkService.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { result in
-            completionHandler(result.map {
-                return $0
-            })
-        }
-    }
-    
-    private var comments: [Comment] = []
-    
-    var numberOfComments: Int {
-        comments.count
-    }
-    
-    func getComment(index: Int) -> Comment? {
-        comments[index] ?? nil
-    }
-    
-    func requestComments(post: PostDetails, group: DispatchGroup, completionHandler: @escaping (Result<[Comment]?, Error>) -> Void) {
-                group.enter()
-        
-//                let cachePostInformationIdentifier = ids[position] as NSString
-//                if let postInformationCache = try? cachePostInformation.get(for: cachePostInformationIdentifier) {
-//                    completionHandler(.success(postInformationCache))
-//                    group.leave()
-//                    return
-//                }
-        
-        
-        networkService.getPhotoComments(for: post.id!) { [weak self] result in
-            completionHandler(result.map {
-                self?.comments = $0 ?? []
-                //self?.cachePostInformation.set(for: $0, with: cachePostInformationIdentifier)
-                group.leave()
-                return $0
-            })
-        }
-    }
-    
-    func requestIsFavourite(group: DispatchGroup, completionHandler: @escaping (Result<Bool, Error>) -> Void) {
-        group.enter()
-        networkService.getFavorites { result in
+        let cacheDetailsImageIdentifier = id + secret + server as NSString
+        if let imageCache = try? cacheDetailsImage.get(for: cacheDetailsImageIdentifier) {
+            completionHandler(.success(imageCache))
             group.leave()
+            return
+        }
+        
+        network.image(postId: id, postSecret: secret, serverId: server) { [weak self] result in
+            group.leave()
+            
+            completionHandler(result.map {
+                self?.cacheDetailsImage.set(for: $0, with: cacheDetailsImageIdentifier)
+                return $0
+            })
+        }
+    }
+    
+    func collectIsFavourite(group: DispatchGroup) {
+        requestIsFavourite(group: group) { [weak self] result in
+            switch result {
+            case .success(let isFavourite):
+                self?.details.isFavourite = isFavourite
+            case .failure(let error):
+                print("Favourite status download failed: \(error)")
+            }
+        }
+    }
+    
+    private func requestIsFavourite(group: DispatchGroup, completionHandler: @escaping (Result<Bool, Error>) -> Void) {
+        group.enter()
+        
+        network.getFavorites { [weak self] result in
+            group.leave()
+            
             switch result {
             case .success(let favourites):
-                for fav in favourites {
-                    if fav.id == self.details.id {
-                        self.isFavourite = true
+                for favourite in favourites {
+                    if favourite.id == self?.details.id {
+                        self?.isFavourite = true
                         completionHandler(.success(true))
                         return
                     }
                 }
-                self.isFavourite = false
+                self?.isFavourite = false
                 completionHandler(.success(false))
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -168,14 +167,86 @@ class DetailsRepository {
         }
     }
     
-    func requestAddFavourite(id: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        self.isFavourite = true
-        networkService.addToFavorites(with: id, completion: completionHandler)
+    func requestAddFavourite(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        network.addToFavorites(with: id) { [weak self] result in
+            completionHandler(result.map {
+                self?.isFavourite = true
+            })
+        }
     }
     
-    func requestRemoveFavourite(id: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        self.isFavourite = false
-        networkService.removeFromFavorites(with: id, completion: completionHandler)
+    func requestRemoveFavourite(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        network.removeFromFavorites(with: id) { [weak self] result in
+            completionHandler(result.map {
+                self?.isFavourite = false
+            })
+        }
+    }
+    
+    func collectDetailsComments(group: DispatchGroup) {
+        group.enter()
+        
+        network.getPhotoComments(for: id) { [weak self] result in
+            group.leave()
+            
+            switch result {
+            case .success(let comments):
+                self?.details.comments = .init()
+                guard let comments = comments else { return }
+                for comment in comments {
+                    let detailsComment: PhotoComment = .init(iconFarm: comment.iconFarm, iconServer: comment.iconServer, nsid: comment.nsid, username: comment.authorName, commentContent: comment.content, publishedAt: comment.dateCreate)
+                    self?.details.comments?.append(detailsComment)
+                }
+            case .failure(let error):
+                print("Commets download failed: \(error)")
+            }
+        }
+    }
+    
+    func requestCommentOwnerAvatar(comment: CommentOwnerProtocol, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        guard
+            let farm = comment.iconFarm,
+            let server = comment.iconServer,
+            let nsid = comment.nsid
+        else {
+            completionHandler(.failure(NetworkManagerError.invalidParameters))
+            return
+        }
+        
+        let cacheCommentOwnerAvatarIdentifier = String(farm) + server + nsid as NSString
+        if let commentOwnerAvatarCache = try? cacheCommentOwnerAvatar.get(for: cacheCommentOwnerAvatarIdentifier) {
+            completionHandler(.success(commentOwnerAvatarCache))
+            return
+        }
+        
+        network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { [weak self] result in
+            completionHandler(result.map {
+                self?.cacheCommentOwnerAvatar.set(for: $0, with: cacheCommentOwnerAvatarIdentifier)
+                return $0
+            })
+        }
+    }
+    
+    func removeAllComments() {
+        details.comments?.removeAll()
+    }
+    
+    func numberOfComments() -> Int {
+        guard let count = details.comments?.count else { return 0 }
+        return count
+    }
+    
+    func retrieveCommentAt(index: Int) -> (CommentProtocol & CommentOwnerProtocol)? {
+        guard let comments = details.comments else { return nil }
+        return comments[index]
+    }
+    
+    func retrieveDetails() -> Post {
+        self.details
+    }
+    
+    func getIsFavourite() -> Bool {
+        self.isFavourite
     }
     
     deinit {

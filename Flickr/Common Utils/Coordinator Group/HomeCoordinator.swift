@@ -29,8 +29,9 @@ class HomeCoordinator: CoordinatorProtocol {
     }
     
     func redirectDetails(details: PostDetails) {
+        //details.id!
         let detailsViewController: DetailsViewController = Storyboard.general.instantiateViewController()
-        detailsViewController.viewModel = .init(coordinator: self, details: details, networkService: networkService)
+        detailsViewController.viewModel = .init(coordinator: self, id: "51552481986", network: networkService)
         detailsViewController.viewModel.delegate = self //???
         navigationController.pushViewController(detailsViewController, animated: true)
     }

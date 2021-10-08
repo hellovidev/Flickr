@@ -71,7 +71,9 @@ class GalleryViewController: UIViewController {
     private func requestPhotos() {
         collectionView.refreshControl?.beginRefreshing()
         viewModel.requestPhotoLinkInfoArray { [weak self] result in
-            self?.collectionView.refreshControl?.endRefreshing()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self?.collectionView.refreshControl?.endRefreshing()
+            }
             switch result {
             case .success:
                 self?.collectionView.reloadData()

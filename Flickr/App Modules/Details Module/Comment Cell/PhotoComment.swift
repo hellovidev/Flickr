@@ -14,7 +14,13 @@ protocol CommentProtocol {
     var publishedAt: String? { get set }
 }
 
-struct PhotoComment: CommentProtocol {
+struct PhotoComment: CommentProtocol, CommentOwnerProtocol {
+    var iconFarm: Int?
+    
+    var iconServer: String?
+    
+    var nsid: String?
+    
     var ownerAvatar: UIImage?
     var username: String?
     var commentContent: String?

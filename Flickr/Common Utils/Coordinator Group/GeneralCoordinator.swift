@@ -42,7 +42,7 @@ class GeneralCoordinator: CoordinatorProtocol {
         childHome.start()
         
         let galleryViewController: GalleryViewController = Storyboard.general.instantiateViewController()
-        galleryViewController.viewModel = .init(coordinator: self, nsid: nsid, networkService: networkService)
+        galleryViewController.viewModel = .init(coordinator: self, nsid: nsid, network: networkService)
         let galleryNavigationController = UINavigationController.init(rootViewController: galleryViewController)
         
         let profileViewController: ProfileViewController = Storyboard.general.instantiateViewController()
