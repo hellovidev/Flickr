@@ -15,13 +15,20 @@ extension NSMutableAttributedString {
             .font: UIFont.systemFont(ofSize: usernameFontSize, weight: usernameFontWeight)
         ]
         
-        let contentAttributes: [NSAttributedString.Key : Any] = [
-            .font: UIFont.systemFont(ofSize: contentFontSize, weight: contentFontWeight)
-        ]
+//        let contentAttributes: [NSAttributedString.Key : Any] = [
+//            .font: UIFont.systemFont(ofSize: contentFontSize, weight: contentFontWeight)
+//        ]
         
         let descriptionAttributedString = NSMutableAttributedString(string: username ?? "", attributes: usernameAttributes)
-        let contentAttributedString = NSAttributedString(string: " " + (content ?? ""), attributes: contentAttributes)
-        descriptionAttributedString.append(contentAttributedString)
+        
+        //let contentAttributedString = NSAttributedString(string: " " + (content ?? ""), attributes: contentAttributes)
+        let contentString = " " + (content ?? "")
+        if let attributedString = contentString.htmlAttributedString {
+            let contentAttributedString = NSMutableAttributedString(string: " ")
+            contentAttributedString.append(NSAttributedString(attributedString: attributedString))
+            descriptionAttributedString.append(contentAttributedString)
+        }
+
         
         return descriptionAttributedString
     }

@@ -21,7 +21,7 @@ class GalleryViewModel {
     }
     
     var numberOfItems: Int {
-        repository.getGallaryCount()
+        repository.getGallaryCount() + 1
     }
     
     func refresh() {
@@ -51,14 +51,14 @@ class GalleryViewModel {
     
     enum DataSourceItem {
         case addNewPhoto
-        case galleryPhoto
+        case galleryPhoto(index: Int)
     }
     
     func itemAt(indexPath: IndexPath) -> DataSourceItem {
         if indexPath.row == 0 {
             return .addNewPhoto
         }
-        return .galleryPhoto
+        return .galleryPhoto(index: indexPath.row - 1)
     }
     
 }

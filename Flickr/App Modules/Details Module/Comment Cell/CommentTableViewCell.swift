@@ -13,10 +13,15 @@ class CommentTableViewCell: UITableViewCell {
     @IBOutlet weak var commentContent: UILabel!
     @IBOutlet weak var commentDate: UILabel!
     
+    private lazy var skeletonAnimation: SkeletonAnimation = .init()
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
         // Initialization code
+        skeletonAnimation.startAnimationFor(view: commentOwnerAvatar)
+        skeletonAnimation.startAnimationFor(view: commentContent, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: commentDate, cornerRadius: true)
         commentOwnerAvatar.layer.cornerRadius = commentOwnerAvatar.frame.height / 2
     }
 
@@ -30,6 +35,7 @@ class CommentTableViewCell: UITableViewCell {
         commentOwnerAvatar.image = comment.ownerAvatar
         commentContent.attributedText = NSMutableAttributedString.prepareContent(username: comment.username, content: comment.commentContent)
         commentDate.text = comment.publishedAt?.prepareStringAsDate()
+        skeletonAnimation.stopAllAnimations()
     }
     
     override func prepareForReuse() {
@@ -38,6 +44,10 @@ class CommentTableViewCell: UITableViewCell {
         commentOwnerAvatar.image = nil
         commentContent.text = "No content"
         commentDate.text = "No date"
+        
+        skeletonAnimation.startAnimationFor(view: commentOwnerAvatar)
+        skeletonAnimation.startAnimationFor(view: commentContent, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: commentDate, cornerRadius: true)
     }
     
 }

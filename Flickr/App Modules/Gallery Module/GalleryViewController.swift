@@ -122,7 +122,7 @@ extension GalleryViewController: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfItems + 1
+        return viewModel.numberOfItems
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -133,11 +133,11 @@ extension GalleryViewController: UICollectionViewDataSource {
             let buttonView: AddButtonView = .init()
             buttonView.addNewButton.addTarget(self, action: #selector(onTapAddButtonAction), for: .touchUpInside)
             cell.view = buttonView
-        case .galleryPhoto:
+        case .galleryPhoto(index: let index):
             let interaction = UIContextMenuInteraction(delegate: self)
             cell.interaction = interaction
             
-            self.viewModel.requestPhoto(index: indexPath.row - 1) { result in
+            self.viewModel.requestPhoto(index: index) { result in
                 switch result {
                 case .success(let image):
                     let imageView: UIImageView = .init(image: image)
@@ -256,21 +256,26 @@ extension GalleryViewController: UIContextMenuInteractionDelegate {
             let activitiyIndicator: ActivityViewController = .init()
             self?.present(activitiyIndicator, animated: true)
             
-            self?.viewModel.removePhotoAt(index: indexPath.row - 1) { [weak self] result in
-                switch result {
-                case .success:
-                    self?.collectionView.deleteItems(at: [indexPath])
-                case .failure(let error):
-                    self?.showAlert(
-                        title: "Delete Failed",
-                        message: "Failed to delete photo.\nTry again.",
-                        button: "OK"
-                    )
-                    print("Delete item with index path \(indexPath.row) failed with error [\(error)]")
+            guard let index = self?.viewModel.itemAt(indexPath: indexPath) else { return }
+            switch index {
+            case .addNewPhoto:
+                break
+            case .galleryPhoto(index: let index):
+                self?.viewModel.removePhotoAt(index: index) { [weak self] result in
+                    switch result {
+                    case .success:
+                        self?.collectionView.deleteItems(at: [indexPath])
+                    case .failure(let error):
+                        self?.showAlert(
+                            title: "Delete Failed",
+                            message: "Failed to delete photo.\nTry again.",
+                            button: "OK"
+                        )
+                        print("Delete item with index path \(indexPath.row) failed with error [\(error)]")
+                    }
+                    self?.dismiss(animated: true)
                 }
-                self?.dismiss(animated: true)
             }
-            
         }
         
         let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions -> UIMenu? in
