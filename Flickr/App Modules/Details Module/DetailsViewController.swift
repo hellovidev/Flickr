@@ -164,7 +164,9 @@ class DetailsViewController: UITableViewController {
             viewModel.requestDetails { result in
                 switch result {
                 case .success(let post):
+                    tableView.beginUpdates()
                     cell.configure(details: post)
+                    tableView.endUpdates()
                     cell.delegate = self
                 case .failure(let error):
                     print(error)
