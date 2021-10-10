@@ -12,4 +12,5 @@ enum ReuseIdentifier: String {
     case postViewController = "PostViewController"
     case homePostCell = "HomePostCell"
     case commentCell = "CommentCell"
+    case detailsCell = "DetailsCell"
 }

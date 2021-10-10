@@ -96,6 +96,18 @@ class DetailsViewModel {
         repository.requestCommentOwnerAvatar(comment: comment, completionHandler: completionHandler)
     }
     
+    enum DataSourceItem {
+        case detailsInformation
+        case detailsComment(index: Int)
+    }
+    
+    func itemAt(indexPath: IndexPath) -> DataSourceItem {
+        if indexPath.row == 0 {
+            return .detailsInformation
+        }
+        return .detailsComment(index: indexPath.row - 1)
+    }
+    
     deinit {
         print("\(type(of: self)) deinited.")
     }
