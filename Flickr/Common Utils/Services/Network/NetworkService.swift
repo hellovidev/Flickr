@@ -18,7 +18,7 @@ struct AccessTokenAPI: Codable {
 // MARK: - Network Layer (REST)
 
 /// https://www.flickr.com/services/api/
-class NetworkService: NSObject, ProgressDelegate {
+class NetworkService: NSObject, ProgressDelegate, DependencyProtocol {
     
     func onProgressCanceled() {
         uploadAlert.dismiss(animated: true)
@@ -269,6 +269,10 @@ class NetworkService: NSObject, ProgressDelegate {
         
         guard let vc = rootViewController else {return}
         uploadAlert.present(from: vc)
+    }
+    
+    deinit {
+        print("\(type(of: self)) deinited.")
     }
         
 }

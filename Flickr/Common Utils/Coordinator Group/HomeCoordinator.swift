@@ -15,24 +15,21 @@ class HomeCoordinator: CoordinatorProtocol {
         
     weak var parentCoordinator: GeneralCoordinator?
     
-    private let networkService: NetworkService
-            
-    init(_ navigationController: UINavigationController, networkService: NetworkService) {
+    private let viewBuilder: ViewBuilder
+                
+    init(_ navigationController: UINavigationController, viewBuilder: ViewBuilder) {
         self.navigationController = navigationController
-        self.networkService = networkService
+        self.viewBuilder = viewBuilder
     }
 
     func start() {
-        let homeViewController: HomeViewController = Storyboard.general.instantiateViewController()
-        homeViewController.viewModel = .init(coordinator: self, networkService: networkService)
+        let homeViewController = viewBuilder.createHomeViewController(coordinator: self)
         navigationController.setViewControllers([homeViewController], animated: true)
     }
     
-    func redirectDetails(details: PostDetails) {
-        //details.id!
-        let detailsViewController: DetailsViewController = Storyboard.general.instantiateViewController()
-        detailsViewController.viewModel = .init(coordinator: self, id: "51552481986", network: networkService)
-        detailsViewController.viewModel.delegate = self //???
+    func redirectDetails(id: String) {
+        let detailsViewController = viewBuilder.createDetailsViewController(coordinator: self)
+        detailsViewController.viewModel.delegate = self
         navigationController.pushViewController(detailsViewController, animated: true)
     }
         

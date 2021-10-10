@@ -360,6 +360,10 @@ class FlickrOAuthService: NSObject {
         task.resume()
     }
     
+    deinit {
+        print("\(type(of: self)) deinited.")
+    }
+    
 }
 
 // MARK: - SFSafariViewControllerDelegate

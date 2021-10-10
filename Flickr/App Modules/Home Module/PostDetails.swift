@@ -10,7 +10,7 @@
     /// Post Details Object.
     /// Use this object to get post deatils by id.
     /// - Note: https://www.flickr.com/services/api/explore/flickr.photos.getInfo.
-    class PostDetails: Decodable, DetailsProtocol {
+    struct PostDetails: Decodable, DetailsProtocol {
         
         let id: String?
         

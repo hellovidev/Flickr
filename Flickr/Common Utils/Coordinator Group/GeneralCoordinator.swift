@@ -23,30 +23,28 @@ class GeneralCoordinator: CoordinatorProtocol {
     
     weak var delegate: GeneralCoordinatorDelegate?
     
-    private let networkService: NetworkService
+    private let viewBuilder: ViewBuilder
     
     private let nsid: String
     
-    init(_ navigationController: UINavigationController, networkService: NetworkService, nsid: String) {
+    init(_ navigationController: UINavigationController, viewBuilder: ViewBuilder, nsid: String) {
         self.navigationController = navigationController
         self.tabBarController = .init()
-        self.networkService = networkService
+        self.viewBuilder = viewBuilder
         self.nsid = nsid
     }
 
     func start() {
         let homeNavigationController: UINavigationController = .init()
-        let childHome = HomeCoordinator(homeNavigationController, networkService: networkService)
+        let childHome = HomeCoordinator(homeNavigationController, viewBuilder: viewBuilder)
         childHome.parentCoordinator = self
         childCoordinators.append(childHome)
         childHome.start()
         
-        let galleryViewController: GalleryViewController = Storyboard.general.instantiateViewController()
-        galleryViewController.viewModel = .init(coordinator: self, nsid: nsid, network: networkService)
+        let galleryViewController = viewBuilder.createGalleryViewController(coordinator: self, nsid: nsid)
         let galleryNavigationController = UINavigationController.init(rootViewController: galleryViewController)
         
-        let profileViewController: ProfileViewController = Storyboard.general.instantiateViewController()
-        profileViewController.viewModel = .init(coordinator: self, nsid: nsid, networkService: networkService)
+        let profileViewController = viewBuilder.createProfileViewController(coordinator: self, nsid: nsid)
         let profileNavigationController = UINavigationController.init(rootViewController: profileViewController)
 
         let tabBarControllers = [homeNavigationController, galleryNavigationController, profileNavigationController]

@@ -11,14 +11,14 @@ class GalleryRepository {
     
     private var gallery: [Photo]
     
-    private let network: NetworkService
+    @Dependency private var network: NetworkService
     
     private let cacheImages: CacheStorageService<NSString, UIImage>
     
     private let nsid: String
     
-    init(nsid: String, network: NetworkService) {
-        self.network = network
+    init(nsid: String) {
+        //self.network = network
         self.nsid = nsid
         self.cacheImages = .init()
         self.gallery = .init()

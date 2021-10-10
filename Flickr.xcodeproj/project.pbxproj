@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		5F090BFB2705C04100843515 /* AddButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F090BFA2705C04100843515 /* AddButtonView.xib */; };
 		5F090BFD2705C05400843515 /* AddButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F090BFC2705C05400843515 /* AddButtonView.swift */; };
+		5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E70D27134389004B8A8F /* ViewBuilder.swift */; };
+		5F20E712271362D1004B8A8F /* DetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E710271362D1004B8A8F /* DetailsTableViewCell.swift */; };
+		5F20E713271362D1004B8A8F /* DetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F20E711271362D1004B8A8F /* DetailsTableViewCell.xib */; };
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
 		5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */; };
@@ -72,6 +75,7 @@
 		5FC5576D270DFF8900018876 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC5576C270DFF8900018876 /* StringExtensions.swift */; };
 		5FC5576F270DFFA800018876 /* NSMutableAttributedStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC5576E270DFFA800018876 /* NSMutableAttributedStringExtensions.swift */; };
 		5FC55771270E265500018876 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC55770270E265500018876 /* UIViewExtensions.swift */; };
+		5FE15E8427122AF400B61DBF /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE15E8327122AF400B61DBF /* DependencyContainer.swift */; };
 		5FE3F8F027046F2200ADAA6B /* SkeletonAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3F8EF27046F2200ADAA6B /* SkeletonAnimation.swift */; };
 		5FF2241C26F1204E0026BAF4 /* NetworkService+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF2241B26F1204E0026BAF4 /* NetworkService+Image.swift */; };
 		5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEC0B026CD4DDB000A0BAB /* AppDelegate.swift */; };
@@ -87,6 +91,9 @@
 /* Begin PBXFileReference section */
 		5F090BFA2705C04100843515 /* AddButtonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddButtonView.xib; sourceTree = "<group>"; };
 		5F090BFC2705C05400843515 /* AddButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButtonView.swift; sourceTree = "<group>"; };
+		5F20E70D27134389004B8A8F /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
+		5F20E710271362D1004B8A8F /* DetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsTableViewCell.swift; sourceTree = "<group>"; };
+		5F20E711271362D1004B8A8F /* DetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailsTableViewCell.xib; sourceTree = "<group>"; };
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
 		5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+UIAlertController.swift"; sourceTree = "<group>"; };
@@ -150,6 +157,7 @@
 		5FC5576C270DFF8900018876 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		5FC5576E270DFFA800018876 /* NSMutableAttributedStringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringExtensions.swift; sourceTree = "<group>"; };
 		5FC55770270E265500018876 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
+		5FE15E8327122AF400B61DBF /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		5FE3F8EF27046F2200ADAA6B /* SkeletonAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonAnimation.swift; sourceTree = "<group>"; };
 		5FF2241B26F1204E0026BAF4 /* NetworkService+Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Image.swift"; sourceTree = "<group>"; };
 		5FFEC0AD26CD4DDB000A0BAB /* Flickr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flickr.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -190,6 +198,15 @@
 				5F090BFC2705C05400843515 /* AddButtonView.swift */,
 			);
 			path = "Add Button View";
+			sourceTree = "<group>";
+		};
+		5F20E70F271362B0004B8A8F /* Details Cell */ = {
+			isa = PBXGroup;
+			children = (
+				5F20E710271362D1004B8A8F /* DetailsTableViewCell.swift */,
+				5F20E711271362D1004B8A8F /* DetailsTableViewCell.xib */,
+			);
+			path = "Details Cell";
 			sourceTree = "<group>";
 		};
 		5F25F69126EA13C800F98608 /* Extensions */ = {
@@ -255,6 +272,7 @@
 		5F4A774326FCEA3A00D1EB00 /* Details Module */ = {
 			isa = PBXGroup;
 			children = (
+				5F20E70F271362B0004B8A8F /* Details Cell */,
 				5FC55768270CB34C00018876 /* Comment Cell */,
 				5FA9B2F526E4B12A0060DAE8 /* DetailsViewController.swift */,
 				5F8A441726FF4F240027217F /* DetailsViewModel.swift */,
@@ -352,6 +370,15 @@
 			path = Authorization;
 			sourceTree = "<group>";
 		};
+		5FE15E8227122AD300B61DBF /* Dependency Group */ = {
+			isa = PBXGroup;
+			children = (
+				5FE15E8327122AF400B61DBF /* DependencyContainer.swift */,
+				5F20E70D27134389004B8A8F /* ViewBuilder.swift */,
+			);
+			path = "Dependency Group";
+			sourceTree = "<group>";
+		};
 		5FF2241A26F10EF90026BAF4 /* Authorization Module */ = {
 			isa = PBXGroup;
 			children = (
@@ -443,6 +470,7 @@
 		5FFEC0C826CD4F43000A0BAB /* Common Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5FE15E8227122AD300B61DBF /* Dependency Group */,
 				5FC5576B270DFF7100018876 /* Extension Group */,
 				5F090BF9270479EC00843515 /* Animation Group */,
 				5F6A836826F4F21C000F9AD2 /* Storage Group */,
@@ -544,6 +572,7 @@
 				5FFEC0BA26CD4DDC000A0BAB /* Assets.xcassets in Resources */,
 				5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */,
 				5F73C3872708D3BF00CDFC8F /* Authorization.storyboard in Resources */,
+				5F20E713271362D1004B8A8F /* DetailsTableViewCell.xib in Resources */,
 				5FFEC0B826CD4DDB000A0BAB /* General.storyboard in Resources */,
 				5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */,
 				5FC55767270CB34600018876 /* CommentTableViewCell.xib in Resources */,
@@ -563,6 +592,7 @@
 				5F4A774726FCEAFB00D1EB00 /* Observable.swift in Sources */,
 				5F8A441226FF3F4E0027217F /* Storyboard.swift in Sources */,
 				5FC5576D270DFF8900018876 /* StringExtensions.swift in Sources */,
+				5F20E712271362D1004B8A8F /* DetailsTableViewCell.swift in Sources */,
 				5F7F996E26D6D26300482485 /* Tag.swift in Sources */,
 				5F73C3812708BA9300CDFC8F /* AuthorizationCoordinator.swift in Sources */,
 				5F7F998226D8064A00482485 /* SignatureHelper.swift in Sources */,
@@ -587,6 +617,7 @@
 				5F7F996826D6AE1000482485 /* Comment.swift in Sources */,
 				5FC5576A270DFF4300018876 /* PhotoComment.swift in Sources */,
 				5F4A774526FCEA6800D1EB00 /* HomeViewModel.swift in Sources */,
+				5FE15E8427122AF400B61DBF /* DependencyContainer.swift in Sources */,
 				5F7F996626D69AE900482485 /* ProfileEntity.swift in Sources */,
 				5FFEC0CC26CD4FAD000A0BAB /* FlickrOAuthService.swift in Sources */,
 				5FA9B2F226E4B1020060DAE8 /* HomeViewController.swift in Sources */,
@@ -615,6 +646,7 @@
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* FlickrConstant.swift in Sources */,
 				5F7F997C26D8003700482485 /* NetworkService+Photos.swift in Sources */,
+				5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */,
 				5F6A836726F4EE19000F9AD2 /* CacheStorageService.swift in Sources */,
 				5FA9B2FC26E655AE0060DAE8 /* RequestType.swift in Sources */,
 				5F7F997A26D8001F00482485 /* NetworkService+Profile.swift in Sources */,

@@ -15,9 +15,9 @@ class DetailsViewModel {
 
     weak var delegate: DetailsViewControllerDelegate?
     
-    init(coordinator: HomeCoordinator, id: String, network: NetworkService) {
+    init(coordinator: HomeCoordinator, id: String) {
         self.coordinator = coordinator
-        self.repository = .init(id: id, network: network)
+        self.repository = .init(id: id)
     }
     
     func close() {

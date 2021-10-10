@@ -14,10 +14,10 @@ enum NetworkManagerError: Error {
 
 class HomeNetworkManager {
     
-    private let networkService: NetworkService
+    @Dependency private var networkService: NetworkService
     private let cacheImages: CacheStorageService<NSString, UIImage>
     private let cacheBuddyicons: CacheStorageService<NSString, UIImage>
-    private let cachePostInformation: CacheStorageService<NSString, PostDetails>
+    private let cachePostInformation: Cache<NSString, PostDetails>
     
     private var ids: [String]
     private var page: Int
@@ -27,8 +27,7 @@ class HomeNetworkManager {
         ids.count
     }
     
-    init(networkService: NetworkService) {
-        self.networkService = networkService
+    init() {
         self.cacheImages = .init()
         self.cacheBuddyicons = .init()
         self.cachePostInformation = .init()
@@ -90,7 +89,7 @@ class HomeNetworkManager {
         group.enter()
 
         let cachePostInformationIdentifier = ids[position] as NSString
-        if let postInformationCache = try? cachePostInformation.get(for: cachePostInformationIdentifier) {
+        if let postInformationCache = try? cachePostInformation.value(forKey: cachePostInformationIdentifier) {
             completionHandler(.success(postInformationCache))
             group.leave()
             return
@@ -99,7 +98,7 @@ class HomeNetworkManager {
         networkService.getPhotoById(id: ids[position]) { [weak self] result in
             completionHandler(result.map {
                 self?.posts.append($0)
-                self?.cachePostInformation.set(for: $0, with: cachePostInformationIdentifier)
+                self?.cachePostInformation.insert($0, forKey: cachePostInformationIdentifier)//.set(for: $0, with: cachePostInformationIdentifier)
                 group.leave()
                 return $0
             })

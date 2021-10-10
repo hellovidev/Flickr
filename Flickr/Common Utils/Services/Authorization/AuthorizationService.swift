@@ -17,7 +17,7 @@ protocol AuthorizationProtocol {
 
 // MARK: - AuthorizationService
 
-class AuthorizationService: AuthorizationProtocol {
+class AuthorizationService: AuthorizationProtocol, DependencyProtocol {
     
     //static let shared = AuthorizationService()
     
@@ -60,6 +60,10 @@ class AuthorizationService: AuthorizationProtocol {
     
     func handleURL(_ url: URL) {
         flickrOAuthService.handleURL(url)
+    }
+    
+    deinit {
+        print("\(type(of: self)) deinited.")
     }
     
 }

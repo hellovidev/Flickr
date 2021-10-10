@@ -11,10 +11,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     var coordinator: ApplicationCoordinator?
-    
-    private let navigationController: UINavigationController = .init()
     private let authorizationService: AuthorizationService = .init()
-    private let userDefaultsStorageService: UserDefaultsStorageService = .init()
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
@@ -33,9 +30,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = .init(windowScene: windowScene)
         
+        DependencyContainer.register(authorizationService)
+        
+        let navigationController: UINavigationController = .init()
         navigationController.setNavigationBarHidden(true, animated: false)
         
-        coordinator = .init(navigationController, storageService: userDefaultsStorageService, authorizationService: authorizationService)
+        let userDefaultsStorageService: UserDefaultsStorageService = .init()
+        
+        coordinator = .init(navigationController, storageService: userDefaultsStorageService)
         coordinator?.start()
         
         window?.rootViewController = navigationController

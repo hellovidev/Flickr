@@ -21,16 +21,17 @@ class AuthorizationCoordinator: CoordinatorProtocol {
     
     weak var delegate: AuthorizationCoordinatorDelegate?
     
-    private let authorizationService: AuthorizationService
+    private let viewBuilder: ViewBuilder
+        
+    @Dependency private var authorizationService: AuthorizationService
 
-    init(_ navigationController: UINavigationController, authorizationService: AuthorizationService) {
+    init(_ navigationController: UINavigationController, viewBuilder: ViewBuilder) {
         self.navigationController = navigationController
-        self.authorizationService = authorizationService
+        self.viewBuilder = viewBuilder
     }
     
     func start() {
-        let authorizationViewController: AuthorizationViewController = Storyboard.authorization.instantiateViewController()
-        authorizationViewController.viewModel = .init(coordinator: self)
+        let authorizationViewController = viewBuilder.createAuthorizationViewController(coordinator: self)
         navigationController.setViewControllers([authorizationViewController], animated: true)
     }
     

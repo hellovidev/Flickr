@@ -9,17 +9,17 @@ import UIKit
 
 class ProfileNetworkManager {
     
-    private let networkService: NetworkService
+    @Dependency private var network: NetworkService
     
     private let nsid: String
     
-    init(nsid: String, networkService: NetworkService) {
-        self.networkService = networkService
+    init(nsid: String) {//, networkService: NetworkService) {
+        //self.networkService = networkService
         self.nsid = nsid
     }
     
     func requestProfile(completionHandler: @escaping (Result<ProfileEntity, Error>) -> Void) {
-        networkService.getProfile(for: nsid, completionHandler: completionHandler)
+        network.getProfile(for: nsid, completionHandler: completionHandler)
     }
     
     func requestAvatar(profile: ProfileEntity, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
@@ -32,7 +32,7 @@ class ProfileNetworkManager {
             return
         }
         
-        networkService.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid, completionHandler: completionHandler)
+        network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid, completionHandler: completionHandler)
     }
     
     deinit {

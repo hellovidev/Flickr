@@ -15,16 +15,26 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
         
     private let storageService: LocalStorageServiceProtocol
     
-    private let authorizationService: AuthorizationService
-    
-    private var networkService: NetworkService?
-    
+    @Dependency private var authorizationService: AuthorizationService
+        
     private var nsid: String?
     
-    init(_ navigationController: UINavigationController, storageService: LocalStorageServiceProtocol, authorizationService: AuthorizationService) {
+    private let viewBuilder: ViewBuilder
+    
+    private var network: NetworkService? {
+        willSet {
+            guard let value = newValue else { return }
+            DependencyContainer.register(value)
+        }
+    }
+    
+    init(_ navigationController: UINavigationController, storageService: LocalStorageServiceProtocol) {
         self.navigationController = navigationController
         self.storageService = storageService
-        self.authorizationService = authorizationService
+        
+        //DependencyContainer.register(authorizationService) //???
+        //self.authorizationService = authorizationService
+        self.viewBuilder = .init()
     }
     
     func start() {
@@ -34,7 +44,9 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
             let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaults.Keys.tokenAPI.rawValue)
             print(accessTokenAPI)
             
-            self.networkService = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
+            self.network = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
+            
+            
             
             guard let nsid = accessTokenAPI.nsid.removingPercentEncoding else {
                 fatalError("Invalid NSID")
@@ -99,7 +111,7 @@ extension ApplicationCoordinator: AuthorizationCoordinatorDelegate {
         do {
             let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaults.Keys.tokenAPI.rawValue)
             
-            self.networkService = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
+            self.network = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
             
             guard let nsid = accessTokenAPI.nsid.removingPercentEncoding else {
                 fatalError("Invalid NSID")
@@ -129,7 +141,7 @@ extension ApplicationCoordinator: GeneralCoordinatorDelegate {
 extension ApplicationCoordinator {
     
     fileprivate func redirectAuthorization() {
-        let childAuthorization = AuthorizationCoordinator(navigationController, authorizationService: authorizationService)
+        let childAuthorization = AuthorizationCoordinator(navigationController, viewBuilder: viewBuilder)
         childAuthorization.parentCoordinator = self
         childAuthorization.delegate = self
         childCoordinators.append(childAuthorization)
@@ -137,7 +149,7 @@ extension ApplicationCoordinator {
     }
     
     fileprivate func redirectGeneral() {
-        let childGeneral = GeneralCoordinator(navigationController, networkService: networkService!, nsid: nsid!)
+        let childGeneral = GeneralCoordinator(navigationController, viewBuilder: viewBuilder, nsid: nsid!)
         childGeneral.parentCoordinator = self
         childGeneral.delegate = self
         childCoordinators.append(childGeneral)

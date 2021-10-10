@@ -21,9 +21,9 @@ class HomeViewModel {
     
     private weak var coordinator: HomeCoordinator?
 
-    init(coordinator: HomeCoordinator, networkService: NetworkService) {
+    init(coordinator: HomeCoordinator) {
         self.coordinator = coordinator
-        self.homeNetworkManager = .init(networkService: networkService)
+        self.homeNetworkManager = .init()
         self.router = .init()
         
         self.router.addObserver { [weak self] router in
@@ -34,7 +34,7 @@ class HomeViewModel {
     private func show(_ router: HomeRoute) {
         switch router {
         case .openPost(details: let details):
-            coordinator?.redirectDetails(details: details)
+            coordinator?.redirectDetails(id: details.id!) //???
 //            let postViewController: PostViewController = Storyboard.general.instantiateViewController()
 //            postViewController.viewModel = PostViewModel(postId: postId, networkService: NetworkService())
 //            postViewController.delegate = self
