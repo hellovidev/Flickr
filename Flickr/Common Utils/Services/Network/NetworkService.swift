@@ -74,7 +74,13 @@ class NetworkService: NSObject, ProgressDelegate, DependencyProtocol {
         }
         
         // Generate request signature and add to parameters
-        let signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: endpoint, parameters: params)
+        var signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: endpoint, parameters: params)
+        //print(signature)
+        while signature.contains("+") {
+            params["oauth_nonce"] = UUID().uuidString
+            signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: endpoint, parameters: params)
+        }
+        //print(signature)
         params["oauth_signature"] = signature
         
         // Build URL request using URLComponents

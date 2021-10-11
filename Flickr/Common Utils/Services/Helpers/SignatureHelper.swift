@@ -33,8 +33,16 @@ struct SignatureHelper {
         let stringParameters = convertParametersToString(parameters, separator: "&")
         let baseSignature = method + "&" + encodeString(endpoint) + "&" + encodeString(stringParameters)
         
+        
+        var signature = hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
+        //print(signature)
+        //signature = baseSignature.hmac(algorithm: .SHA1, key: signingKey)//hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
+//        while signature.contains("+") {
+//            signature = hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
+//        }
+        //print(signature)
         // Build 'Signature' using HMAC-SHA1
-        return hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
+        return signature//hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
     }
     
     // Prepare string value to signature view: 'https://www.flickr.com/services/oauth/request_token' => 'https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token'
