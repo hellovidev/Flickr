@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
@@ -18,7 +18,7 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="400" height="42"/>
+            <rect key="frame" x="0.0" y="0.0" width="250" height="42"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" semanticContentAttribute="spatial" horizontalHuggingPriority="251" verticalHuggingPriority="251" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QRo-gn-Yle">
@@ -31,16 +31,16 @@
                     </constraints>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ujf-En-lR5">
-                    <rect key="frame" x="52" y="5.5" width="104.5" height="31"/>
+                    <rect key="frame" x="52.000000000000007" y="5.6666666666666661" width="104.66666666666669" height="30.666666666666671"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No account name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n8e-Js-JqC">
-                            <rect key="frame" x="0.0" y="0.0" width="104.5" height="14.5"/>
+                            <rect key="frame" x="0.0" y="0.0" width="104.66666666666667" height="14.333333333333334"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No location" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DQl-G3-NHL">
-                            <rect key="frame" x="0.0" y="16.5" width="104.5" height="14.5"/>
+                            <rect key="frame" x="0.0" y="16.333333333333332" width="104.66666666666667" height="14.333333333333332"/>
                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -65,18 +65,19 @@
             </subviews>
             <constraints>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Ujf-En-lR5" secondAttribute="trailing" constant="8" id="9WM-jd-UZB"/>
-                <constraint firstItem="QRo-gn-Yle" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="BKE-qK-Vtv"/>
+                <constraint firstItem="QRo-gn-Yle" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="BKE-qK-Vtv"/>
                 <constraint firstItem="QRo-gn-Yle" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="BQa-fK-neb"/>
-                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="QRo-gn-Yle" secondAttribute="bottom" constant="5" id="E8f-jj-JEj"/>
+                <constraint firstAttribute="bottom" secondItem="QRo-gn-Yle" secondAttribute="bottom" constant="5" id="E8f-jj-JEj"/>
                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Ujf-En-lR5" secondAttribute="bottom" constant="5" id="FCD-RK-5kc"/>
                 <constraint firstItem="Ujf-En-lR5" firstAttribute="centerY" secondItem="QRo-gn-Yle" secondAttribute="centerY" id="GmJ-kg-lhG"/>
                 <constraint firstItem="Ujf-En-lR5" firstAttribute="leading" secondItem="QRo-gn-Yle" secondAttribute="trailing" constant="12" id="Mle-ik-KbQ"/>
+                <constraint firstItem="Ujf-En-lR5" firstAttribute="centerY" secondItem="QRo-gn-Yle" secondAttribute="centerY" id="Pwj-Rt-vkd"/>
                 <constraint firstItem="Ujf-En-lR5" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="ozg-Lc-JSD"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="607.24637681159425" y="-62.946428571428569"/>
+            <point key="canvasLocation" x="500.46728971962614" y="-60.90712742980562"/>
         </view>
     </objects>
     <resources>

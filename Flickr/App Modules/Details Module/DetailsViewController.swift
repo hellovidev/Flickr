@@ -31,7 +31,7 @@ class DetailsViewController: UITableViewController {
     
     // MARK: - Views Properties
     
-    private let postOwnerView: AccountView = .init()
+    private let detailsAuthor: AccountView = .init()
     private let skeletonAnimation: SkeletonAnimation = .init()
     
     // MARK: - ViewModel
@@ -84,7 +84,7 @@ class DetailsViewController: UITableViewController {
         stackView.spacing = .zero
         
         stackView.addArrangedSubview(buttonBack)
-        stackView.addArrangedSubview(postOwnerView)
+        stackView.addArrangedSubview(detailsAuthor)
         
         let backButton = UIBarButtonItem(customView: stackView)
         navigationItem.leftBarButtonItem = backButton
@@ -97,9 +97,9 @@ class DetailsViewController: UITableViewController {
     }
     
     private func setupSkeletonAnimation() {
-        skeletonAnimation.startAnimationFor(view: postOwnerView.ownerAvatar)
-        skeletonAnimation.startAnimationFor(view: postOwnerView.ownerAccountName, cornerRadius: true)
-        skeletonAnimation.startAnimationFor(view: postOwnerView.ownerLocation, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: detailsAuthor.ownerAvatar)
+        skeletonAnimation.startAnimationFor(view: detailsAuthor.ownerAccountName, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: detailsAuthor.ownerLocation, cornerRadius: true)
         
         skeletonAnimation.startAnimationFor(view: detailsImage)
         skeletonAnimation.startAnimationFor(view: detailsTitle, cornerRadius: true)
@@ -120,14 +120,23 @@ class DetailsViewController: UITableViewController {
     
     private var post: Post?
     
+    private func stopAnimations() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.indicatorFavourite.stopAnimating()
+            self?.refreshControl?.endRefreshing()
+            self?.skeletonAnimation.stopAllAnimations()
+        }
+    }
+    
     func requestDetails() {
         viewModel.requestDetails { [weak self] result in
+            //self?.refreshControl?.endRefreshing()
             switch result {
             case .success(let post):
                 // Setup Post Owner View
-                self?.postOwnerView.ownerAvatar.image = post.owner?.avatar
-                self?.postOwnerView.ownerAccountName.text = String.prepareAccountName(fullName: post.owner?.realName, username: post.owner?.username)
-                self?.postOwnerView.ownerLocation.text = post.owner?.location == nil ? "No location" : post.owner?.location
+                self?.detailsAuthor.ownerAvatar.image = post.owner?.avatar
+                self?.detailsAuthor.ownerAccountName.text = String.prepareAccountName(fullName: post.owner?.realName, username: post.owner?.username)
+                self?.detailsAuthor.ownerLocation.text = post.owner?.location == nil ? "No location" : post.owner?.location
                 
                 if let publishedAt = post.publishedAt?.prepareStringAsDate() {
                     self?.detailsDate.text = publishedAt
@@ -154,13 +163,17 @@ class DetailsViewController: UITableViewController {
                 
                 self?.post = post
                 
-                self?.indicatorFavourite.stopAnimating()
                 self?.tableView.reloadData()
-                self?.refreshControl?.endRefreshing()
-                self?.skeletonAnimation.stopAllAnimations()
+
             case .failure(let error):
                 print(error)
+                self?.showAlert(
+                    title: "Refresh Error",
+                    message: "Loading details about post failed.\nTry to check your internet connection and pull to refresh.",
+                    button: "OK"
+                )
             }
+            self?.stopAnimations()
         }
     }
     
