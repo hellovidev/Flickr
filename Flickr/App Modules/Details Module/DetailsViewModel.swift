@@ -85,7 +85,9 @@ class DetailsViewModel {
                 print("Download owner avatar for comment with index \(index) failed. Error: \(error)")
             }
             completionHandler(comment)
-        }        
+        }
+        
+        completionHandler(comment)
     }
         
     private func requestCommentOwnerAvatar(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {

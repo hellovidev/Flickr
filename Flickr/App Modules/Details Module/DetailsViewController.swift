@@ -149,9 +149,7 @@ class DetailsViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.commentCell.rawValue) as! CommentTableViewCell
             
             viewModel.commentForRowAt(index: index) { comment in
-                tableView.beginUpdates()
                 cell.configure(comment)
-                tableView.endUpdates()
             }
             
             return cell
