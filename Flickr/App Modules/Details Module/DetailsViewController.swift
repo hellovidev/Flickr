@@ -7,6 +7,18 @@
 
 import UIKit
 
+enum FavouriteState: String {
+    case isFavourite
+    case isNotFavourite
+    
+    var image: UIImage? {
+        switch self {
+        case .isFavourite: return UIImage(systemName: "bookmark.fill")
+        case .isNotFavourite: return UIImage(systemName: "bookmark")
+        }
+    }
+}
+
 // MARK: - DeatilsViewController
 
 class DetailsViewController: UITableViewController {
@@ -25,11 +37,13 @@ class DetailsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.tableHeaderView?.addBottomBorderWithColor(color: .systemGray3, width: 0.5)
+        //tableView.tableHeaderView?.addBottomBorderWithColor(color: .systemGray3, width: 0.5)
         setupTableRefreshIndicator()
         setupSkeletonAnimation()
         setupDetailsOwnerView()
         registerReusableCell()
+        
+        tableView.separatorStyle = .none
         requestDetails()
     }
     
@@ -42,20 +56,6 @@ class DetailsViewController: UITableViewController {
         let reusableDetailsCellNib = UINib(nibName: detailsNibName, bundle: Bundle.main)
         tableView.register(reusableDetailsCellNib, forCellReuseIdentifier: ReuseIdentifier.detailsCell.rawValue)
     }
-    
-    private enum FavouriteState: String {
-        case isFavourite
-        case isNotFavourite
-        
-        var image: UIImage? {
-            switch self {
-            case .isFavourite: return UIImage(systemName: "bookmark.fill")
-            case .isNotFavourite: return UIImage(systemName: "bookmark")
-            }
-        }
-    }
-    
-
     
     private func setupDetailsOwnerView() {
         navigationItem.setHidesBackButton(true, animated: false)
@@ -92,10 +92,7 @@ class DetailsViewController: UITableViewController {
         skeletonAnimation.startAnimationFor(view: postOwnerView.ownerAccountName, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: postOwnerView.ownerLocation, cornerRadius: true)
         
-        //skeletonAnimation.startAnimationFor(view: postImage)
-        //skeletonAnimation.startAnimationFor(view: postTitle, cornerRadius: true)
-        //skeletonAnimation.startAnimationFor(view: postDescription, cornerRadius: true)
-        //skeletonAnimation.startAnimationFor(view: postDate, cornerRadius: true)
+
     }
     
     @objc private func backAction() {
@@ -105,11 +102,13 @@ class DetailsViewController: UITableViewController {
     @objc private func refreshTable() {
         refreshControl?.beginRefreshing()
         viewModel.refresh()
-        tableView.reloadData() // ???
+        tableView.reloadData()
         requestDetails()
     }
     
-    private func requestDetails() {
+    private var post: Post?
+    
+    func requestDetails() {
         viewModel.requestDetails { [weak self] result in
             switch result {
             case .success(let post):
@@ -118,32 +117,13 @@ class DetailsViewController: UITableViewController {
                 self?.postOwnerView.ownerAccountName.text = String.prepareAccountName(fullName: post.owner?.realName, username: post.owner?.username)
                 self?.postOwnerView.ownerLocation.text = post.owner?.location == nil ? "No location" : post.owner?.location
                 
-                // Setup Post Image
-//                self?.postImage.image = post.image
-//
-//                // Setup Post Description
-//                if let title = post.title, !title.isEmpty {
-//                    self?.postTitle.text = title
-//                } else {
-//                    self?.postTitle.text = "No title"
-//                }
-//
-//                if let description = post.description, !description.isEmpty {
-//                    self?.postDescription.text = description
-//                } else {
-//                    self?.postDescription.text = "No description"
-//                }
-//                self?.postDate.text = post.publishedAt?.prepareStringAsDate()
-//
-//                // Setup Favourite Icon
-//                let favouriteStateImage = (post.isFavourite == nil || post.isFavourite == false) ? FavouriteState.isNotFavourite.image : FavouriteState.isFavourite.image
-//                self?.postIsFavorite.setImage(favouriteStateImage, for: .normal)
+                self?.post = post
                 
                 self?.tableView.reloadData()
                 self?.refreshControl?.endRefreshing()
                 self?.skeletonAnimation.stopAllAnimations()
             case .failure(let error):
-                print(error) //????
+                print(error)
             }
         }
     }
@@ -151,7 +131,7 @@ class DetailsViewController: UITableViewController {
     // MARK: - Table DataSource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfComments + 1
+        return viewModel.numberOfComments
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -159,18 +139,12 @@ class DetailsViewController: UITableViewController {
         case .detailsInformation:
             let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.detailsCell.rawValue) as! DetailsTableViewCell
             
-            //cell.isUserInteractionEnabled = false
-            
-            viewModel.requestDetails { result in
-                switch result {
-                case .success(let post):
-                    tableView.beginUpdates()
-                    cell.configure(details: post)
-                    tableView.endUpdates()
-                    cell.delegate = self
-                case .failure(let error):
-                    print(error)
-                }
+            if let post = self.post {
+                tableView.beginUpdates()
+                cell.configure(details: post)
+                tableView.endUpdates()
+                cell.delegate = self
+                cell.addBottomBorderWithColor(color: .systemGray3, width: 0.5)
             }
             
             return cell

@@ -35,6 +35,7 @@ class CommentTableViewCell: UITableViewCell {
         commentOwnerAvatar.image = comment.ownerAvatar
         commentContent.attributedText = NSMutableAttributedString.prepareContent(username: comment.username, content: comment.commentContent)
         commentDate.text = comment.publishedAt?.prepareStringAsDate()
+        
         skeletonAnimation.stopAllAnimations()
     }
     

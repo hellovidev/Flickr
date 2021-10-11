@@ -11,15 +11,15 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CommentCell" rowHeight="62" id="KGk-i7-Jjw" customClass="CommentTableViewCell" customModule="Flickr" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="301" height="62"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CommentCell" rowHeight="76" id="KGk-i7-Jjw" customClass="CommentTableViewCell" customModule="Flickr" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="301" height="76"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="301" height="62"/>
+                <rect key="frame" x="0.0" y="0.0" width="301" height="76"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Content" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="da4-sK-u83">
-                        <rect key="frame" x="62" y="10" width="55.5" height="22.5"/>
+                        <rect key="frame" x="62" y="10" width="55.5" height="36"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -34,7 +34,7 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vgy-zg-RXy">
-                        <rect key="frame" x="212.5" y="37.5" width="73.5" height="14.5"/>
+                        <rect key="frame" x="212.5" y="51" width="73.5" height="14.5"/>
                         <attributedString key="attributedText">
                             <fragment content="23 Sep 2009">
                                 <attributes>
@@ -46,28 +46,41 @@
                         </attributedString>
                         <nil key="highlightedColor"/>
                     </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="S6e-5i-469">
+                        <rect key="frame" x="0.0" y="75.5" width="301" height="0.5"/>
+                        <color key="backgroundColor" systemColor="systemGray5Color"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="0.29999999999999999" id="82D-nM-nbp"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstItem="da4-sK-u83" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="47S-4e-hTx"/>
+                    <constraint firstAttribute="trailing" secondItem="S6e-5i-469" secondAttribute="trailing" id="C53-tb-z0B"/>
                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="uBs-S3-FQ8" secondAttribute="bottom" id="EmR-mT-osc"/>
+                    <constraint firstAttribute="bottom" secondItem="S6e-5i-469" secondAttribute="bottom" id="FDd-wp-1xu"/>
                     <constraint firstItem="uBs-S3-FQ8" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="GgG-aH-fGV"/>
                     <constraint firstItem="da4-sK-u83" firstAttribute="top" secondItem="uBs-S3-FQ8" secondAttribute="top" id="NR2-VP-KAj"/>
                     <constraint firstItem="Vgy-zg-RXy" firstAttribute="top" secondItem="da4-sK-u83" secondAttribute="bottom" constant="5" id="NtV-Pn-BIL"/>
                     <constraint firstAttribute="trailing" secondItem="Vgy-zg-RXy" secondAttribute="trailing" constant="15" id="WOb-9d-0uK"/>
+                    <constraint firstItem="S6e-5i-469" firstAttribute="top" secondItem="Vgy-zg-RXy" secondAttribute="bottom" constant="10" id="a0T-ek-fyX"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="da4-sK-u83" secondAttribute="trailing" constant="15" id="aCw-ei-rN2"/>
-                    <constraint firstAttribute="bottom" secondItem="Vgy-zg-RXy" secondAttribute="bottom" constant="10" id="aqT-ay-hEk"/>
                     <constraint firstItem="Vgy-zg-RXy" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="uBs-S3-FQ8" secondAttribute="trailing" constant="15" id="bMf-rM-zbE"/>
+                    <constraint firstItem="S6e-5i-469" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" id="e4r-zA-Z0h"/>
                     <constraint firstItem="da4-sK-u83" firstAttribute="leading" secondItem="uBs-S3-FQ8" secondAttribute="trailing" constant="15" id="gaB-uP-NHe"/>
+                    <constraint firstItem="S6e-5i-469" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="i1M-Zq-fvV"/>
+                    <constraint firstItem="S6e-5i-469" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="nTZ-tt-5qv"/>
                     <constraint firstItem="uBs-S3-FQ8" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="uQE-OK-9KG"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
                 <outlet property="commentContent" destination="da4-sK-u83" id="NJi-9x-vbo"/>
                 <outlet property="commentDate" destination="Vgy-zg-RXy" id="wsP-7C-VYL"/>
                 <outlet property="commentOwnerAvatar" destination="uBs-S3-FQ8" id="2uI-Rm-ZZT"/>
             </connections>
-            <point key="canvasLocation" x="99.275362318840592" y="-40.178571428571423"/>
+            <point key="canvasLocation" x="99.275362318840592" y="-35.491071428571423"/>
         </tableViewCell>
     </objects>
     <resources>

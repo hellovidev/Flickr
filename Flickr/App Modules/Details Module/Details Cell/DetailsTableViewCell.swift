@@ -21,10 +21,16 @@ class DetailsTableViewCell: UITableViewCell {
     
     weak var delegate: DetailsCellDelegate?
     
+    private let skeletonAnimation: SkeletonAnimation = .init()
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
         // Initialization code
+        skeletonAnimation.startAnimationFor(view: detailsImage)
+        skeletonAnimation.startAnimationFor(view: detailsTitle, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: detailsDescription, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: detailsDate, cornerRadius: true)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -53,18 +59,8 @@ class DetailsTableViewCell: UITableViewCell {
 
         let favouriteStateImage = (details.isFavourite == nil || details.isFavourite == false) ? FavouriteState.isNotFavourite.image : FavouriteState.isFavourite.image
         detailsFavourite.setImage(favouriteStateImage, for: .normal)
-    }
-    
-    private enum FavouriteState: String {
-        case isFavourite
-        case isNotFavourite
         
-        var image: UIImage? {
-            switch self {
-            case .isFavourite: return UIImage(systemName: "bookmark.fill")
-            case .isNotFavourite: return UIImage(systemName: "bookmark")
-            }
-        }
+        skeletonAnimation.stopAllAnimations()
     }
     
     @IBAction func favouriteAction(_ sender: UIButton) {

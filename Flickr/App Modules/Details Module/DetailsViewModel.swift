@@ -41,7 +41,7 @@ class DetailsViewModel {
     }
     
     var numberOfComments: Int {
-        repository.numberOfComments()
+        repository.numberOfComments() + 1
     }
 
     func requestDetails(completionHandler: @escaping (Result<Post, Error>) -> Void) {
