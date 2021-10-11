@@ -25,8 +25,8 @@ final class SkeletonAnimation: SkeletonAnimationProtocol {
     private let animationLayerKey: String = "gradientAnimation"
     
     func startAnimationFor(view: UIView, cornerRadius: Bool = false) {
-        view.setNeedsLayout()
-        view.layoutIfNeeded()
+        /*view.setNeedsLayout()
+        view.layoutIfNeeded()*/
         
         let gradientLayer: CAGradientLayer = .init()
         gradientLayer.frame = view.bounds

@@ -91,8 +91,6 @@ class DetailsViewController: UITableViewController {
         skeletonAnimation.startAnimationFor(view: postOwnerView.ownerAvatar)
         skeletonAnimation.startAnimationFor(view: postOwnerView.ownerAccountName, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: postOwnerView.ownerLocation, cornerRadius: true)
-        
-
     }
     
     @objc private func backAction() {
@@ -144,7 +142,6 @@ class DetailsViewController: UITableViewController {
                 cell.configure(details: post)
                 tableView.endUpdates()
                 cell.delegate = self
-                cell.addBottomBorderWithColor(color: .systemGray3, width: 0.5)
             }
             
             return cell
