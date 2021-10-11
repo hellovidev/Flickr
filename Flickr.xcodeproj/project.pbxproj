@@ -12,6 +12,7 @@
 		5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E70D27134389004B8A8F /* ViewBuilder.swift */; };
 		5F20E712271362D1004B8A8F /* DetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E710271362D1004B8A8F /* DetailsTableViewCell.swift */; };
 		5F20E713271362D1004B8A8F /* DetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F20E711271362D1004B8A8F /* DetailsTableViewCell.xib */; };
+		5F20E7152714606B004B8A8F /* NavigationLogotype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E7142714606B004B8A8F /* NavigationLogotype.swift */; };
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
 		5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */; };
@@ -94,6 +95,7 @@
 		5F20E70D27134389004B8A8F /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
 		5F20E710271362D1004B8A8F /* DetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsTableViewCell.swift; sourceTree = "<group>"; };
 		5F20E711271362D1004B8A8F /* DetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailsTableViewCell.xib; sourceTree = "<group>"; };
+		5F20E7142714606B004B8A8F /* NavigationLogotype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLogotype.swift; sourceTree = "<group>"; };
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
 		5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+UIAlertController.swift"; sourceTree = "<group>"; };
@@ -482,6 +484,7 @@
 				5F4A774626FCEAFB00D1EB00 /* Observable.swift */,
 				5F71DB1427077990006094B4 /* ActivityViewController.swift */,
 				5F73C38C270A25B100CDFC8F /* UploadViewController.swift */,
+				5F20E7142714606B004B8A8F /* NavigationLogotype.swift */,
 			);
 			path = "Common Utils";
 			sourceTree = "<group>";
@@ -592,6 +595,7 @@
 				5F4A774726FCEAFB00D1EB00 /* Observable.swift in Sources */,
 				5F8A441226FF3F4E0027217F /* Storyboard.swift in Sources */,
 				5FC5576D270DFF8900018876 /* StringExtensions.swift in Sources */,
+				5F20E7152714606B004B8A8F /* NavigationLogotype.swift in Sources */,
 				5F20E712271362D1004B8A8F /* DetailsTableViewCell.swift in Sources */,
 				5F7F996E26D6D26300482485 /* Tag.swift in Sources */,
 				5F73C3812708BA9300CDFC8F /* AuthorizationCoordinator.swift in Sources */,

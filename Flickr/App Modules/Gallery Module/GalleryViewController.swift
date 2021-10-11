@@ -65,15 +65,8 @@ class GalleryViewController: UIViewController {
     }
     
     private func setupNavigationTitle() {
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 25))
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: ImageName.logotype.rawValue)
-        
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 25))
-        imageView.center = view.convert(view.center, from: imageView);
-        view.addSubview(imageView)
-        
-        navigationItem.titleView = view
+        let navigationLogotype: NavigationLogotype = .init()
+        navigationItem.titleView = navigationLogotype
     }
     
     @objc
