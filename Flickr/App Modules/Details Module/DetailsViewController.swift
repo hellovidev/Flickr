@@ -23,6 +23,11 @@ enum FavouriteState: String {
 
 class DetailsViewController: UITableViewController {
     
+    @IBOutlet weak var detailsImage: UIImageView!
+    @IBOutlet weak var detailsTitle: UILabel!
+    @IBOutlet weak var detailsDescription: UILabel!
+    @IBOutlet weak var detailsDate: UILabel!
+    
     // MARK: - Views Properties
     
     private let postOwnerView: AccountView = .init()
@@ -115,6 +120,26 @@ class DetailsViewController: UITableViewController {
                 self?.postOwnerView.ownerAccountName.text = String.prepareAccountName(fullName: post.owner?.realName, username: post.owner?.username)
                 self?.postOwnerView.ownerLocation.text = post.owner?.location == nil ? "No location" : post.owner?.location
                 
+                if let publishedAt = post.publishedAt?.prepareStringAsDate() {
+                    self?.detailsDate.text = publishedAt
+                } else {
+                    self?.detailsDate.text = "No date"
+                }
+
+                self?.detailsImage.image = post.image
+
+                if let title = post.title, !title.isEmpty {
+                    self?.detailsTitle.text = title
+                } else {
+                    self?.detailsTitle.text = "No title"
+                }
+
+                if let description = post.description, !description.isEmpty {
+                    self?.detailsDescription.text = description
+                } else {
+                    self?.detailsDescription.text = "No description"
+                }
+                
                 self?.post = post
                 
                 self?.tableView.reloadData()
@@ -195,5 +220,27 @@ extension DetailsViewController: DetailsCellDelegate {
                 }
             }
         }
+    
+}
+
+
+class DynamicHeaderTableView: UITableView {
+        
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        guard let headerView = self.tableHeaderView else {
+            return
+        }
+        
+        let originalSize = self.frame.size
+        let targetSize = headerView.systemLayoutSizeFitting(originalSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .defaultLow)
+
+        if headerView.frame.size.height != targetSize.height {
+            headerView.frame.size.height = targetSize.height
+            self.tableHeaderView = headerView
+            self.layoutIfNeeded()
+        }
+    }
     
 }
