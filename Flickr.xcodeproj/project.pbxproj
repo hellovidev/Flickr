@@ -10,8 +10,6 @@
 		5F090BFB2705C04100843515 /* AddButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F090BFA2705C04100843515 /* AddButtonView.xib */; };
 		5F090BFD2705C05400843515 /* AddButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F090BFC2705C05400843515 /* AddButtonView.swift */; };
 		5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E70D27134389004B8A8F /* ViewBuilder.swift */; };
-		5F20E712271362D1004B8A8F /* DetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E710271362D1004B8A8F /* DetailsTableViewCell.swift */; };
-		5F20E713271362D1004B8A8F /* DetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F20E711271362D1004B8A8F /* DetailsTableViewCell.xib */; };
 		5F20E7152714606B004B8A8F /* NavigationLogotype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E7142714606B004B8A8F /* NavigationLogotype.swift */; };
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
@@ -93,8 +91,6 @@
 		5F090BFA2705C04100843515 /* AddButtonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddButtonView.xib; sourceTree = "<group>"; };
 		5F090BFC2705C05400843515 /* AddButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButtonView.swift; sourceTree = "<group>"; };
 		5F20E70D27134389004B8A8F /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
-		5F20E710271362D1004B8A8F /* DetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsTableViewCell.swift; sourceTree = "<group>"; };
-		5F20E711271362D1004B8A8F /* DetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailsTableViewCell.xib; sourceTree = "<group>"; };
 		5F20E7142714606B004B8A8F /* NavigationLogotype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLogotype.swift; sourceTree = "<group>"; };
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
@@ -202,15 +198,6 @@
 			path = "Add Button View";
 			sourceTree = "<group>";
 		};
-		5F20E70F271362B0004B8A8F /* Details Cell */ = {
-			isa = PBXGroup;
-			children = (
-				5F20E710271362D1004B8A8F /* DetailsTableViewCell.swift */,
-				5F20E711271362D1004B8A8F /* DetailsTableViewCell.xib */,
-			);
-			path = "Details Cell";
-			sourceTree = "<group>";
-		};
 		5F25F69126EA13C800F98608 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -274,7 +261,6 @@
 		5F4A774326FCEA3A00D1EB00 /* Details Module */ = {
 			isa = PBXGroup;
 			children = (
-				5F20E70F271362B0004B8A8F /* Details Cell */,
 				5FC55768270CB34C00018876 /* Comment Cell */,
 				5FA9B2F526E4B12A0060DAE8 /* DetailsViewController.swift */,
 				5F8A441726FF4F240027217F /* DetailsViewModel.swift */,
@@ -575,7 +561,6 @@
 				5FFEC0BA26CD4DDC000A0BAB /* Assets.xcassets in Resources */,
 				5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */,
 				5F73C3872708D3BF00CDFC8F /* Authorization.storyboard in Resources */,
-				5F20E713271362D1004B8A8F /* DetailsTableViewCell.xib in Resources */,
 				5FFEC0B826CD4DDB000A0BAB /* General.storyboard in Resources */,
 				5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */,
 				5FC55767270CB34600018876 /* CommentTableViewCell.xib in Resources */,
@@ -596,7 +581,6 @@
 				5F8A441226FF3F4E0027217F /* Storyboard.swift in Sources */,
 				5FC5576D270DFF8900018876 /* StringExtensions.swift in Sources */,
 				5F20E7152714606B004B8A8F /* NavigationLogotype.swift in Sources */,
-				5F20E712271362D1004B8A8F /* DetailsTableViewCell.swift in Sources */,
 				5F7F996E26D6D26300482485 /* Tag.swift in Sources */,
 				5F73C3812708BA9300CDFC8F /* AuthorizationCoordinator.swift in Sources */,
 				5F7F998226D8064A00482485 /* SignatureHelper.swift in Sources */,

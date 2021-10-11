@@ -41,7 +41,7 @@ class DetailsViewModel {
     }
     
     var numberOfComments: Int {
-        repository.numberOfComments() + 1
+        repository.numberOfComments()
     }
 
     func requestDetails(completionHandler: @escaping (Result<Post, Error>) -> Void) {
@@ -96,18 +96,6 @@ class DetailsViewModel {
             return
         }
         repository.requestCommentOwnerAvatar(comment: comment, completionHandler: completionHandler)
-    }
-    
-    enum DataSourceItem {
-        case detailsInformation
-        case detailsComment(index: Int)
-    }
-    
-    func itemAt(indexPath: IndexPath) -> DataSourceItem {
-        if indexPath.row == 0 {
-            return .detailsInformation
-        }
-        return .detailsComment(index: indexPath.row - 1)
     }
     
     deinit {

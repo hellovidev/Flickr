@@ -311,6 +311,9 @@
                                         <imageReference key="image" image="bookmark" catalog="system" symbolScale="large"/>
                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
                                     </state>
+                                    <connections>
+                                        <action selector="didTapFavourite:" destination="dpc-Zo-y1a" eventType="touchUpInside" id="d4c-jF-4LM"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <viewLayoutGuide key="safeArea" id="3qr-5d-gNc"/>
@@ -359,6 +362,7 @@
                     <connections>
                         <outlet property="detailsDate" destination="hxd-1v-ehS" id="tbj-p4-lF3"/>
                         <outlet property="detailsDescription" destination="Vl6-TN-pSW" id="ycT-ym-Fhk"/>
+                        <outlet property="detailsFavourite" destination="dD3-1y-Zqj" id="8hR-V4-VA2"/>
                         <outlet property="detailsImage" destination="btr-W1-m1Z" id="OMQ-EA-vxo"/>
                         <outlet property="detailsTitle" destination="KNm-i9-R3l" id="AvO-9C-fVf"/>
                     </connections>

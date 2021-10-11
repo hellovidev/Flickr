@@ -27,6 +27,7 @@ class DetailsViewController: UITableViewController {
     @IBOutlet weak var detailsTitle: UILabel!
     @IBOutlet weak var detailsDescription: UILabel!
     @IBOutlet weak var detailsDate: UILabel!
+    @IBOutlet weak var detailsFavourite: UIButton!
     
     // MARK: - Views Properties
     
@@ -41,14 +42,21 @@ class DetailsViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        tableView.separatorStyle = .none
         
-        //tableView.tableHeaderView?.addBottomBorderWithColor(color: .systemGray3, width: 0.5)
+        
+
+        setupFavouriteIndicator()
+        
+        indicatorFavourite.startAnimating()
+        detailsFavourite.setImage(nil, for: .normal)
+        
         setupTableRefreshIndicator()
         setupSkeletonAnimation()
         setupDetailsOwnerView()
         registerReusableCell()
         
-        tableView.separatorStyle = .none
         requestDetails()
     }
     
@@ -56,10 +64,6 @@ class DetailsViewController: UITableViewController {
         let commentNibName = String(describing: CommentTableViewCell.self)
         let reusableCommentCellNib = UINib(nibName: commentNibName, bundle: Bundle.main)
         tableView.register(reusableCommentCellNib, forCellReuseIdentifier: ReuseIdentifier.commentCell.rawValue)
-        
-        let detailsNibName = String(describing: DetailsTableViewCell.self)
-        let reusableDetailsCellNib = UINib(nibName: detailsNibName, bundle: Bundle.main)
-        tableView.register(reusableDetailsCellNib, forCellReuseIdentifier: ReuseIdentifier.detailsCell.rawValue)
     }
     
     private func setupDetailsOwnerView() {
@@ -96,6 +100,11 @@ class DetailsViewController: UITableViewController {
         skeletonAnimation.startAnimationFor(view: postOwnerView.ownerAvatar)
         skeletonAnimation.startAnimationFor(view: postOwnerView.ownerAccountName, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: postOwnerView.ownerLocation, cornerRadius: true)
+        
+        skeletonAnimation.startAnimationFor(view: detailsImage)
+        skeletonAnimation.startAnimationFor(view: detailsTitle, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: detailsDescription, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: detailsDate, cornerRadius: true)
     }
     
     @objc private func backAction() {
@@ -140,8 +149,12 @@ class DetailsViewController: UITableViewController {
                     self?.detailsDescription.text = "No description"
                 }
                 
+                let favouriteStateImage = (post.isFavourite == nil || post.isFavourite == false) ? FavouriteState.isNotFavourite.image : FavouriteState.isFavourite.image
+                self?.detailsFavourite.setImage(favouriteStateImage, for: .normal)
+                
                 self?.post = post
                 
+                self?.indicatorFavourite.stopAnimating()
                 self?.tableView.reloadData()
                 self?.refreshControl?.endRefreshing()
                 self?.skeletonAnimation.stopAllAnimations()
@@ -158,71 +171,72 @@ class DetailsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch viewModel.itemAt(indexPath: indexPath) {
-        case .detailsInformation:
-            let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.detailsCell.rawValue) as! DetailsTableViewCell
-            
-            if let post = self.post {
-                tableView.beginUpdates()
-                cell.configure(details: post)
-                tableView.endUpdates()
-                cell.delegate = self
-            }
-            
-            return cell
-        case .detailsComment(index: let index):
             let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.commentCell.rawValue) as! CommentTableViewCell
             
-            viewModel.commentForRowAt(index: index) { comment in
+        viewModel.commentForRowAt(index: indexPath.row) { comment in
                 cell.configure(comment)
             }
             
             return cell
-        }
     }
     
-    deinit {
-        print("\(type(of: self)) deinited.")
+    @IBAction func didTapFavourite(_ sender: UIButton) {
+        viewModel.isFavourite ? requestRemoveFavourite() : requestAddFavourite()
     }
     
-}
-
-extension DetailsViewController: DetailsCellDelegate {
-    
-    func didClickFavourite(_ cell: DetailsTableViewCell) {
-        viewModel.isFavourite ? requestRemoveFavourite(button: cell.detailsFavourite) : requestAddFavourite(button: cell.detailsFavourite)
+    private var indicatorFavourite: UIActivityIndicatorView!
+    private func setupFavouriteIndicator() {
+        indicatorFavourite = .init(frame: CGRect(x: 0, y: 0, width: detailsFavourite.frame.width, height: detailsFavourite.frame.height))
+        indicatorFavourite.hidesWhenStopped = true
+        detailsFavourite.addSubview(indicatorFavourite)
     }
     
-    private func requestRemoveFavourite(button: UIButton) {
-        button.setImage(FavouriteState.isNotFavourite.image, for: .normal)
+    private func requestRemoveFavourite() {
+        
+        indicatorFavourite.startAnimating()
+        detailsFavourite.setImage(nil, for: .normal)
+        
             viewModel.requestRemoveFavourite { [weak self] result in
                 switch result {
                 case .success:
-                    break
+                    self?.indicatorFavourite.stopAnimating()
+                    self?.detailsFavourite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
+                    //break
                 case .failure(let error):
-                    button.setImage(FavouriteState.isFavourite.image, for: .normal)
+                    self?.indicatorFavourite.stopAnimating()
+                    self?.detailsFavourite.setImage(FavouriteState.isFavourite.image, for: .normal)
                     print("Request to remove post from favourites complete with error: \(error)")
                     self?.showAlert(title: "Favourite Error", message: "Request to remove post from favourite failed. Try again.", button: "OK")
                 }
             }
         }
     
-        private func requestAddFavourite(button: UIButton) {
-            button.setImage(FavouriteState.isFavourite.image, for: .normal)
+        private func requestAddFavourite() {
+        
+            
+            indicatorFavourite.startAnimating()
+            detailsFavourite.setImage(nil, for: .normal)
+            
             viewModel.requestAddFavourite { [weak self] result in
                 switch result {
                 case .success:
-                    break
+                    self?.indicatorFavourite.stopAnimating()
+                    self?.detailsFavourite.setImage(FavouriteState.isFavourite.image, for: .normal)
+                    //break
                 case .failure(let error):
-                    button.setImage(FavouriteState.isNotFavourite.image, for: .normal)
+                    self?.indicatorFavourite.stopAnimating()
+                    self?.detailsFavourite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
                     print("Request to add post to favourites complete with error: \(error)")
                     self?.showAlert(title: "Favourite Error", message: "Request to add post to favourite failed. Try again.", button: "OK")
                 }
             }
         }
     
+    deinit {
+        print("\(type(of: self)) deinited.")
+    }
+    
 }
-
 
 class DynamicHeaderTableView: UITableView {
         
