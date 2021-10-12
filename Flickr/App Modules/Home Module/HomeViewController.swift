@@ -190,7 +190,10 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.router.send(.openPost(details: viewModel.homeNetworkManager.getPostDetails(index: indexPath.row)))
+        let cell = tableView.cellForRow(at: indexPath) as! PostTableViewCell
+        guard let id = cell.postId else { return }
+
+        viewModel.router.send(.openPost(id: id))//viewModel.homeNetworkManager.getPostDetails(index: indexPath.row)))
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

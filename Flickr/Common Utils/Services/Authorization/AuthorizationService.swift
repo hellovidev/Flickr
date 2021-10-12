@@ -37,6 +37,7 @@ class AuthorizationService: AuthorizationProtocol, DependencyProtocol {
                 do {
                     let token = AccessTokenAPI(token: accessOAuthToken.token, secret: accessOAuthToken.secretToken, nsid: accessOAuthToken.userNSID)
                     try self?.storageService.set(for: token, with: UserDefaults.Keys.tokenAPI.rawValue)
+                    try self?.storageService.set(for: token.nsid.removingPercentEncoding!, with: UserDefaults.Keys.nsid.rawValue)
                     completion(.success(Void()))
                 } catch {
                     completion(.failure(error))

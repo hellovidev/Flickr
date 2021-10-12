@@ -8,7 +8,7 @@
 import UIKit
 
 enum HomeRoute {
-    case openPost(details: PostDetails)
+    case openPost(id: String)
 }
 
 class HomeViewModel {
@@ -33,8 +33,8 @@ class HomeViewModel {
     
     private func show(_ router: HomeRoute) {
         switch router {
-        case .openPost(details: let details):
-            coordinator?.redirectDetails(id: details.id!) //???
+        case .openPost(id: let id):
+            coordinator?.redirectDetails(id: id) //???
 //            let postViewController: PostViewController = Storyboard.general.instantiateViewController()
 //            postViewController.viewModel = PostViewModel(postId: postId, networkService: NetworkService())
 //            postViewController.delegate = self

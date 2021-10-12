@@ -32,17 +32,17 @@ class ViewBuilder {
         return homeViewController
     }
     
-    func createGalleryViewController(coordinator: GeneralCoordinator, nsid: String) -> GalleryViewController {
+    func createGalleryViewController(coordinator: GeneralCoordinator) -> GalleryViewController {
         let galleryViewController: GalleryViewController = Storyboard.general.instantiateViewController()
         let network: NetworkService = try! dependencyContainer.retrive()
-        galleryViewController.viewModel = .init(coordinator: coordinator, nsid: nsid, network: network)
+        galleryViewController.viewModel = .init(coordinator: coordinator, network: network)
         return galleryViewController
     }
     
-    func createProfileViewController(coordinator: GeneralCoordinator, nsid: String) -> ProfileViewController {
+    func createProfileViewController(coordinator: GeneralCoordinator) -> ProfileViewController {
         let profileViewController: ProfileViewController = Storyboard.general.instantiateViewController()
         let network: NetworkService = try! dependencyContainer.retrive()
-        profileViewController.viewModel = .init(coordinator: coordinator, nsid: nsid, network: network)
+        profileViewController.viewModel = .init(coordinator: coordinator, network: network)
         return profileViewController
     }
     

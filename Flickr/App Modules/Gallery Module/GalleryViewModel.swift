@@ -15,9 +15,9 @@ class GalleryViewModel {
     
     private let repository: GalleryRepository
     
-    init(coordinator: GeneralCoordinator, nsid: String, network: NetworkService) {
+    init(coordinator: GeneralCoordinator, network: NetworkService) {
         self.coordinator = coordinator
-        self.repository = .init(nsid: nsid, network: network)
+        self.repository = .init(network: network)
     }
     
     var numberOfItems: Int {

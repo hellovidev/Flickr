@@ -16,9 +16,7 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
     private let storageService: LocalStorageServiceProtocol
     
     private var authorizationService: AuthorizationService
-        
-    private var nsid: String?
-    
+            
     private let viewBuilder: ViewBuilder
     
     private var network: NetworkService? {
@@ -42,15 +40,12 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
             let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaults.Keys.tokenAPI.rawValue)
             print(accessTokenAPI)
             
+            let nsida = try storageService.get(for: String.self, with: UserDefaults.Keys.nsid.rawValue)
+            print(nsida)
+            
             self.network = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
             
-            
-            
-            guard let nsid = accessTokenAPI.nsid.removingPercentEncoding else {
-                fatalError("Invalid NSID")
-            }
-            
-            self.nsid = nsid
+
             
             isAutherized ? redirectGeneral() : redirectAuthorization()
         } catch {
@@ -111,11 +106,6 @@ extension ApplicationCoordinator: AuthorizationCoordinatorDelegate {
             
             self.network = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
             
-            guard let nsid = accessTokenAPI.nsid.removingPercentEncoding else {
-                fatalError("Invalid NSID")
-            }
-            
-            self.nsid = nsid
             redirectGeneral()
         } catch {
             print("Error")
@@ -147,7 +137,7 @@ extension ApplicationCoordinator {
     }
     
     fileprivate func redirectGeneral() {
-        let childGeneral = GeneralCoordinator(navigationController, viewBuilder: viewBuilder, nsid: nsid!)
+        let childGeneral = GeneralCoordinator(navigationController, viewBuilder: viewBuilder)
         childGeneral.parentCoordinator = self
         childGeneral.delegate = self
         childCoordinators.append(childGeneral)

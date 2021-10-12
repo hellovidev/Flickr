@@ -80,7 +80,11 @@ class PostTableViewCell: UITableViewCell {
         return description
     }
     
+    var postId: String?
+    
     func config(details: PostDetails?, buddyicon: UIImage?, image: UIImage?) {
+        postId = details?.id
+        
         accountView.ownerAvatar.image = buddyicon
         postImage.image = image
         

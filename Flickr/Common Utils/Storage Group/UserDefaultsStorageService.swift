@@ -72,6 +72,7 @@ extension UserDefaults {
         
         case isAuthorized
 
+        case nsid
     }
 
     func reset() {

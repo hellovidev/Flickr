@@ -24,14 +24,11 @@ class GeneralCoordinator: CoordinatorProtocol {
     weak var delegate: GeneralCoordinatorDelegate?
     
     private let viewBuilder: ViewBuilder
-    
-    private let nsid: String
-    
-    init(_ navigationController: UINavigationController, viewBuilder: ViewBuilder, nsid: String) {
+        
+    init(_ navigationController: UINavigationController, viewBuilder: ViewBuilder) {
         self.navigationController = navigationController
         self.tabBarController = .init()
         self.viewBuilder = viewBuilder
-        self.nsid = nsid
     }
 
     func start() {
@@ -41,10 +38,10 @@ class GeneralCoordinator: CoordinatorProtocol {
         childCoordinators.append(childHome)
         childHome.start()
         
-        let galleryViewController = viewBuilder.createGalleryViewController(coordinator: self, nsid: nsid)
+        let galleryViewController = viewBuilder.createGalleryViewController(coordinator: self)
         let galleryNavigationController = UINavigationController.init(rootViewController: galleryViewController)
         
-        let profileViewController = viewBuilder.createProfileViewController(coordinator: self, nsid: nsid)
+        let profileViewController = viewBuilder.createProfileViewController(coordinator: self)
         let profileNavigationController = UINavigationController.init(rootViewController: profileViewController)
 
         let tabBarControllers = [homeNavigationController, galleryNavigationController, profileNavigationController]

@@ -15,11 +15,11 @@ class GalleryRepository {
     
     private let cacheImages: CacheStorageService<NSString, UIImage>
     
-    private let nsid: String
+    @UserDefaultsBacked(key: UserDefaults.Keys.nsid.rawValue)
+    private var nsid: String!
     
-    init(nsid: String, network: NetworkService) {
+    init(network: NetworkService) {
         self.network = network
-        self.nsid = nsid
         self.cacheImages = .init()
         self.gallery = .init()
     }

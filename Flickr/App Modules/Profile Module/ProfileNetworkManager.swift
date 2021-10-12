@@ -11,11 +11,11 @@ class ProfileNetworkManager {
     
     private var network: NetworkService
     
-    private let nsid: String
+    @UserDefaultsBacked(key: UserDefaults.Keys.nsid.rawValue)
+    private var nsid: String!
     
-    init(nsid: String, network: NetworkService) {
+    init(network: NetworkService) {
         self.network = network
-        self.nsid = nsid
     }
     
     func requestProfile(completionHandler: @escaping (Result<ProfileEntity, Error>) -> Void) {
