@@ -23,11 +23,12 @@ class AuthorizationCoordinator: CoordinatorProtocol {
     
     private let viewBuilder: ViewBuilder
         
-    @Dependency private var authorizationService: AuthorizationService
+    private var authorizationService: AuthorizationService
 
-    init(_ navigationController: UINavigationController, viewBuilder: ViewBuilder) {
+    init(_ navigationController: UINavigationController, viewBuilder: ViewBuilder, authorizationService: AuthorizationService) {
         self.navigationController = navigationController
         self.viewBuilder = viewBuilder
+        self.authorizationService = authorizationService
     }
     
     func start() {

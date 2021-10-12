@@ -7,18 +7,6 @@
 
 import UIKit
 
-enum FavouriteState: String {
-    case isFavourite
-    case isNotFavourite
-    
-    var image: UIImage? {
-        switch self {
-        case .isFavourite: return UIImage(systemName: "bookmark.fill")
-        case .isNotFavourite: return UIImage(systemName: "bookmark")
-        }
-    }
-}
-
 // MARK: - DeatilsViewController
 
 class DetailsViewController: UITableViewController {
@@ -33,6 +21,7 @@ class DetailsViewController: UITableViewController {
     
     private let detailsAuthor: AccountView = .init()
     private let skeletonAnimation: SkeletonAnimation = .init()
+    private let indicatorFavourite: UIActivityIndicatorView = .init()
     
     // MARK: - ViewModel
     
@@ -49,8 +38,7 @@ class DetailsViewController: UITableViewController {
 
         setupFavouriteIndicator()
         
-        indicatorFavourite.startAnimating()
-        detailsFavourite.setImage(nil, for: .normal)
+
         
         setupTableRefreshIndicator()
         setupSkeletonAnimation()
@@ -107,6 +95,16 @@ class DetailsViewController: UITableViewController {
         skeletonAnimation.startAnimationFor(view: detailsDate, cornerRadius: true)
     }
     
+    
+    private func setupFavouriteIndicator() {
+        indicatorFavourite.frame = detailsFavourite.bounds// .init(frame: CGRect(x: 0, y: 0, width: detailsFavourite.frame.width, height: detailsFavourite.frame.height))
+        indicatorFavourite.hidesWhenStopped = true
+        detailsFavourite.addSubview(indicatorFavourite)
+        
+        indicatorFavourite.startAnimating()
+        detailsFavourite.setImage(nil, for: .normal)
+    }
+    
     @objc private func backAction() {
         viewModel.close()
     }
@@ -124,7 +122,6 @@ class DetailsViewController: UITableViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.indicatorFavourite.stopAnimating()
             self?.refreshControl?.endRefreshing()
-            self?.skeletonAnimation.stopAllAnimations()
         }
     }
     
@@ -134,6 +131,9 @@ class DetailsViewController: UITableViewController {
             switch result {
             case .success(let post):
                 // Setup Post Owner View
+                self?.skeletonAnimation.stopAllAnimations()
+
+                
                 self?.detailsAuthor.ownerAvatar.image = post.owner?.avatar
                 self?.detailsAuthor.ownerAccountName.text = String.prepareAccountName(fullName: post.owner?.realName, username: post.owner?.username)
                 self?.detailsAuthor.ownerLocation.text = post.owner?.location == nil ? "No location" : post.owner?.location
@@ -162,7 +162,6 @@ class DetailsViewController: UITableViewController {
                 self?.detailsFavourite.setImage(favouriteStateImage, for: .normal)
                 
                 self?.post = post
-                
                 self?.tableView.reloadData()
 
             case .failure(let error):
@@ -193,16 +192,23 @@ class DetailsViewController: UITableViewController {
             return cell
     }
     
+    private enum FavouriteState: String {
+        case isFavourite
+        case isNotFavourite
+        
+        var image: UIImage? {
+            switch self {
+            case .isFavourite: return UIImage(systemName: "bookmark.fill")
+            case .isNotFavourite: return UIImage(systemName: "bookmark")
+            }
+        }
+    }
+    
     @IBAction func didTapFavourite(_ sender: UIButton) {
         viewModel.isFavourite ? requestRemoveFavourite() : requestAddFavourite()
     }
     
-    private var indicatorFavourite: UIActivityIndicatorView!
-    private func setupFavouriteIndicator() {
-        indicatorFavourite = .init(frame: CGRect(x: 0, y: 0, width: detailsFavourite.frame.width, height: detailsFavourite.frame.height))
-        indicatorFavourite.hidesWhenStopped = true
-        detailsFavourite.addSubview(indicatorFavourite)
-    }
+
     
     private func requestRemoveFavourite() {
         
@@ -210,13 +216,13 @@ class DetailsViewController: UITableViewController {
         detailsFavourite.setImage(nil, for: .normal)
         
             viewModel.requestRemoveFavourite { [weak self] result in
+                self?.indicatorFavourite.stopAnimating()
+
                 switch result {
                 case .success:
-                    self?.indicatorFavourite.stopAnimating()
                     self?.detailsFavourite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
                     //break
                 case .failure(let error):
-                    self?.indicatorFavourite.stopAnimating()
                     self?.detailsFavourite.setImage(FavouriteState.isFavourite.image, for: .normal)
                     print("Request to remove post from favourites complete with error: \(error)")
                     self?.showAlert(title: "Favourite Error", message: "Request to remove post from favourite failed. Try again.", button: "OK")
@@ -225,25 +231,25 @@ class DetailsViewController: UITableViewController {
         }
     
         private func requestAddFavourite() {
-        
             
             indicatorFavourite.startAnimating()
             detailsFavourite.setImage(nil, for: .normal)
             
             viewModel.requestAddFavourite { [weak self] result in
+                self?.indicatorFavourite.stopAnimating()
                 switch result {
                 case .success:
-                    self?.indicatorFavourite.stopAnimating()
                     self?.detailsFavourite.setImage(FavouriteState.isFavourite.image, for: .normal)
                     //break
                 case .failure(let error):
-                    self?.indicatorFavourite.stopAnimating()
                     self?.detailsFavourite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
                     print("Request to add post to favourites complete with error: \(error)")
                     self?.showAlert(title: "Favourite Error", message: "Request to add post to favourite failed. Try again.", button: "OK")
                 }
             }
         }
+    
+
     
     deinit {
         print("\(type(of: self)) deinited.")
@@ -256,18 +262,73 @@ class DynamicHeaderTableView: UITableView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        guard let headerView = self.tableHeaderView else {
+        guard let tableHeaderView = self.tableHeaderView else {
             return
         }
         
         let originalSize = self.frame.size
-        let targetSize = headerView.systemLayoutSizeFitting(originalSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .defaultLow)
+        let targetSize = tableHeaderView.systemLayoutSizeFitting(originalSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .defaultLow)
 
-        if headerView.frame.size.height != targetSize.height {
-            headerView.frame.size.height = targetSize.height
-            self.tableHeaderView = headerView
+        if tableHeaderView.frame.size.height != targetSize.height {
+            tableHeaderView.frame.size.height = targetSize.height
+            self.tableHeaderView = tableHeaderView
             self.layoutIfNeeded()
         }
     }
     
 }
+
+//    func setEmptyMessage(_ message: String) {
+//        let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
+//        messageLabel.text = message
+//        messageLabel.textColor = .black
+//        messageLabel.numberOfLines = 0
+//        messageLabel.textAlignment = .center
+////        messageLabel.font = UIFont(name: <#T##String#>, size: <#T##CGFloat#>) UIFont(name: "TrebuchetMS", size: 15)
+//        messageLabel.sizeToFit()
+//
+//        self.backgroundView = messageLabel
+//        self.separatorStyle = .none
+//    }
+//
+//    func restore() {
+//        self.backgroundView = nil
+//        self.separatorStyle = .singleLine
+//    }
+
+//    override func numberOfSections(in tableView: UITableView) -> Int {
+//        var numOfSections: Int = 0
+//        if viewModel.numberOfComments > 0
+//        {
+//            tableView.separatorStyle = .singleLine
+//            numOfSections            = 1
+//            tableView.backgroundView = nil
+//        }
+//        else
+//        {
+//            let noDataLabel: UILabel  = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+//            noDataLabel.text          = "No data available"
+//            noDataLabel.textColor     = UIColor.black
+//            noDataLabel.textAlignment = .center
+//            tableView.backgroundView  = noDataLabel
+//            tableView.separatorStyle  = .none
+//        }
+//        return numOfSections
+//    }
+
+//class TableViewHelper {
+//
+//    class func EmptyMessage(message:String, viewController:UITableViewController) {
+//        let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: self.view.bounds.size.width, height: self.view.bounds.size.height))
+//        let messageLabel = UILabel(frame: rect)
+//        messageLabel.text = message
+//        messageLabel.textColor = UIColor.blackColor()
+//        messageLabel.numberOfLines = 0;
+//        messageLabel.textAlignment = .Center;
+//        messageLabel.font = UIFont(name: "TrebuchetMS", size: 15)
+//        messageLabel.sizeToFit()
+//
+//        viewController.tableView.backgroundView = messageLabel;
+//        viewController.tableView.separatorStyle = .None;
+//    }
+//}

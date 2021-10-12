@@ -13,7 +13,7 @@ class DetailsRepository {
     private var isFavourite: Bool = false
     private var details: Post = .init()
 
-    @Dependency private var network: NetworkService
+    private var network: NetworkService
     
     private let cacheDetailsOwnerAvatar: CacheStorageService<NSString, UIImage>
     private let cacheDetailsImage: CacheStorageService<NSString, UIImage>
@@ -22,9 +22,9 @@ class DetailsRepository {
     //private let cacheDetails: CacheStorageService<NSString, Post>
     //private let cacheComment: CacheStorageService<NSString, CommentProtocol>
 
-    init(id: String) {
+    init(id: String, network: NetworkService) {
         self.id = id
-        //self.network = network
+        self.network = network
         
         cacheDetailsOwnerAvatar = .init()
         cacheDetailsImage = .init()

@@ -30,14 +30,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = .init(windowScene: windowScene)
         
-        DependencyContainer.register(authorizationService)
+        let dependencyContainer: DependencyContainer = .init()
+        let viewBuilder: ViewBuilder = .init(dependencyContainer: dependencyContainer)
+        //viewBuilder.registerNewDependency(authorizationService)
         
         let navigationController: UINavigationController = .init()
         navigationController.setNavigationBarHidden(true, animated: false)
         
         let userDefaultsStorageService: UserDefaultsStorageService = .init()
         
-        coordinator = .init(navigationController, storageService: userDefaultsStorageService)
+        coordinator = .init(navigationController, storageService: userDefaultsStorageService, viewBuilder: viewBuilder, authorizationService: authorizationService)
         coordinator?.start()
         
         window?.rootViewController = navigationController

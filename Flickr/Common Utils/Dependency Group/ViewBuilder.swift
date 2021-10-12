@@ -9,6 +9,16 @@ import Foundation
 
 class ViewBuilder {
     
+    private let dependencyContainer: DependencyContainer
+    
+    init(dependencyContainer: DependencyContainer) {
+        self.dependencyContainer = dependencyContainer
+    }
+    
+    func registerNewDependency<T: DependencyProtocol>(_ dependency: T) {
+        self.dependencyContainer.register(dependency)
+    }
+        
     func createAuthorizationViewController(coordinator: AuthorizationCoordinator) -> AuthorizationViewController {
         let authorizationViewController: AuthorizationViewController = Storyboard.authorization.instantiateViewController()
         authorizationViewController.viewModel = .init(coordinator: coordinator)
@@ -17,25 +27,29 @@ class ViewBuilder {
     
     func createHomeViewController(coordinator: HomeCoordinator) -> HomeViewController {
         let homeViewController: HomeViewController = Storyboard.general.instantiateViewController()
-        homeViewController.viewModel = .init(coordinator: coordinator)
+        let network: NetworkService = try! dependencyContainer.retrive()
+        homeViewController.viewModel = .init(coordinator: coordinator, network: network)
         return homeViewController
     }
     
     func createGalleryViewController(coordinator: GeneralCoordinator, nsid: String) -> GalleryViewController {
         let galleryViewController: GalleryViewController = Storyboard.general.instantiateViewController()
-        galleryViewController.viewModel = .init(coordinator: coordinator, nsid: nsid)
+        let network: NetworkService = try! dependencyContainer.retrive()
+        galleryViewController.viewModel = .init(coordinator: coordinator, nsid: nsid, network: network)
         return galleryViewController
     }
     
     func createProfileViewController(coordinator: GeneralCoordinator, nsid: String) -> ProfileViewController {
         let profileViewController: ProfileViewController = Storyboard.general.instantiateViewController()
-        profileViewController.viewModel = .init(coordinator: coordinator, nsid: nsid)
+        let network: NetworkService = try! dependencyContainer.retrive()
+        profileViewController.viewModel = .init(coordinator: coordinator, nsid: nsid, network: network)
         return profileViewController
     }
     
     func createDetailsViewController(coordinator: HomeCoordinator, id: String = "51552481986") -> DetailsViewController {
         let detailsViewController: DetailsViewController = Storyboard.general.instantiateViewController()
-        detailsViewController.viewModel = .init(coordinator: coordinator, id: id)
+        let network: NetworkService = try! dependencyContainer.retrive()
+        detailsViewController.viewModel = .init(coordinator: coordinator, id: id, network: network)
         return detailsViewController
     }
     

@@ -13,9 +13,9 @@ class ProfileViewModel {
     
     private let profileNetworkManager: ProfileNetworkManager
     
-    init(coordinator: GeneralCoordinator, nsid: String) {
+    init(coordinator: GeneralCoordinator, nsid: String, network: NetworkService) {
         self.coordinator = coordinator
-        self.profileNetworkManager = .init(nsid: nsid)
+        self.profileNetworkManager = .init(nsid: nsid, network: network)
     }
     
     func didLogout() {

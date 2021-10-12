@@ -14,7 +14,7 @@ enum NetworkManagerError: Error {
 
 class HomeNetworkManager {
     
-    @Dependency private var networkService: NetworkService
+    private var network: NetworkService
     private let cacheImages: CacheStorageService<NSString, UIImage>
     private let cacheBuddyicons: CacheStorageService<NSString, UIImage>
     private let cachePostInformation: Cache<NSString, PostDetails>
@@ -27,7 +27,8 @@ class HomeNetworkManager {
         ids.count
     }
     
-    init() {
+    init(network: NetworkService) {
+        self.network = network
         self.cacheImages = .init()
         self.cacheBuddyicons = .init()
         self.cachePostInformation = .init()
@@ -76,7 +77,7 @@ class HomeNetworkManager {
     }
     
     func requestPostsId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        networkService.getRecentPosts(page: page, perPage: perPage) { [weak self] result in
+        network.getRecentPosts(page: page, perPage: perPage) { [weak self] result in
             completionHandler(result.map {
                 self?.page += 1
                 self?.addUniqValues($0)
@@ -95,7 +96,7 @@ class HomeNetworkManager {
             return
         }
         
-        networkService.getPhotoById(id: ids[position]) { [weak self] result in
+        network.getPhotoById(id: ids[position]) { [weak self] result in
             completionHandler(result.map {
                 self?.posts.append($0)
                 self?.cachePostInformation.insert($0, forKey: cachePostInformationIdentifier)//.set(for: $0, with: cachePostInformationIdentifier)
@@ -125,7 +126,7 @@ class HomeNetworkManager {
             return
         }
         
-        networkService.image(postId: id, postSecret: secret, serverId: server) { [weak self] result in
+        network.image(postId: id, postSecret: secret, serverId: server) { [weak self] result in
             completionHandler(result.map {
                 self?.cacheImages.set(for: $0, with: cacheImageIdentifier)
                 group.leave()
@@ -154,7 +155,7 @@ class HomeNetworkManager {
             return
         }
         
-        networkService.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { [weak self] result in
+        network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { [weak self] result in
             completionHandler(result.map {
                 self?.cacheBuddyicons.set(for: $0, with: cacheBuddyiconIdentifier)
                 group.leave()

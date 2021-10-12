@@ -15,7 +15,7 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
         
     private let storageService: LocalStorageServiceProtocol
     
-    @Dependency private var authorizationService: AuthorizationService
+    private var authorizationService: AuthorizationService
         
     private var nsid: String?
     
@@ -24,17 +24,15 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
     private var network: NetworkService? {
         willSet {
             guard let value = newValue else { return }
-            DependencyContainer.register(value)
+            viewBuilder.registerNewDependency(value)
         }
     }
     
-    init(_ navigationController: UINavigationController, storageService: LocalStorageServiceProtocol) {
+    init(_ navigationController: UINavigationController, storageService: LocalStorageServiceProtocol, viewBuilder: ViewBuilder, authorizationService: AuthorizationService) {
         self.navigationController = navigationController
         self.storageService = storageService
-        
-        //DependencyContainer.register(authorizationService) //???
-        //self.authorizationService = authorizationService
-        self.viewBuilder = .init()
+        self.authorizationService = authorizationService
+        self.viewBuilder = viewBuilder
     }
     
     func start() {
@@ -141,7 +139,7 @@ extension ApplicationCoordinator: GeneralCoordinatorDelegate {
 extension ApplicationCoordinator {
     
     fileprivate func redirectAuthorization() {
-        let childAuthorization = AuthorizationCoordinator(navigationController, viewBuilder: viewBuilder)
+        let childAuthorization = AuthorizationCoordinator(navigationController, viewBuilder: viewBuilder, authorizationService: authorizationService)
         childAuthorization.parentCoordinator = self
         childAuthorization.delegate = self
         childCoordinators.append(childAuthorization)

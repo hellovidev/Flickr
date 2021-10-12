@@ -9,12 +9,12 @@ import UIKit
 
 class ProfileNetworkManager {
     
-    @Dependency private var network: NetworkService
+    private var network: NetworkService
     
     private let nsid: String
     
-    init(nsid: String) {//, networkService: NetworkService) {
-        //self.networkService = networkService
+    init(nsid: String, network: NetworkService) {
+        self.network = network
         self.nsid = nsid
     }
     

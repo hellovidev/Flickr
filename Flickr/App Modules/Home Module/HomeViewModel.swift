@@ -21,9 +21,9 @@ class HomeViewModel {
     
     private weak var coordinator: HomeCoordinator?
 
-    init(coordinator: HomeCoordinator) {
+    init(coordinator: HomeCoordinator, network: NetworkService) {
         self.coordinator = coordinator
-        self.homeNetworkManager = .init()
+        self.homeNetworkManager = .init(network: network)
         self.router = .init()
         
         self.router.addObserver { [weak self] router in
