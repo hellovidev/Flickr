@@ -263,7 +263,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CDb-WM-zRg">
-                                    <rect key="frame" x="0.0" y="518.33333333333337" width="428" height="0.66666666666662877"/>
+                                    <rect key="frame" x="0.0" y="522.66666666666663" width="428" height="0.33333333333337123"/>
                                     <color key="backgroundColor" systemColor="systemGray3Color"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="0.5" id="ws7-IA-PeR"/>
@@ -283,7 +283,7 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hxd-1v-ehS">
-                                    <rect key="frame" x="14.999999999999996" y="489" width="44.666666666666657" height="14.333333333333314"/>
+                                    <rect key="frame" x="14.999999999999996" y="489" width="44.666666666666657" height="18.666666666666686"/>
                                     <attributedString key="attributedText">
                                         <fragment content="No date">
                                             <attributes>
@@ -325,7 +325,7 @@
                                 <constraint firstItem="dD3-1y-Zqj" firstAttribute="top" secondItem="KNm-i9-R3l" secondAttribute="top" id="942-sc-eg4"/>
                                 <constraint firstAttribute="trailing" secondItem="CDb-WM-zRg" secondAttribute="trailing" id="Bbt-hh-Tt9"/>
                                 <constraint firstItem="CDb-WM-zRg" firstAttribute="leading" secondItem="NLk-Zn-bzt" secondAttribute="leading" id="Btm-Jk-nfc"/>
-                                <constraint firstItem="3qr-5d-gNc" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="CDb-WM-zRg" secondAttribute="bottom" id="CQR-Vz-e0a"/>
+                                <constraint firstItem="3qr-5d-gNc" firstAttribute="bottom" relation="lessThanOrEqual" secondItem="CDb-WM-zRg" secondAttribute="bottom" id="CQR-Vz-e0a"/>
                                 <constraint firstItem="hxd-1v-ehS" firstAttribute="top" secondItem="Vl6-TN-pSW" secondAttribute="bottom" constant="7" id="JPa-ar-KTb"/>
                                 <constraint firstItem="dD3-1y-Zqj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="hxd-1v-ehS" secondAttribute="trailing" constant="15" id="M53-yS-Feu"/>
                                 <constraint firstItem="KNm-i9-R3l" firstAttribute="top" secondItem="btr-W1-m1Z" secondAttribute="bottom" constant="15" id="SD0-hL-hFm"/>
