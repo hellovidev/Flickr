@@ -132,31 +132,30 @@ class DetailsViewController: UITableViewController {
             case .success(let post):
                 // Setup Post Owner View
                 self?.skeletonAnimation.stopAllAnimations()
-
                 
                 self?.detailsAuthor.ownerAvatar.image = post.owner?.avatar
-                self?.detailsAuthor.ownerAccountName.text = String.prepareAccountName(fullName: post.owner?.realName, username: post.owner?.username)
-                self?.detailsAuthor.ownerLocation.text = post.owner?.location == nil ? "No location" : post.owner?.location
                 
-                if let publishedAt = post.publishedAt?.prepareStringAsDate() {
-                    self?.detailsDate.text = publishedAt
-                } else {
-                    self?.detailsDate.text = "No date"
-                }
+                
+                self?.detailsAuthor.ownerAccountName.text = PrepareTextFormatter.prepareUserAccountName(name: post.owner?.realName, username: post.owner?.username)
+                
+                // Setup location
+                let location = PrepareTextFormatter.prepareTextField(post.owner?.location, placeholder: .location)
+                self?.detailsAuthor.ownerLocation.text = location
 
+                // Setup title
+                let title = PrepareTextFormatter.prepareTextField(post.title, placeholder: .title)
+                self?.detailsTitle.text = title
+                
+                // Setup description
+                let description = PrepareTextFormatter.prepareTextField(post.description, placeholder: .description)
+                self?.detailsDescription.text = description
+
+                // Setup date
+                let dateAsString = post.publishedAt?.prepareStringAsDate()
+                let date = PrepareTextFormatter.prepareTextField(dateAsString, placeholder: .date)
+                self?.detailsDate.text = date
+                
                 self?.detailsImage.image = post.image
-
-                if let title = post.title, !title.isEmpty {
-                    self?.detailsTitle.text = title
-                } else {
-                    self?.detailsTitle.text = "No title"
-                }
-
-                if let description = post.description, !description.isEmpty {
-                    self?.detailsDescription.text = description
-                } else {
-                    self?.detailsDescription.text = "No description"
-                }
                 
                 let favouriteStateImage = (post.isFavourite == nil || post.isFavourite == false) ? FavouriteState.isNotFavourite.image : FavouriteState.isFavourite.image
                 self?.detailsFavourite.setImage(favouriteStateImage, for: .normal)

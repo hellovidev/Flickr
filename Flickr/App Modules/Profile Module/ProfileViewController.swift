@@ -36,8 +36,8 @@ class ProfileViewController: UIViewController {
             
             // Set values of request
             self?.avatarImage.image = avatar
-            self?.realNameLabel.text = profile?.realName?.content ?? "No real name"
-            self?.descriptionLabel.text = profile?.description?.content ?? "No description"
+            self?.realNameLabel.text = PrepareTextFormatter.prepareTextField(profile?.realName?.content, placeholder: .name)
+            self?.descriptionLabel.text = PrepareTextFormatter.prepareTextField(profile?.description?.content, placeholder: .description)
             
             // Stop skeleton animations
             self?.skeletonAnimation.stopAllAnimations()

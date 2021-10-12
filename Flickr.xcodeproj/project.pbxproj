@@ -12,6 +12,7 @@
 		5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E70D27134389004B8A8F /* ViewBuilder.swift */; };
 		5F20E7152714606B004B8A8F /* NavigationLogotype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E7142714606B004B8A8F /* NavigationLogotype.swift */; };
 		5F20E7182715886E004B8A8F /* UserDefaultsBacked.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E7172715886E004B8A8F /* UserDefaultsBacked.swift */; };
+		5F20E71B27160A21004B8A8F /* PrepareTextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E71A27160A21004B8A8F /* PrepareTextFormatter.swift */; };
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
 		5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */; };
@@ -94,6 +95,7 @@
 		5F20E70D27134389004B8A8F /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
 		5F20E7142714606B004B8A8F /* NavigationLogotype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLogotype.swift; sourceTree = "<group>"; };
 		5F20E7172715886E004B8A8F /* UserDefaultsBacked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBacked.swift; sourceTree = "<group>"; };
+		5F20E71A27160A21004B8A8F /* PrepareTextFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrepareTextFormatter.swift; sourceTree = "<group>"; };
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
 		5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+UIAlertController.swift"; sourceTree = "<group>"; };
@@ -206,6 +208,14 @@
 				5F20E7172715886E004B8A8F /* UserDefaultsBacked.swift */,
 			);
 			path = "Property Wrapper Group";
+			sourceTree = "<group>";
+		};
+		5F20E719271609D6004B8A8F /* Formatter Group */ = {
+			isa = PBXGroup;
+			children = (
+				5F20E71A27160A21004B8A8F /* PrepareTextFormatter.swift */,
+			);
+			path = "Formatter Group";
 			sourceTree = "<group>";
 		};
 		5F25F69126EA13C800F98608 /* Extensions */ = {
@@ -468,6 +478,7 @@
 		5FFEC0C826CD4F43000A0BAB /* Common Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5F20E719271609D6004B8A8F /* Formatter Group */,
 				5F20E7162715881C004B8A8F /* Property Wrapper Group */,
 				5FE15E8227122AD300B61DBF /* Dependency Group */,
 				5FC5576B270DFF7100018876 /* Extension Group */,
@@ -630,6 +641,7 @@
 				5F20E7182715886E004B8A8F /* UserDefaultsBacked.swift in Sources */,
 				5FC5576F270DFFA800018876 /* NSMutableAttributedStringExtensions.swift in Sources */,
 				5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */,
+				5F20E71B27160A21004B8A8F /* PrepareTextFormatter.swift in Sources */,
 				5FE3F8F027046F2200ADAA6B /* SkeletonAnimation.swift in Sources */,
 				5FF2241C26F1204E0026BAF4 /* NetworkService+Image.swift in Sources */,
 				5F71DB1127072BD8006094B4 /* NetworkService+Delete.swift in Sources */,

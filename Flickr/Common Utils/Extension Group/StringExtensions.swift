@@ -22,27 +22,27 @@ extension String {
     
 }
 
-extension String {
-    
-    static func prepareAccountName(fullName: String?, username: String?) -> String {
-        var accountName: String = .init()
-        
-        if let fullName = fullName {
-            accountName += fullName
-        } else {
-            accountName = "No real name"
-        }
-        
-        if let username = username {
-            accountName += " (\(username))"
-        } else {
-            accountName = "Account have not username"
-        }
-        
-        return accountName
-    }
-    
-}
+//extension String {
+//    
+//    static func prepareAccountName(fullName: String?, username: String?) -> String {
+//        var accountName: String = .init()
+//        
+//        if let fullName = fullName {
+//            accountName += fullName
+//        } else {
+//            accountName = "No real name"
+//        }
+//        
+//        if let username = username {
+//            accountName += " (\(username))"
+//        } else {
+//            accountName = "Account have not username"
+//        }
+//        
+//        return accountName
+//    }
+//    
+//}
 
 extension String {
     var htmlAttributedString: NSAttributedString? {

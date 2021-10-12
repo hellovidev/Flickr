@@ -28,7 +28,7 @@ class HomeCoordinator: CoordinatorProtocol {
     }
     
     func redirectDetails(id: String) {
-        let detailsViewController = viewBuilder.createDetailsViewController(coordinator: self)//, id: id)
+        let detailsViewController = viewBuilder.createDetailsViewController(coordinator: self, id: id)
         detailsViewController.viewModel.delegate = self
         navigationController.pushViewController(detailsViewController, animated: true)
     }
