@@ -1,11 +1,13 @@
 //
-//  NetworkService+Image.swift
+//  Network+Image.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 14.09.2021.
 //
 
 import UIKit
+
+// MARK: - Network+Image
 
 /// Image size.
 /// - s: thumbnail 75 cropped square
@@ -65,7 +67,7 @@ enum ImageError: Error {
     case couldNotInit
 }
 
-extension NetworkService {
+extension Network {
     
     func image(id: String, secret: String, server: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         guard

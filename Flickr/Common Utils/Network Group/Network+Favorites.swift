@@ -1,5 +1,5 @@
 //
-//  NetworkService+Favorites.swift
+//  Network+Favorites.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 26.08.2021.
@@ -7,24 +7,23 @@
 
 import Foundation
 
-extension NetworkService {
+// MARK: - Network+Favorites
+
+extension Network {
     
-    // Get list of faves 'flickr.favorites.getList' (Gallery screen)
-    func getFavorites(completion: @escaping (Result<[FavoriteEntity], Error>) -> Void) {
+    func getFavorites(completionHandler: @escaping (Result<[FavoriteEntity], Error>) -> Void) {
         request(
             type: .getFavorites,
             method: .GET,
             parser: ModelDeserializer<FavoritesResponse>()
         ) { result in
-            completion(result.map { $0.data.photos })
+            completionHandler(result.map { $0.data.photos })
         }
     }
     
-    // Add photo to favorites 'flickr.favorites.add' (General screen)
-    func addToFavorites(with photoId: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        // Push some additional parameters
+    func addToFavorites(for id: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         let parameters: [String: String] = [
-            "photo_id": photoId
+            "photo_id": id
         ]
         
         request(
@@ -32,15 +31,13 @@ extension NetworkService {
             type: .addToFavorites,
             method: .POST,
             parser: VoidDeserializer(),
-            completion: completion
+            completionHandler: completionHandler
         )
     }
     
-    // Remove photo from favorites 'flickr.favorites.remove' (General screen)
-    func removeFromFavorites(with photoId: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        // Push some additional parameters
+    func removeFromFavorites(for id: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         let parameters: [String: String] = [
-            "photo_id": photoId
+            "photo_id": id
         ]
         
         request(
@@ -48,7 +45,7 @@ extension NetworkService {
             type: .removeFromFavorites,
             method: .POST,
             parser: VoidDeserializer(),
-            completion: completion
+            completionHandler: completionHandler
         )
     }
     

@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - MultipartHelper
+
 enum MimeType: String {
     case imagePNG = "image/png"
 }
@@ -76,9 +78,11 @@ struct MultipartHelper {
 }
 
 extension Data {
+    
     mutating func addContent(_ string: String) {
         if let data = string.data(using: .utf8) {
             self.append(data)
         }
     }
+    
 }

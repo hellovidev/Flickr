@@ -1,29 +1,29 @@
 //
-//  NetworkService+Upload.swift
+//  Network+Upload.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 27.08.2021.
 //
 
-import UIKit
+import Foundation
 
-extension NetworkService {
-        
-    // Upload photo: https://www.flickr.com/services/api/upload.api.html
-    func uploadImage(_ data: Data, title: String, description: String, completion: @escaping (Result<Void, Error>) -> Void) {
+// MARK: - Network+Upload
 
+extension Network {
+    
+    func uploadImage(_ data: Data, title: String, description: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         let parameters: [String: String] = [
             "title": title,
             "description": description,
             "is_public": "1",
             "perms": "write"
         ]
-                
+        
         upload(
             parameters: parameters,
             file: data,
             parser: VoidDeserializer(),
-            completion: completion
+            completionHandler: completionHandler
         )
     }
     

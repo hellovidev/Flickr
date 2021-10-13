@@ -19,7 +19,7 @@ class HomeViewModel {
     
     let filters: [String] = ["50", "100", "200", "400"]
     
-    init(coordinator: HomeCoordinator, network: NetworkService) {
+    init(coordinator: HomeCoordinator, network: Network) {
         self.coordinator = coordinator
         self.repository = .init(network: network)
         self.router = .init()

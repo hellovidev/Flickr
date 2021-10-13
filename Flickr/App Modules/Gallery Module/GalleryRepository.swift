@@ -13,14 +13,14 @@ class GalleryRepository {
     
     private var gallery: [PhotoEntity]
     
-    private var network: NetworkService
+    private var network: Network
     
     private let cacheImages: CacheStorageService<NSString, UIImage>
     
     @UserDefaultsBacked(key: UserDefaults.Keys.nsid.rawValue)
     private var nsid: String!
     
-    init(network: NetworkService) {
+    init(network: Network) {
         self.network = network
         self.cacheImages = .init()
         self.gallery = .init()
@@ -40,7 +40,7 @@ class GalleryRepository {
         description: String = "This image uploaded from iOS application.",
         completionHandler: @escaping (Result<Void, Error>) -> Void
     ) {
-        network.uploadImage(data, title: title, description: description, completion: completionHandler)
+        network.uploadImage(data, title: title, description: description, completionHandler: completionHandler)
     }
     
     func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {

@@ -11,7 +11,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     var coordinator: ApplicationCoordinator?
-    private let authorizationService: AuthorizationService = .init()
+    var authorizationService: AuthorizationService?
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Catch callback link with 'verifier' parameter
-        authorizationService.handleURL(url)
+        authorizationService?.handleURL(url)
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -37,7 +37,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navigationController.setNavigationBarHidden(true, animated: false)
         
         let userDefaultsStorageService: UserDefaultsStorageService = .init()
+        authorizationService = .init(storageService: userDefaultsStorageService)
         
+        guard let authorizationService = authorizationService else {
+            return
+        }
+
         coordinator = .init(navigationController, storageService: userDefaultsStorageService, viewBuilder: viewBuilder, authorizationService: authorizationService)
         coordinator?.start()
         

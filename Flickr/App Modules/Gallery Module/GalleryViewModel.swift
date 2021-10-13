@@ -15,7 +15,7 @@ class GalleryViewModel {
     
     private let repository: GalleryRepository
     
-    init(coordinator: GeneralCoordinator, network: NetworkService) {
+    init(coordinator: GeneralCoordinator, network: Network) {
         self.coordinator = coordinator
         self.repository = .init(network: network)
     }

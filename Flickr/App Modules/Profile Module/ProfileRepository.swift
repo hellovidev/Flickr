@@ -11,12 +11,12 @@ import UIKit
 
 class ProfileRepository {
     
-    private var network: NetworkService
+    private var network: Network
     
     @UserDefaultsBacked(key: UserDefaults.Keys.nsid.rawValue)
     private var nsid: String!
     
-    init(network: NetworkService) {
+    init(network: Network) {
         self.network = network
     }
     

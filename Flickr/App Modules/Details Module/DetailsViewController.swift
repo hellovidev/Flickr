@@ -39,7 +39,7 @@ class DetailsViewController: UITableViewController {
         setupDetailsOwnerView()
         
         registerReusableCell()
-        
+                
         requestDetails()
     }
     

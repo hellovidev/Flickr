@@ -297,8 +297,8 @@ class FlickrOAuthService: NSObject {
         
         // Methods to prepare API requests
         //        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
-        let signatureHelper = SignatureHelper(consumerSecretKey: FlickrConstant.Key.consumerSecretKey.rawValue, accessSecretToken: secretToken)
-        let signature = signatureHelper.buildSignature(method: method.rawValue, endpoint: urlString, parameters: parameters)
+        let signatureBuilder = SignatureBuilder(consumerSecretKey: FlickrConstant.Key.consumerSecretKey.rawValue, accessSecretToken: secretToken)
+        let signature = signatureBuilder.buildSignature(method: method.rawValue, endpoint: urlString, parameters: parameters)
         parameters["oauth_signature"] = signature
         
         //        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: secretToken)
@@ -318,7 +318,7 @@ class FlickrOAuthService: NSObject {
         urlRequest.httpMethod = method.rawValue
         
         // Set parameters to HTTP body of URL request
-        let header = "OAuth \(signatureHelper.convertParametersToString(parameters, separator: ", "))"
+        let header = "OAuth \(signatureBuilder.convertParametersToString(parameters, separator: ", "))"
         urlRequest.setValue(header, forHTTPHeaderField: "Authorization")
         
         // URL configuration

@@ -15,7 +15,7 @@ class ProfileViewModel {
     
     private let repository: ProfileRepository
     
-    init(coordinator: GeneralCoordinator, network: NetworkService) {
+    init(coordinator: GeneralCoordinator, network: Network) {
         self.coordinator = coordinator
         self.repository = .init(network: network)
     }

@@ -1,5 +1,5 @@
 //
-//  NetworkService+Profile.swift
+//  Network+Profile.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 26.08.2021.
@@ -7,13 +7,13 @@
 
 import Foundation
 
-extension NetworkService {
+// MARK: - Network+Profile
+
+extension Network {
     
-    // Get current user profile 'flickr.profile.getProfile' (User screen)
-    func getProfile(for userId: String, completionHandler: @escaping (Result<ProfileEntity, Error>) -> Void) {
-        // Push some additional parameters
+    func getProfile(for id: String, completionHandler: @escaping (Result<ProfileEntity, Error>) -> Void) {
         let parameters: [String: String] = [
-            "user_id": userId,
+            "user_id": id,
         ]
         
         request(

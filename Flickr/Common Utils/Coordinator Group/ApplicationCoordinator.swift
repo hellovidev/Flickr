@@ -21,7 +21,7 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
             
     private let viewBuilder: ViewBuilder
     
-    private var network: NetworkService? {
+    private var network: Network? {
         willSet {
             guard let value = newValue else { return }
             viewBuilder.registerNewDependency(value)
@@ -41,7 +41,7 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
             
             let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaults.Keys.tokenAPI.rawValue)
             
-            self.network = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
+            self.network = Network(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
             
             isAutherized ? redirectGeneral() : redirectAuthorization()
         } catch {
@@ -115,7 +115,7 @@ extension ApplicationCoordinator: AuthorizationCoordinatorDelegate {
         do {
             let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaults.Keys.tokenAPI.rawValue)
             
-            self.network = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
+            self.network = Network(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
             
             redirectGeneral()
         } catch {

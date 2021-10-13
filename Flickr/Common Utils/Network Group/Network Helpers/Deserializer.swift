@@ -1,5 +1,5 @@
 //
-//  DeserializeHelper.swift
+//  Deserializer.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 27.08.2021.

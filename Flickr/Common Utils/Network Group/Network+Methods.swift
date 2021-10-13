@@ -1,5 +1,5 @@
 //
-//  NetworkService+Flickr.swift
+//  Network+Methods.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 06.09.2021.
@@ -7,14 +7,16 @@
 
 import Foundation
 
-extension NetworkService {
+// MARK: - Network+Methods
+
+extension Network {
     
     func request<Serializer: Deserializer>(
         parameters: [String: String]? = nil,
         type: FlickrConstant.Method,
         method: HTTPMethod,
         parser: Serializer,
-        completion: @escaping (Result<Serializer.Response, Error>) -> Void
+        completionHandler: @escaping (Result<Serializer.Response, Error>) -> Void
     ) {
         request(
             parameters: parameters,
@@ -22,9 +24,9 @@ extension NetworkService {
             endpoint: FlickrConstant.URL.request.rawValue,
             method: method,
             parser: parser,
-            completion: { result in
+            completionHandler: { result in
                 DispatchQueue.main.async {
-                    completion(result)
+                    completionHandler(result)
                 }
             }
         )
@@ -34,16 +36,16 @@ extension NetworkService {
         parameters: [String: String]? = nil,
         file: Data,
         parser: Serializer,
-        completion: @escaping (Result<Serializer.Response, Error>) -> Void
+        completionHandler: @escaping (Result<Serializer.Response, Error>) -> Void
     ) {
         upload(
             parameters: parameters,
             file: file,
             endpoint: FlickrConstant.URL.upload.rawValue,
             parser: parser,
-            completion: { result in
+            completionHandler: { result in
                 DispatchQueue.main.async {
-                    completion(result)
+                    completionHandler(result)
                 }
             }
         )

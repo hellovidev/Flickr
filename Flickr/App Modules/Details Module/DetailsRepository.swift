@@ -11,7 +11,7 @@ import UIKit
 
 class DetailsRepository {
     
-    private let network: NetworkService
+    private let network: Network
     
     private let id: String
     private var isFavourite: Bool = false
@@ -24,7 +24,7 @@ class DetailsRepository {
     //private let cacheDetails: CacheStorageService<NSString, DetailsEntity>
     //private let cacheComment: CacheStorageService<NSString, CommentProtocol>
     
-    init(id: String, network: NetworkService) {
+    init(id: String, network: Network) {
         self.id = id
         self.network = network
         
@@ -36,7 +36,7 @@ class DetailsRepository {
     // MARK: - Request Methods
     
     func requestPreparatoryDataOfDetails(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        network.getPhotoById(id: id) { [weak self] result in
+        network.getPhotoById(for: id) { [weak self] result in
             switch result {
             case .success(let details):
                 self?.details.id = details.id
@@ -170,7 +170,7 @@ class DetailsRepository {
     }
     
     func requestAddFavourite(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        network.addToFavorites(with: id) { [weak self] result in
+        network.addToFavorites(for: id) { [weak self] result in
             completionHandler(result.map {
                 self?.isFavourite = true
             })
@@ -178,7 +178,7 @@ class DetailsRepository {
     }
     
     func requestRemoveFavourite(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        network.removeFromFavorites(with: id) { [weak self] result in
+        network.removeFromFavorites(for: id) { [weak self] result in
             completionHandler(result.map {
                 self?.isFavourite = false
             })

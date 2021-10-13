@@ -11,22 +11,19 @@ import UIKit
 
 protocol AuthorizationProtocol {
     func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)
-    //func signup(presenter: UIViewController)
     func logout()
 }
 
 // MARK: - AuthorizationService
 
 class AuthorizationService: AuthorizationProtocol, DependencyProtocol {
-    
-    //static let shared = AuthorizationService()
-    
+        
     private let storageService: LocalStorageServiceProtocol
-    private let flickrOAuthService: FlickrOAuthService
     
-    init() {
-        self.storageService = UserDefaultsStorageService()
-        self.flickrOAuthService = .init()
+    private let flickrOAuthService: FlickrOAuthService = .init()
+    
+    init(storageService: LocalStorageServiceProtocol) {
+        self.storageService = storageService
         self.flickrOAuthService.storageService = storageService
     }
     
@@ -37,7 +34,13 @@ class AuthorizationService: AuthorizationProtocol, DependencyProtocol {
                 do {
                     let token = AccessTokenAPI(token: accessOAuthToken.token, secret: accessOAuthToken.secretToken, nsid: accessOAuthToken.userNSID)
                     try self?.storageService.set(for: token, with: UserDefaults.Keys.tokenAPI.rawValue)
-                    try self?.storageService.set(for: token.nsid.removingPercentEncoding!, with: UserDefaults.Keys.nsid.rawValue)
+                    
+                    guard let nsid = token.nsid.removingPercentEncoding else {
+                        completion(.failure(NetworkManagerError.nilResponseData))
+                        return
+                    }
+                    
+                    try self?.storageService.set(for: nsid, with: UserDefaults.Keys.nsid.rawValue)
                     completion(.success(Void()))
                 } catch {
                     completion(.failure(error))
@@ -47,12 +50,6 @@ class AuthorizationService: AuthorizationProtocol, DependencyProtocol {
             }
         }
     }
-    
-//    func signup(presenter: UIViewController) {
-//        let signupWebView: WKWebViewController = .init(endpoint: FlickrConstant.URL.signup.rawValue)
-//        signupWebView.delegate = self
-//        presenter.present(signupWebView, animated: true, completion: nil)
-//    }
     
     func logout() {
         flickrOAuthService.flickrLogout()

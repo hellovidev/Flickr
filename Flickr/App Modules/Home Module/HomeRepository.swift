@@ -11,7 +11,7 @@ import UIKit
 
 class HomeRepository {
     
-    private var network: NetworkService
+    private var network: Network
     
     private let cacheImages: CacheStorageService<NSString, UIImage>
     private let cacheBuddyicons: CacheStorageService<NSString, UIImage>
@@ -22,7 +22,7 @@ class HomeRepository {
     private var perPage: Int
     private var posts: [PhotoDetailsEntity] = .init()
     
-    init(network: NetworkService) {
+    init(network: Network) {
         self.network = network
         
         self.cacheImages = .init()
@@ -88,7 +88,7 @@ class HomeRepository {
             return
         }
         
-        network.getPhotoById(id: ids[position]) { [weak self] result in
+        network.getPhotoById(for: ids[position]) { [weak self] result in
             completionHandler(result.map {
                 self?.posts.append($0)
                 self?.cachePostInformation.insert($0, forKey: cachePhotoDetailsIdentifier)
