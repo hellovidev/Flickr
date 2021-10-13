@@ -7,28 +7,24 @@
 
 import UIKit
 
-enum NetworkManagerError: Error {
-    case invalidParameters
-    case nilResponseData
-}
+// MARK: - HomeRepository
 
-class HomeNetworkManager {
+class HomeRepository {
     
     private var network: NetworkService
+    
     private let cacheImages: CacheStorageService<NSString, UIImage>
     private let cacheBuddyicons: CacheStorageService<NSString, UIImage>
-    private let cachePostInformation: Cache<NSString, PostDetails>
+    private let cachePostInformation: Cache<NSString, PhotoDetailsEntity>
     
     private var ids: [String]
     private var page: Int
     private var perPage: Int
-    
-    var idsCount: Int {
-        ids.count
-    }
+    private var posts: [PhotoDetailsEntity] = .init()
     
     init(network: NetworkService) {
         self.network = network
+        
         self.cacheImages = .init()
         self.cacheBuddyicons = .init()
         self.cachePostInformation = .init()
@@ -37,11 +33,8 @@ class HomeNetworkManager {
         self.perPage = 20
     }
     
-    // MARK: - TEST
-    private var posts: [PostDetails] = .init()
-    
-    func getPostDetails(index: Int) -> PostDetails {
-        posts[index]
+    var idsCount: Int {
+        ids.count
     }
     
     func filter(by filterType: FilterType?, completionHandler: @escaping () -> Void) {
@@ -49,7 +42,7 @@ class HomeNetworkManager {
             perPage = 20
             return
         }
-
+        
         switch filterType {
         case .per50:
             perPage = 50
@@ -61,7 +54,6 @@ class HomeNetworkManager {
             perPage = 400
         }
     }
-    // MARK: - END
     
     private func addUniqValues(_ array: [PhotoEntity]) {
         ids += array.compactMap { $0.id }
@@ -76,7 +68,7 @@ class HomeNetworkManager {
         cachePostInformation.removeAll()
     }
     
-    func requestPostsId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func requestPhotosId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
         network.getRecentPosts(page: page, perPage: perPage) { [weak self] result in
             completionHandler(result.map {
                 self?.page += 1
@@ -86,12 +78,12 @@ class HomeNetworkManager {
         }
     }
     
-    func requestPostInformation(position: Int, group: DispatchGroup, completionHandler: @escaping (Result<PostDetails, Error>) -> Void) {
+    func requestPhotoDetails(position: Int, group: DispatchGroup, completionHandler: @escaping (Result<PhotoDetailsEntity, Error>) -> Void) {
         group.enter()
-
-        let cachePostInformationIdentifier = ids[position] as NSString
-        if let postInformationCache = cachePostInformation.value(forKey: cachePostInformationIdentifier) {
-            completionHandler(.success(postInformationCache))
+        
+        let cachePhotoDetailsIdentifier = ids[position] as NSString
+        if let photoDetailsCache = cachePostInformation.value(forKey: cachePhotoDetailsIdentifier) {
+            completionHandler(.success(photoDetailsCache))
             group.leave()
             return
         }
@@ -99,14 +91,14 @@ class HomeNetworkManager {
         network.getPhotoById(id: ids[position]) { [weak self] result in
             completionHandler(result.map {
                 self?.posts.append($0)
-                self?.cachePostInformation.insert($0, forKey: cachePostInformationIdentifier)//.set(for: $0, with: cachePostInformationIdentifier)
+                self?.cachePostInformation.insert($0, forKey: cachePhotoDetailsIdentifier)
                 group.leave()
                 return $0
             })
         }
     }
     
-    func requestImage(post: PostDetails, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    func requestImage(post: PhotoDetailsEntity, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         group.enter()
         
         guard
@@ -135,7 +127,7 @@ class HomeNetworkManager {
         }
     }
     
-    func requestBuddyicon(post: PostDetails, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    func requestBuddyicon(post: PhotoDetailsEntity, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         group.enter()
         
         guard
@@ -166,24 +158,6 @@ class HomeNetworkManager {
     
     deinit {
         print("\(type(of: self)) deinited.")
-    }
-    
-}
-
-// MARK: - Array Unique Values
-
-extension Array where Element: Hashable {
-    
-    var uniques: Array {
-        var buffer = Array()
-        var added = Set<Element>()
-        for elem in self {
-            if !added.contains(elem) {
-                buffer.append(elem)
-                added.insert(elem)
-            }
-        }
-        return buffer
     }
     
 }

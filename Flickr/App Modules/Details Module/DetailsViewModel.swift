@@ -75,7 +75,7 @@ class DetailsViewModel {
     }
         
     func commentForRowAt(index: Int, completionHandler: @escaping (CommentProtocol) -> Void) {
-        var comment: PhotoComment = repository.retrieveCommentAt(index: index) as! PhotoComment
+        var comment: PhotoCommentEntity = repository.retrieveCommentAt(index: index) as! PhotoCommentEntity
         
         requestCommentOwnerAvatar(index: index) { result in
             switch result {

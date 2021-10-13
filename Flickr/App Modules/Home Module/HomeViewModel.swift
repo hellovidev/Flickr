@@ -7,23 +7,21 @@
 
 import UIKit
 
-enum HomeRoute {
-    case openPost(id: String)
-}
+// MARK: - HomeViewModel
 
 class HomeViewModel {
     
-    let homeNetworkManager: HomeNetworkManager
+    private weak var coordinator: HomeCoordinator?
     
-    let router: Observable<HomeRoute>
+    private let router: Observable<HomeRoute>
+    
+    private let repository: HomeRepository
     
     let filters: [String] = ["50", "100", "200", "400"]
     
-    private weak var coordinator: HomeCoordinator?
-
     init(coordinator: HomeCoordinator, network: NetworkService) {
         self.coordinator = coordinator
-        self.homeNetworkManager = .init(network: network)
+        self.repository = .init(network: network)
         self.router = .init()
         
         self.router.addObserver { [weak self] router in
@@ -31,67 +29,90 @@ class HomeViewModel {
         }
     }
     
+    private enum HomeRoute {
+        case openPost(id: String)
+    }
+    
     private func show(_ router: HomeRoute) {
         switch router {
         case .openPost(id: let id):
-            coordinator?.redirectDetails(id: id) //???
-//            let postViewController: PostViewController = Storyboard.general.instantiateViewController()
-//            postViewController.viewModel = PostViewModel(postId: postId, networkService: NetworkService())
-//            postViewController.delegate = self
-//            navigationController?.pushViewController(postViewController, animated: true)
+            coordinator?.redirectDetails(id: id)
         }
     }
     
-    func requestPost(indexPath: IndexPath, completionHandler: @escaping (_ details: PostDetails?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
+    func openDetails(id: String) {
+        router.send(.openPost(id: id))
+    }
+    
+    var numberOfIds: Int {
+        repository.idsCount
+    }
+    
+    func refresh() {
+        repository.refresh()
+    }
+    
+    func filter(by filterType: FilterType?, completionHandler: @escaping () -> Void) {
+        repository.filter(by: filterType, completionHandler: completionHandler)
+    }
+    
+    func requestPhotosId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        repository.requestPhotosId(completionHandler: completionHandler)
+    }
+    
+    func requestPhotoDetailsCell(indexPath: IndexPath, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
         let group = DispatchGroup()
         
-        var details: PostDetails?
+        var details: PhotoDetailsEntity?
         var buddyicon: UIImage?
         var image: UIImage?
         
-        homeNetworkManager.requestPostInformation(position: indexPath.row, group: group) { result in
+        repository.requestPhotoDetails(position: indexPath.row, group: group) { [weak self] result in
             switch result {
-            case .success(let information):
-                details = information
-            case .failure(let error):
-                completionHandler(nil, nil, nil)
-                print("Download post information in \(#function) has error: \(error)")
-                return
-            }
-        }
-        
-        group.notify(queue: DispatchQueue.main) { [weak self] in
-            
-            guard let details = details else {
-                completionHandler(nil, nil, nil)
-                print("Line \(#line) has empty post details")
-                return
-            }
-            
-            self?.homeNetworkManager.requestBuddyicon(post: details, group: group) { result in
-                switch result {
-                case .success(let avatar):
+            case .success(let photoDetails):
+                details = photoDetails
+                
+                self?.requestImagesOfPhotoDetails(details: photoDetails, group: group) { avatar, photo in
                     buddyicon = avatar
-                case .failure(let error):
-                    print("Download buddyicon error: \(error)")
+                    image = photo
+                    
+                    DispatchQueue.main.async {
+                        completionHandler(details, buddyicon, image)
+                    }
                 }
-            }
-            
-            self?.homeNetworkManager.requestImage(post: details, group: group) { result in
-                switch result {
-                case .success(let cover):
-                    image = cover
-                case .failure(let error):
-                    print("Download image error: \(error)")
-                }
-            }
-            
-            group.notify(queue: DispatchQueue.main) {
-                //print("Post constructed: (\(details), \(String(describing: buddyicon)), \(String(describing: image))")
+            case .failure(let error):
                 DispatchQueue.main.async {
                     completionHandler(details, buddyicon, image)
                 }
+                print("Download photo details cell in \(#function) has error: \(error)")
             }
+        }
+    }
+    
+    private func requestImagesOfPhotoDetails(details: PhotoDetailsEntity, group: DispatchGroup, completionHandler: @escaping (_ avatar: UIImage?, _ photo: UIImage?) -> Void) {
+        var avatar: UIImage?
+        var photo: UIImage?
+        
+        repository.requestBuddyicon(post: details, group: group) { result in
+            switch result {
+            case .success(let image):
+                avatar = image
+            case .failure(let error):
+                print("Download buddyicon error: \(error)")
+            }
+        }
+        
+        repository.requestImage(post: details, group: group) { result in
+            switch result {
+            case .success(let image):
+                photo = image
+            case .failure(let error):
+                print("Download image error: \(error)")
+            }
+        }
+        
+        group.notify(queue: DispatchQueue.main) {
+            completionHandler(avatar, photo)
         }
     }
     

@@ -7,25 +7,25 @@
 
 import UIKit
 
-class CommentTableViewCell: UITableViewCell {
+// MARK: - CommentTableViewCell
 
+class CommentTableViewCell: UITableViewCell {
+    
     @IBOutlet weak var commentOwnerAvatar: UIImageView!
     @IBOutlet weak var commentContent: UILabel!
     @IBOutlet weak var commentDate: UILabel!
     
-    private lazy var skeletonAnimation: SkeletonAnimation = .init()
+    private let skeletonAnimation: SkeletonAnimation = .init()
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
         // Initialization code
-        skeletonAnimation.startAnimationFor(view: commentOwnerAvatar)
-        skeletonAnimation.startAnimationFor(view: commentContent, cornerRadius: true)
-        skeletonAnimation.startAnimationFor(view: commentDate, cornerRadius: true)
-        
-        commentOwnerAvatar.layer.cornerRadius = commentOwnerAvatar.frame.height / 2
+        setupOwnerAvatar()
+        setupDefaultView()
+        setupAnimation()
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
@@ -34,6 +34,7 @@ class CommentTableViewCell: UITableViewCell {
     
     func configure(_ comment: CommentProtocol) {
         commentOwnerAvatar.image = comment.ownerAvatar
+        
         commentContent.attributedText = NSMutableAttributedString.prepareContent(username: comment.username, content: comment.commentContent)
         
         let dateAsString = comment.publishedAt?.prepareStringAsDate()
@@ -44,14 +45,24 @@ class CommentTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        commentOwnerAvatar.image = nil
-        commentContent.text = "No content"
-        commentDate.text = "No date"
-        
+        setupDefaultView()
+        setupAnimation()
+    }
+    
+    private func setupAnimation() {
         skeletonAnimation.startAnimationFor(view: commentOwnerAvatar)
         skeletonAnimation.startAnimationFor(view: commentContent, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: commentDate, cornerRadius: true)
+    }
+    
+    private func setupDefaultView() {
+        commentOwnerAvatar.image = nil
+        commentContent.text = "No content"
+        commentDate.text = "No date"
+    }
+    
+    private func setupOwnerAvatar() {
+        commentOwnerAvatar.layer.cornerRadius = commentOwnerAvatar.frame.height / 2
     }
     
 }

@@ -8,12 +8,6 @@
 import Foundation
 import UIKit
 
-protocol CommentOwnerProtocol {
-    var iconFarm: Int? { get set }
-    var iconServer: String? { get set }
-    var nsid: String? { get set }
-}
-
 
 struct Comment: Decodable, CommentOwnerProtocol {
     // Identifiers
@@ -101,6 +95,3 @@ struct Post {
 //    }
 }
 
-protocol DetailsProtocol {
-    
-}

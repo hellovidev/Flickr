@@ -32,17 +32,12 @@ class DetailsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        tableView.separatorStyle = .none
-        
-        
-
+        setupTableSeparator()
         setupFavouriteIndicator()
-        
-
-        
         setupTableRefreshIndicator()
         setupSkeletonAnimation()
         setupDetailsOwnerView()
+        
         registerReusableCell()
         
         requestDetails()
@@ -93,6 +88,10 @@ class DetailsViewController: UITableViewController {
         skeletonAnimation.startAnimationFor(view: detailsTitle, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: detailsDescription, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: detailsDate, cornerRadius: true)
+    }
+    
+    private func setupTableSeparator() {
+        tableView.separatorStyle = .none
     }
     
     
@@ -248,13 +247,13 @@ class DetailsViewController: UITableViewController {
             }
         }
     
-
-    
     deinit {
         print("\(type(of: self)) deinited.")
     }
     
 }
+
+// MARK: - DynamicHeaderTableView
 
 class DynamicHeaderTableView: UITableView {
         
@@ -276,58 +275,3 @@ class DynamicHeaderTableView: UITableView {
     }
     
 }
-
-//    func setEmptyMessage(_ message: String) {
-//        let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
-//        messageLabel.text = message
-//        messageLabel.textColor = .black
-//        messageLabel.numberOfLines = 0
-//        messageLabel.textAlignment = .center
-////        messageLabel.font = UIFont(name: <#T##String#>, size: <#T##CGFloat#>) UIFont(name: "TrebuchetMS", size: 15)
-//        messageLabel.sizeToFit()
-//
-//        self.backgroundView = messageLabel
-//        self.separatorStyle = .none
-//    }
-//
-//    func restore() {
-//        self.backgroundView = nil
-//        self.separatorStyle = .singleLine
-//    }
-
-//    override func numberOfSections(in tableView: UITableView) -> Int {
-//        var numOfSections: Int = 0
-//        if viewModel.numberOfComments > 0
-//        {
-//            tableView.separatorStyle = .singleLine
-//            numOfSections            = 1
-//            tableView.backgroundView = nil
-//        }
-//        else
-//        {
-//            let noDataLabel: UILabel  = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
-//            noDataLabel.text          = "No data available"
-//            noDataLabel.textColor     = UIColor.black
-//            noDataLabel.textAlignment = .center
-//            tableView.backgroundView  = noDataLabel
-//            tableView.separatorStyle  = .none
-//        }
-//        return numOfSections
-//    }
-
-//class TableViewHelper {
-//
-//    class func EmptyMessage(message:String, viewController:UITableViewController) {
-//        let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: self.view.bounds.size.width, height: self.view.bounds.size.height))
-//        let messageLabel = UILabel(frame: rect)
-//        messageLabel.text = message
-//        messageLabel.textColor = UIColor.blackColor()
-//        messageLabel.numberOfLines = 0;
-//        messageLabel.textAlignment = .Center;
-//        messageLabel.font = UIFont(name: "TrebuchetMS", size: 15)
-//        messageLabel.sizeToFit()
-//
-//        viewController.tableView.backgroundView = messageLabel;
-//        viewController.tableView.separatorStyle = .None;
-//    }
-//}

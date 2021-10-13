@@ -69,8 +69,7 @@ class GalleryViewController: UIViewController {
         navigationItem.titleView = navigationLogotype
     }
     
-    @objc
-    private func onTapAddButtonAction(_ sender: UIButton) {
+    @objc private func onTapAddButtonAction(_ sender: UIButton) {
         let picker: UIViewController
         if #available(iOS 14, *) {
             picker = configurePhotoPicker()

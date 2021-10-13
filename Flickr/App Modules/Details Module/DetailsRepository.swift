@@ -13,7 +13,7 @@ class DetailsRepository {
     private var isFavourite: Bool = false
     private var details: Post = .init()
 
-    private var network: NetworkService
+    private let network: NetworkService
     
     private let cacheDetailsOwnerAvatar: CacheStorageService<NSString, UIImage>
     private let cacheDetailsImage: CacheStorageService<NSString, UIImage>
@@ -194,7 +194,7 @@ class DetailsRepository {
                 self?.details.comments = .init()
                 guard let comments = comments else { return }
                 for comment in comments {
-                    let detailsComment: PhotoComment = .init(iconFarm: comment.iconFarm, iconServer: comment.iconServer, nsid: comment.nsid, username: comment.authorName, commentContent: comment.content, publishedAt: comment.dateCreate)
+                    let detailsComment: PhotoCommentEntity = .init(iconFarm: comment.iconFarm, iconServer: comment.iconServer, nsid: comment.nsid, username: comment.authorName, commentContent: comment.content, publishedAt: comment.dateCreate)
                     self?.details.comments?.append(detailsComment)
                 }
             case .failure(let error):

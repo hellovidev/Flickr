@@ -7,6 +7,14 @@
 
 import UIKit
 
+// MARK: - Comment Protocols
+
+protocol CommentOwnerProtocol {
+    var iconFarm: Int? { get set }
+    var iconServer: String? { get set }
+    var nsid: String? { get set }
+}
+
 protocol CommentProtocol {
     var ownerAvatar: UIImage? { get set }
     var username: String? { get set }
@@ -14,7 +22,10 @@ protocol CommentProtocol {
     var publishedAt: String? { get set }
 }
 
-struct PhotoComment: CommentProtocol, CommentOwnerProtocol {
+// MARK: - PhotoCommentEntity
+
+struct PhotoCommentEntity: CommentProtocol, CommentOwnerProtocol {
+    
     var iconFarm: Int?
     
     var iconServer: String?
@@ -22,7 +33,11 @@ struct PhotoComment: CommentProtocol, CommentOwnerProtocol {
     var nsid: String?
     
     var ownerAvatar: UIImage?
+    
     var username: String?
+    
     var commentContent: String?
+    
     var publishedAt: String?
+    
 }

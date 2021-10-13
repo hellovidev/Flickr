@@ -10,53 +10,50 @@ import UIKit
 // MARK: - HomeViewController
 
 class HomeViewController: UIViewController {
-
+    
     // MARK: - Properties
     
-    var viewModel: HomeViewModel!
-
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var filterStackView: UIStackView!
     
     private let refreshControl: UIRefreshControl = .init()
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
-
+    
     private var filterButtons: [UIButton] = .init()
+    
+    var viewModel: HomeViewModel!
     
     // MARK: - UIViewController Life Cycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        self.viewModel.router.addObserver { [weak self] router in
-//            self?.show(router)
-//        }
-        
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 400
-        
         tableView.delegate = self
         tableView.dataSource = self
-        
-        let nibName = String(describing: PostTableViewCell.self)
-        let reusableCellNib = UINib(nibName: nibName, bundle: nil)
-        tableView.register(reusableCellNib, forCellReuseIdentifier: ReuseIdentifier.homePostCell.rawValue)
-        
-        setupFilterViews()
-        requestTableData()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        tableView.showsVerticalScrollIndicator = false
         
         setupTableRefreshIndicator()
         setupNextPageLoadingIndicator()
         setupNavigationTitle()
+        setupFilterViews()
+        setupTableCellHeight()
+        
+        registerTableReusableCell()
+        
+        requestTableData()
     }
     
     // MARK: - Setup UI Methods
+    
+    private func setupTableCellHeight() {
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 400
+    }
+    
+    private func registerTableReusableCell() {
+        let nibName = String(describing: PhotoDetailsTableViewCell.self)
+        let reusableCellNib = UINib(nibName: nibName, bundle: nil)
+        tableView.register(reusableCellNib, forCellReuseIdentifier: ReuseIdentifier.homeCell.rawValue)
+    }
     
     private func setupNextPageLoadingIndicator() {
         activityIndicator.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 50)
@@ -88,7 +85,7 @@ class HomeViewController: UIViewController {
             
             let text = NSAttributedString(string: $0, attributes: filterButtonTextAttributes)
             filterButton.setAttributedTitle(text, for: .normal)
-
+            
             filterButton.backgroundColor = .systemBlue
             filterButton.layer.cornerRadius = 8
             filterButton.contentHorizontalAlignment = .left
@@ -100,17 +97,15 @@ class HomeViewController: UIViewController {
             filterStackView.addArrangedSubview(filterButton)
         }
     }
-
-    @objc
-    private func refreshTable() {
+    
+    @objc private func refreshTable() {
         activityIndicator.stopAnimating()
-        viewModel.homeNetworkManager.refresh()
+        viewModel.refresh()
         tableView.reloadData()
         requestTableData()
     }
     
-    @objc
-    private func filter(_ sender: UIButton) {
+    @objc private func filter(_ sender: UIButton) {
         var filterType: FilterType? = nil
         let selectedState = sender.isSelected
         
@@ -118,21 +113,21 @@ class HomeViewController: UIViewController {
             $0.isSelected = false
             $0.backgroundColor = .systemBlue
         }
-
+        
         if !selectedState {
             sender.isSelected = true
             sender.backgroundColor = .systemPink
             guard let filterName = sender.currentAttributedTitle?.string else { return }
             filterType = FilterType(rawValue: filterName)
         }
-
-        viewModel.homeNetworkManager.filter(by: filterType) { [weak self] in
+        
+        viewModel.filter(by: filterType) { [weak self] in
             self?.tableView.reloadData()
         }
     }
     
     private func requestTableData() {
-        viewModel.homeNetworkManager.requestPostsId { [weak self] result in
+        viewModel.requestPhotosId { [weak self] result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.refreshControl.endRefreshing()
             }
@@ -142,7 +137,8 @@ class HomeViewController: UIViewController {
                 self?.tableView.reloadData()
             case .failure(let error):
                 self?.tableView.tableFooterView?.isHidden = true
-                self?.showAlert(title: "Error", message: error.localizedDescription, button: "OK")
+                self?.showAlert(title: "Home Error", message: "Something went wrong. Please try again.", button: "OK")
+                print("Photos download failed: \(error)")
             }
         }
     }
@@ -158,15 +154,17 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.homeNetworkManager.idsCount
+        return viewModel.numberOfIds
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.homePostCell.rawValue, for: indexPath) as! PostTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.homeCell.rawValue, for: indexPath) as! PhotoDetailsTableViewCell
+        cell.isUserInteractionEnabled = false
         
-        viewModel.requestPost(indexPath: indexPath) { details, buddyicon, image  in
+        viewModel.requestPhotoDetailsCell(indexPath: indexPath) { details, buddyicon, image  in
             tableView.beginUpdates()
-            cell.config(details: details, buddyicon: buddyicon, image: image)
+            cell.configuration(details: details, buddyicon: buddyicon, image: image)
+            cell.isUserInteractionEnabled = true
             tableView.endUpdates()
         }
         
@@ -190,60 +188,11 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as! PostTableViewCell
-        guard let id = cell.postId else { return }
-
-        viewModel.router.send(.openPost(id: id))//viewModel.homeNetworkManager.getPostDetails(index: indexPath.row)))
+        let cell = tableView.cellForRow(at: indexPath) as! PhotoDetailsTableViewCell
+        guard let id = cell.photoDetailsId else { return }
+        
+        viewModel.openDetails(id: id)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
 }
-
-//// MARK: - PostViewControllerDelegate
-//
-//extension HomeViewController: PostViewControllerDelegate {
-//    
-//    func close(viewController: PostViewController) {
-//        navigationController?.popViewController(animated: true)
-//    }
-//    
-//}
-
-
-
-
-
-
-
-
-
-
-
-//tabBarController?.delegate = self
-
-/*
-
-//???
-private var fromAnother: Bool = false
-
-
-extension HomeViewController: UITabBarControllerDelegate {
-    
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        let tabBarIndex = tabBarController.selectedIndex
-        if tabBarIndex == 0 && fromAnother == false {
-            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-        }
-    }
-    
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if tabBarController.selectedIndex != 0 {
-            fromAnother = true
-        } else {
-            fromAnother = false
-        }
-        return true
-    }
-    
-}
-*/

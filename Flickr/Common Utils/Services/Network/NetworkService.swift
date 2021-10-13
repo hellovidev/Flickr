@@ -298,3 +298,8 @@ extension NetworkService: URLSessionTaskDelegate {
     }
     
 }
+
+enum NetworkManagerError: Error {
+    case invalidParameters
+    case nilResponseData
+}

@@ -28,7 +28,7 @@ extension NetworkService {
     }
     
     // Get photo 'flickr.photos.getInfo' (Post screen)
-    func getPhotoById(id photoId: String, secret: String? = nil, completion: @escaping (Result<PostDetails, Error>) -> Void) {
+    func getPhotoById(id photoId: String, secret: String? = nil, completion: @escaping (Result<PhotoDetailsEntity, Error>) -> Void) {
 //        if let cache = try? cacheService.get(for: photoId as NSString) {
 //            print("USING CACHED POST!")
 //            completion(.success(cache as! PostDetails))
@@ -108,7 +108,7 @@ extension NetworkService {
     }
     
     private struct PostDetailsResponse: Decodable {
-        let photo: PostDetails
+        let photo: PhotoDetailsEntity
     }
     
 }

@@ -21,7 +21,8 @@ class AuthorizationViewModel {
             case .success:
                 self?.coordinator?.didAuthenticate()
             case .failure(let error):
-                presenter.showAlert(title: "Authorize error", message: error.localizedDescription, button: "OK")
+                presenter.showAlert(title: "Authorize Error", message: "Something went wrong. Please try again.", button: "OK")
+                print("Authorization failed: \(error)")
             }
         }
     }
