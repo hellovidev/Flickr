@@ -11,7 +11,7 @@ import UIKit
 
 class GalleryRepository {
     
-    private var gallery: [Photo]
+    private var gallery: [PhotoEntity]
     
     private var network: NetworkService
     
@@ -51,7 +51,7 @@ class GalleryRepository {
             return
         }
         
-        removePhotoById(id) { [weak self] result in
+        network.deletePhotoById(id) { [weak self] result in
             switch result {
             case .success:
                 self?.gallery.remove(at: index)
@@ -60,10 +60,6 @@ class GalleryRepository {
                 completionHandler(.failure(error))
             }
         }
-    }
-    
-    private func removePhotoById(_ id: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        network.deletePhotoById(id, completion: completionHandler)
     }
     
     func requestPhotoLinkInfoArray(completionHandler: @escaping (Result<Void, Error>) -> Void) {
@@ -101,7 +97,7 @@ class GalleryRepository {
             })
         }
     }
-
+    
     deinit {
         print("\(type(of: self)) deinited.")
     }

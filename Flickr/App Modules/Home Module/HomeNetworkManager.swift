@@ -63,7 +63,7 @@ class HomeNetworkManager {
     }
     // MARK: - END
     
-    private func addUniqValues(_ array: [Photo]) {
+    private func addUniqValues(_ array: [PhotoEntity]) {
         ids += array.compactMap { $0.id }
         ids = ids.uniques
     }

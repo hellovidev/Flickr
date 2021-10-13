@@ -10,7 +10,7 @@ import Foundation
 extension NetworkService {
     
     // Get list of popular photos 'flickr.photos.getPopular' (General screen)
-    func getRecentPosts(page: Int, perPage: Int, completion: @escaping (Result<[Photo], Error>) -> Void) {
+    func getRecentPosts(page: Int, perPage: Int, completion: @escaping (Result<[PhotoEntity], Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
             "per_page": String(perPage),
@@ -56,7 +56,7 @@ extension NetworkService {
     }
     
     // Get user photos 'flickr.people.getPhotos' (Gallery screen)
-    func getUserPhotos(for userId: String, completion: @escaping (Result<[Photo], Error>) -> Void) {
+    func getUserPhotos(for userId: String, completion: @escaping (Result<[PhotoEntity], Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
             "user_id": userId,
@@ -95,7 +95,7 @@ extension NetworkService {
         let data: Photos
         
         struct Photos: Decodable {
-            let photos: [Photo]
+            let photos: [PhotoEntity]
             
             enum CodingKeys: String, CodingKey {
                 case photos = "photo"

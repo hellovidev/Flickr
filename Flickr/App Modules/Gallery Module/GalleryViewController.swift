@@ -32,8 +32,7 @@ class GalleryViewController: UIViewController {
         requestPhotos()
     }
     
-    @objc
-    private func refreshCollectionView() {
+    @objc private func refreshCollectionView() {
         viewModel.refresh()
         requestPhotos()
     }
@@ -47,12 +46,13 @@ class GalleryViewController: UIViewController {
             switch result {
             case .success:
                 self?.collectionView.reloadData()
-            case .failure(_):
+            case .failure(let error):
                 self?.showAlert(
                     title: "Gallery Error",
                     message: "Loading gallery photos failed.\nTry to check your internet connection and pull to refresh.",
                     button: "OK"
                 )
+                print("Request gallery error: \(error)")
             }
         }
     }
@@ -123,8 +123,8 @@ extension GalleryViewController: UICollectionViewDataSource {
         
         switch viewModel.itemAt(indexPath: indexPath) {
         case .uploadPhoto:
-            let buttonView: AddButtonView = .init()
-            buttonView.addNewButton.addTarget(self, action: #selector(onTapAddButtonAction), for: .touchUpInside)
+            let buttonView: UploadButtonView = .init()
+            buttonView.uploadPhotoButton.addTarget(self, action: #selector(onTapAddButtonAction), for: .touchUpInside)
             cell.view = buttonView
         case .galleryPhoto(index: let index):
             let interaction = UIContextMenuInteraction(delegate: self)
@@ -136,7 +136,7 @@ extension GalleryViewController: UICollectionViewDataSource {
                     let imageView: UIImageView = .init(image: image)
                     cell.view = imageView
                 case .failure(let error):
-                    print("Photo loading error: \(error)")
+                    print("Request photo error: \(error)")
                 }
             }
         }
@@ -187,9 +187,9 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         let numberOfItemsInSection: CGFloat = CGFloat(collectionView.numberOfItems(inSection: .zero))
         guard numberOfItemsInSection == 1 else { return .zero }
-
+        
         let cellSideSize = calculateCellSideSize()
-
+        
         guard let collectionViewFlowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
         let totalSpacingWidth = collectionViewFlowLayout.minimumInteritemSpacing * numberOfItemsInSection
         let totalWidth = cellSideSize * numberOfItemsInSection
@@ -206,7 +206,7 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
         
         return round(cellSideSize)
     }
-        
+    
 }
 
 // MARK: - UICollectionViewDelegate
@@ -214,9 +214,11 @@ extension GalleryViewController: UICollectionViewDelegateFlowLayout {
 extension GalleryViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard indexPath.row == .zero else {
+        switch viewModel.itemAt(indexPath: indexPath) {
+        case .uploadPhoto:
+            break
+        case .galleryPhoto(index: _):
             animateOpacity(view: cell)
-            return
         }
     }
     

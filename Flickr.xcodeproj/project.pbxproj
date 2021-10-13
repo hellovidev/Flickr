@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F090BFB2705C04100843515 /* AddButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F090BFA2705C04100843515 /* AddButtonView.xib */; };
-		5F090BFD2705C05400843515 /* AddButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F090BFC2705C05400843515 /* AddButtonView.swift */; };
+		5F090BFB2705C04100843515 /* UploadButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F090BFA2705C04100843515 /* UploadButtonView.xib */; };
+		5F090BFD2705C05400843515 /* UploadButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F090BFC2705C05400843515 /* UploadButtonView.swift */; };
 		5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E70D27134389004B8A8F /* ViewBuilder.swift */; };
 		5F20E7152714606B004B8A8F /* NavigationLogotype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E7142714606B004B8A8F /* NavigationLogotype.swift */; };
 		5F20E7182715886E004B8A8F /* UserDefaultsBacked.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E7172715886E004B8A8F /* UserDefaultsBacked.swift */; };
@@ -41,7 +41,7 @@
 		5F7F996626D69AE900482485 /* ProfileEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996526D69AE900482485 /* ProfileEntity.swift */; };
 		5F7F996826D6AE1000482485 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996726D6AE1000482485 /* Comment.swift */; };
 		5F7F996A26D6C05800482485 /* Favorite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996926D6C05800482485 /* Favorite.swift */; };
-		5F7F996C26D6CBC700482485 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996B26D6CBC700482485 /* Photo.swift */; };
+		5F7F996C26D6CBC700482485 /* PhotoEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996B26D6CBC700482485 /* PhotoEntity.swift */; };
 		5F7F996E26D6D26300482485 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996D26D6D26300482485 /* Tag.swift */; };
 		5F7F997026D7816800482485 /* PostDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F996F26D7816800482485 /* PostDetails.swift */; };
 		5F7F997526D7FF0C00482485 /* NetworkService+Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F997426D7FF0C00482485 /* NetworkService+Favorites.swift */; };
@@ -90,8 +90,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5F090BFA2705C04100843515 /* AddButtonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddButtonView.xib; sourceTree = "<group>"; };
-		5F090BFC2705C05400843515 /* AddButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButtonView.swift; sourceTree = "<group>"; };
+		5F090BFA2705C04100843515 /* UploadButtonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UploadButtonView.xib; sourceTree = "<group>"; };
+		5F090BFC2705C05400843515 /* UploadButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadButtonView.swift; sourceTree = "<group>"; };
 		5F20E70D27134389004B8A8F /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
 		5F20E7142714606B004B8A8F /* NavigationLogotype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLogotype.swift; sourceTree = "<group>"; };
 		5F20E7172715886E004B8A8F /* UserDefaultsBacked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBacked.swift; sourceTree = "<group>"; };
@@ -124,7 +124,7 @@
 		5F7F996526D69AE900482485 /* ProfileEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEntity.swift; sourceTree = "<group>"; };
 		5F7F996726D6AE1000482485 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		5F7F996926D6C05800482485 /* Favorite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorite.swift; sourceTree = "<group>"; };
-		5F7F996B26D6CBC700482485 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		5F7F996B26D6CBC700482485 /* PhotoEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEntity.swift; sourceTree = "<group>"; };
 		5F7F996D26D6D26300482485 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		5F7F996F26D7816800482485 /* PostDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetails.swift; sourceTree = "<group>"; };
 		5F7F997426D7FF0C00482485 /* NetworkService+Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Favorites.swift"; sourceTree = "<group>"; };
@@ -193,13 +193,13 @@
 			path = "Animation Group";
 			sourceTree = "<group>";
 		};
-		5F090BFE2705C05700843515 /* Add Button View */ = {
+		5F090BFE2705C05700843515 /* Upload Button View */ = {
 			isa = PBXGroup;
 			children = (
-				5F090BFA2705C04100843515 /* AddButtonView.xib */,
-				5F090BFC2705C05400843515 /* AddButtonView.swift */,
+				5F090BFA2705C04100843515 /* UploadButtonView.xib */,
+				5F090BFC2705C05400843515 /* UploadButtonView.swift */,
 			);
-			path = "Add Button View";
+			path = "Upload Button View";
 			sourceTree = "<group>";
 		};
 		5F20E7162715881C004B8A8F /* Property Wrapper Group */ = {
@@ -259,8 +259,8 @@
 		5F4A774126FCEA1300D1EB00 /* Gallery Module */ = {
 			isa = PBXGroup;
 			children = (
-				5F090BFE2705C05700843515 /* Add Button View */,
-				5F7F996B26D6CBC700482485 /* Photo.swift */,
+				5F090BFE2705C05700843515 /* Upload Button View */,
+				5F7F996B26D6CBC700482485 /* PhotoEntity.swift */,
 				5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */,
 				5F8A441526FF4EA80027217F /* GalleryViewModel.swift */,
 				5F73C388270996FF00CDFC8F /* GalleryRepository.swift */,
@@ -578,7 +578,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F090BFB2705C04100843515 /* AddButtonView.xib in Resources */,
+				5F090BFB2705C04100843515 /* UploadButtonView.xib in Resources */,
 				5FFEC0BD26CD4DDC000A0BAB /* LaunchScreen.storyboard in Resources */,
 				5FFEC0BA26CD4DDC000A0BAB /* Assets.xcassets in Resources */,
 				5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */,
@@ -607,7 +607,7 @@
 				5F73C3812708BA9300CDFC8F /* AuthorizationCoordinator.swift in Sources */,
 				5F7F998226D8064A00482485 /* SignatureHelper.swift in Sources */,
 				5F7F998426D8E89200482485 /* DeserializeHelper.swift in Sources */,
-				5F7F996C26D6CBC700482485 /* Photo.swift in Sources */,
+				5F7F996C26D6CBC700482485 /* PhotoEntity.swift in Sources */,
 				5FC55766270CB34600018876 /* CommentTableViewCell.swift in Sources */,
 				5F71DB1527077990006094B4 /* ActivityViewController.swift in Sources */,
 				5FC55771270E265500018876 /* UIViewExtensions.swift in Sources */,
@@ -666,7 +666,7 @@
 				5F41F0A1270374400044F54A /* ProfileRepository.swift in Sources */,
 				5FA9B2F626E4B12A0060DAE8 /* DetailsViewController.swift in Sources */,
 				5F97D9D026F75CF40089C30B /* StorageServiceError.swift in Sources */,
-				5F090BFD2705C05400843515 /* AddButtonView.swift in Sources */,
+				5F090BFD2705C05400843515 /* UploadButtonView.swift in Sources */,
 				5FA9B2FA26E533700060DAE8 /* HTTPMethod.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

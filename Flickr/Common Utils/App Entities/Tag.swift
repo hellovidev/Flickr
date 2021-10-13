@@ -21,7 +21,7 @@ struct TagPhotosResponse: Decodable {
     let data: TagPhotos
     
     struct TagPhotos: Decodable {
-        let photos: [Photo]
+        let photos: [PhotoEntity]
         
         enum CodingKeys: String, CodingKey {
             case photos = "photo"

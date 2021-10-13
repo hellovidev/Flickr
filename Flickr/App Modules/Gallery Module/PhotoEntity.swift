@@ -1,5 +1,5 @@
 //
-//  Photo.swift
+//  PhotoEntity.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 25.08.2021.
@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct Photo: Decodable {
+// MARK: - PhotoEntity
+
+struct PhotoEntity: Decodable {
     
     let id: String?
     
@@ -18,7 +20,7 @@ struct Photo: Decodable {
     var isPublic: Int?
     
     var isFriend: Int?
-
+    
     var secret: String?
     
     var server: String?
@@ -26,7 +28,7 @@ struct Photo: Decodable {
     var farm: Int?
     
     var isFamily: Int?
-
+    
     enum CodingKeys: String, CodingKey {
         case id = "id"
         case title = "title"
