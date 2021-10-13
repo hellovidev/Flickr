@@ -1,52 +1,15 @@
 //
-//  UploadViewController.swift
+//  UploadProgressView.swift
 //  Flickr
 //
-//  Created by Sergei Romanchuk on 03.10.2021.
+//  Created by Sergei Romanchuk on 13.10.2021.
 //
 
 import UIKit
 
-protocol ProgressDelegate: AnyObject {
-    func onProgressCanceled()
-}
+// MARK: - UploadProgressView
 
-class UploadViewController: UIViewController {
-
-    private let uploadView: UploadView = .init()
-    
-    private weak var delegate: ProgressDelegate?
-
-    init(delegate: ProgressDelegate) {
-        super.init(nibName: nil, bundle: nil)
-        modalTransitionStyle = .crossDissolve
-        modalPresentationStyle = .overFullScreen
-        uploadView.titleProcessLabel.text = "Uploading..."
-        uploadView.percentProgressLabel.text = "0%"
-        self.delegate = delegate
-        view = uploadView
-    }
-
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func setProgress(_ value: Float) {
-        uploadView.percentProgressLabel.text = "\(Int(value * 100))%"
-        uploadView.setProgress(value)
-        if value == 1.0 {
-            delegate?.onProgressCanceled()
-            uploadView.setProgress(0)
-        }
-    }
-    
-    func present(from viewController: UIViewController) {
-        viewController.present(self, animated: true)
-    }
-    
-}
-
-private class UploadView: UIView {
+class UploadProgressView: UIView {
     
     private let progressBar: UIProgressView = .init(progressViewStyle: .default)
     
