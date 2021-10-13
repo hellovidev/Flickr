@@ -32,7 +32,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let dependencyContainer: DependencyContainer = .init()
         let viewBuilder: ViewBuilder = .init(dependencyContainer: dependencyContainer)
-        //viewBuilder.registerNewDependency(authorizationService)
         
         let navigationController: UINavigationController = .init()
         navigationController.setNavigationBarHidden(true, animated: false)

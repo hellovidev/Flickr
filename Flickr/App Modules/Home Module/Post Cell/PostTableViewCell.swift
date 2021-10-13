@@ -21,6 +21,15 @@ class PostTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        accountView.ownerAvatar.image = nil
+        accountView.ownerAccountName.text = "No account name"
+        accountView.ownerLocation.text = "No location"
+        
+        postImage.image = nil
+        
+        postDescription.text = "No name & No description"
+        postPublishedDate.text = "No date"
+        
         skeletonAnimation.startAnimationFor(view: accountView.ownerAvatar)
         skeletonAnimation.startAnimationFor(view: postImage)
         
@@ -30,14 +39,6 @@ class PostTableViewCell: UITableViewCell {
         skeletonAnimation.startAnimationFor(view: postDescription, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: postPublishedDate, cornerRadius: true)
         
-        accountView.ownerAvatar.image = nil
-        accountView.ownerAccountName.text = "No account name"
-        accountView.ownerLocation.text = "No location"
-        
-        postImage.image = nil
-        
-        postDescription.text = "No name & No description"
-        postPublishedDate.text = "No date"
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -48,19 +49,18 @@ class PostTableViewCell: UITableViewCell {
     var postId: String?
     
     func config(details: PostDetails?, buddyicon: UIImage?, image: UIImage?) {
+        skeletonAnimation.stopAllAnimations()
+
         postId = details?.id
         
         accountView.ownerAvatar.image = buddyicon
         postImage.image = image
-        
-        skeletonAnimation.stopAllAnimations()
         
         let nickname = PrepareTextFormatter.prepareUserAccountName(name: details?.owner?.realName, username: details?.owner?.username)
         accountView.ownerAccountName.text = nickname
         
         let ownerLocation = PrepareTextFormatter.prepareTextField(details?.owner?.location, placeholder: .location)
         accountView.ownerLocation.text = ownerLocation
-        
         
         let description = NSMutableAttributedString.prepareContent(username: details?.owner?.username, content: details?.title?.content)
         postDescription.attributedText = description
@@ -74,15 +74,6 @@ class PostTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        skeletonAnimation.startAnimationFor(view: accountView.ownerAvatar)
-        skeletonAnimation.startAnimationFor(view: postImage)
-        
-        skeletonAnimation.startAnimationFor(view: postDescription, cornerRadius: true)
-        skeletonAnimation.startAnimationFor(view: postPublishedDate, cornerRadius: true)
-
-        skeletonAnimation.startAnimationFor(view: accountView.ownerAccountName, cornerRadius: true)
-        skeletonAnimation.startAnimationFor(view: accountView.ownerLocation, cornerRadius: true)
-        
         accountView.ownerAvatar.image = nil
         accountView.ownerAccountName.text = "No account name"
         accountView.ownerLocation.text = "No location"
@@ -91,5 +82,15 @@ class PostTableViewCell: UITableViewCell {
         
         postDescription.text = "No name & No description"
         postPublishedDate.text = "No date"
+        
+        skeletonAnimation.startAnimationFor(view: accountView.ownerAvatar)
+        skeletonAnimation.startAnimationFor(view: postImage)
+        
+        skeletonAnimation.startAnimationFor(view: postDescription, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: postPublishedDate, cornerRadius: true)
+
+        skeletonAnimation.startAnimationFor(view: accountView.ownerAccountName, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: accountView.ownerLocation, cornerRadius: true)
     }
+    
 }

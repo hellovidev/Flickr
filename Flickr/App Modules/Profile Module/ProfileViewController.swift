@@ -17,35 +17,37 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var logoutButton: UIButton!
     
-    private lazy var skeletonAnimation: SkeletonAnimation = .init()
+    private let skeletonAnimation: SkeletonAnimation = .init()
     
     var viewModel: ProfileViewModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        skeletonAnimation.startAnimationFor(view: avatarImage)
-        skeletonAnimation.startAnimationFor(view: realNameLabel, cornerRadius: true)
-        skeletonAnimation.startAnimationFor(view: descriptionLabel, cornerRadius: true)
-        
+        setupAnimation()
         setupAvatar()
         setupLogoutButton()
         setupNavigationTitle()
         
-        viewModel.requestProfile { [weak self] profile, avatar in
-            
-            // Set values of request
-            self?.avatarImage.image = avatar
-            self?.realNameLabel.text = PrepareTextFormatter.prepareTextField(profile?.realName?.content, placeholder: .name)
-            self?.descriptionLabel.text = PrepareTextFormatter.prepareTextField(profile?.description?.content, placeholder: .description)
-            
-            // Stop skeleton animations
-            self?.skeletonAnimation.stopAllAnimations()
-        }
+        requestProfile()
     }
     
     @IBAction func logoutAction(_ sender: UIButton) {
         viewModel.didLogout()
+    }
+    
+    private func requestProfile() {
+        viewModel.requestProfile { [weak self] profile, avatar in
+            self?.avatarImage.image = avatar
+            
+            let realName = PrepareTextFormatter.prepareTextField(profile?.realName?.content, placeholder: .name)
+            self?.realNameLabel.text = realName
+            
+            let description = PrepareTextFormatter.prepareTextField(profile?.description?.content, placeholder: .description)
+            self?.descriptionLabel.text = description
+            
+            self?.skeletonAnimation.stopAllAnimations()
+        }
     }
     
     private func setupAvatar() {
@@ -62,6 +64,12 @@ class ProfileViewController: UIViewController {
     private func setupNavigationTitle() {        
         let navigationLogotype: NavigationLogotype = .init()
         navigationItem.titleView = navigationLogotype
+    }
+    
+    private func setupAnimation() {
+        skeletonAnimation.startAnimationFor(view: avatarImage)
+        skeletonAnimation.startAnimationFor(view: realNameLabel, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: descriptionLabel, cornerRadius: true)
     }
     
     deinit {

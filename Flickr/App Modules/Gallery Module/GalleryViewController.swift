@@ -122,7 +122,7 @@ extension GalleryViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.galleryCell.rawValue, for: indexPath) as! GalleryCollectionReusableCell
         
         switch viewModel.itemAt(indexPath: indexPath) {
-        case .addNewPhoto:
+        case .uploadPhoto:
             let buttonView: AddButtonView = .init()
             buttonView.addNewButton.addTarget(self, action: #selector(onTapAddButtonAction), for: .touchUpInside)
             cell.view = buttonView
@@ -251,7 +251,7 @@ extension GalleryViewController: UIContextMenuInteractionDelegate {
             
             guard let index = self?.viewModel.itemAt(indexPath: indexPath) else { return }
             switch index {
-            case .addNewPhoto:
+            case .uploadPhoto:
                 break
             case .galleryPhoto(index: let index):
                 self?.viewModel.removePhotoAt(index: index) { [weak self] result in

@@ -21,7 +21,19 @@ class GalleryViewModel {
     }
     
     var numberOfItems: Int {
-        repository.getGallaryCount() + 1
+        repository.gallaryCount + 1
+    }
+    
+    enum DataSourceItem {
+        case uploadPhoto
+        case galleryPhoto(index: Int)
+    }
+    
+    func itemAt(indexPath: IndexPath) -> DataSourceItem {
+        if indexPath.row == 0 {
+            return .uploadPhoto
+        }
+        return .galleryPhoto(index: indexPath.row - 1)
     }
     
     func refresh() {
@@ -47,18 +59,6 @@ class GalleryViewModel {
     
     deinit {
         print("\(type(of: self)) deinited.")
-    }
-    
-    enum DataSourceItem {
-        case addNewPhoto
-        case galleryPhoto(index: Int)
-    }
-    
-    func itemAt(indexPath: IndexPath) -> DataSourceItem {
-        if indexPath.row == 0 {
-            return .addNewPhoto
-        }
-        return .galleryPhoto(index: indexPath.row - 1)
     }
     
 }

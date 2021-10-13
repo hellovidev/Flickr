@@ -90,7 +90,7 @@ class HomeNetworkManager {
         group.enter()
 
         let cachePostInformationIdentifier = ids[position] as NSString
-        if let postInformationCache = try? cachePostInformation.value(forKey: cachePostInformationIdentifier) {
+        if let postInformationCache = cachePostInformation.value(forKey: cachePostInformationIdentifier) {
             completionHandler(.success(postInformationCache))
             group.leave()
             return

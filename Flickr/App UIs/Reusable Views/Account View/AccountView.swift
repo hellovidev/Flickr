@@ -12,27 +12,33 @@ import UIKit
 @IBDesignable
 class AccountView: UIView {
     
-    @IBOutlet weak var view: UIView!
+    @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var ownerAvatar: UIImageView!
     @IBOutlet weak var ownerAccountName: UILabel!
     @IBOutlet weak var ownerLocation: UILabel!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup()
+        configuration()
+        setupOwnerAvatar()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setup()
+        configuration()
+        setupOwnerAvatar()
     }
     
-    func setup() {
-        let bundle = Bundle(for: AccountView.self)
-        bundle.loadNibNamed("AccountView", owner: self, options: nil)
+    private func configuration() {
+        let selfClass = type(of: self)
+        let bundle = Bundle(for: selfClass)
+        bundle.loadNibNamed("\(selfClass)", owner: self)
+        contentView.frame = bounds
+        addSubview(contentView)
+    }
+    
+    private func setupOwnerAvatar() {
         ownerAvatar.layer.cornerRadius = ownerAvatar.frame.height / 2
-        view.frame = bounds
-        addSubview(view)
     }
     
 }

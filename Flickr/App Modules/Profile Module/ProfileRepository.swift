@@ -1,5 +1,5 @@
 //
-//  ProfileNetworkManager.swift
+//  ProfileRepository.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 28.09.2021.
@@ -7,7 +7,9 @@
 
 import UIKit
 
-class ProfileNetworkManager {
+// MARK: - ProfileRepository
+
+class ProfileRepository {
     
     private var network: NetworkService
     

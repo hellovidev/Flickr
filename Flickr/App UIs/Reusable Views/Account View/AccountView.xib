@@ -10,10 +10,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AccountView" customModule="Flickr" customModuleProvider="target">
             <connections>
+                <outlet property="contentView" destination="iN0-l3-epB" id="4gD-xG-Hv7"/>
                 <outlet property="ownerAccountName" destination="n8e-Js-JqC" id="FJG-YC-Tps"/>
                 <outlet property="ownerAvatar" destination="QRo-gn-Yle" id="AjF-1L-p5e"/>
                 <outlet property="ownerLocation" destination="DQl-G3-NHL" id="j0C-LO-Cjn"/>
-                <outlet property="view" destination="iN0-l3-epB" id="4gD-xG-Hv7"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

@@ -22,6 +22,7 @@ class CommentTableViewCell: UITableViewCell {
         skeletonAnimation.startAnimationFor(view: commentOwnerAvatar)
         skeletonAnimation.startAnimationFor(view: commentContent, cornerRadius: true)
         skeletonAnimation.startAnimationFor(view: commentDate, cornerRadius: true)
+        
         commentOwnerAvatar.layer.cornerRadius = commentOwnerAvatar.frame.height / 2
     }
 
@@ -34,7 +35,9 @@ class CommentTableViewCell: UITableViewCell {
     func configure(_ comment: CommentProtocol) {
         commentOwnerAvatar.image = comment.ownerAvatar
         commentContent.attributedText = NSMutableAttributedString.prepareContent(username: comment.username, content: comment.commentContent)
-        commentDate.text = comment.publishedAt?.prepareStringAsDate()
+        
+        let dateAsString = comment.publishedAt?.prepareStringAsDate()
+        commentDate.text = PrepareTextFormatter.prepareTextField(dateAsString, placeholder: .date)
         
         skeletonAnimation.stopAllAnimations()
     }

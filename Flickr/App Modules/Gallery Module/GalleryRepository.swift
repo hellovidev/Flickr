@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - GalleryRepository
+
 class GalleryRepository {
     
     private var gallery: [Photo]
@@ -24,7 +26,7 @@ class GalleryRepository {
         self.gallery = .init()
     }
     
-    func getGallaryCount() -> Int {
+    var gallaryCount: Int {
         gallery.count
     }
     
@@ -72,7 +74,6 @@ class GalleryRepository {
                 completionHandler(.success(Void()))
             case .failure(let error):
                 completionHandler(.failure(error))
-                break
             }
         }
     }

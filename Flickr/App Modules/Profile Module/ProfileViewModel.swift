@@ -7,15 +7,17 @@
 
 import UIKit
 
+// MARK: - ProfileViewModel
+
 class ProfileViewModel {
     
     private weak var coordinator: GeneralCoordinator?
     
-    private let profileNetworkManager: ProfileNetworkManager
+    private let repository: ProfileRepository
     
     init(coordinator: GeneralCoordinator, network: NetworkService) {
         self.coordinator = coordinator
-        self.profileNetworkManager = .init(network: network)
+        self.repository = .init(network: network)
     }
     
     func didLogout() {
@@ -23,23 +25,21 @@ class ProfileViewModel {
     }
     
     func requestProfile(completionHandler: @escaping (_ profile: ProfileEntity?, _ avatar: UIImage?) -> Void) {
-        profileNetworkManager.requestProfile { [weak self] result in
+        repository.requestProfile { [weak self] result in
             switch result {
-            case .success(let profileInformation):
-                self?.profileNetworkManager.requestAvatar(profile: profileInformation) { result in
+            case .success(let profile):
+                self?.repository.requestAvatar(profile: profile) { result in
                     switch result {
                     case .success(let avatarImage):
-                        completionHandler(profileInformation, avatarImage)
+                        completionHandler(profile, avatarImage)
                     case .failure(let error):
-                        completionHandler(profileInformation, nil)
+                        completionHandler(profile, nil)
                         print("Download avatar in \(#function) has error: \(error)")
-                        return
                     }
                 }
             case .failure(let error):
                 completionHandler(nil, nil)
                 print("Download profile information in \(#function) has error: \(error)")
-                return
             }
         }
     }

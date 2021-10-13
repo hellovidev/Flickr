@@ -20,7 +20,7 @@
 		5F25F6BE26EE08B800F98608 /* PostTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */; };
 		5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F6C326EE0B4E00F98608 /* AccountView.swift */; };
 		5F25F6C626EE0BFD00F98608 /* AccountView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F25F6C526EE0BFD00F98608 /* AccountView.xib */; };
-		5F41F0A1270374400044F54A /* ProfileNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F41F0A0270374400044F54A /* ProfileNetworkManager.swift */; };
+		5F41F0A1270374400044F54A /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F41F0A0270374400044F54A /* ProfileRepository.swift */; };
 		5F4A773426FB47B600D1EB00 /* FilterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4A773326FB47B600D1EB00 /* FilterType.swift */; };
 		5F4A773626FB493700D1EB00 /* ReuseIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4A773526FB493700D1EB00 /* ReuseIdentifier.swift */; };
 		5F4A773826FB498700D1EB00 /* ImageName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4A773726FB498700D1EB00 /* ImageName.swift */; };
@@ -103,7 +103,7 @@
 		5F25F6BC26EE08B800F98608 /* PostTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PostTableViewCell.xib; sourceTree = "<group>"; };
 		5F25F6C326EE0B4E00F98608 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		5F25F6C526EE0BFD00F98608 /* AccountView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountView.xib; sourceTree = "<group>"; };
-		5F41F0A0270374400044F54A /* ProfileNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileNetworkManager.swift; sourceTree = "<group>"; };
+		5F41F0A0270374400044F54A /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
 		5F4A773326FB47B600D1EB00 /* FilterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterType.swift; sourceTree = "<group>"; };
 		5F4A773526FB493700D1EB00 /* ReuseIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseIdentifier.swift; sourceTree = "<group>"; };
 		5F4A773726FB498700D1EB00 /* ImageName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageName.swift; sourceTree = "<group>"; };
@@ -259,6 +259,7 @@
 		5F4A774126FCEA1300D1EB00 /* Gallery Module */ = {
 			isa = PBXGroup;
 			children = (
+				5F090BFE2705C05700843515 /* Add Button View */,
 				5F7F996B26D6CBC700482485 /* Photo.swift */,
 				5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */,
 				5F8A441526FF4EA80027217F /* GalleryViewModel.swift */,
@@ -273,7 +274,7 @@
 				5F7F996526D69AE900482485 /* ProfileEntity.swift */,
 				5FA9B2EF26E4B0F20060DAE8 /* ProfileViewController.swift */,
 				5F8A441326FF4C7B0027217F /* ProfileViewModel.swift */,
-				5F41F0A0270374400044F54A /* ProfileNetworkManager.swift */,
+				5F41F0A0270374400044F54A /* ProfileRepository.swift */,
 			);
 			path = "Profile Module";
 			sourceTree = "<group>";
@@ -401,7 +402,6 @@
 			isa = PBXGroup;
 			children = (
 				5F25F6C026EE0A9900F98608 /* Account View */,
-				5F090BFE2705C05700843515 /* Add Button View */,
 			);
 			path = "Reusable Views";
 			sourceTree = "<group>";
@@ -663,7 +663,7 @@
 				5FA9B2FC26E655AE0060DAE8 /* RequestType.swift in Sources */,
 				5F7F997A26D8001F00482485 /* NetworkService+Profile.swift in Sources */,
 				5F7F997826D7FFA600482485 /* NetworkService+Comments.swift in Sources */,
-				5F41F0A1270374400044F54A /* ProfileNetworkManager.swift in Sources */,
+				5F41F0A1270374400044F54A /* ProfileRepository.swift in Sources */,
 				5FA9B2F626E4B12A0060DAE8 /* DetailsViewController.swift in Sources */,
 				5F97D9D026F75CF40089C30B /* StorageServiceError.swift in Sources */,
 				5F090BFD2705C05400843515 /* AddButtonView.swift in Sources */,

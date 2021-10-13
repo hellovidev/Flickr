@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - ProfileEntity
+
 class ProfileEntity: Decodable {
     
     let id: String?
@@ -31,23 +33,19 @@ class ProfileEntity: Decodable {
     }
     
     struct Description: Decodable {
-        
         let content: String?
         
         enum CodingKeys: String, CodingKey {
             case content = "_content"
         }
-        
     }
     
     struct RealName: Decodable {
-        
         let content: String?
         
         enum CodingKeys: String, CodingKey {
             case content = "_content"
         }
-        
     }
     
 }

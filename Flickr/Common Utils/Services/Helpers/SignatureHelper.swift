@@ -34,7 +34,7 @@ struct SignatureHelper {
         let baseSignature = method + "&" + encodeString(endpoint) + "&" + encodeString(stringParameters)
         
         
-        var signature = hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
+        let signature = hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
         //print(signature)
         //signature = baseSignature.hmac(algorithm: .SHA1, key: signingKey)//hashMessageAuthenticationCodeSHA1(signingKey: signingKey, baseSignature: baseSignature)
 //        while signature.contains("+") {
