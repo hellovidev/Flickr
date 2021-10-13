@@ -20,10 +20,6 @@ final class SkeletonAnimation: SkeletonAnimationProtocol {
     
     private var gradientLayerArray: [CAGradientLayer] = .init()
     
-    private let colors: [CGColor] = [UIColor.systemGray4.cgColor, UIColor.systemGray5.cgColor, UIColor.systemGray6.cgColor]
-    
-    private let animationLayerKey: String = "gradientAnimation"
-    
     func startAnimationFor(view: UIView, cornerRadius: Bool = false) {
         //view.setNeedsLayout()
         //view.layoutIfNeeded()
@@ -33,6 +29,8 @@ final class SkeletonAnimation: SkeletonAnimationProtocol {
         gradientLayer.startPoint = CGPoint(x: -1.5, y: 0.25)
         gradientLayer.endPoint = CGPoint(x: 2.5, y: 0.75)
         gradientLayer.drawsAsynchronously = true
+        
+        let colors: [CGColor] = [UIColor.systemGray4.cgColor, UIColor.systemGray5.cgColor, UIColor.systemGray6.cgColor]
         gradientLayer.colors = colors.reversed()
         
         if cornerRadius {
@@ -53,7 +51,7 @@ final class SkeletonAnimation: SkeletonAnimationProtocol {
         gradientAnimation.autoreverses = true
         gradientAnimation.isRemovedOnCompletion = false
         
-        gradientLayer.add(gradientAnimation, forKey: animationLayerKey)
+        gradientLayer.add(gradientAnimation, forKey: "gradientAnimation")
         gradientLayerArray.append(gradientLayer)
     }
     

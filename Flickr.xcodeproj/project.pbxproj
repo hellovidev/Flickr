@@ -15,6 +15,7 @@
 		5F20E71B27160A21004B8A8F /* PrepareTextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E71A27160A21004B8A8F /* PrepareTextFormatter.swift */; };
 		5F20E71D27174BC9004B8A8F /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E71C27174BC9004B8A8F /* ArrayExtension.swift */; };
 		5F20E71F27175D6F004B8A8F /* DetailsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E71E27175D6F004B8A8F /* DetailsEntity.swift */; };
+		5F20E72327176957004B8A8F /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E72227176957004B8A8F /* TabBarController.swift */; };
 		5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68D26E9322000F98608 /* AuthorizationService.swift */; };
 		5F25F69026E9E83F00F98608 /* WKWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */; };
 		5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */; };
@@ -75,7 +76,6 @@
 		5FC5576A270DFF4300018876 /* PhotoCommentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC55769270DFF4300018876 /* PhotoCommentEntity.swift */; };
 		5FC5576D270DFF8900018876 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC5576C270DFF8900018876 /* StringExtensions.swift */; };
 		5FC5576F270DFFA800018876 /* NSMutableAttributedStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC5576E270DFFA800018876 /* NSMutableAttributedStringExtensions.swift */; };
-		5FC55771270E265500018876 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC55770270E265500018876 /* UIViewExtensions.swift */; };
 		5FE15E8427122AF400B61DBF /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE15E8327122AF400B61DBF /* DependencyContainer.swift */; };
 		5FE3F8F027046F2200ADAA6B /* SkeletonAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3F8EF27046F2200ADAA6B /* SkeletonAnimation.swift */; };
 		5FF2241C26F1204E0026BAF4 /* NetworkService+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF2241B26F1204E0026BAF4 /* NetworkService+Image.swift */; };
@@ -98,6 +98,7 @@
 		5F20E71A27160A21004B8A8F /* PrepareTextFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrepareTextFormatter.swift; sourceTree = "<group>"; };
 		5F20E71C27174BC9004B8A8F /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		5F20E71E27175D6F004B8A8F /* DetailsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsEntity.swift; sourceTree = "<group>"; };
+		5F20E72227176957004B8A8F /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		5F25F68D26E9322000F98608 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		5F25F68F26E9E83F00F98608 /* WKWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewController.swift; sourceTree = "<group>"; };
 		5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+UIAlertController.swift"; sourceTree = "<group>"; };
@@ -158,7 +159,6 @@
 		5FC55769270DFF4300018876 /* PhotoCommentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCommentEntity.swift; sourceTree = "<group>"; };
 		5FC5576C270DFF8900018876 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		5FC5576E270DFFA800018876 /* NSMutableAttributedStringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringExtensions.swift; sourceTree = "<group>"; };
-		5FC55770270E265500018876 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		5FE15E8327122AF400B61DBF /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		5FE3F8EF27046F2200ADAA6B /* SkeletonAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonAnimation.swift; sourceTree = "<group>"; };
 		5FF2241B26F1204E0026BAF4 /* NetworkService+Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Image.swift"; sourceTree = "<group>"; };
@@ -218,6 +218,26 @@
 			path = "Formatter Group";
 			sourceTree = "<group>";
 		};
+		5F20E72027176599004B8A8F /* Navigation Logotype View */ = {
+			isa = PBXGroup;
+			children = (
+				5F20E7142714606B004B8A8F /* NavigationLogotype.swift */,
+			);
+			path = "Navigation Logotype View";
+			sourceTree = "<group>";
+		};
+		5F20E721271768B3004B8A8F /* TOEDIT */ = {
+			isa = PBXGroup;
+			children = (
+				5FFEC0C926CD4F87000A0BAB /* Services */,
+				5F71DB1427077990006094B4 /* ActivityViewController.swift */,
+				5F73C38C270A25B100CDFC8F /* UploadViewController.swift */,
+				5F6A836826F4F21C000F9AD2 /* Storage Group */,
+				5F20E72227176957004B8A8F /* TabBarController.swift */,
+			);
+			path = TOEDIT;
+			sourceTree = "<group>";
+		};
 		5F25F6BA26EE087C00F98608 /* Home Module */ = {
 			isa = PBXGroup;
 			children = (
@@ -226,6 +246,7 @@
 				5FA9B2F126E4B1020060DAE8 /* HomeViewController.swift */,
 				5F4A774426FCEA6800D1EB00 /* HomeViewModel.swift */,
 				5F97D9CC26F7554C0089C30B /* HomeRepository.swift */,
+				5F4A774626FCEAFB00D1EB00 /* Observable.swift */,
 			);
 			path = "Home Module";
 			sourceTree = "<group>";
@@ -299,6 +320,7 @@
 			isa = PBXGroup;
 			children = (
 				5F8A441126FF3F4E0027217F /* Storyboard.swift */,
+				5F20E70D27134389004B8A8F /* ViewBuilder.swift */,
 				5F73C37C2708B9FC00CDFC8F /* CoordinatorProtocol.swift */,
 				5F73C37E2708BA4E00CDFC8F /* ApplicationCoordinator.swift */,
 				5F73C3802708BA9300CDFC8F /* AuthorizationCoordinator.swift */,
@@ -347,11 +369,10 @@
 		5FC5576B270DFF7100018876 /* Extension Group */ = {
 			isa = PBXGroup;
 			children = (
-				5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */,
 				5FC5576C270DFF8900018876 /* StringExtensions.swift */,
-				5FC5576E270DFFA800018876 /* NSMutableAttributedStringExtensions.swift */,
-				5FC55770270E265500018876 /* UIViewExtensions.swift */,
 				5F20E71C27174BC9004B8A8F /* ArrayExtension.swift */,
+				5FC5576E270DFFA800018876 /* NSMutableAttributedStringExtensions.swift */,
+				5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */,
 			);
 			path = "Extension Group";
 			sourceTree = "<group>";
@@ -369,7 +390,6 @@
 			isa = PBXGroup;
 			children = (
 				5FE15E8327122AF400B61DBF /* DependencyContainer.swift */,
-				5F20E70D27134389004B8A8F /* ViewBuilder.swift */,
 			);
 			path = "Dependency Group";
 			sourceTree = "<group>";
@@ -387,6 +407,7 @@
 		5FF2241D26F125810026BAF4 /* Reusable Views */ = {
 			isa = PBXGroup;
 			children = (
+				5F20E72027176599004B8A8F /* Navigation Logotype View */,
 				5F25F6C026EE0A9900F98608 /* Account View */,
 			);
 			path = "Reusable Views";
@@ -464,19 +485,14 @@
 		5FFEC0C826CD4F43000A0BAB /* Common Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5F090BF9270479EC00843515 /* Animation Group */,
 				5F20E719271609D6004B8A8F /* Formatter Group */,
-				5F20E7162715881C004B8A8F /* Property Wrapper Group */,
 				5FE15E8227122AD300B61DBF /* Dependency Group */,
 				5FC5576B270DFF7100018876 /* Extension Group */,
-				5F090BF9270479EC00843515 /* Animation Group */,
-				5F6A836826F4F21C000F9AD2 /* Storage Group */,
+				5FFEC0CA26CD4F8D000A0BAB /* Constant Group */,
+				5F20E7162715881C004B8A8F /* Property Wrapper Group */,
 				5F73C37B2708B9DE00CDFC8F /* Coordinator Group */,
-				5FFEC0CA26CD4F8D000A0BAB /* Constants */,
-				5FFEC0C926CD4F87000A0BAB /* Services */,
-				5F4A774626FCEAFB00D1EB00 /* Observable.swift */,
-				5F71DB1427077990006094B4 /* ActivityViewController.swift */,
-				5F73C38C270A25B100CDFC8F /* UploadViewController.swift */,
-				5F20E7142714606B004B8A8F /* NavigationLogotype.swift */,
+				5F20E721271768B3004B8A8F /* TOEDIT */,
 			);
 			path = "Common Utils";
 			sourceTree = "<group>";
@@ -491,18 +507,18 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		5FFEC0CA26CD4F8D000A0BAB /* Constants */ = {
+		5FFEC0CA26CD4F8D000A0BAB /* Constant Group */ = {
 			isa = PBXGroup;
 			children = (
-				5FFEC0CD26CD4FD3000A0BAB /* FlickrConstant.swift */,
-				5F7F996226D66DE300482485 /* ErrorMessage.swift */,
+				5F4A773526FB493700D1EB00 /* ReuseIdentifier.swift */,
+				5F4A773726FB498700D1EB00 /* ImageName.swift */,
 				5FA9B2F926E533700060DAE8 /* HTTPMethod.swift */,
 				5FA9B2FB26E655AE0060DAE8 /* RequestType.swift */,
 				5F4A773326FB47B600D1EB00 /* FilterType.swift */,
-				5F4A773526FB493700D1EB00 /* ReuseIdentifier.swift */,
-				5F4A773726FB498700D1EB00 /* ImageName.swift */,
+				5FFEC0CD26CD4FD3000A0BAB /* FlickrConstant.swift */,
+				5F7F996226D66DE300482485 /* ErrorMessage.swift */,
 			);
-			path = Constants;
+			path = "Constant Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -593,7 +609,6 @@
 				5F7F996C26D6CBC700482485 /* PhotoEntity.swift in Sources */,
 				5FC55766270CB34600018876 /* CommentTableViewCell.swift in Sources */,
 				5F71DB1527077990006094B4 /* ActivityViewController.swift in Sources */,
-				5FC55771270E265500018876 /* UIViewExtensions.swift in Sources */,
 				5F7F996A26D6C05800482485 /* FavoriteEntity.swift in Sources */,
 				5FFEC0B526CD4DDB000A0BAB /* AuthorizationViewController.swift in Sources */,
 				5FFEC0B126CD4DDB000A0BAB /* AppDelegate.swift in Sources */,
@@ -638,6 +653,7 @@
 				5F20E71F27175D6F004B8A8F /* DetailsEntity.swift in Sources */,
 				5F73C37F2708BA4E00CDFC8F /* ApplicationCoordinator.swift in Sources */,
 				5FC55763270B772100018876 /* DetailsRepository.swift in Sources */,
+				5F20E72327176957004B8A8F /* TabBarController.swift in Sources */,
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* FlickrConstant.swift in Sources */,
 				5F7F997C26D8003700482485 /* NetworkService+Photos.swift in Sources */,

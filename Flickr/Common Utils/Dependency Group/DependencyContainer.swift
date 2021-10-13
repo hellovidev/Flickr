@@ -5,17 +5,24 @@
 //  Created by Sergei Romanchuk on 09.10.2021.
 //
 
-import UIKit
+import Foundation
+
+// MARK: - Dependency Error
+
+enum DependencyContainerError: Error {
+    case nilDependency
+}
+
+// MARK: - Dependency Protocols
+
+protocol DependencyProtocol: AnyObject {}
 
 protocol DependencyContainerProtocol {
     func register<T: DependencyProtocol>(_ dependency: T)
-    func retrive<T: DependencyProtocol>() throws -> T
+    func retrive<T: DependencyProtocol>() -> T
 }
 
-//protocol DependencyContainerProtocol {
-//    static func register<T: DependencyProtocol>(_ dependency: T)
-//    static func retrive<T: DependencyProtocol>() throws -> T
-//}
+// MARK: - DependencyContainer
 
 class DependencyContainer: DependencyContainerProtocol {
     
@@ -27,17 +34,17 @@ class DependencyContainer: DependencyContainerProtocol {
         dependencies[key] = weak
     }
     
-    func retrive<T: DependencyProtocol>() throws -> T {
+    func retrive<T: DependencyProtocol>() -> T {
         let key: String = "\(type(of: T.self))"
         let weak = dependencies[key]
         
-        //precondition(weak == nil, "No dependency found for key - [\(key)], application must register a dependency before retriving it.")
+        precondition(weak != nil, "No dependency found for key - [\(key)], application must register a dependency before retriving it.")
         
-        guard let dependency = weak?.value as? T else { throw DependencyContainerError.nilDependency }
-                
-        //precondition(weak?.value as? T == nil, "No dependency found for key - [\(key)], dependency is already deallocated by the system.")
+        let dependency = weak?.value
         
-        return dependency
+        precondition(weak?.value != nil, "No dependency found for key - [\(key)], dependency is already deallocated by the system.")
+        
+        return dependency as! T
     }
     
     deinit {
@@ -46,58 +53,7 @@ class DependencyContainer: DependencyContainerProtocol {
     
 }
 
-//class DependencyContainer: DependencyContainerProtocol {
-//
-//    private static let shared: DependencyContainer = .init()
-//
-//    private var dependencies: [String: Weak] = [:]
-//
-//    private init() {}
-//
-//    static func register<T: DependencyProtocol>(_ dependency: T) {
-//        shared.register(dependency)
-//    }
-//
-//    static func retrive<T: DependencyProtocol>() throws -> T {
-//        try shared.retrive()
-//    }
-//
-//    private func register<T: DependencyProtocol>(_ dependency: T) {
-//        let key: String = "\(type(of: T.self))"
-//        let weak: Weak = .init(value: dependency as AnyObject)
-//        dependencies[key] = weak
-//    }
-//
-//    private func retrive<T: DependencyProtocol>() throws -> T {
-//        let key: String = "\(type(of: T.self))"
-//        let weak = dependencies[key]
-//
-//        //precondition(weak == nil, "No dependency found for key - [\(key)], application must register a dependency before retriving it.")
-//
-//        guard let dependency = weak?.value as? T else { throw DependencyContainerError.nilDependency }
-//
-//        //precondition(weak?.value as? T == nil, "No dependency found for key - [\(key)], dependency is already deallocated by the system.")
-//
-//        return dependency
-//    }
-//
-//    static func clear() {
-//        shared.clear()
-//    }
-//
-//    private func clear() {
-//        dependencies.removeAll()
-//    }
-//
-//    deinit {
-//        print("\(type(of: self)) deinited.")
-//    }
-//
-//}
-
-enum DependencyContainerError: Error {
-    case nilDependency
-}
+// MARK: - Weak
 
 class Weak: Equatable {
     
@@ -112,16 +68,3 @@ class Weak: Equatable {
     }
     
 }
-
-protocol DependencyProtocol: AnyObject {}
-
-//@propertyWrapper
-//class Dependency<T: DependencyProtocol> {
-//    
-//    var wrappedValue: T {
-//        try! DependencyContainer.retrive()
-//    }
-//    
-//    
-//    
-//}

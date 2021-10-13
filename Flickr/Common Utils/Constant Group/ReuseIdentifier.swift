@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - ReuseIdentifier
+
 enum ReuseIdentifier: String {
     case galleryCell = "GalleryCollectionReusableCell"
     case homeCell = "HomePhotoDetailsCell"

@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - FilterType
+
 enum FilterType: String {
     case per50 = "50"
     case per100 = "100"

@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - Storyboard
+
 enum StoryboardIdentifier: String {
     case authorization = "Authorization"
     case general = "General"
@@ -15,7 +17,7 @@ enum StoryboardIdentifier: String {
 struct Storyboard {
     
     static let authorization: UIStoryboard = .init(name: StoryboardIdentifier.authorization.rawValue, bundle: Bundle.main)
-
+    
     static let general: UIStoryboard = .init(name: StoryboardIdentifier.general.rawValue, bundle: Bundle.main)
     
 }

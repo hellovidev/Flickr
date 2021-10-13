@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - CoordinatorProtocol
+
 protocol CoordinatorProtocol: AnyObject {
     var childCoordinators: [CoordinatorProtocol] { get set }
     var navigationController: UINavigationController { get set }

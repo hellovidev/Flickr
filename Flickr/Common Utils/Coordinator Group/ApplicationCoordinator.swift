@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - ApplicationCoordinator
+
 class ApplicationCoordinator: NSObject, CoordinatorProtocol {
     
     var childCoordinators: [CoordinatorProtocol] = .init()
@@ -36,16 +38,10 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
     func start() {
         do {
             let isAutherized = try storageService.get(for: Bool.self, with: UserDefaults.Keys.isAuthorized.rawValue)
-            print(isAutherized)
-            let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaults.Keys.tokenAPI.rawValue)
-            print(accessTokenAPI)
             
-            let nsida = try storageService.get(for: String.self, with: UserDefaults.Keys.nsid.rawValue)
-            print(nsida)
+            let accessTokenAPI = try storageService.get(for: AccessTokenAPI.self, with: UserDefaults.Keys.tokenAPI.rawValue)
             
             self.network = NetworkService(token: accessTokenAPI, publicKey: FlickrConstant.Key.consumerKey.rawValue, secretKey: FlickrConstant.Key.consumerSecretKey.rawValue)
-            
-
             
             isAutherized ? redirectGeneral() : redirectAuthorization()
         } catch {
@@ -71,7 +67,7 @@ class ApplicationCoordinator: NSObject, CoordinatorProtocol {
 extension ApplicationCoordinator: UINavigationControllerDelegate {
     
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        /// Read the view controller we’re moving from.
+        // Read the view controller we’re moving from.
         guard let fromViewController = navigationController.transitionCoordinator?.viewController(forKey: .from) else {
             return
         }
@@ -87,11 +83,26 @@ extension ApplicationCoordinator: UINavigationControllerDelegate {
             // We're popping a view controller; end its coordinator
             childDidFinish(authorizationViewController.viewModel.coordinator)
         }
-        
-//        if let registerViewController = fromViewController as? RegisterViewController {
-//            // We're popping a view controller; end its coordinator
-//            childDidFinish(registerViewController.viewModel?.coordinator)
-//        }
+    }
+    
+}
+
+extension ApplicationCoordinator {
+    
+    fileprivate func redirectAuthorization() {
+        let childAuthorization = AuthorizationCoordinator(navigationController, viewBuilder: viewBuilder, authorizationService: authorizationService)
+        childAuthorization.parentCoordinator = self
+        childAuthorization.delegate = self
+        childCoordinators.append(childAuthorization)
+        childAuthorization.start()
+    }
+    
+    fileprivate func redirectGeneral() {
+        let childGeneral = GeneralCoordinator(navigationController, viewBuilder: viewBuilder)
+        childGeneral.parentCoordinator = self
+        childGeneral.delegate = self
+        childCoordinators.append(childGeneral)
+        childGeneral.start()
     }
     
 }
@@ -125,52 +136,3 @@ extension ApplicationCoordinator: GeneralCoordinatorDelegate {
     }
     
 }
-
-extension ApplicationCoordinator {
-    
-    fileprivate func redirectAuthorization() {
-        let childAuthorization = AuthorizationCoordinator(navigationController, viewBuilder: viewBuilder, authorizationService: authorizationService)
-        childAuthorization.parentCoordinator = self
-        childAuthorization.delegate = self
-        childCoordinators.append(childAuthorization)
-        childAuthorization.start()
-    }
-    
-    fileprivate func redirectGeneral() {
-        let childGeneral = GeneralCoordinator(navigationController, viewBuilder: viewBuilder)
-        childGeneral.parentCoordinator = self
-        childGeneral.delegate = self
-        childCoordinators.append(childGeneral)
-        childGeneral.start()
-    }
-    
-}
-
-//tabBarController?.delegate = self
-
-/*
-
-//???
-private var fromAnother: Bool = false
-
-
-extension HomeViewController: UITabBarControllerDelegate {
-    
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        let tabBarIndex = tabBarController.selectedIndex
-        if tabBarIndex == 0 && fromAnother == false {
-            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-        }
-    }
-    
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if tabBarController.selectedIndex != 0 {
-            fromAnother = true
-        } else {
-            fromAnother = false
-        }
-        return true
-    }
-    
-}
-*/

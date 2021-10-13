@@ -303,3 +303,9 @@ enum NetworkManagerError: Error {
     case invalidParameters
     case nilResponseData
 }
+
+func showAlertApp(title: String, message: String, button: String) {
+    let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    alertController.addAction(.init(title: button, style: .default, handler: nil))
+    UIApplication.shared.windows.first?.rootViewController?.present(alertController, animated: true, completion: nil)
+}

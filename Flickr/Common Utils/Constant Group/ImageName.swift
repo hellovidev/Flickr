@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - ImageName
+
 enum ImageName: String {
     case logotype = "FlickrLogotype"
 }

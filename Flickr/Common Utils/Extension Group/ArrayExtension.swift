@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - Array Unique Values
+// MARK: - Array Extensions
 
 extension Array where Element: Hashable {
     

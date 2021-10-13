@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - PrepareTextFormatter
+
 struct PrepareTextFormatter {
     
     enum Placeholder: String {

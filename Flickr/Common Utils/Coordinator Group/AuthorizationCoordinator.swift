@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - AuthorizationCoordinator
+
 protocol AuthorizationCoordinatorDelegate: AnyObject {
     func coordinatorDidAuthenticate(coordinator: AuthorizationCoordinator)
 }
@@ -22,9 +24,9 @@ class AuthorizationCoordinator: CoordinatorProtocol {
     weak var delegate: AuthorizationCoordinatorDelegate?
     
     private let viewBuilder: ViewBuilder
-        
+    
     private var authorizationService: AuthorizationService
-
+    
     init(_ navigationController: UINavigationController, viewBuilder: ViewBuilder, authorizationService: AuthorizationService) {
         self.navigationController = navigationController
         self.viewBuilder = viewBuilder
@@ -45,7 +47,7 @@ class AuthorizationCoordinator: CoordinatorProtocol {
     func redirectBrowserLogin(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {
         authorizationService.login(presenter: presenter, completion: completion)
     }
-        
+    
     deinit {
         print("\(type(of: self)) deinited.")
     }
@@ -55,14 +57,13 @@ class AuthorizationCoordinator: CoordinatorProtocol {
 // MARK: - didAuthenticate called by LoginViewModel
 
 extension AuthorizationCoordinator {
-
+    
     func didAuthenticate() {
         parentCoordinator?.childDidFinish(self)
         parentCoordinator?.coordinatorDidAuthenticate(coordinator: self)
     }
     
 }
-
 
 // MARK: - WKWebViewDelegate
 

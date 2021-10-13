@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - GeneralCoordinator
+
 protocol GeneralCoordinatorDelegate: AnyObject {
     func coordinatorDidLogout(coordinator: GeneralCoordinator)
 }
@@ -24,13 +26,13 @@ class GeneralCoordinator: CoordinatorProtocol {
     weak var delegate: GeneralCoordinatorDelegate?
     
     private let viewBuilder: ViewBuilder
-        
+    
     init(_ navigationController: UINavigationController, viewBuilder: ViewBuilder) {
         self.navigationController = navigationController
         self.tabBarController = .init()
         self.viewBuilder = viewBuilder
     }
-
+    
     func start() {
         let homeNavigationController: UINavigationController = .init()
         let childHome = HomeCoordinator(homeNavigationController, viewBuilder: viewBuilder)
@@ -43,7 +45,7 @@ class GeneralCoordinator: CoordinatorProtocol {
         
         let profileViewController = viewBuilder.createProfileViewController(coordinator: self)
         let profileNavigationController = UINavigationController.init(rootViewController: profileViewController)
-
+        
         let tabBarControllers = [homeNavigationController, galleryNavigationController, profileNavigationController]
         tabBarController.setViewControllers(tabBarControllers, animated: true)
         navigationController.setViewControllers([tabBarController], animated: true)
