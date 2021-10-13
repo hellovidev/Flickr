@@ -1,5 +1,5 @@
 //
-//  Favorite.swift
+//  FavoriteEntity.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 25.08.2021.
@@ -7,21 +7,28 @@
 
 import Foundation
 
-struct Favorite: Decodable {
-    // Identifiers
+// MARK: - FavoriteEntity
+
+struct FavoriteEntity: Decodable {
+
     let id: String?
     
-    // Content
     var title: String?
+    
     var owner: String?
+    
     var isPublic: Int?
+    
     var isFriend: Int?
+    
     let dateFaved: String?
 
-    // Other
     var secret: String?
+    
     var server: String?
+    
     var farm: Int?
+    
     var isFamily: Int?
 
     enum CodingKeys: String, CodingKey {
@@ -38,23 +45,3 @@ struct Favorite: Decodable {
     }
     
 }
-
-/*
- Response: ["stat": ok, "photos": {
-     page = 1;
-     pages = 1;
-     perpage = 100;
-     photo =     (
-                 {
-             "date_faved" = 1629915199;
-             farm = 66;
-             id = 51399635930;
-             isfamily = 0;
-             isfriend = 0;
-             ispublic = 1;
-             owner = "117708192@N04";
-             secret = 3a274cc4a2;
-             server = 65535;
-             title = "Entering Paradise";
-         },
- */

@@ -1,5 +1,5 @@
 //
-//  PostNetworkManager.swift
+//  DetailsRepository.swift
 //  Flickr
 //
 //  Created by Sergei Romanchuk on 04.10.2021.
@@ -7,21 +7,23 @@
 
 import UIKit
 
+// MARK: - DetailsRepository
+
 class DetailsRepository {
+    
+    private let network: NetworkService
     
     private let id: String
     private var isFavourite: Bool = false
-    private var details: Post = .init()
-
-    private let network: NetworkService
+    private var details: DetailsEntity = .init()
     
     private let cacheDetailsOwnerAvatar: CacheStorageService<NSString, UIImage>
     private let cacheDetailsImage: CacheStorageService<NSString, UIImage>
     private let cacheCommentOwnerAvatar: CacheStorageService<NSString, UIImage>
     
-    //private let cacheDetails: CacheStorageService<NSString, Post>
+    //private let cacheDetails: CacheStorageService<NSString, DetailsEntity>
     //private let cacheComment: CacheStorageService<NSString, CommentProtocol>
-
+    
     init(id: String, network: NetworkService) {
         self.id = id
         self.network = network
@@ -30,7 +32,7 @@ class DetailsRepository {
         cacheDetailsImage = .init()
         cacheCommentOwnerAvatar = .init()
     }
-        
+    
     // MARK: - Request Methods
     
     func requestPreparatoryDataOfDetails(completionHandler: @escaping (Result<Void, Error>) -> Void) {
@@ -52,23 +54,23 @@ class DetailsRepository {
     }
     
     func collectDetailsOwnerAvatar(group: DispatchGroup) {
-        requestDetailsOwnerAvatar(post: details, group: group) { [weak self] result in
+        requestDetailsOwnerAvatar(details: details, group: group) { [weak self] result in
             switch result {
             case .success(let avatar):
                 self?.details.owner?.avatar = avatar
             case .failure(let error):
-                print("Post owner avatar download failed: \(error)")
+                print("Details owner avatar download failed: \(error)")
             }
         }
     }
     
-    private func requestDetailsOwnerAvatar(post: Post, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    private func requestDetailsOwnerAvatar(details: DetailsEntity, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         group.enter()
         
         guard
-            let farm = post.owner?.iconFarm,
-            let server = post.owner?.iconServer,
-            let nsid = post.owner?.nsid
+            let farm = details.owner?.iconFarm,
+            let server = details.owner?.iconServer,
+            let nsid = details.owner?.nsid
         else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))
             group.leave()
@@ -93,23 +95,23 @@ class DetailsRepository {
     }
     
     func collectDetailsImage(group: DispatchGroup) {
-        requestDetailsImage(post: details, group: group) { [weak self] result in
+        requestDetailsImage(details: details, group: group) { [weak self] result in
             switch result {
             case .success(let image):
                 self?.details.image = image
             case .failure(let error):
-                print("Post image download failed: \(error)")
+                print("Details image download failed: \(error)")
             }
         }
     }
     
-    private func requestDetailsImage(post: Post, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    private func requestDetailsImage(details: DetailsEntity, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         group.enter()
         
         guard
-            let id = post.id,
-            let secret = post.secret,
-            let server = post.server
+            let id = details.id,
+            let secret = details.secret,
+            let server = details.server
         else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))
             group.leave()
@@ -123,7 +125,7 @@ class DetailsRepository {
             return
         }
         
-        network.image(postId: id, postSecret: secret, serverId: server) { [weak self] result in
+        network.image(id: id, secret: secret, server: server) { [weak self] result in
             group.leave()
             
             completionHandler(result.map {
@@ -227,10 +229,6 @@ class DetailsRepository {
         }
     }
     
-    func removeAllComments() {
-        details.comments?.removeAll()
-    }
-    
     func numberOfComments() -> Int {
         guard let count = details.comments?.count else { return 0 }
         return count
@@ -241,7 +239,7 @@ class DetailsRepository {
         return comments[index]
     }
     
-    func retrieveDetails() -> Post {
+    func retrieveDetails() -> DetailsEntity {
         self.details
     }
     

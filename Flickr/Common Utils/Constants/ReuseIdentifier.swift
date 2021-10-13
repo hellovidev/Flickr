@@ -8,10 +8,7 @@
 import Foundation
 
 enum ReuseIdentifier: String {
-    case postViewController = "PostViewController"
-    
     case galleryCell = "GalleryCollectionReusableCell"
     case homeCell = "HomePhotoDetailsCell"
-    case commentCell = "CommentCell"
-    case detailsCell = "DetailsCell"
+    case commentCell = "DetailsCommentCell"
 }

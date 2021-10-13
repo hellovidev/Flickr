@@ -90,7 +90,7 @@ class GalleryRepository {
             return
         }
         
-        network.image(postId: id, postSecret: secret, serverId: server) { result in
+        network.image(id: id, secret: secret, server: server) { result in
             completionHandler(result.map { [weak self] in
                 self?.cacheImages.set(for: $0, with: cacheImageIdentifier)
                 return $0

@@ -7,12 +7,14 @@
 
 import UIKit
 
+// MARK: - DetailsViewModel
+
 class DetailsViewModel {
     
     private let repository: DetailsRepository
     
     private weak var coordinator: HomeCoordinator?
-
+    
     weak var delegate: DetailsViewControllerDelegate?
     
     init(coordinator: HomeCoordinator, id: String, network: NetworkService) {
@@ -22,10 +24,6 @@ class DetailsViewModel {
     
     func close() {
         coordinator?.close()
-    }
-    
-    func refresh() {
-        repository.removeAllComments()
     }
     
     func requestAddFavourite(completionHandler: @escaping (Result<Void, Error>) -> Void) {
@@ -43,8 +41,8 @@ class DetailsViewModel {
     var numberOfComments: Int {
         repository.numberOfComments()
     }
-
-    func requestDetails(completionHandler: @escaping (Result<Post, Error>) -> Void) {
+    
+    func requestDetails(completionHandler: @escaping (Result<DetailsEntity, Error>) -> Void) {
         repository.requestPreparatoryDataOfDetails { [weak self] result in
             switch result {
             case .success:
@@ -63,7 +61,7 @@ class DetailsViewModel {
     
     private func collectPartsOfDetails(completionHandler: @escaping () -> Void) {
         let group: DispatchGroup = .init()
-                
+        
         repository.collectDetailsOwnerAvatar(group: group)
         repository.collectDetailsImage(group: group)
         repository.collectIsFavourite(group: group)
@@ -73,7 +71,7 @@ class DetailsViewModel {
             completionHandler()
         }
     }
-        
+    
     func commentForRowAt(index: Int, completionHandler: @escaping (CommentProtocol) -> Void) {
         var comment: PhotoCommentEntity = repository.retrieveCommentAt(index: index) as! PhotoCommentEntity
         
@@ -89,7 +87,7 @@ class DetailsViewModel {
         
         completionHandler(comment)
     }
-        
+    
     private func requestCommentOwnerAvatar(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         guard let comment = repository.retrieveCommentAt(index: index) else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))

@@ -10,7 +10,7 @@ import Foundation
 extension NetworkService {
     
     // Get list of faves 'flickr.favorites.getList' (Gallery screen)
-    func getFavorites(completion: @escaping (Result<[Favorite], Error>) -> Void) {
+    func getFavorites(completion: @escaping (Result<[FavoriteEntity], Error>) -> Void) {
         request(
             type: .getFavorites,
             method: .GET,
@@ -57,7 +57,7 @@ extension NetworkService {
         let data: Favorites
         
         struct Favorites: Decodable {
-            let photos: [Favorite]
+            let photos: [FavoriteEntity]
             
             enum CodingKeys: String, CodingKey {
                 case photos = "photo"

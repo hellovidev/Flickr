@@ -118,7 +118,7 @@ class HomeRepository {
             return
         }
         
-        network.image(postId: id, postSecret: secret, serverId: server) { [weak self] result in
+        network.image(id: id, secret: secret, server: server) { [weak self] result in
             completionHandler(result.map {
                 self?.cacheImages.set(for: $0, with: cacheImageIdentifier)
                 group.leave()

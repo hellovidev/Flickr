@@ -10,7 +10,7 @@ import Foundation
 extension NetworkService {
     
     // Get photo comments list 'flickr.photos.comments.getList' (Post screen)
-    func getPhotoComments(for photoId: String, completion: @escaping (Result<[Comment]?, Error>) -> Void) {
+    func getPhotoComments(for photoId: String, completion: @escaping (Result<[CommentEntity]?, Error>) -> Void) {
         // Push some additional parameters
         let parameters: [String: String] = [
             "photo_id": photoId
@@ -64,7 +64,7 @@ extension NetworkService {
         let comments: Comments?
         
         struct Comments: Decodable {
-            let comment: [Comment]?
+            let comment: [CommentEntity]?
     
         }
         

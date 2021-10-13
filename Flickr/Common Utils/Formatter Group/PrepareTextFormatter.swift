@@ -18,23 +18,12 @@ struct PrepareTextFormatter {
         case username = "No username"
     }
     
-    static func prepareUserLocation(_ location: String?) -> String {
-        guard
-            let location = location,
-                !location.trimmingCharacters(in: .whitespaces).isEmpty
-        else {
-            return Placeholder.location.rawValue
-        }
-        
-        return location
-    }
-    
     static func prepareUserAccountName(name: String?, username: String?) -> String {
         var accountName: String = .init()
         
         if
             let name = name,
-                !name.trimmingCharacters(in: .whitespaces).isEmpty
+            !name.trimmingCharacters(in: .whitespaces).isEmpty
         {
             accountName.append(name)
         } else {
@@ -43,7 +32,7 @@ struct PrepareTextFormatter {
         
         if
             let username = username,
-                !username.trimmingCharacters(in: .whitespaces).isEmpty
+            !username.trimmingCharacters(in: .whitespaces).isEmpty
         {
             accountName.append(" (\(username))")
         } else {

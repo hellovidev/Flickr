@@ -67,9 +67,9 @@ enum ImageError: Error {
 
 extension NetworkService {
     
-    func image(postId: String, postSecret: String, serverId: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    func image(id: String, secret: String, server: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         guard
-            let url = URL(string: "https://live.staticflickr.com/\(serverId)/\(postId)_\(postSecret)_\(size.rawValue).\(format.rawValue)")
+            let url = URL(string: "https://live.staticflickr.com/\(server)/\(id)_\(secret)_\(size.rawValue).\(format.rawValue)")
         else {
             completionHandler(.failure(URLError.invalidURL))
             return

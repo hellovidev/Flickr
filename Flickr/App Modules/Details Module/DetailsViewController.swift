@@ -31,7 +31,7 @@ class DetailsViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         setupTableSeparator()
         setupFavouriteIndicator()
         setupTableRefreshIndicator()
@@ -94,12 +94,10 @@ class DetailsViewController: UITableViewController {
         tableView.separatorStyle = .none
     }
     
-    
     private func setupFavouriteIndicator() {
-        indicatorFavourite.frame = detailsFavourite.bounds// .init(frame: CGRect(x: 0, y: 0, width: detailsFavourite.frame.width, height: detailsFavourite.frame.height))
+        indicatorFavourite.frame = detailsFavourite.bounds
         indicatorFavourite.hidesWhenStopped = true
         detailsFavourite.addSubview(indicatorFavourite)
-        
         indicatorFavourite.startAnimating()
         detailsFavourite.setImage(nil, for: .normal)
     }
@@ -110,12 +108,8 @@ class DetailsViewController: UITableViewController {
     
     @objc private func refreshTable() {
         refreshControl?.beginRefreshing()
-        viewModel.refresh()
-        tableView.reloadData()
         requestDetails()
     }
-    
-    private var post: Post?
     
     private func stopAnimations() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
@@ -124,53 +118,46 @@ class DetailsViewController: UITableViewController {
         }
     }
     
-    func requestDetails() {
+    private func requestDetails() {
         viewModel.requestDetails { [weak self] result in
-            //self?.refreshControl?.endRefreshing()
+            self?.stopAnimations()
+            
             switch result {
-            case .success(let post):
-                // Setup Post Owner View
-                self?.skeletonAnimation.stopAllAnimations()
+            case .success(let details):
+                self?.detailsAuthor.ownerAvatar.image = details.owner?.avatar
                 
-                self?.detailsAuthor.ownerAvatar.image = post.owner?.avatar
+                let ownerAccountName = PrepareTextFormatter.prepareUserAccountName(name: details.owner?.realName, username: details.owner?.username)
+                self?.detailsAuthor.ownerAccountName.text = ownerAccountName
                 
+                let ownerLocation = PrepareTextFormatter.prepareTextField(details.owner?.location, placeholder: .location)
+                self?.detailsAuthor.ownerLocation.text = ownerLocation
                 
-                self?.detailsAuthor.ownerAccountName.text = PrepareTextFormatter.prepareUserAccountName(name: post.owner?.realName, username: post.owner?.username)
+                self?.detailsImage.image = details.image
                 
-                // Setup location
-                let location = PrepareTextFormatter.prepareTextField(post.owner?.location, placeholder: .location)
-                self?.detailsAuthor.ownerLocation.text = location
-
-                // Setup title
-                let title = PrepareTextFormatter.prepareTextField(post.title, placeholder: .title)
+                let title = PrepareTextFormatter.prepareTextField(details.title, placeholder: .title)
                 self?.detailsTitle.text = title
                 
-                // Setup description
-                let description = PrepareTextFormatter.prepareTextField(post.description, placeholder: .description)
+                let description = PrepareTextFormatter.prepareTextField(details.description, placeholder: .description)
                 self?.detailsDescription.text = description
-
-                // Setup date
-                let dateAsString = post.publishedAt?.prepareStringAsDate()
+                
+                let dateAsString = details.publishedAt?.prepareStringAsDate()
                 let date = PrepareTextFormatter.prepareTextField(dateAsString, placeholder: .date)
                 self?.detailsDate.text = date
                 
-                self?.detailsImage.image = post.image
-                
-                let favouriteStateImage = (post.isFavourite == nil || post.isFavourite == false) ? FavouriteState.isNotFavourite.image : FavouriteState.isFavourite.image
+                let isFavourite = details.isFavourite == nil || details.isFavourite == false
+                let favouriteStateImage = isFavourite ? FavouriteState.isNotFavourite.image : FavouriteState.isFavourite.image
                 self?.detailsFavourite.setImage(favouriteStateImage, for: .normal)
                 
-                self?.post = post
+                self?.skeletonAnimation.stopAllAnimations()
                 self?.tableView.reloadData()
-
             case .failure(let error):
-                print(error)
                 self?.showAlert(
                     title: "Refresh Error",
                     message: "Loading details about post failed.\nTry to check your internet connection and pull to refresh.",
                     button: "OK"
                 )
+                print("Details request failed: \(error)")
             }
-            self?.stopAnimations()
         }
     }
     
@@ -181,13 +168,13 @@ class DetailsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.commentCell.rawValue) as! CommentTableViewCell
-            
+        let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.commentCell.rawValue) as! CommentTableViewCell
+        
         viewModel.commentForRowAt(index: indexPath.row) { comment in
-                cell.configure(comment)
-            }
-            
-            return cell
+            cell.configure(comment)
+        }
+        
+        return cell
     }
     
     private enum FavouriteState: String {
@@ -206,46 +193,41 @@ class DetailsViewController: UITableViewController {
         viewModel.isFavourite ? requestRemoveFavourite() : requestAddFavourite()
     }
     
-
-    
     private func requestRemoveFavourite() {
-        
         indicatorFavourite.startAnimating()
         detailsFavourite.setImage(nil, for: .normal)
         
-            viewModel.requestRemoveFavourite { [weak self] result in
-                self?.indicatorFavourite.stopAnimating()
-
-                switch result {
-                case .success:
-                    self?.detailsFavourite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
-                    //break
-                case .failure(let error):
-                    self?.detailsFavourite.setImage(FavouriteState.isFavourite.image, for: .normal)
-                    print("Request to remove post from favourites complete with error: \(error)")
-                    self?.showAlert(title: "Favourite Error", message: "Request to remove post from favourite failed. Try again.", button: "OK")
-                }
+        viewModel.requestRemoveFavourite { [weak self] result in
+            self?.indicatorFavourite.stopAnimating()
+            
+            switch result {
+            case .success:
+                self?.detailsFavourite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
+            case .failure(let error):
+                print("Request to remove post from favourites complete with error: \(error)")
+                self?.detailsFavourite.setImage(FavouriteState.isFavourite.image, for: .normal)
+                self?.showAlert(title: "Favourite Error", message: "Request to remove post from favourite failed. Try again.", button: "OK")
             }
         }
+    }
     
-        private func requestAddFavourite() {
+    private func requestAddFavourite() {
+        indicatorFavourite.startAnimating()
+        detailsFavourite.setImage(nil, for: .normal)
+        
+        viewModel.requestAddFavourite { [weak self] result in
+            self?.indicatorFavourite.stopAnimating()
             
-            indicatorFavourite.startAnimating()
-            detailsFavourite.setImage(nil, for: .normal)
-            
-            viewModel.requestAddFavourite { [weak self] result in
-                self?.indicatorFavourite.stopAnimating()
-                switch result {
-                case .success:
-                    self?.detailsFavourite.setImage(FavouriteState.isFavourite.image, for: .normal)
-                    //break
-                case .failure(let error):
-                    self?.detailsFavourite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
-                    print("Request to add post to favourites complete with error: \(error)")
-                    self?.showAlert(title: "Favourite Error", message: "Request to add post to favourite failed. Try again.", button: "OK")
-                }
+            switch result {
+            case .success:
+                self?.detailsFavourite.setImage(FavouriteState.isFavourite.image, for: .normal)
+            case .failure(let error):
+                print("Request to add post to favourites complete with error: \(error)")
+                self?.detailsFavourite.setImage(FavouriteState.isNotFavourite.image, for: .normal)
+                self?.showAlert(title: "Favourite Error", message: "Request to add post to favourite failed. Try again.", button: "OK")
             }
         }
+    }
     
     deinit {
         print("\(type(of: self)) deinited.")
@@ -256,7 +238,7 @@ class DetailsViewController: UITableViewController {
 // MARK: - DynamicHeaderTableView
 
 class DynamicHeaderTableView: UITableView {
-        
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -266,7 +248,7 @@ class DynamicHeaderTableView: UITableView {
         
         let originalSize = self.frame.size
         let targetSize = tableHeaderView.systemLayoutSizeFitting(originalSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .defaultLow)
-
+        
         if tableHeaderView.frame.size.height != targetSize.height {
             tableHeaderView.frame.size.height = targetSize.height
             self.tableHeaderView = tableHeaderView
