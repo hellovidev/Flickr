@@ -78,6 +78,7 @@
 		5FC5576D270DFF8900018876 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC5576C270DFF8900018876 /* StringExtensions.swift */; };
 		5FC5576F270DFFA800018876 /* NSMutableAttributedStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC5576E270DFFA800018876 /* NSMutableAttributedStringExtensions.swift */; };
 		5FD0F11327177068001092D4 /* UploadProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD0F11227177068001092D4 /* UploadProgressViewController.swift */; };
+		5FD0F1152718219C001092D4 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD0F1142718219C001092D4 /* Cache.swift */; };
 		5FE15E8427122AF400B61DBF /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE15E8327122AF400B61DBF /* DependencyContainer.swift */; };
 		5FE3F8F027046F2200ADAA6B /* SkeletonAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3F8EF27046F2200ADAA6B /* SkeletonAnimation.swift */; };
 		5FF2241C26F1204E0026BAF4 /* Network+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF2241B26F1204E0026BAF4 /* Network+Image.swift */; };
@@ -163,6 +164,7 @@
 		5FC5576C270DFF8900018876 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		5FC5576E270DFFA800018876 /* NSMutableAttributedStringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringExtensions.swift; sourceTree = "<group>"; };
 		5FD0F11227177068001092D4 /* UploadProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadProgressViewController.swift; sourceTree = "<group>"; };
+		5FD0F1142718219C001092D4 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		5FE15E8327122AF400B61DBF /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		5FE3F8EF27046F2200ADAA6B /* SkeletonAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonAnimation.swift; sourceTree = "<group>"; };
 		5FF2241B26F1204E0026BAF4 /* Network+Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Network+Image.swift"; sourceTree = "<group>"; };
@@ -233,8 +235,8 @@
 		5F20E721271768B3004B8A8F /* TOREFACTOR */ = {
 			isa = PBXGroup;
 			children = (
-				5FD81F7E26F7A62600622B10 /* Authorization */,
-				5F6A836826F4F21C000F9AD2 /* Storage Group */,
+				5F25F68D26E9322000F98608 /* AuthorizationService.swift */,
+				5FFEC0CB26CD4FAD000A0BAB /* FlickrOAuthService.swift */,
 			);
 			path = TOREFACTOR;
 			sourceTree = "<group>";
@@ -328,6 +330,7 @@
 		5F6A836826F4F21C000F9AD2 /* Storage Group */ = {
 			isa = PBXGroup;
 			children = (
+				5FD0F1142718219C001092D4 /* Cache.swift */,
 				5F97D9CF26F75CF40089C30B /* StorageServiceError.swift */,
 				5F6A836626F4EE19000F9AD2 /* CacheStorageService.swift */,
 				5F97D9D126F75D3A0089C30B /* UserDefaultsStorageService.swift */,
@@ -396,15 +399,6 @@
 				5F25F69226EA13E400F98608 /* UIViewController+UIAlertController.swift */,
 			);
 			path = "Extension Group";
-			sourceTree = "<group>";
-		};
-		5FD81F7E26F7A62600622B10 /* Authorization */ = {
-			isa = PBXGroup;
-			children = (
-				5F25F68D26E9322000F98608 /* AuthorizationService.swift */,
-				5FFEC0CB26CD4FAD000A0BAB /* FlickrOAuthService.swift */,
-			);
-			path = Authorization;
 			sourceTree = "<group>";
 		};
 		5FE15E8227122AD300B61DBF /* Dependency Group */ = {
@@ -516,6 +510,7 @@
 				5F20E7162715881C004B8A8F /* Property Wrapper Group */,
 				5F73C37B2708B9DE00CDFC8F /* Coordinator Group */,
 				5F7F997326D7FEEC00482485 /* Network Group */,
+				5F6A836826F4F21C000F9AD2 /* Storage Group */,
 				5F20E721271768B3004B8A8F /* TOREFACTOR */,
 			);
 			path = "Common Utils";
@@ -656,6 +651,7 @@
 				5F25F6C426EE0B4E00F98608 /* AccountView.swift in Sources */,
 				5F20E71B27160A21004B8A8F /* PrepareTextFormatter.swift in Sources */,
 				5FE3F8F027046F2200ADAA6B /* SkeletonAnimation.swift in Sources */,
+				5FD0F1152718219C001092D4 /* Cache.swift in Sources */,
 				5FF2241C26F1204E0026BAF4 /* Network+Image.swift in Sources */,
 				5F71DB1127072BD8006094B4 /* Network+Delete.swift in Sources */,
 				5F4A773626FB493700D1EB00 /* ReuseIdentifier.swift in Sources */,
