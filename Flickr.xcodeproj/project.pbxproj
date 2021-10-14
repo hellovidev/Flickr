@@ -232,13 +232,13 @@
 			path = "Navigation Logotype View";
 			sourceTree = "<group>";
 		};
-		5F20E721271768B3004B8A8F /* TOREFACTOR */ = {
+		5F20E721271768B3004B8A8F /* Authorization Group */ = {
 			isa = PBXGroup;
 			children = (
 				5F25F68D26E9322000F98608 /* AuthorizationService.swift */,
 				5FFEC0CB26CD4FAD000A0BAB /* FlickrOAuthService.swift */,
 			);
-			path = TOREFACTOR;
+			path = "Authorization Group";
 			sourceTree = "<group>";
 		};
 		5F20E72627176F15004B8A8F /* Activity View */ = {
@@ -511,7 +511,7 @@
 				5F73C37B2708B9DE00CDFC8F /* Coordinator Group */,
 				5F7F997326D7FEEC00482485 /* Network Group */,
 				5F6A836826F4F21C000F9AD2 /* Storage Group */,
-				5F20E721271768B3004B8A8F /* TOREFACTOR */,
+				5F20E721271768B3004B8A8F /* Authorization Group */,
 			);
 			path = "Common Utils";
 			sourceTree = "<group>";

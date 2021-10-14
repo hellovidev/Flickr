@@ -17,14 +17,14 @@ protocol AuthorizationProtocol {
 // MARK: - AuthorizationService
 
 class AuthorizationService: AuthorizationProtocol, DependencyProtocol {
-        
+    
     private let storageService: LocalStorageServiceProtocol
     
-    private let flickrOAuthService: FlickrOAuthService = .init()
+    private let flickrOAuthService: FlickrOAuthService
     
     init(storageService: LocalStorageServiceProtocol) {
         self.storageService = storageService
-        self.flickrOAuthService.storageService = storageService
+        self.flickrOAuthService = .init(storageService: storageService)
     }
     
     func login(presenter: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {

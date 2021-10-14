@@ -8,16 +8,19 @@
 import UIKit
 import SafariServices
 
-// MARK: - Network Layer (OAuth1.0)
+// MARK: - OAuth 1.0
 
 class FlickrOAuthService: NSObject {
     
-    var storageService: LocalStorageServiceProtocol!
+    private let storageService: LocalStorageServiceProtocol
+    
+    init(storageService: LocalStorageServiceProtocol) {
+        self.storageService = storageService
+    }
     
     // MARK: - Authorization State
     
     private enum AuthorizationState: CustomStringConvertible {
-        
         case requestTokenRequested
         case authorizeRequested(handler: (URL) -> Void)
         case accessTokenRequested
@@ -88,7 +91,6 @@ class FlickrOAuthService: NSObject {
     // MARK: - Public Methods API OAuth1.0
     
     func flickrLogin(presenter: UIViewController, completion: @escaping (Result<AccessTokenOAuth, Error>) -> Void) {
-        // Check authorization state
         guard isAutherized == nil else {
             completion(.failure(ErrorMessage.error("User is already logged in.")))
             return
@@ -141,10 +143,8 @@ class FlickrOAuthService: NSObject {
     
     // Step #1: Getting Request Token
     private func getRequestToken(completion: @escaping (Result<RequestTokenOAuth, Error>) -> Void) {
-        // Change authorization state
         isAutherized = .requestTokenRequested
         
-        // Set extra parameters
         let parameters: [String: String] = [
             "oauth_callback": FlickrConstant.Callback.schemeURL.rawValue
         ]
@@ -280,7 +280,6 @@ class FlickrOAuthService: NSObject {
         var urlRequest = URLRequest(url: url)
         
         // Set HTTP method to request using HttpMethodType with uppercase letters
-        
         var parameters: [String: String] = [
             "oauth_consumer_key": FlickrConstant.Key.consumerKey.rawValue,
             // Value 'nonce' can be any 32-bit string made up of random ASCII values
@@ -296,25 +295,10 @@ class FlickrOAuthService: NSObject {
         parameters = parameters.merging(extraParameters) { (current, _) in current }
         
         // Methods to prepare API requests
-        //        let signature = SignatureHelper.createRequestSignature(httpMethod: method.rawValue, url: urlString, parameters: parameters, secretToken: secretToken)
         let signatureBuilder = SignatureBuilder(consumerSecretKey: FlickrConstant.Key.consumerSecretKey.rawValue, accessSecretToken: secretToken)
         let signature = signatureBuilder.buildSignature(method: method.rawValue, endpoint: urlString, parameters: parameters)
         parameters["oauth_signature"] = signature
         
-        //        let signature: SignatureHelper = .init(httpMethod: method.rawValue, urlAsString: urlString, parameters: parameters, secretConsumerKey: FlickrAPI.consumerSecretKey.rawValue, secret: secretToken)
-        //        parameters["oauth_signature"] = signature.getSignature()
-        
-        // Build the OAuth signature from parameters
-        //parameters["oauth_signature"] = signature
-        // Set parameters to request
-        //        var components = URLComponents(string: urlString)
-        //        components?.queryItems = parameters.map { (key, value) in
-        //            URLQueryItem(name: key, value: value)
-        //        }
-        //
-        //        // Initialize and configure URL request
-        //        guard let url = components?.url else { return }
-        //        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method.rawValue
         
         // Set parameters to HTTP body of URL request
