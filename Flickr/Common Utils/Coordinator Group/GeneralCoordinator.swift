@@ -19,7 +19,7 @@ class GeneralCoordinator: CoordinatorProtocol {
     
     var navigationController: UINavigationController
     
-    var tabBarController: UITabBarController
+    var tabBarController: TabBarController
     
     weak var parentCoordinator: ApplicationCoordinator?
     

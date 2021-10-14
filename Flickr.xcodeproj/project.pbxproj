@@ -235,7 +235,6 @@
 			children = (
 				5FD81F7E26F7A62600622B10 /* Authorization */,
 				5F6A836826F4F21C000F9AD2 /* Storage Group */,
-				5F20E72227176957004B8A8F /* TabBarController.swift */,
 			);
 			path = TOREFACTOR;
 			sourceTree = "<group>";
@@ -341,6 +340,7 @@
 			children = (
 				5F8A441126FF3F4E0027217F /* Storyboard.swift */,
 				5F20E70D27134389004B8A8F /* ViewBuilder.swift */,
+				5F20E72227176957004B8A8F /* TabBarController.swift */,
 				5F73C37C2708B9FC00CDFC8F /* CoordinatorProtocol.swift */,
 				5F73C37E2708BA4E00CDFC8F /* ApplicationCoordinator.swift */,
 				5F73C3802708BA9300CDFC8F /* AuthorizationCoordinator.swift */,
