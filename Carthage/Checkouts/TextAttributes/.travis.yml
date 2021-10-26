@@ -1,0 +1,12 @@
+language: swift
+
+branches:
+  only:
+    - master
+
+xcode_project: TextAttributes.xcodeproj
+xcode_scheme: TextAttributesTests
+osx_image: xcode11.2
+
+script:
+  - xcodebuild test -project TextAttributes.xcodeproj -scheme "TextAttributes iOS Tests" -destination "platform=iOS Simulator,name=iPhone 11"
