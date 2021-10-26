@@ -5,6 +5,7 @@
 //  Created by Sergei Romanchuk on 05.09.2021.
 //
 
+import NSAttributedStringBuilder
 import UIKit
 
 // MARK: - ProfileViewController
@@ -44,7 +45,13 @@ class ProfileViewController: UIViewController {
             self?.realNameLabel.text = realName
             
             let description = PrepareTextFormatter.prepareTextField(profile?.description?.content, placeholder: .description)
-            self?.descriptionLabel.text = description
+            let attributedDescription = NSAttributedString {
+                LineBreak()
+                AText(description)
+                    .font(.systemFont(ofSize: 24))
+                    .foregroundColor(.red)
+            }
+            self?.descriptionLabel.attributedText = attributedDescription
             
             self?.skeletonAnimation.stopAllAnimations()
         }

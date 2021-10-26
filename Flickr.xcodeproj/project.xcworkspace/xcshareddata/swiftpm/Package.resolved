@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "NSAttributedStringBuilder",
+        "repositoryURL": "https://github.com/ethanhuang13/NSAttributedStringBuilder",
+        "state": {
+          "branch": null,
+          "revision": "18662b33975c9ec8c80a1bd9b4e30d09612ee7ee",
+          "version": "0.4.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
