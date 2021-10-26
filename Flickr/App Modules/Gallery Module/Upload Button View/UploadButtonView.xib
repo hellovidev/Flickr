@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UploadButtonView" customModule="Flickr" customModuleProvider="target">
+            <connections>
+                <outlet property="contentView" destination="iN0-l3-epB" id="OKc-mb-4t8"/>
+                <outlet property="uploadPhotoButton" destination="zYy-VG-fS3" id="rJS-5D-9xj"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="173" height="173"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Vv-fY-Uoy">
+                    <rect key="frame" x="54.5" y="45.5" width="64" height="82.5"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="19b-fm-BWN">
+                            <rect key="frame" x="19.5" y="68" width="25.5" height="14.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zYy-VG-fS3">
+                            <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="zYy-VG-fS3" secondAttribute="height" multiplier="1:1" id="7D0-Vh-Oxq"/>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="64" id="XCg-m1-4H7"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" image="plus" catalog="system">
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration"/>
+                            </state>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="zYy-VG-fS3" secondAttribute="trailing" id="4JH-RS-rHk"/>
+                        <constraint firstItem="19b-fm-BWN" firstAttribute="centerX" secondItem="zYy-VG-fS3" secondAttribute="centerX" id="9Wh-5u-f3N"/>
+                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="19b-fm-BWN" secondAttribute="trailing" id="HhS-ez-nGF"/>
+                        <constraint firstItem="zYy-VG-fS3" firstAttribute="leading" secondItem="5Vv-fY-Uoy" secondAttribute="leading" id="QnS-Pu-Nn2"/>
+                        <constraint firstItem="zYy-VG-fS3" firstAttribute="centerX" secondItem="5Vv-fY-Uoy" secondAttribute="centerX" id="RRQ-5H-Fdh"/>
+                        <constraint firstItem="zYy-VG-fS3" firstAttribute="top" secondItem="5Vv-fY-Uoy" secondAttribute="top" id="TIb-SY-h9p"/>
+                        <constraint firstItem="19b-fm-BWN" firstAttribute="top" secondItem="zYy-VG-fS3" secondAttribute="bottom" constant="4" id="aug-ry-VHl"/>
+                        <constraint firstItem="19b-fm-BWN" firstAttribute="centerX" secondItem="5Vv-fY-Uoy" secondAttribute="centerX" id="ecq-mO-v12"/>
+                        <constraint firstAttribute="bottom" secondItem="19b-fm-BWN" secondAttribute="bottom" id="ivf-OV-cIK"/>
+                        <constraint firstItem="19b-fm-BWN" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5Vv-fY-Uoy" secondAttribute="leading" id="jAK-hs-nc8"/>
+                        <constraint firstItem="19b-fm-BWN" firstAttribute="centerX" secondItem="zYy-VG-fS3" secondAttribute="centerX" id="mei-1v-I9k"/>
+                        <constraint firstItem="zYy-VG-fS3" firstAttribute="centerX" secondItem="5Vv-fY-Uoy" secondAttribute="centerX" id="mzk-aW-aRq"/>
+                        <constraint firstItem="19b-fm-BWN" firstAttribute="centerX" secondItem="5Vv-fY-Uoy" secondAttribute="centerX" id="r8K-bl-4dW"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <constraints>
+                <constraint firstItem="5Vv-fY-Uoy" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="jqY-ir-X9J"/>
+                <constraint firstItem="5Vv-fY-Uoy" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="l03-iF-dmI"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-42.753623188405797" y="-172.43303571428569"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="plus" catalog="system" width="128" height="113"/>
+    </resources>
+</document>

@@ -24,31 +24,30 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        realNameLabel.text = nil
-        descriptionLabel.text = nil
-        
-        //view.setNeedsLayout()
-        //view.layoutIfNeeded()
-        
-        skeletonAnimation.startAnimationFor(view: avatarImage)
-        skeletonAnimation.startAnimationFor(view: realNameLabel, cornerRadius: true)
-        skeletonAnimation.startAnimationFor(view: descriptionLabel, cornerRadius: true)
-        
+        setupAnimation()
         setupAvatar()
         setupLogoutButton()
         setupNavigationTitle()
         
-        viewModel.requestProfile { [weak self] profile, avatar in
-            self?.avatarImage.image = avatar
-            self?.realNameLabel.text = profile?.realName?.content ?? "No real name"
-            self?.descriptionLabel.text = profile?.description?.content ?? "No description"
-            
-            self?.skeletonAnimation.stopAllAnimations()
-        }
+        requestProfile()
     }
     
     @IBAction func logoutAction(_ sender: UIButton) {
-        viewModel.logout()
+        viewModel.didLogout()
+    }
+    
+    private func requestProfile() {
+        viewModel.requestProfile { [weak self] profile, avatar in
+            self?.avatarImage.image = avatar
+            
+            let realName = PrepareTextFormatter.prepareTextField(profile?.realName?.content, placeholder: .name)
+            self?.realNameLabel.text = realName
+            
+            let description = PrepareTextFormatter.prepareTextField(profile?.description?.content, placeholder: .description)
+            self?.descriptionLabel.text = description
+            
+            self?.skeletonAnimation.stopAllAnimations()
+        }
     }
     
     private func setupAvatar() {
@@ -56,28 +55,21 @@ class ProfileViewController: UIViewController {
         avatarImage.layer.cornerRadius = avatarImage.frame.height / 2
         avatarContainer.layer.borderColor = UIColor.systemGray3.cgColor
         avatarContainer.layer.borderWidth = 1.5
-        
-        avatarContainer.layer.shadowColor = UIColor.gray.cgColor
-        avatarContainer.layer.shadowOpacity = 1
-        avatarContainer.layer.shadowOffset = .zero
-        avatarContainer.layer.shadowRadius = 15
-        avatarContainer.layer.shouldRasterize = true
     }
     
     private func setupLogoutButton() {
         logoutButton.layer.cornerRadius = 6
     }
     
-    private func setupNavigationTitle() {
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 25))
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: ImageName.logotype.rawValue)
-        
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 25))
-        imageView.center = view.convert(view.center, from: imageView);
-        view.addSubview(imageView)
-        
-        navigationItem.titleView = view
+    private func setupNavigationTitle() {        
+        let navigationLogotype: NavigationLogotype = .init()
+        navigationItem.titleView = navigationLogotype
+    }
+    
+    private func setupAnimation() {
+        skeletonAnimation.startAnimationFor(view: avatarImage)
+        skeletonAnimation.startAnimationFor(view: realNameLabel, cornerRadius: true)
+        skeletonAnimation.startAnimationFor(view: descriptionLabel, cornerRadius: true)
     }
     
     deinit {

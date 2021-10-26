@@ -9,27 +9,30 @@ import UIKit
 
 class AuthorizationViewModel {
     
-    private let authorization: AuthorizationService
-    private let coordinator: CoordinatorService
+    weak var coordinator: AuthorizationCoordinator?
     
-    init(coordinator: CoordinatorService, authorization: AuthorizationService) {
+    init(coordinator: AuthorizationCoordinator) {
         self.coordinator = coordinator
-        self.authorization = authorization
     }
     
     func signin(presenter: UIViewController) {
-        authorization.login(presenter: presenter) { [weak self] result in
+        coordinator?.redirectBrowserLogin(presenter: presenter) { [weak self] result in
             switch result {
             case .success:
-                self?.coordinator.redirectToInitialViewController()
+                self?.coordinator?.didAuthenticate()
             case .failure(let error):
-                presenter.showAlert(title: "Authorize error", message: error.localizedDescription, button: "OK")
+                presenter.showAlert(title: "Authorize Error", message: "Something went wrong. Please try again.", button: "OK")
+                print("Authorization failed: \(error)")
             }
         }
     }
     
     func signup(presenter: UIViewController) {
-        authorization.signup(presenter: presenter)
+        coordinator?.redirectBrowserRegister(presenter: presenter)
+    }
+    
+    deinit {
+        print("\(type(of: self)) deinited.")
     }
     
 }

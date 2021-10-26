@@ -1,0 +1,117 @@
+//
+//  Network+Image.swift
+//  Flickr
+//
+//  Created by Sergei Romanchuk on 14.09.2021.
+//
+
+import UIKit
+
+// MARK: - Network+Image
+
+/// Image size.
+/// - s: thumbnail 75 cropped square
+/// - q: thumbnail 150 cropped square
+/// - t: thumbnail 100
+/// - m: small 240
+/// - n: small 320
+/// - w: small 400
+/// - none: (empty) medium 500
+/// - z: medium 640
+/// - c: medium 800
+/// - b: large 1024
+/// - h: large 1600 has a unique secret; photo owner can restrict
+/// - k: large 2048 has a unique secret; photo owner can restrict
+/// - k3: extra large 3072 has a unique secret; photo owner can restrict
+/// - k4: extra large 4096 has a unique secret; photo owner can restrict
+/// - f: extra large 4096 has a unique secret; photo owner can restrict; only exists for 2:1 aspect ratio photos
+/// - k5: extra large 5120 has a unique secret; photo owner can restrict
+/// - k6: extra large 6144 has a unique secret; photo owner can restrict
+/// - o: original (arbitrary) has a unique secret; photo owner can restrict; files have full EXIF data; files might not be rotated; files can use an arbitrary file extension
+enum ImageSize: String {
+    case s
+    case q
+    case t
+    case m
+    case n
+    case w
+    case none = ""
+    case z
+    case c
+    case b
+    case h
+    case k
+    case k3 = "3k"
+    case k4 = "4k"
+    case f
+    case k5 = "5k"
+    case k6 = "6k"
+    case o
+}
+
+enum ImageFormat: String {
+    case jpg
+    case png
+}
+
+enum NetworkError: Error {
+    case badResponseURL
+    case badHTTPResponse
+}
+
+enum URLError: Error {
+    case invalidURL
+}
+
+enum ImageError: Error {
+    case couldNotInit
+}
+
+extension Network {
+    
+    func image(id: String, secret: String, server: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        guard
+            let url = URL(string: "https://live.staticflickr.com/\(server)/\(id)_\(secret)_\(size.rawValue).\(format.rawValue)")
+        else {
+            completionHandler(.failure(URLError.invalidURL))
+            return
+        }
+        
+        requestImage(url: url) { result in
+            completionHandler(result.map { $0 })
+        }
+    }
+    
+    func buddyicon(iconFarm: Int, iconServer: String, nsid: String, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        guard
+            let url = URL(string: Int(iconServer) == 0 ? "https://www.flickr.com/images/buddyicon.gif" : "http://farm\(iconFarm).staticflickr.com/\(iconServer)/buddyicons/\(nsid).jpg")
+        else {
+            completionHandler(.failure(URLError.invalidURL))
+            return
+        }
+        
+        requestImage(url: url) { result in
+            completionHandler(result.map { $0 })
+        }
+    }
+    
+    private func requestImage(url: URL, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        request(for: url) { result in
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async {
+                    guard let image = UIImage(data: data) else {
+                        completionHandler(.failure(ImageError.couldNotInit))
+                        return
+                    }
+                    completionHandler(.success(image))
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completionHandler(.failure(error))
+                }
+            }
+        }
+    }
+    
+}

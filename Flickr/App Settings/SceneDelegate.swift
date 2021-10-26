@@ -10,17 +10,16 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    
-    private let userDefaultsStorageService: UserDefaultsStorageService = .init()
-    private let authorizationService: AuthorizationService = .init()
-    
+    var coordinator: ApplicationCoordinator?
+    var authorizationService: AuthorizationService?
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
             fatalError("Could not get url on \(#line) in \(#function)")
         }
         
         // Catch callback link with 'verifier' parameter
-        authorizationService.handleURL(url)
+        authorizationService?.handleURL(url)
     }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -29,10 +28,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        window = UIWindow(windowScene: windowScene)
+        window = .init(windowScene: windowScene)
         
-        let coordinator = CoordinatorService(storageService: userDefaultsStorageService, authorizationService: authorizationService)
-        coordinator.redirectToInitialViewController()
+        let dependencyContainer: DependencyContainer = .init()
+        let viewBuilder: ViewBuilder = .init(dependencyContainer: dependencyContainer)
+        
+        let navigationController: UINavigationController = .init()
+        navigationController.setNavigationBarHidden(true, animated: false)
+        
+        let userDefaultsStorageService: UserDefaultsStorageService = .init()
+        authorizationService = .init(storageService: userDefaultsStorageService)
+        
+        guard let authorizationService = authorizationService else {
+            return
+        }
+
+        coordinator = .init(navigationController, storageService: userDefaultsStorageService, viewBuilder: viewBuilder, authorizationService: authorizationService)
+        coordinator?.start()
+        
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -62,5 +77,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-    
+        
 }

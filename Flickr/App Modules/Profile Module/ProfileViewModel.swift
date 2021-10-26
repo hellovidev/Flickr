@@ -7,43 +7,45 @@
 
 import UIKit
 
-class ProfileViewModel {
+// MARK: - ProfileViewModel
 
-    private let coordinator: CoordinatorService
-    private let authorization: AuthorizationService
-    private let profileNetworkManager: ProfileNetworkManager
+class ProfileViewModel {
     
-    init(coordinator: CoordinatorService, authorization: AuthorizationService, networkService: NetworkService, nsid: String) {
+    private weak var coordinator: GeneralCoordinator?
+    
+    private let repository: ProfileRepository
+    
+    init(coordinator: GeneralCoordinator, network: Network) {
         self.coordinator = coordinator
-        self.authorization = authorization
-        self.profileNetworkManager = .init(nsid: nsid, networkService: networkService)
+        self.repository = .init(network: network)
     }
     
-    func logout() {
-        authorization.logout()
-        coordinator.redirectToInitialViewController()
+    func didLogout() {
+        coordinator?.didLogout()
     }
     
-    func requestProfile(completionHandler: @escaping (_ profile: Profile?, _ avatar: UIImage?) -> Void) {
-        profileNetworkManager.requestProfile { result in
+    func requestProfile(completionHandler: @escaping (_ profile: ProfileEntity?, _ avatar: UIImage?) -> Void) {
+        repository.requestProfile { [weak self] result in
             switch result {
-            case .success(let profileInformation):
-                self.profileNetworkManager.requestAvatar(profile: profileInformation) { result in
+            case .success(let profile):
+                self?.repository.requestAvatar(profile: profile) { result in
                     switch result {
                     case .success(let avatarImage):
-                        completionHandler(profileInformation, avatarImage)
+                        completionHandler(profile, avatarImage)
                     case .failure(let error):
-                        completionHandler(profileInformation, nil)
+                        completionHandler(profile, nil)
                         print("Download avatar in \(#function) has error: \(error)")
-                        return
                     }
                 }
             case .failure(let error):
                 completionHandler(nil, nil)
                 print("Download profile information in \(#function) has error: \(error)")
-                return
             }
         }
+    }
+    
+    deinit {
+        print("\(type(of: self)) deinited.")
     }
     
 }
