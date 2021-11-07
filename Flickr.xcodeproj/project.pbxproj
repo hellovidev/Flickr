@@ -3,10 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2950888427355F700067401E /* Database.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2950888227355F700067401E /* Database.xcdatamodeld */; };
+		29508898273577DD0067401E /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29508897273577DD0067401E /* DatabaseManager.swift */; };
+		2950889B27382FE70067401E /* DatabaseLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2950889A27382FE70067401E /* DatabaseLayer.swift */; };
+		2950889E273857270067401E /* Runtime in Frameworks */ = {isa = PBXBuildFile; productRef = 2950889D273857270067401E /* Runtime */; };
 		5F090BFB2705C04100843515 /* UploadButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F090BFA2705C04100843515 /* UploadButtonView.xib */; };
 		5F090BFD2705C05400843515 /* UploadButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F090BFC2705C05400843515 /* UploadButtonView.swift */; };
 		5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E70D27134389004B8A8F /* ViewBuilder.swift */; };
@@ -93,6 +97,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2950888327355F700067401E /* Database.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Database.xcdatamodel; sourceTree = "<group>"; };
+		29508897273577DD0067401E /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		2950889A27382FE70067401E /* DatabaseLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseLayer.swift; sourceTree = "<group>"; };
 		5F090BFA2705C04100843515 /* UploadButtonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UploadButtonView.xib; sourceTree = "<group>"; };
 		5F090BFC2705C05400843515 /* UploadButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadButtonView.swift; sourceTree = "<group>"; };
 		5F20E70D27134389004B8A8F /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
@@ -185,12 +192,39 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2950889E273857270067401E /* Runtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2950888D2735671B0067401E /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				2950889927382FC80067401E /* Database Layer */,
+				29508896273577C20067401E /* DatabaseManager */,
+				2950888227355F700067401E /* Database.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		29508896273577C20067401E /* DatabaseManager */ = {
+			isa = PBXGroup;
+			children = (
+				29508897273577DD0067401E /* DatabaseManager.swift */,
+			);
+			path = DatabaseManager;
+			sourceTree = "<group>";
+		};
+		2950889927382FC80067401E /* Database Layer */ = {
+			isa = PBXGroup;
+			children = (
+				2950889A27382FE70067401E /* DatabaseLayer.swift */,
+			);
+			path = "Database Layer";
+			sourceTree = "<group>";
+		};
 		5F090BF9270479EC00843515 /* Animation Group */ = {
 			isa = PBXGroup;
 			children = (
@@ -454,6 +488,7 @@
 				5FFEC0C626CD4F24000A0BAB /* App Settings */,
 				5FFEC0C526CD4F17000A0BAB /* App Modules */,
 				5FFEC0C826CD4F43000A0BAB /* Common Utils */,
+				2950888D2735671B0067401E /* CoreData */,
 				5FFEC0BE26CD4DDC000A0BAB /* Info.plist */,
 			);
 			path = Flickr;
@@ -546,6 +581,9 @@
 			dependencies = (
 			);
 			name = Flickr;
+			packageProductDependencies = (
+				2950889D273857270067401E /* Runtime */,
+			);
 			productName = Flickr;
 			productReference = 5FFEC0AD26CD4DDB000A0BAB /* Flickr.app */;
 			productType = "com.apple.product-type.application";
@@ -573,6 +611,9 @@
 				Base,
 			);
 			mainGroup = 5FFEC0A426CD4DDB000A0BAB;
+			packageReferences = (
+				2950889C273857270067401E /* XCRemoteSwiftPackageReference "Runtime" */,
+			);
 			productRefGroup = 5FFEC0AE26CD4DDB000A0BAB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -617,6 +658,7 @@
 				5F7F998426D8E89200482485 /* Deserializer.swift in Sources */,
 				5F20E72A27176F82004B8A8F /* UploadProgressView.swift in Sources */,
 				5F7F996C26D6CBC700482485 /* PhotoEntity.swift in Sources */,
+				2950889B27382FE70067401E /* DatabaseLayer.swift in Sources */,
 				5FC55766270CB34600018876 /* CommentTableViewCell.swift in Sources */,
 				5F71DB1527077990006094B4 /* ActivityViewController.swift in Sources */,
 				5F7F996A26D6C05800482485 /* FavoriteEntity.swift in Sources */,
@@ -639,6 +681,7 @@
 				5F7F996626D69AE900482485 /* ProfileEntity.swift in Sources */,
 				5FFEC0CC26CD4FAD000A0BAB /* FlickrOAuthService.swift in Sources */,
 				5FA9B2F226E4B1020060DAE8 /* HomeViewController.swift in Sources */,
+				29508898273577DD0067401E /* DatabaseManager.swift in Sources */,
 				5F8A441626FF4EA80027217F /* GalleryViewModel.swift in Sources */,
 				5F7F998026D805EA00482485 /* MultipartHelper.swift in Sources */,
 				5F4A773826FB498700D1EB00 /* ImageName.swift in Sources */,
@@ -667,6 +710,7 @@
 				5FFEC0B326CD4DDB000A0BAB /* SceneDelegate.swift in Sources */,
 				5F20E72527176EB9004B8A8F /* ActivityView.swift in Sources */,
 				5FFEC0CE26CD4FD3000A0BAB /* FlickrConstant.swift in Sources */,
+				2950888427355F700067401E /* Database.xcdatamodeld in Sources */,
 				5F7F997C26D8003700482485 /* Network+Photos.swift in Sources */,
 				5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */,
 				5F6A836726F4EE19000F9AD2 /* CacheStorageService.swift in Sources */,
@@ -881,6 +925,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2950889C273857270067401E /* XCRemoteSwiftPackageReference "Runtime" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/wickwirew/Runtime";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2950889D273857270067401E /* Runtime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2950889C273857270067401E /* XCRemoteSwiftPackageReference "Runtime" */;
+			productName = Runtime;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		2950888227355F700067401E /* Database.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2950888327355F700067401E /* Database.xcdatamodel */,
+			);
+			currentVersion = 2950888327355F700067401E /* Database.xcdatamodel */;
+			path = Database.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 5FFEC0A526CD4DDB000A0BAB /* Project object */;
 }

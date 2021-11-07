@@ -5,6 +5,7 @@
 //  Created by Sergei Romanchuk on 19.09.2021.
 //
 
+import CoreData
 import UIKit
 
 // MARK: - HomeRepository
@@ -88,8 +89,13 @@ class HomeRepository {
             return
         }
         
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let db = DatabaseManager(container: appDelegate.persistentContainer)
+        
         network.getPhotoById(for: ids[position]) { [weak self] result in
             completionHandler(result.map {
+                db.save(object: $0)
+                db.retrive()
                 self?.posts.append($0)
                 self?.cachePostInformation.insert($0, forKey: cachePhotoDetailsIdentifier)
                 group.leave()
