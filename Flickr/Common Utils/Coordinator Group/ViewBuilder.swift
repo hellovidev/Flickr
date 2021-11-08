@@ -28,7 +28,8 @@ class ViewBuilder {
     func createHomeViewController(coordinator: HomeCoordinator) -> HomeViewController {
         let homeViewController: HomeViewController = Storyboard.general.instantiateViewController()
         let network: Network = dependencyContainer.retrive()
-        homeViewController.viewModel = .init(coordinator: coordinator, network: network)
+        let database: CoreDataManager = dependencyContainer.retrive()
+        homeViewController.viewModel = .init(coordinator: coordinator, network: network, database: database)
         return homeViewController
     }
     

@@ -13,6 +13,7 @@ import UIKit
 class HomeRepository {
     
     private var network: Network
+    var database: CoreDataManager?
     
     private let cacheImages: CacheStorageService<NSString, UIImage>
     private let cacheBuddyicons: CacheStorageService<NSString, UIImage>
@@ -23,8 +24,9 @@ class HomeRepository {
     private var perPage: Int
     private var posts: [PhotoDetailsEntity] = .init()
     
-    init(network: Network) {
+    init(network: Network, database: CoreDataManager? = nil) {
         self.network = network
+        self.database = database
         
         self.cacheImages = .init()
         self.cacheBuddyicons = .init()
@@ -79,6 +81,20 @@ class HomeRepository {
         }
     }
     
+    func databaseRequestPhotosId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        guard let ids = database?.fetchIDs() else {
+            completionHandler(.failure(NSError())) //???
+            return
+        }
+        self.ids = ids
+        completionHandler(.success(Void()))
+    }
+    
+    func databaseRequestPhotoDetailsCell(position: Int, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
+        let object = database?.fetchByID(id: ids[position])
+        completionHandler(object?.details, object?.buddyicon, object?.image)
+    }
+    
     func requestPhotoDetails(position: Int, group: DispatchGroup, completionHandler: @escaping (Result<PhotoDetailsEntity, Error>) -> Void) {
         group.enter()
         
@@ -94,14 +110,14 @@ class HomeRepository {
         
         network.getPhotoById(for: ids[position]) { [weak self] result in
             completionHandler(result.map {
-                do {
-                    let photo = PhotoDetails()
-                    photo.id = $0.id
-                    photo.title = $0.title?.content
-                     try DatabaseManager.shared.photoDetailsDAO.save(object: photo)
-                   } catch {
-                       print(error)
-                   }
+//                do {
+//                    let photo = PhotoDetails()
+//                    photo.id = $0.id
+//                    photo.title = $0.title?.content
+//                     try DatabaseManager.shared.photoDetailsDAO.save(object: photo)
+//                   } catch {
+//                       print(error)
+//                   }
                 
 //                db.save(object: $0)
 //                db.retrive()

@@ -19,14 +19,18 @@ class HomeViewModel {
     
     let filters: [String] = ["50", "100", "200", "400"]
     
-    init(coordinator: HomeCoordinator, network: Network) {
+    let connectivity: InternetConnectivity = .init()
+    
+    init(coordinator: HomeCoordinator, network: Network, database: CoreDataManager? = nil) {
         self.coordinator = coordinator
-        self.repository = .init(network: network)
+        self.repository = .init(network: network, database: database)
         self.router = .init()
         
         self.router.addObserver { [weak self] router in
             self?.show(router)
         }
+        
+        connectivity.startMonitoring()
     }
     
     private enum HomeRoute {
@@ -36,12 +40,6 @@ class HomeViewModel {
     private func show(_ router: HomeRoute) {
         switch router {
         case .openPost(id: let id):
-            do {
-                let some = try DatabaseManager.shared.photoDetailsDAO.findById(id: id)
-                print(some)
-               } catch {
-                   print(error)
-            }
             coordinator?.redirectDetails(id: id)
         }
     }
@@ -63,10 +61,26 @@ class HomeViewModel {
     }
     
     func requestPhotosId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        repository.requestPhotosId(completionHandler: completionHandler)
+        if connectivity.isReachable {
+            repository.requestPhotosId(completionHandler: completionHandler)
+        } else {
+            databaseRequestPhotosId(completionHandler: completionHandler)
+        }
+    }
+    
+    func databaseRequestPhotosId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        repository.databaseRequestPhotosId(completionHandler: completionHandler)
     }
     
     func requestPhotoDetailsCell(indexPath: IndexPath, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
+        if connectivity.isReachable {
+            networkRequestPhotoDetailsCell(indexPath: indexPath, completionHandler: completionHandler)
+        } else {
+            repository.databaseRequestPhotoDetailsCell(position: indexPath.row, completionHandler: completionHandler)
+        }
+    }
+    
+    private func networkRequestPhotoDetailsCell(indexPath: IndexPath, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
         let group = DispatchGroup()
         
         var details: PhotoDetailsEntity?
@@ -83,6 +97,7 @@ class HomeViewModel {
                     image = photo
                     
                     DispatchQueue.main.async {
+                        self?.repository.database?.save(object: details!, image: image!.pngData()!, avatar: buddyicon!.pngData()!)
                         completionHandler(details, buddyicon, image)
                     }
                 }
@@ -94,6 +109,38 @@ class HomeViewModel {
             }
         }
     }
+    
+//    func requestPhotoDetailsCell(indexPath: IndexPath, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
+//        let group = DispatchGroup()
+//
+//        var details: PhotoDetailsEntity?
+//        var buddyicon: UIImage?
+//        var image: UIImage?
+//
+//        repository.requestPhotoDetails(position: indexPath.row, group: group) { [weak self] result in
+//            switch result {
+//            case .success(let photoDetails):
+//                details = photoDetails
+//
+//                self?.requestImagesOfPhotoDetails(details: photoDetails, group: group) { avatar, photo in
+//                    buddyicon = avatar
+//                    image = photo
+//
+//                    DispatchQueue.main.async {
+//                        self?.repository.database?.save(object: details!, image: image!.pngData()!, avatar: buddyicon!.pngData()!)
+//
+//                        self?.repository.database?.fetch()
+//                        completionHandler(details, buddyicon, image)
+//                    }
+//                }
+//            case .failure(let error):
+//                DispatchQueue.main.async {
+//                    completionHandler(details, buddyicon, image)
+//                }
+//                print("Download photo details cell in \(#function) has error: \(error)")
+//            }
+//        }
+//    }
     
     private func requestImagesOfPhotoDetails(details: PhotoDetailsEntity, group: DispatchGroup, completionHandler: @escaping (_ avatar: UIImage?, _ photo: UIImage?) -> Void) {
         var avatar: UIImage?

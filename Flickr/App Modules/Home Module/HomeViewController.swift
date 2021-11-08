@@ -19,6 +19,7 @@ class HomeViewController: UIViewController {
     private let refreshControl: UIRefreshControl = .init()
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
     
+    private let connectivity: InternetConnectivity = .init()
     private var filterButtons: [UIButton] = .init()
     
     var viewModel: HomeViewModel!
@@ -30,6 +31,8 @@ class HomeViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        
+        connectivity.startMonitoring()
         
         setupTableRefreshIndicator()
         setupNextPageLoadingIndicator()
@@ -172,12 +175,14 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let lastSectionIndex = tableView.numberOfSections - 1
-        let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
-        
-        if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
-            activityIndicator.startAnimating()
-            requestTableData()
+        if connectivity.isReachable {
+            let lastSectionIndex = tableView.numberOfSections - 1
+            let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
+            
+            if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
+                activityIndicator.startAnimating()
+                requestTableData()
+            }
         }
     }
     

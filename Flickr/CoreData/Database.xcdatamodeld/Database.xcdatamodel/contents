@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19461" systemVersion="21A559" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="OwnerPhotoDetailsCoreEntity" representedClassName=".OwnerPhotoDetailsCoreEntity" syncable="YES" codeGenerationType="category">
-        <attribute name="iconFarm" optional="YES" attributeType="String"/>
-        <attribute name="iconServer" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="id" optional="YES" attributeType="String"/>
-        <attribute name="location" optional="YES" attributeType="String"/>
-        <attribute name="realName" optional="YES" attributeType="String"/>
-        <attribute name="username" optional="YES" attributeType="String"/>
-    </entity>
     <entity name="PhotoDetailsCoreEntity" representedClassName=".PhotoDetailsCoreEntity" syncable="YES" codeGenerationType="category">
-        <attribute name="farm" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="descriptionContent" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
-        <attribute name="secret" optional="YES" attributeType="String"/>
-        <attribute name="server" optional="YES" attributeType="String"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="ownerAvatar" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="ownerLocation" optional="YES" attributeType="String"/>
+        <attribute name="ownerName" optional="YES" attributeType="String"/>
+        <attribute name="ownerUsername" optional="YES" attributeType="String"/>
+        <attribute name="publishedAt" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OwnerPhotoDetailsCoreEntity"/>
     </entity>
     <elements>
-        <element name="PhotoDetailsCoreEntity" positionX="-63" positionY="-18" width="128" height="133"/>
-        <element name="OwnerPhotoDetailsCoreEntity" positionX="114.9844970703125" positionY="179.4908447265625" width="128" height="133"/>
+        <element name="PhotoDetailsCoreEntity" positionX="-63" positionY="-18" width="128" height="178"/>
     </elements>
 </model>

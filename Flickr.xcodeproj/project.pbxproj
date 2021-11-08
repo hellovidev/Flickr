@@ -26,6 +26,8 @@
 		295088C7273860210067401E /* NSPersistentStoreCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295088C6273860210067401E /* NSPersistentStoreCoordinator.swift */; };
 		295088C9273860F70067401E /* PhotoDetailsCoreEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295088C8273860F70067401E /* PhotoDetailsCoreEntity.swift */; };
 		295088CB273861100067401E /* OwnerPhotoDetailsCoreEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295088CA273861100067401E /* OwnerPhotoDetailsCoreEntity.swift */; };
+		295088CD2739797C0067401E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295088CC2739797C0067401E /* CoreDataManager.swift */; };
+		295088CF27398EF70067401E /* InternetConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295088CE27398EF70067401E /* InternetConnectivity.swift */; };
 		5F090BFB2705C04100843515 /* UploadButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F090BFA2705C04100843515 /* UploadButtonView.xib */; };
 		5F090BFD2705C05400843515 /* UploadButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F090BFC2705C05400843515 /* UploadButtonView.swift */; };
 		5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E70D27134389004B8A8F /* ViewBuilder.swift */; };
@@ -141,6 +143,8 @@
 		295088C6273860210067401E /* NSPersistentStoreCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSPersistentStoreCoordinator.swift; sourceTree = "<group>"; };
 		295088C8273860F70067401E /* PhotoDetailsCoreEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailsCoreEntity.swift; sourceTree = "<group>"; };
 		295088CA273861100067401E /* OwnerPhotoDetailsCoreEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerPhotoDetailsCoreEntity.swift; sourceTree = "<group>"; };
+		295088CC2739797C0067401E /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		295088CE27398EF70067401E /* InternetConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetConnectivity.swift; sourceTree = "<group>"; };
 		5F090BFA2705C04100843515 /* UploadButtonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UploadButtonView.xib; sourceTree = "<group>"; };
 		5F090BFC2705C05400843515 /* UploadButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadButtonView.swift; sourceTree = "<group>"; };
 		5F20E70D27134389004B8A8F /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
@@ -252,6 +256,7 @@
 			children = (
 				2950889927382FC80067401E /* Database Layer */,
 				2950888227355F700067401E /* Database.xcdatamodeld */,
+				295088CC2739797C0067401E /* CoreDataManager.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -471,6 +476,7 @@
 				5F7F997F26D805EA00482485 /* MultipartHelper.swift */,
 				5F7F998126D8064A00482485 /* SignatureBuilder.swift */,
 				5F7F998326D8E89200482485 /* Deserializer.swift */,
+				295088CE27398EF70067401E /* InternetConnectivity.swift */,
 			);
 			path = "Network Helpers";
 			sourceTree = "<group>";
@@ -806,6 +812,7 @@
 				5F7F996626D69AE900482485 /* ProfileEntity.swift in Sources */,
 				5FFEC0CC26CD4FAD000A0BAB /* FlickrOAuthService.swift in Sources */,
 				5FA9B2F226E4B1020060DAE8 /* HomeViewController.swift in Sources */,
+				295088CD2739797C0067401E /* CoreDataManager.swift in Sources */,
 				29508898273577DD0067401E /* DatabaseManager.swift in Sources */,
 				5F8A441626FF4EA80027217F /* GalleryViewModel.swift in Sources */,
 				5F7F998026D805EA00482485 /* MultipartHelper.swift in Sources */,
@@ -830,6 +837,7 @@
 				5F7F996326D66DE300482485 /* ErrorMessage.swift in Sources */,
 				5F71301126D40D32001A3762 /* Network.swift in Sources */,
 				5FC55761270B736800018876 /* HomeCoordinator.swift in Sources */,
+				295088CF27398EF70067401E /* InternetConnectivity.swift in Sources */,
 				5F25F68E26E9322000F98608 /* AuthorizationService.swift in Sources */,
 				5F25F69326EA13E400F98608 /* UIViewController+UIAlertController.swift in Sources */,
 				5F20E71F27175D6F004B8A8F /* DetailsEntity.swift in Sources */,
