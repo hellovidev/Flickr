@@ -89,13 +89,22 @@ class HomeRepository {
             return
         }
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let db = DatabaseManager(container: appDelegate.persistentContainer)
+//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//        let db = DatabaseManager(container: appDelegate.persistentContainer)
         
         network.getPhotoById(for: ids[position]) { [weak self] result in
             completionHandler(result.map {
-                db.save(object: $0)
-                db.retrive()
+                do {
+                    let photo = PhotoDetails()
+                    photo.id = $0.id
+                    photo.title = $0.title?.content
+                     try DatabaseManager.shared.photoDetailsDAO.save(object: photo)
+                   } catch {
+                       print(error)
+                   }
+                
+//                db.save(object: $0)
+//                db.retrive()
                 self?.posts.append($0)
                 self?.cachePostInformation.insert($0, forKey: cachePhotoDetailsIdentifier)
                 group.leave()

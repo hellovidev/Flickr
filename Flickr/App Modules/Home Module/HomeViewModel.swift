@@ -36,6 +36,12 @@ class HomeViewModel {
     private func show(_ router: HomeRoute) {
         switch router {
         case .openPost(id: let id):
+            do {
+                let some = try DatabaseManager.shared.photoDetailsDAO.findById(id: id)
+                print(some)
+               } catch {
+                   print(error)
+            }
             coordinator?.redirectDetails(id: id)
         }
     }

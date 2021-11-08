@@ -98,7 +98,7 @@ class HomeViewController: UIViewController {
         }
     }
     
-    @objc private func refreshTable() {
+    @objc private func refreshTable() {        
         activityIndicator.stopAnimating()
         viewModel.refresh()
         tableView.reloadData()
