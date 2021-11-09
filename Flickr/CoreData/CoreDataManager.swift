@@ -66,7 +66,7 @@ class CoreDataManager: DependencyProtocol {
         return (nil, nil, nil)
     }
     
-    func fetchIDs() -> [String] {
+    func fetchIDs() throws -> [String] {
         let request: NSFetchRequest<NSDictionary> = .init(entityName: "PhotoDetailsCoreEntity")
         request.resultType = .dictionaryResultType
         request.returnsDistinctResults = true
@@ -80,7 +80,7 @@ class CoreDataManager: DependencyProtocol {
             return output
         } catch {
             print("Fetch ids `PhotoDetailsCoreEntity` error:", error)
-            return []
+            throw error
         }
     }
     

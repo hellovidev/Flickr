@@ -130,7 +130,7 @@ class HomeViewController: UIViewController {
     }
     
     private func requestTableData() {
-        viewModel.requestPhotosId { [weak self] result in
+        viewModel.requestPhotoDetailsIds { [weak self] result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.refreshControl.endRefreshing()
             }
