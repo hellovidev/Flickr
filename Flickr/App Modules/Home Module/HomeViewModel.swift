@@ -64,12 +64,8 @@ class HomeViewModel {
         if connectivity.isReachable {
             repository.requestPhotosId(completionHandler: completionHandler)
         } else {
-            databaseRequestPhotosId(completionHandler: completionHandler)
+            repository.databaseRequestPhotosId(completionHandler: completionHandler)
         }
-    }
-    
-    func databaseRequestPhotosId(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        repository.databaseRequestPhotosId(completionHandler: completionHandler)
     }
     
     func requestPhotoDetailsCell(indexPath: IndexPath, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
@@ -97,7 +93,9 @@ class HomeViewModel {
                     image = photo
                     
                     DispatchQueue.main.async {
-                        self?.repository.database?.save(object: details!, image: image!.pngData()!, avatar: buddyicon!.pngData()!)
+                        if let photoDetails = details {
+                            self?.repository.database?.save(object: photoDetails, image: image?.pngData(), avatar: buddyicon?.pngData())
+                        }
                         completionHandler(details, buddyicon, image)
                     }
                 }

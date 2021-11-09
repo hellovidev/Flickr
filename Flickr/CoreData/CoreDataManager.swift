@@ -5,9 +5,8 @@
 //  Created by Siarhei Ramanchuk on 11/8/21.
 //
 
-import Foundation
-import CoreData
 import UIKit
+import CoreData
 
 class CoreDataManager: DependencyProtocol {
     
@@ -17,7 +16,7 @@ class CoreDataManager: DependencyProtocol {
         self.context = context
     }
     
-    func save(object: PhotoDetailsEntity, image: Data, avatar: Data) {
+    func save(object: PhotoDetailsEntity, image: Data? = nil, avatar: Data? = nil) {
         let dbEntity = PhotoDetailsCoreEntity(context: context)
         dbEntity.id = object.id
         dbEntity.title = object.title?.content
@@ -32,7 +31,7 @@ class CoreDataManager: DependencyProtocol {
         do {
             try context.save()
         } catch {
-            print(error)
+            print("Save `PhotoDetailsCoreEntity` error:", error)
         }
     }
     
@@ -44,29 +43,27 @@ class CoreDataManager: DependencyProtocol {
         do {
             let objects = try context.fetch(request)
             let output = outputMapping(objects: objects)
-            print(output)
             return output
         } catch {
-            print(error)
+            print("Fetch all `PhotoDetailsCoreEntity` error:", error)
             return []
         }
     }
     
-    func fetchByID(id: String) -> PhotoDetail? {
-        let fetchRequest: NSFetchRequest<PhotoDetailsCoreEntity>
-        fetchRequest = PhotoDetailsCoreEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", id)
-        
+    func fetchById(id: String) -> PhotoDetail {
+        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id)
         
         do {
-            let object = try context.fetch(fetchRequest).first
-            let output = outputMapping(objects: [object!])
-            print(output)
-            return output.first
+            if let object = try context.fetch(request).first {
+                let output = outputMapping(objects: [object])
+                return output[0]
+            }
         } catch {
-            print(error)
-            return nil
+            print("Fetch by id `PhotoDetailsCoreEntity` error:", error)
         }
+        
+        return (nil, nil, nil)
     }
     
     func fetchIDs() -> [String] {
@@ -77,16 +74,33 @@ class CoreDataManager: DependencyProtocol {
         
         do {
             let objects: [NSDictionary] = try context.fetch(request)
-            let output = objects.map { dict -> String in
-                dict.value(forKey: "id") as! String
+            let output = objects.map {
+                $0.value(forKey: "id") as! String
             }
-            print(output)
             return output
         } catch {
-            print(error)
+            print("Fetch ids `PhotoDetailsCoreEntity` error:", error)
             return []
         }
     }
+    
+    func deleteAllData() {
+        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+        
+        do {
+            let objects = try context.fetch(request)
+            
+            objects.forEach {
+                context.delete($0)
+            }
+            
+            try context.save()
+        } catch {
+            print("Detele all data in `PhotoDetailsCoreEntity` error:", error)
+        }
+    }
+    
+    // MARK: - Mapping
     
     private func outputMapping(objects: [PhotoDetailsCoreEntity]) -> [PhotoDetail] {
         let output = objects.map { object -> PhotoDetail in
@@ -96,34 +110,21 @@ class CoreDataManager: DependencyProtocol {
             photo.description = .init(content: object.descriptionContent)
             photo.owner = .init(nsid: nil, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation)
             photo.dateUploaded = object.publishedAt
-            let image = UIImage(data: object.image!, scale: 1)
-            let buddyicon = UIImage(data: object.ownerAvatar!)
+            
+            var image: UIImage?
+            if let imageData = object.image {
+                image = UIImage(data: imageData)
+            }
+            
+            var buddyicon: UIImage?
+            if let buddyiconData = object.ownerAvatar {
+                buddyicon = UIImage(data: buddyiconData)
+            }
+            
             return (photo, image, buddyicon)
         }
         
         return output
-    }
-    
-    private func inputMapping() {
-        
-    }
-    
-    func deleteAllData() {
-        let fetchRequest: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()//<NSFetchRequestResult> = .init()
-
-        do {
-            let results = try context.fetch(fetchRequest)
-            results.forEach {
-                context.delete($0)
-            }
-            try context.save()
-//            for object in results {
-//                guard let objectData = object as? NSManagedObject else { continue }
-//                context.delete(objectData)
-//            }
-        } catch let error {
-            print("Detele all data in `PhotoDetailsCoreEntity` error :", error)
-        }
     }
     
 }

@@ -91,7 +91,7 @@ class HomeRepository {
     }
     
     func databaseRequestPhotoDetailsCell(position: Int, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
-        let object = database?.fetchByID(id: ids[position])
+        let object = database?.fetchById(id: ids[position])
         completionHandler(object?.details, object?.buddyicon, object?.image)
     }
     
@@ -105,22 +105,8 @@ class HomeRepository {
             return
         }
         
-//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//        let db = DatabaseManager(container: appDelegate.persistentContainer)
-        
         network.getPhotoById(for: ids[position]) { [weak self] result in
             completionHandler(result.map {
-//                do {
-//                    let photo = PhotoDetails()
-//                    photo.id = $0.id
-//                    photo.title = $0.title?.content
-//                     try DatabaseManager.shared.photoDetailsDAO.save(object: photo)
-//                   } catch {
-//                       print(error)
-//                   }
-                
-//                db.save(object: $0)
-//                db.retrive()
                 self?.posts.append($0)
                 self?.cachePostInformation.insert($0, forKey: cachePhotoDetailsIdentifier)
                 group.leave()
