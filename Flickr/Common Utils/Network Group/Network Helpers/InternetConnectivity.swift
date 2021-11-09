@@ -8,7 +8,7 @@
 import Foundation
 import Network
 
-class InternetConnectivity {
+class InternetConnectivity: DependencyProtocol {
 
     let monitor = NWPathMonitor()
     

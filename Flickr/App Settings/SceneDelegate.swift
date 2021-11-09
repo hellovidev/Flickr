@@ -14,8 +14,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var coordinator: ApplicationCoordinator?
     var authorizationService: AuthorizationService?
     
-    private let connectivity: InternetConnectivity = .init()
-
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
             fatalError("Could not get url on \(#line) in \(#function)")
@@ -33,16 +31,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = .init(windowScene: windowScene)
         
-        connectivity.startMonitoring()
-        
         let dependencyContainer: DependencyContainer = .init()
         
         let coreDataManager: CoreDataManager = .init(context: persistentContainer.viewContext)
+        let connection: InternetConnectivity = .init()
         
-        if connectivity.isReachable {
-            coreDataManager.deleteAllData()
-        }
+//        connectivity.startMonitoring()
+//
+//        if connectivity.isReachable {
+//            coreDataManager.deleteAllData()
+//        }
         
+        dependencyContainer.register(connection)
         dependencyContainer.register(coreDataManager)
         
         let viewBuilder: ViewBuilder = .init(dependencyContainer: dependencyContainer)

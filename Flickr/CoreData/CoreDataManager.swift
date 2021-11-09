@@ -10,18 +10,24 @@ import CoreData
 
 class CoreDataManager: DependencyProtocol {
     
-    var context: NSManagedObjectContext!
+    private var context: NSManagedObjectContext!
+    private let imageStorage: ImageStorage!
     
     init(context: NSManagedObjectContext) {
         self.context = context
+        self.imageStorage = try! .init(name: "PhotoDetailsImages")
     }
     
-    func save(object: PhotoDetailsEntity, image: Data? = nil, avatar: Data? = nil) {
+    func save(object: PhotoDetailsEntity, image: UIImage? = nil, avatar: Data? = nil) {
         let dbEntity = PhotoDetailsCoreEntity(context: context)
         dbEntity.id = object.id
         dbEntity.title = object.title?.content
         dbEntity.descriptionContent = object.description?.content
-        dbEntity.image = image
+        
+        let pathImage = try! imageStorage.setImage(image!, forKey: object.id!)
+
+        dbEntity.image = pathImage
+        
         dbEntity.ownerName = object.owner?.realName
         dbEntity.ownerUsername = object.owner?.username
         dbEntity.ownerLocation = object.owner?.location
@@ -95,6 +101,7 @@ class CoreDataManager: DependencyProtocol {
             }
             
             try context.save()
+            imageStorage.clearAllFilesFromDirectory()
         } catch {
             print("Detele all data in `PhotoDetailsCoreEntity` error:", error)
         }
@@ -111,10 +118,10 @@ class CoreDataManager: DependencyProtocol {
             photo.owner = .init(nsid: nil, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation)
             photo.dateUploaded = object.publishedAt
             
-            var image: UIImage?
-            if let imageData = object.image {
-                image = UIImage(data: imageData)
-            }
+            let image: UIImage = try! imageStorage.getImage(forKey: object.id!)
+//            if let imageData = object.image {
+//                image = UIImage(data: imageData)
+//            }
             
             var buddyicon: UIImage?
             if let buddyiconData = object.ownerAvatar {
