@@ -18,21 +18,23 @@ class CoreDataManager: DependencyProtocol {
         self.imageStorage = try! .init(name: "PhotoDetailsImages")
     }
     
-    func save(object: PhotoDetailsEntity, image: UIImage? = nil, avatar: Data? = nil) {
+    func save(_ object: PhotoDetail) {
         let dbEntity = PhotoDetailsCoreEntity(context: context)
-        dbEntity.id = object.id
-        dbEntity.title = object.title?.content
-        dbEntity.descriptionContent = object.description?.content
+        dbEntity.id = object.details?.id
+        dbEntity.title = object.details?.title?.content
+        dbEntity.descriptionContent = object.details?.description?.content
         
-        let pathImage = try! imageStorage.setImage(image!, forKey: object.id!)
-
-        dbEntity.image = pathImage
+        if let image = object.image, let id = object.details?.id {
+            if let pathImage = try? imageStorage.setImage(image, forKey: id) {
+                dbEntity.image = pathImage
+            }
+        }
         
-        dbEntity.ownerName = object.owner?.realName
-        dbEntity.ownerUsername = object.owner?.username
-        dbEntity.ownerLocation = object.owner?.location
-        dbEntity.ownerAvatar = avatar
-        dbEntity.publishedAt = object.dateUploaded
+        dbEntity.ownerName = object.details?.owner?.realName
+        dbEntity.ownerUsername = object.details?.owner?.username
+        dbEntity.ownerLocation = object.details?.owner?.location
+        dbEntity.ownerAvatar = object.buddyicon?.pngData()
+        dbEntity.publishedAt = object.details?.dateUploaded
         
         do {
             try context.save()
@@ -118,10 +120,10 @@ class CoreDataManager: DependencyProtocol {
             photo.owner = .init(nsid: nil, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation)
             photo.dateUploaded = object.publishedAt
             
-            let image: UIImage = try! imageStorage.getImage(forKey: object.id!)
-//            if let imageData = object.image {
-//                image = UIImage(data: imageData)
-//            }
+            var image: UIImage?
+            if let id = object.id {
+                image = try? imageStorage.getImage(forKey: id)
+            }
             
             var buddyicon: UIImage?
             if let buddyiconData = object.ownerAvatar {
