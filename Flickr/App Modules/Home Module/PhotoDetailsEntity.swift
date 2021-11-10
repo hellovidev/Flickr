@@ -7,14 +7,14 @@
 
 import Foundation
 
-class PhotoDetails: DomainEntity, Codable {
-    var id: String?
-    var title: String?
-}
+//class PhotoDetails: Codable {
+//    var id: String?
+//    var title: String?
+//}
 
 // MARK: - PhotoDetailsEntity
 
-class PhotoDetailsEntity: DomainEntity, Codable {
+class PhotoDetailsEntity: Codable {
     
     var id: String?
     

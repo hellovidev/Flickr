@@ -7,6 +7,10 @@
 
 import CoreData
 
+private enum CoreDataManagerError: Error {
+    case objectDoesNotExists
+}
+
 public class CoreDataManager {
     
     private let context: NSManagedObjectContext
@@ -18,27 +22,17 @@ public class CoreDataManager {
     // MARK: - Save Methods
     
     public func saveObject(object: DomainPhotoDetails) throws {
-        registerNewObject(object: object)
+        self.registerNewObject(object: object)
         
-        do {
-            try self.commitUnsavedChanges()
-        } catch {
-            print("Save `PhotoDetailsCoreEntity` error.", error)
-            throw error
-        }
+        try self.commitUnsavedChanges()
     }
     
     public func saveSetOfObjects(objects: [DomainPhotoDetails]) throws {
         objects.forEach {
-            registerNewObject(object: $0)
+            self.registerNewObject(object: $0)
         }
         
-        do {
-            try self.commitUnsavedChanges()
-        } catch {
-            print("Save `PhotoDetailsCoreEntity` array error.", error)
-            throw error
-        }
+        try self.commitUnsavedChanges()
     }
     
     // MARK: - Fetch Methods
@@ -49,81 +43,56 @@ public class CoreDataManager {
         request.returnsDistinctResults = true
         request.propertiesToFetch = ["id"]
         
-        do {
-            let dictionaries: [NSDictionary] = try context.fetch(request)
-            
-            var ids = [String]()
-            for dictionary in dictionaries {
-                if let id = dictionary.value(forKey: "id") as? String {
-                    ids.append(id)
-                }
+        let dictionaries: [NSDictionary] = try context.fetch(request)
+        
+        var ids = [String]()
+        for dictionary in dictionaries {
+            if let id = dictionary.value(forKey: "id") as? String {
+                ids.append(id)
             }
-
-            return ids
-        } catch {
-            print("Fetch ids of `PhotoDetailsCoreEntity` error.", error)
-            throw error
         }
+
+        return ids
     }
     
     public func fetchObjectById(id: String) throws -> DomainPhotoDetails {
         let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id)
+        guard let objectFromDatabase = try context.fetch(request).first else { throw CoreDataManagerError.objectDoesNotExists }
+        let objectAsDomainVersion = self.mapDatabaseObjectToDomainVersion(object: objectFromDatabase)
         
-        do {
-            guard let objectFromDatabase = try context.fetch(request).first else { throw NSError() }
-            let objectAsDomainVersion = self.mapDatabaseObjectToDomainVersion(object: objectFromDatabase)
-            return objectAsDomainVersion
-        } catch {
-            print("Fetch object `PhotoDetailsCoreEntity` by id error.", error)
-            throw error
-        }
+        return objectAsDomainVersion
     }
     
     public func fetchSetOfObjects() throws -> [DomainPhotoDetails] {
         let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+        let objectsFromDatabase = try context.fetch(request)
         
-        do {
-            let objectsFromDatabase = try context.fetch(request)
-            let objectsAsDomainVersion = objectsFromDatabase.map { [unowned self] object in
-                self.mapDatabaseObjectToDomainVersion(object: object)
-            }
-            return objectsAsDomainVersion
-        } catch {
-            print("Fetch set of `PhotoDetailsCoreEntity` error.", error)
-            throw error
+        let objectsAsDomainVersion = objectsFromDatabase.map { object in
+            self.mapDatabaseObjectToDomainVersion(object: object)
         }
+        
+        return objectsAsDomainVersion
     }
     
     // MARK: - Delete Methods
     
     public func clearDatabase() throws {
         let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+        let objects = try context.fetch(request)
         
-        do {
-            let objects = try context.fetch(request)
-            
-            objects.forEach {
-                context.delete($0)
-            }
-            
-            try self.commitUnsavedChanges()
-        } catch {
-            print("Clear database of `PhotoDetailsCoreEntity` error.", error)
-            throw error
+        objects.forEach {
+            context.delete($0)
         }
+        
+        try self.commitUnsavedChanges()
     }
     
     // MARK: - Helper
     
     private func commitUnsavedChanges() throws {
         if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                print("Unresolved error!", error)
-                throw error
-            }
+            try context.save()
         }
     }
     

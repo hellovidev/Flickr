@@ -62,7 +62,8 @@ class HomeViewModel {
         repository.request(position: indexPath.row) { result in
             switch result {
             case .success(let domainEntity):
-                completionHandler(domainEntity.details, domainEntity.buddyicon, domainEntity.image)
+                print("sada")
+                //completionHandler(domainEntity.details, domainEntity.buddyicon, domainEntity.image)
             case .failure(let error):
                 print("Load `PhotoDetails` error:", error)
                 completionHandler(nil, nil, nil)

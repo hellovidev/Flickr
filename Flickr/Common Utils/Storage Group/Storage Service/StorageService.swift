@@ -23,7 +23,7 @@ public class StorageService {
     private let cacheBuddyicons: Cache<String, UIImage>
     private let cachePostDetails: Cache<String, PhotoDetailsEntity>
     
-    //let imageStorage: ImageStorage!
+    //private let imageStorage: ImageStorage
     
     init(network: Network, database: CoreDataManager, connection: InternetConnectivity) {
         self.network = network
@@ -37,12 +37,12 @@ public class StorageService {
         self.connection.startMonitoring()
         
         if self.connection.isReachable {
-            self.database.deleteAllData()
+            try! self.database.clearDatabase()
         }
     }
     
     public func refreshStorage() {
-        database.deleteAllData()
+        try! database.clearDatabase()
         cacheImages.removeAll()
         cacheBuddyicons.removeAll()
         cachePostDetails.removeAll()
@@ -60,7 +60,7 @@ public class StorageService {
             }
         } else {
             do {
-                let ids = try database.fetchIDs()
+                let ids = ["sda"]//try database.fetchIDs()
                 completionHandler(.success(ids))
             } catch {
                 completionHandler(.failure(error))
@@ -69,45 +69,45 @@ public class StorageService {
     }
     
     public func requestPhotoDetailsById(id: String, completionHandler: @escaping (Result<DomainPhotoDetails, Error>) -> Void) {
-        if connection.isReachable {
-            let group = DispatchGroup()
-            
-            var details: PhotoDetailsEntity?
-            var image: UIImage?
-            var buddyicon: UIImage?
-            
-            networkRequestPhotoDetails(id: id, group: group) { [weak self] result in
-                switch result {
-                case .success(let photoDetails):
-                    details = photoDetails
-                    
-                    self?.networkGroupRequestImagesOfPhotoDetails(details: photoDetails, group: group) { photo, avatar in
-                        buddyicon = avatar
-                        image = photo
-                        
-                        DispatchQueue.main.async {
-                            if let photoDetails = details {
-                                let domainEntity = (details: photoDetails, image: image, buddyicon: buddyicon)
-                                self?.database.save(domainEntity)
-                                //self?.database?.save(object: photoDetails, image: image?.pngData(), avatar: buddyicon?.pngData())
-                            }
-                            let domainEntity = DomainPhotoDetails(details: details, image: image, buddyicon: buddyicon)
-                            completionHandler(.success(domainEntity))
-                        }
-                    }
-                case .failure(let error):
-                    DispatchQueue.main.async {
-                        let domainEntity = DomainPhotoDetails(details: details, image: image, buddyicon: buddyicon)
-                        completionHandler(.success(domainEntity))
-                    }
-                    print("Download photo details cell in \(#function) has error: \(error)")
-                }
-            }
-        } else {
-            let object = database.fetchById(id: id)
-            let domainEntity = DomainPhotoDetails(details: object.details, image: object.image, buddyicon: object.buddyicon)
-            completionHandler(.success(domainEntity))
-        }
+//        if connection.isReachable {
+//            let group = DispatchGroup()
+//            
+//            var details: PhotoDetailsEntity?
+//            var image: UIImage?
+//            var buddyicon: UIImage?
+//            
+//            networkRequestPhotoDetails(id: id, group: group) { [weak self] result in
+//                switch result {
+//                case .success(let photoDetails):
+//                    details = photoDetails
+//                    
+//                    self?.networkGroupRequestImagesOfPhotoDetails(details: photoDetails, group: group) { photo, avatar in
+//                        buddyicon = avatar
+//                        image = photo
+//                        
+//                        DispatchQueue.main.async {
+//                            if let photoDetails = details {
+//                                let domainEntity = (details: photoDetails, image: image, buddyicon: buddyicon)
+//                                self?.database.save(domainEntity)
+//                                //self?.database?.save(object: photoDetails, image: image?.pngData(), avatar: buddyicon?.pngData())
+//                            }
+//                            let domainEntity = DomainPhotoDetails(details: details, image: image, buddyicon: buddyicon)
+//                            completionHandler(.success(domainEntity))
+//                        }
+//                    }
+//                case .failure(let error):
+//                    DispatchQueue.main.async {
+//                        let domainEntity = DomainPhotoDetails(details: details, image: image, buddyicon: buddyicon)
+//                        completionHandler(.success(domainEntity))
+//                    }
+//                    print("Download photo details cell in \(#function) has error: \(error)")
+//                }
+//            }
+//        } else {
+//            let object = database.fetchById(id: id)
+//            let domainEntity = DomainPhotoDetails(details: object.details, image: object.image, buddyicon: object.buddyicon)
+//            completionHandler(.success(domainEntity))
+//        }
     }
     
     private func networkGroupRequestImagesOfPhotoDetails(details: PhotoDetailsEntity, group: DispatchGroup, completionHandler: @escaping (_ photo: UIImage?, _ avatar: UIImage?) -> Void) {

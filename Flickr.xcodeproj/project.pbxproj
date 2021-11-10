@@ -13,7 +13,7 @@
 		295088CD2739797C0067401E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295088CC2739797C0067401E /* CoreDataManager.swift */; };
 		295088CF27398EF70067401E /* InternetConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295088CE27398EF70067401E /* InternetConnectivity.swift */; };
 		295088D2273A83EA0067401E /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295088D1273A83EA0067401E /* StorageService.swift */; };
-		29C9362F273AFB0200B4B26A /* ImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C9362E273AFB0200B4B26A /* ImageStorage.swift */; };
+		29C9362F273AFB0200B4B26A /* ImageDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C9362E273AFB0200B4B26A /* ImageDataManager.swift */; };
 		5F090BFB2705C04100843515 /* UploadButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F090BFA2705C04100843515 /* UploadButtonView.xib */; };
 		5F090BFD2705C05400843515 /* UploadButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F090BFC2705C05400843515 /* UploadButtonView.swift */; };
 		5F20E70E27134389004B8A8F /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F20E70D27134389004B8A8F /* ViewBuilder.swift */; };
@@ -116,7 +116,7 @@
 		295088CC2739797C0067401E /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		295088CE27398EF70067401E /* InternetConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetConnectivity.swift; sourceTree = "<group>"; };
 		295088D1273A83EA0067401E /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
-		29C9362E273AFB0200B4B26A /* ImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStorage.swift; sourceTree = "<group>"; };
+		29C9362E273AFB0200B4B26A /* ImageDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataManager.swift; sourceTree = "<group>"; };
 		5F090BFA2705C04100843515 /* UploadButtonView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UploadButtonView.xib; sourceTree = "<group>"; };
 		5F090BFC2705C05400843515 /* UploadButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadButtonView.swift; sourceTree = "<group>"; };
 		5F20E70D27134389004B8A8F /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
@@ -244,7 +244,7 @@
 			isa = PBXGroup;
 			children = (
 				295088D1273A83EA0067401E /* StorageService.swift */,
-				29C9362E273AFB0200B4B26A /* ImageStorage.swift */,
+				29C9362E273AFB0200B4B26A /* ImageDataManager.swift */,
 			);
 			path = "Storage Service";
 			sourceTree = "<group>";
@@ -743,7 +743,7 @@
 				5F7F996826D6AE1000482485 /* CommentEntity.swift in Sources */,
 				5FC5576A270DFF4300018876 /* PhotoCommentEntity.swift in Sources */,
 				5F4A774526FCEA6800D1EB00 /* HomeViewModel.swift in Sources */,
-				29C9362F273AFB0200B4B26A /* ImageStorage.swift in Sources */,
+				29C9362F273AFB0200B4B26A /* ImageDataManager.swift in Sources */,
 				5FE15E8427122AF400B61DBF /* DependencyContainer.swift in Sources */,
 				5F7F996626D69AE900482485 /* ProfileEntity.swift in Sources */,
 				5FFEC0CC26CD4FAD000A0BAB /* FlickrOAuthService.swift in Sources */,
