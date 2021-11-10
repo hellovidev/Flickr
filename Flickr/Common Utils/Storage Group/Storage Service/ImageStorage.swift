@@ -28,7 +28,7 @@ public class ImageStorage {
     }
     
     func setImage(_ image: UIImage, forKey key: String) throws -> String {
-        try createDirectory()
+        try createDirectory() //ifNeeded
         guard let data = image.pngData() else {
             throw Error.invalidImage
         }
@@ -87,7 +87,7 @@ private extension ImageStorage {
     }
     
     func createDirectory() throws {
-        guard !fileManager.fileExists(atPath: path) else {
+        guard !fileManager.fileExists(atPath: path) else { // if ...
             return
         }
         

@@ -5,94 +5,99 @@
 //  Created by Siarhei Ramanchuk on 11/8/21.
 //
 
-import UIKit
 import CoreData
 
-class CoreDataManager: DependencyProtocol {
+public class CoreDataManager {
     
-    private var context: NSManagedObjectContext!
-    private let imageStorage: ImageStorage!
+    private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
         self.context = context
-        self.imageStorage = try! .init(name: "PhotoDetailsImages")
     }
     
-    func save(_ object: PhotoDetail) {
-        let dbEntity = PhotoDetailsCoreEntity(context: context)
-        dbEntity.id = object.details?.id
-        dbEntity.title = object.details?.title?.content
-        dbEntity.descriptionContent = object.details?.description?.content
-        
-        if let image = object.image, let id = object.details?.id {
-            if let pathImage = try? imageStorage.setImage(image, forKey: id) {
-                dbEntity.image = pathImage
-            }
-        }
-        
-        dbEntity.ownerName = object.details?.owner?.realName
-        dbEntity.ownerUsername = object.details?.owner?.username
-        dbEntity.ownerLocation = object.details?.owner?.location
-        dbEntity.ownerAvatar = object.buddyicon?.pngData()
-        dbEntity.publishedAt = object.details?.dateUploaded
+    // MARK: - Save Methods
+    
+    public func saveObject(object: DomainPhotoDetails) throws {
+        registerNewObject(object: object)
         
         do {
-            try context.save()
+            try self.commitUnsavedChanges()
         } catch {
-            print("Save `PhotoDetailsCoreEntity` error:", error)
+            print("Save `PhotoDetailsCoreEntity` error.", error)
+            throw error
         }
     }
     
-    typealias PhotoDetail = (details: PhotoDetailsEntity?, image: UIImage?, buddyicon: UIImage?)
-    
-    func fetchAll() -> [PhotoDetail] {
-        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+    public func saveSetOfObjects(objects: [DomainPhotoDetails]) throws {
+        objects.forEach {
+            registerNewObject(object: $0)
+        }
         
         do {
-            let objects = try context.fetch(request)
-            let output = outputMapping(objects: objects)
-            return output
+            try self.commitUnsavedChanges()
         } catch {
-            print("Fetch all `PhotoDetailsCoreEntity` error:", error)
-            return []
+            print("Save `PhotoDetailsCoreEntity` array error.", error)
+            throw error
         }
     }
     
-    func fetchById(id: String) -> PhotoDetail {
-        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id)
-        
-        do {
-            if let object = try context.fetch(request).first {
-                let output = outputMapping(objects: [object])
-                return output[0]
-            }
-        } catch {
-            print("Fetch by id `PhotoDetailsCoreEntity` error:", error)
-        }
-        
-        return (nil, nil, nil)
-    }
+    // MARK: - Fetch Methods
     
-    func fetchIDs() throws -> [String] {
+    public func fetchObjectsIds() throws -> [String] {
         let request: NSFetchRequest<NSDictionary> = .init(entityName: "PhotoDetailsCoreEntity")
         request.resultType = .dictionaryResultType
         request.returnsDistinctResults = true
         request.propertiesToFetch = ["id"]
         
         do {
-            let objects: [NSDictionary] = try context.fetch(request)
-            let output = objects.map {
-                $0.value(forKey: "id") as! String
+            let dictionaries: [NSDictionary] = try context.fetch(request)
+            
+            var ids = [String]()
+            for dictionary in dictionaries {
+                if let id = dictionary.value(forKey: "id") as? String {
+                    ids.append(id)
+                }
             }
-            return output
+
+            return ids
         } catch {
-            print("Fetch ids `PhotoDetailsCoreEntity` error:", error)
+            print("Fetch ids of `PhotoDetailsCoreEntity` error.", error)
             throw error
         }
     }
     
-    func deleteAllData() {
+    public func fetchObjectById(id: String) throws -> DomainPhotoDetails {
+        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id)
+        
+        do {
+            guard let objectFromDatabase = try context.fetch(request).first else { throw NSError() }
+            let objectAsDomainVersion = self.mapDatabaseObjectToDomainVersion(object: objectFromDatabase)
+            return objectAsDomainVersion
+        } catch {
+            print("Fetch object `PhotoDetailsCoreEntity` by id error.", error)
+            throw error
+        }
+    }
+    
+    public func fetchSetOfObjects() throws -> [DomainPhotoDetails] {
+        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+        
+        do {
+            let objectsFromDatabase = try context.fetch(request)
+            let objectsAsDomainVersion = objectsFromDatabase.map { [unowned self] object in
+                self.mapDatabaseObjectToDomainVersion(object: object)
+            }
+            return objectsAsDomainVersion
+        } catch {
+            print("Fetch set of `PhotoDetailsCoreEntity` error.", error)
+            throw error
+        }
+    }
+    
+    // MARK: - Delete Methods
+    
+    public func clearDatabase() throws {
         let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
         
         do {
@@ -102,38 +107,56 @@ class CoreDataManager: DependencyProtocol {
                 context.delete($0)
             }
             
-            try context.save()
-            imageStorage.clearAllFilesFromDirectory()
+            try self.commitUnsavedChanges()
         } catch {
-            print("Detele all data in `PhotoDetailsCoreEntity` error:", error)
+            print("Clear database of `PhotoDetailsCoreEntity` error.", error)
+            throw error
         }
     }
     
-    // MARK: - Mapping
+    // MARK: - Helper
     
-    private func outputMapping(objects: [PhotoDetailsCoreEntity]) -> [PhotoDetail] {
-        let output = objects.map { object -> PhotoDetail in
-            let photo = PhotoDetailsEntity()
-            photo.id = object.id
-            photo.title = .init(content: object.title)
-            photo.description = .init(content: object.descriptionContent)
-            photo.owner = .init(nsid: nil, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation)
-            photo.dateUploaded = object.publishedAt
-            
-            var image: UIImage?
-            if let id = object.id {
-                image = try? imageStorage.getImage(forKey: id)
+    private func commitUnsavedChanges() throws {
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                print("Unresolved error!", error)
+                throw error
             }
-            
-            var buddyicon: UIImage?
-            if let buddyiconData = object.ownerAvatar {
-                buddyicon = UIImage(data: buddyiconData)
-            }
-            
-            return (photo, image, buddyicon)
         }
+    }
+    
+    private func registerNewObject(object: DomainPhotoDetails) {
+        let dbEntity = PhotoDetailsCoreEntity(context: context)
         
-        return output
+        // Register main object information
+        dbEntity.id = object.details?.id
+        dbEntity.title = object.details?.title?.content
+        dbEntity.descriptionContent = object.details?.description?.content
+        dbEntity.publishedAt = object.details?.dateUploaded
+        dbEntity.imagePath = object.imagePath
+        
+        // Register owner object informatin
+        dbEntity.ownerName = object.details?.owner?.realName
+        dbEntity.ownerUsername = object.details?.owner?.username
+        dbEntity.ownerLocation = object.details?.owner?.location
+        dbEntity.ownerAvatarPath = object.buddyiconPath
+    }
+    
+    private func mapDatabaseObjectToDomainVersion(object: PhotoDetailsCoreEntity) -> DomainPhotoDetails {
+        let details = PhotoDetailsEntity()
+        details.id = object.id
+        details.title = .init(content: object.title)
+        details.description = .init(content: object.descriptionContent)
+        details.owner = .init(nsid: nil, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation)
+        details.dateUploaded = object.publishedAt
+        
+        // Create result object
+        let objectAsDomainVersion = DomainPhotoDetails(details: details, imagePath: object.imagePath, buddyiconPath: object.ownerAvatarPath)
+        return objectAsDomainVersion
     }
     
 }
+
+extension CoreDataManager: DependencyProtocol {}

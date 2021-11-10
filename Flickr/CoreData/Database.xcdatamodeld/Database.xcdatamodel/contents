@@ -3,8 +3,8 @@
     <entity name="PhotoDetailsCoreEntity" representedClassName=".PhotoDetailsCoreEntity" syncable="YES" codeGenerationType="category">
         <attribute name="descriptionContent" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
-        <attribute name="image" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES"/>
-        <attribute name="ownerAvatar" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="imagePath" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="ownerAvatarPath" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="ownerLocation" optional="YES" attributeType="String"/>
         <attribute name="ownerName" optional="YES" attributeType="String"/>
         <attribute name="ownerUsername" optional="YES" attributeType="String"/>

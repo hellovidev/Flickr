@@ -9,23 +9,21 @@ import UIKit
 
 public struct DomainPhotoDetails {
     var details: PhotoDetailsEntity?
-    var image: UIImage?
-    var buddyicon: UIImage?
+    var imagePath: String?
+    var buddyiconPath: String?
 }
 
 public class StorageService {
     
-    private let network: Network!
-    private let database: CoreDataManager!
-    private let connection: InternetConnectivity!
+    private let network: Network
+    private let database: CoreDataManager
+    private let connection: InternetConnectivity
     
     private let cacheImages: Cache<String, UIImage>
     private let cacheBuddyicons: Cache<String, UIImage>
     private let cachePostDetails: Cache<String, PhotoDetailsEntity>
     
-    
     //let imageStorage: ImageStorage!
-    
     
     init(network: Network, database: CoreDataManager, connection: InternetConnectivity) {
         self.network = network
@@ -90,7 +88,7 @@ public class StorageService {
                         DispatchQueue.main.async {
                             if let photoDetails = details {
                                 let domainEntity = (details: photoDetails, image: image, buddyicon: buddyicon)
-                                self?.database?.save(domainEntity)
+                                self?.database.save(domainEntity)
                                 //self?.database?.save(object: photoDetails, image: image?.pngData(), avatar: buddyicon?.pngData())
                             }
                             let domainEntity = DomainPhotoDetails(details: details, image: image, buddyicon: buddyicon)
@@ -106,8 +104,8 @@ public class StorageService {
                 }
             }
         } else {
-            let object = database?.fetchById(id: id)
-            let domainEntity = DomainPhotoDetails(details: object?.details, image: object?.image, buddyicon: object?.buddyicon)
+            let object = database.fetchById(id: id)
+            let domainEntity = DomainPhotoDetails(details: object.details, image: object.image, buddyicon: object.buddyicon)
             completionHandler(.success(domainEntity))
         }
     }
