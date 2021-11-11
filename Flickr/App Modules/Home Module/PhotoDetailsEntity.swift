@@ -14,9 +14,11 @@ import Foundation
 
 // MARK: - PhotoDetailsEntity
 
-class PhotoDetailsEntity: Codable {
+public class PhotoDetailsEntity: Codable {
     
-    var id: String?
+    public init() {}
+    
+    public var id: String?
     
     var secret: String?
     
@@ -38,7 +40,7 @@ class PhotoDetailsEntity: Codable {
     
     var originalFormat: String?
     
-    var owner: Owner?
+    public var owner: Owner?
     
     var title: Title?
     
@@ -99,8 +101,8 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - Owner
     
-    struct Owner: Codable {
-        let nsid: String?
+    public struct Owner: Codable, Hashable {
+        public var nsid: String? //???
         var username: String?
         var realName: String?
         var location: String?
@@ -121,7 +123,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - Title
     
-    struct Title: Codable {
+    struct Title: Codable, Hashable {
         var content: String?
         
         enum CodingKeys: String, CodingKey {
@@ -131,7 +133,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - Description
     
-    struct Description: Codable {
+    struct Description: Codable, Hashable {
         var content: String?
         
         enum CodingKeys: String, CodingKey {
@@ -141,7 +143,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - Visibility
     
-    struct Visibility: Codable {
+    struct Visibility: Codable, Hashable {
         var isPublic: Int?
         var isFriend: Int?
         var isFamily: Int?
@@ -155,7 +157,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - Dates
     
-    struct PostDate: Codable {
+    struct PostDate: Codable, Hashable {
         let posted: String?
         var taken: String?
         var takenUnknown: String?
@@ -171,7 +173,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - Permissions
     
-    struct Permissions: Codable {
+    struct Permissions: Codable, Hashable {
         var permComment: Int?
         var permAddMeta: Int?
         
@@ -183,7 +185,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - Editability
     
-    struct Editability: Codable {
+    struct Editability: Codable, Hashable {
         var canComment: Int?
         var canAddMeta: Int?
         
@@ -195,7 +197,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - PublicEditability
     
-    struct PublicEditability: Codable {
+    struct PublicEditability: Codable, Hashable {
         var canComment: Int?
         var canAddMeta: Int?
         
@@ -207,7 +209,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - Usage
     
-    struct Usage: Codable {
+    struct Usage: Codable, Hashable {
         var canDownload: Int?
         var canBlog: Int?
         var canPrint: Int?
@@ -223,7 +225,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - CommentArray
     
-    struct Comment: Codable {
+    struct Comment: Codable, Hashable {
         var content: String?
         
         enum CodingKeys: String, CodingKey {
@@ -233,7 +235,7 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - People
     
-    struct People: Codable {
+    struct People: Codable, Hashable {
         var hasPeople: Int?
         
         enum CodingKeys: String, CodingKey {
@@ -243,10 +245,10 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - TagArray
     
-    struct TagArray: Codable {
+    struct TagArray: Codable, Hashable {
         var tagsArray: [TagObject]?
         
-        struct TagObject: Codable {
+        struct TagObject: Codable, Hashable {
             let id: String?
             var author: String?
             var authorName: String?
@@ -269,10 +271,10 @@ class PhotoDetailsEntity: Codable {
     
     // MARK: - PhotoURL
     
-    struct PhotoURL: Codable {
+    struct PhotoURL: Codable, Hashable {
         var url: [URLObject]?
         
-        struct URLObject: Codable {
+        struct URLObject: Codable, Hashable {
             var type: String?
             var content: String?
             

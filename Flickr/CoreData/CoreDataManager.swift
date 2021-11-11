@@ -9,27 +9,33 @@ import CoreData
 
 private enum CoreDataManagerError: Error {
     case objectDoesNotExists
+    case emptyArray
 }
 
 public class CoreDataManager {
     
     private let context: NSManagedObjectContext
     
-    init(context: NSManagedObjectContext) {
+    public init(context: NSManagedObjectContext) {
         self.context = context
     }
     
     // MARK: - Save Methods
     
     public func saveObject(object: DomainPhotoDetails) throws {
-        self.registerNewObject(object: object)
+        _ = self.registerNewObject(object: object)
         
         try self.commitUnsavedChanges()
     }
     
     public func saveSetOfObjects(objects: [DomainPhotoDetails]) throws {
+        if objects.isEmpty {
+            throw CoreDataManagerError.emptyArray
+        }
+            
         objects.forEach {
-            self.registerNewObject(object: $0)
+            let object = self.registerNewObject(object: $0)
+            context.insert(object)
         }
         
         try self.commitUnsavedChanges()
@@ -96,7 +102,7 @@ public class CoreDataManager {
         }
     }
     
-    private func registerNewObject(object: DomainPhotoDetails) {
+    private func registerNewObject(object: DomainPhotoDetails) -> PhotoDetailsCoreEntity {
         let dbEntity = PhotoDetailsCoreEntity(context: context)
         
         // Register main object information
@@ -107,10 +113,13 @@ public class CoreDataManager {
         dbEntity.imagePath = object.imagePath
         
         // Register owner object informatin
+        dbEntity.ownerId = object.details?.owner?.nsid
         dbEntity.ownerName = object.details?.owner?.realName
         dbEntity.ownerUsername = object.details?.owner?.username
         dbEntity.ownerLocation = object.details?.owner?.location
         dbEntity.ownerAvatarPath = object.buddyiconPath
+        
+        return dbEntity
     }
     
     private func mapDatabaseObjectToDomainVersion(object: PhotoDetailsCoreEntity) -> DomainPhotoDetails {
@@ -118,7 +127,7 @@ public class CoreDataManager {
         details.id = object.id
         details.title = .init(content: object.title)
         details.description = .init(content: object.descriptionContent)
-        details.owner = .init(nsid: nil, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation)
+        details.owner = .init(nsid: object.ownerId, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation)
         details.dateUploaded = object.publishedAt
         
         // Create result object

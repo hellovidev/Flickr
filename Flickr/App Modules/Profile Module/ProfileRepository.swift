@@ -34,7 +34,18 @@ class ProfileRepository {
             return
         }
         
-        network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid, completionHandler: completionHandler)
+        network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { result in
+            switch result {
+            case .success(let data):
+                guard let image = UIImage(data: data) else {
+                    completionHandler(.failure(ImageError.couldNotInit))
+                    return
+                }
+                completionHandler(.success(image))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
     }
     
     deinit {

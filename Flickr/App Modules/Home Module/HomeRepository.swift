@@ -18,7 +18,7 @@ class HomeRepository {
     private var page: Int = 1
     private var perPage: Int = 20
     
-    //private var posts: [PhotoDetailsEntity] = .init()
+    private var posts: [PhotoDetailsEntity] = .init()
     
     init(storage: StorageService) {
         self.storage = storage
@@ -65,7 +65,9 @@ class HomeRepository {
         }
     }
     
-    func request(position: Int, completionHandler: @escaping (Result<DomainPhotoDetails, Error>) -> Void) {
+    //var postSet: Set<PhotoDetailsEntity> = .init()
+    
+    func request(position: Int, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
         storage.requestPhotoDetailsById(id: ids[position], completionHandler: completionHandler)
     }
     
@@ -74,3 +76,4 @@ class HomeRepository {
     }
     
 }
+

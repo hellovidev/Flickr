@@ -19,7 +19,7 @@ public class ImageDataManager {
     
     private let folderPath: String
     
-    init(name: String, fileManager: FileManager = FileManager.default) throws {
+    public init(name: String, fileManager: FileManager = FileManager.default) throws {
         self.fileManager = fileManager
 
         let url = try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -34,6 +34,7 @@ public class ImageDataManager {
     
     public func saveImageData(data imageData: Data, forKey key: String) throws -> String {
         let filePath = self.makeFilePath(for: key)
+        print(filePath)
         self.fileManager.createFile(atPath: filePath, contents: imageData, attributes: nil)
         return filePath
     }

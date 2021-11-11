@@ -88,8 +88,9 @@ class DetailsRepository {
             group.leave()
             
             completionHandler(result.map {
-                self?.cacheDetailsOwnerAvatar.set(for: $0, with: cacheDetailsOwnerAvatarIdentifier)
-                return $0
+                let image = UIImage(data: $0)!
+                self?.cacheDetailsOwnerAvatar.set(for: image, with: cacheDetailsOwnerAvatarIdentifier)
+                return image
             })
         }
     }
@@ -129,8 +130,9 @@ class DetailsRepository {
             group.leave()
             
             completionHandler(result.map {
-                self?.cacheDetailsImage.set(for: $0, with: cacheDetailsImageIdentifier)
-                return $0
+                let image = UIImage(data: $0)!
+                self?.cacheDetailsImage.set(for: image, with: cacheDetailsImageIdentifier)
+                return image
             })
         }
     }
@@ -223,8 +225,9 @@ class DetailsRepository {
         
         network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { [weak self] result in
             completionHandler(result.map {
-                self?.cacheCommentOwnerAvatar.set(for: $0, with: cacheCommentOwnerAvatarIdentifier)
-                return $0
+                let image = UIImage(data: $0)!
+                self?.cacheCommentOwnerAvatar.set(for: image, with: cacheCommentOwnerAvatarIdentifier)
+                return image
             })
         }
     }

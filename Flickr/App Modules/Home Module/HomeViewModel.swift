@@ -59,16 +59,7 @@ class HomeViewModel {
     }
     
     func requestPhotoDetailsCell(indexPath: IndexPath, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
-        repository.request(position: indexPath.row) { result in
-            switch result {
-            case .success(let domainEntity):
-                print("sada")
-                //completionHandler(domainEntity.details, domainEntity.buddyicon, domainEntity.image)
-            case .failure(let error):
-                print("Load `PhotoDetails` error:", error)
-                completionHandler(nil, nil, nil)
-            }
-        }
+        repository.request(position: indexPath.row, completionHandler: completionHandler)
     }
     
     deinit {

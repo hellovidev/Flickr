@@ -92,8 +92,9 @@ class GalleryRepository {
         
         network.image(id: id, secret: secret, server: server) { result in
             completionHandler(result.map { [weak self] in
-                self?.cacheImages.set(for: $0, with: cacheImageIdentifier)
-                return $0
+                let image = UIImage(data: $0)!
+                self?.cacheImages.set(for: image, with: cacheImageIdentifier)
+                return image
             })
         }
     }

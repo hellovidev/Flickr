@@ -8,9 +8,16 @@
 import UIKit
 
 public struct DomainPhotoDetails {
-    var details: PhotoDetailsEntity?
-    var imagePath: String?
-    var buddyiconPath: String?
+    
+    public var details: PhotoDetailsEntity?
+    public var imagePath: String?
+    public var buddyiconPath: String?
+}
+
+public extension DomainPhotoDetails {
+    public init(details: PhotoDetailsEntity) {
+        self.details = details
+    }
 }
 
 public class StorageService {
@@ -19,19 +26,22 @@ public class StorageService {
     private let database: CoreDataManager
     private let connection: InternetConnectivity
     
-    private let cacheImages: Cache<String, UIImage>
-    private let cacheBuddyicons: Cache<String, UIImage>
+    
+//    private let cacheImages: Cache<String, UIImage>
+//    private let cacheBuddyicons: Cache<String, UIImage>
     private let cachePostDetails: Cache<String, PhotoDetailsEntity>
     
-    //private let imageStorage: ImageStorage
+    var postArray: [DomainPhotoDetails] = .init()
+    
+    private let imageDataManager: ImageDataManager
     
     init(network: Network, database: CoreDataManager, connection: InternetConnectivity) {
         self.network = network
         self.database = database
         self.connection = connection
         
-        self.cacheImages = .init()
-        self.cacheBuddyicons = .init()
+//        self.cacheImages = .init()
+//        self.cacheBuddyicons = .init()
         self.cachePostDetails = .init()
         
         self.connection.startMonitoring()
@@ -39,13 +49,22 @@ public class StorageService {
         if self.connection.isReachable {
             try! self.database.clearDatabase()
         }
+        
+        imageDataManager = try! .init(name: "FlickrImages")
+
     }
     
     public func refreshStorage() {
-        try! database.clearDatabase()
-        cacheImages.removeAll()
-        cacheBuddyicons.removeAll()
-        cachePostDetails.removeAll()
+        do {
+            try database.clearDatabase()
+            try imageDataManager.deleteAllImageData()
+            
+//            cacheImages.removeAll()
+//            cacheBuddyicons.removeAll()
+            cachePostDetails.removeAll()
+        } catch {
+            print("Refresh failed")
+        }
     }
     
     public func requestArrayPhotoDetailsIds(page: Int, per: Int, completionHandler: @escaping (Result<[String], Error>) -> Void) {
@@ -60,7 +79,12 @@ public class StorageService {
             }
         } else {
             do {
-                let ids = ["sda"]//try database.fetchIDs()
+                let objects = try database.fetchSetOfObjects()
+                postArray = objects
+                
+                let ids = objects.map {
+                    $0.details!.id!
+                }
                 completionHandler(.success(ids))
             } catch {
                 completionHandler(.failure(error))
@@ -68,46 +92,60 @@ public class StorageService {
         }
     }
     
-    public func requestPhotoDetailsById(id: String, completionHandler: @escaping (Result<DomainPhotoDetails, Error>) -> Void) {
-//        if connection.isReachable {
-//            let group = DispatchGroup()
-//            
-//            var details: PhotoDetailsEntity?
-//            var image: UIImage?
-//            var buddyicon: UIImage?
-//            
-//            networkRequestPhotoDetails(id: id, group: group) { [weak self] result in
-//                switch result {
-//                case .success(let photoDetails):
-//                    details = photoDetails
-//                    
-//                    self?.networkGroupRequestImagesOfPhotoDetails(details: photoDetails, group: group) { photo, avatar in
-//                        buddyicon = avatar
-//                        image = photo
-//                        
-//                        DispatchQueue.main.async {
-//                            if let photoDetails = details {
-//                                let domainEntity = (details: photoDetails, image: image, buddyicon: buddyicon)
-//                                self?.database.save(domainEntity)
-//                                //self?.database?.save(object: photoDetails, image: image?.pngData(), avatar: buddyicon?.pngData())
-//                            }
-//                            let domainEntity = DomainPhotoDetails(details: details, image: image, buddyicon: buddyicon)
-//                            completionHandler(.success(domainEntity))
-//                        }
-//                    }
-//                case .failure(let error):
-//                    DispatchQueue.main.async {
-//                        let domainEntity = DomainPhotoDetails(details: details, image: image, buddyicon: buddyicon)
-//                        completionHandler(.success(domainEntity))
-//                    }
-//                    print("Download photo details cell in \(#function) has error: \(error)")
-//                }
-//            }
-//        } else {
-//            let object = database.fetchById(id: id)
-//            let domainEntity = DomainPhotoDetails(details: object.details, image: object.image, buddyicon: object.buddyicon)
-//            completionHandler(.success(domainEntity))
-//        }
+    public func requestPhotoDetailsById(id: String, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
+        if connection.isReachable {
+            let group = DispatchGroup()
+            
+            var details: PhotoDetailsEntity?
+            var image: UIImage?
+            var buddyicon: UIImage?
+            
+            networkRequestPhotoDetails(id: id, group: group) { [weak self] result in
+                switch result {
+                case .success(let photoDetails):
+                    details = photoDetails
+                    
+                    self?.networkGroupRequestImagesOfPhotoDetails(details: photoDetails, group: group) { photo, avatar in
+                        buddyicon = avatar
+                        image = photo
+                        
+                        DispatchQueue.main.async {
+                            if let photoDetails = details {
+                                let imagePath = try! self?.imageDataManager.saveImageData(data: image!.pngData()!, forKey: details!.id!)
+                                let buddyiconPath = try! self?.imageDataManager.saveImageData(data: image!.pngData()!, forKey: details!.owner!.nsid!)
+                                let domainEntity = DomainPhotoDetails(details: details, imagePath: imagePath, buddyiconPath: buddyiconPath)
+                                try! self?.database.saveObject(object: domainEntity)
+                            }
+                            completionHandler(details, buddyicon, image)
+                        }
+                    }
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        completionHandler(details, image, buddyicon)
+                    }
+                    print("Download photo details cell in \(#function) has error: \(error)")
+                }
+            }
+        } else {
+            
+            let object = postArray.first(where: {
+                $0.details?.id == id
+            })
+            
+            do {
+                //let object = try database.fetchObjectById(id: id)
+                let imageData = try imageDataManager.fetchImageData(filePath: object!.imagePath!)
+                let buddyiconData = try imageDataManager.fetchImageData(filePath: object!.buddyiconPath!)
+                guard let buddyicon = UIImage(data: buddyiconData), let image = UIImage(data: imageData) else {
+                    completionHandler(object?.details, nil, nil)
+                    return
+                }
+                completionHandler(object?.details, buddyicon, image)
+            } catch {
+                print(error)
+                completionHandler(nil, nil, nil)
+            }
+        }
     }
     
     private func networkGroupRequestImagesOfPhotoDetails(details: PhotoDetailsEntity, group: DispatchGroup, completionHandler: @escaping (_ photo: UIImage?, _ avatar: UIImage?) -> Void) {
@@ -150,20 +188,33 @@ public class StorageService {
             return
         }
         
-        let cacheImageIdentifier = id + secret + server
-        if let imageCache = cacheImages.value(forKey: cacheImageIdentifier) {
-            completionHandler(.success(imageCache))
+        let imageIdentifier = id + secret + server
+        if let imageData = try? imageDataManager.fetchImageData(forKey: imageIdentifier) {
+            guard let image = UIImage(data: imageData) else {
+                completionHandler(.failure(ImageError.couldNotInit))
+                return
+            }
+            completionHandler(.success(image))
             group.leave()
             return
         }
         
-        network.image(id: id, secret: secret, server: server) { [weak self] result in
-            completionHandler(result.map {
-                self?.cacheImages.insert($0, forKey: cacheImageIdentifier)
-                group.leave()
-                return $0
-            })
+        network.image(id: id, secret: secret, server: server) { result in
+            group.leave()
+            
+            switch result {
+            case .success(let imageData):
+
+                    guard let image = UIImage(data: imageData) else {
+                        completionHandler(.failure(ImageError.couldNotInit))
+                        return
+                    }
+                    completionHandler(.success(image))
+
+            case .failure(let error):
+                completionHandler(.failure(error))
         }
+    }
     }
     
     private func networkRequestBuddyicon(details: PhotoDetailsEntity, group: DispatchGroup, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
@@ -179,20 +230,31 @@ public class StorageService {
             return
         }
         
-        let cacheBuddyiconIdentifier = String(farm) + server + nsid
-        if let buddyiconCache = cacheBuddyicons.value(forKey: cacheBuddyiconIdentifier) {
-            completionHandler(.success(buddyiconCache))
+        let buddyiconIdentifier = String(farm) + server + nsid
+        if let buddyiconData = try? imageDataManager.fetchImageData(forKey: buddyiconIdentifier) {
+            guard let buddyicon = UIImage(data: buddyiconData) else {
+                completionHandler(.failure(ImageError.couldNotInit))
+                return
+            }
+            completionHandler(.success(buddyicon))
             group.leave()
             return
         }
         
-        network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { [weak self] result in
-            completionHandler(result.map {
-                self?.cacheBuddyicons.insert($0, forKey: cacheBuddyiconIdentifier)// set(for: $0, with: cacheBuddyiconIdentifier)
-                group.leave()
-                return $0
-            })
+        network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { result in
+            group.leave()
+            
+            switch result {
+            case .success(let buddyiconData):
+                    guard let buddyicon = UIImage(data: buddyiconData) else {
+                        completionHandler(.failure(ImageError.couldNotInit))
+                        return
+                    }
+                    completionHandler(.success(buddyicon))
+            case .failure(let error):
+                completionHandler(.failure(error))
         }
+    }
     }
     
     private func networkRequestPhotoDetails(id: String, group: DispatchGroup, completionHandler: @escaping (Result<PhotoDetailsEntity, Error>) -> Void) {

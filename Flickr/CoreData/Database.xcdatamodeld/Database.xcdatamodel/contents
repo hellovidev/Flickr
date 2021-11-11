@@ -5,6 +5,7 @@
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="imagePath" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="ownerAvatarPath" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="String"/>
         <attribute name="ownerLocation" optional="YES" attributeType="String"/>
         <attribute name="ownerName" optional="YES" attributeType="String"/>
         <attribute name="ownerUsername" optional="YES" attributeType="String"/>
@@ -12,6 +13,6 @@
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="PhotoDetailsCoreEntity" positionX="-63" positionY="-18" width="128" height="164"/>
+        <element name="PhotoDetailsCoreEntity" positionX="-63" positionY="-18" width="128" height="179"/>
     </elements>
 </model>

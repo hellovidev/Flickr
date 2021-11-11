@@ -5,7 +5,7 @@
 //  Created by Sergei Romanchuk on 14.09.2021.
 //
 
-import UIKit
+import Foundation
 
 // MARK: - Network+Image
 
@@ -69,7 +69,7 @@ enum ImageError: Error {
 
 extension Network {
     
-    func image(id: String, secret: String, server: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    func image(id: String, secret: String, server: String, size: ImageSize = .z, format: ImageFormat = .jpg, completionHandler: @escaping (Result<Data, Error>) -> Void) {
         guard
             let url = URL(string: "https://live.staticflickr.com/\(server)/\(id)_\(secret)_\(size.rawValue).\(format.rawValue)")
         else {
@@ -82,7 +82,7 @@ extension Network {
         }
     }
     
-    func buddyicon(iconFarm: Int, iconServer: String, nsid: String, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    func buddyicon(iconFarm: Int, iconServer: String, nsid: String, completionHandler: @escaping (Result<Data, Error>) -> Void) {
         guard
             let url = URL(string: Int(iconServer) == 0 ? "https://www.flickr.com/images/buddyicon.gif" : "http://farm\(iconFarm).staticflickr.com/\(iconServer)/buddyicons/\(nsid).jpg")
         else {
@@ -95,16 +95,12 @@ extension Network {
         }
     }
     
-    private func requestImage(url: URL, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+    private func requestImage(url: URL, completionHandler: @escaping (Result<Data, Error>) -> Void) {
         request(for: url) { result in
             switch result {
-            case .success(let data):
+            case .success(let imageData):
                 DispatchQueue.main.async {
-                    guard let image = UIImage(data: data) else {
-                        completionHandler(.failure(ImageError.couldNotInit))
-                        return
-                    }
-                    completionHandler(.success(image))
+                    completionHandler(.success(imageData))
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
