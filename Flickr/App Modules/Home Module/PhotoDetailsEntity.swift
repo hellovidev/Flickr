@@ -14,7 +14,11 @@ import Foundation
 
 // MARK: - PhotoDetailsEntity
 
-public class PhotoDetailsEntity: Codable {
+public struct PhotoDetailsEntity: Codable, Hashable {
+    
+//    public static func == (lhs: PhotoDetailsEntity, rhs: PhotoDetailsEntity) -> Bool {
+//        return lhs.id == rhs.id && lhs.owner == rhs.owner
+//    }
     
     public init() {}
     

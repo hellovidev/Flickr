@@ -123,7 +123,7 @@ public class CoreDataManager {
     }
     
     private func mapDatabaseObjectToDomainVersion(object: PhotoDetailsCoreEntity) -> DomainPhotoDetails {
-        let details = PhotoDetailsEntity()
+        var details = PhotoDetailsEntity()
         details.id = object.id
         details.title = .init(content: object.title)
         details.description = .init(content: object.descriptionContent)

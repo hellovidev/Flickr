@@ -7,7 +7,7 @@
 
 import UIKit
 
-public struct DomainPhotoDetails {
+public struct DomainPhotoDetails: Hashable {
     
     public var details: PhotoDetailsEntity?
     public var imagePath: String?
@@ -29,8 +29,9 @@ public class StorageService {
     
 //    private let cacheImages: Cache<String, UIImage>
 //    private let cacheBuddyicons: Cache<String, UIImage>
-    private let cachePostDetails: Cache<String, PhotoDetailsEntity>
+    //private let cachePostDetails: Cache<String, PhotoDetailsEntity>
     
+    var setOfObjects = [String: PhotoDetailsEntity]()
     var postArray: [DomainPhotoDetails] = .init()
     
     private let imageDataManager: ImageDataManager
@@ -42,7 +43,7 @@ public class StorageService {
         
 //        self.cacheImages = .init()
 //        self.cacheBuddyicons = .init()
-        self.cachePostDetails = .init()
+        //self.cachePostDetails = .init()
         
         self.connection.startMonitoring()
         
@@ -61,7 +62,8 @@ public class StorageService {
             
 //            cacheImages.removeAll()
 //            cacheBuddyicons.removeAll()
-            cachePostDetails.removeAll()
+            setOfObjects.removeAll()
+            //cachePostDetails.removeAll()
         } catch {
             print("Refresh failed")
         }
@@ -256,19 +258,19 @@ public class StorageService {
         }
     }
     }
-    
+     
     private func networkRequestPhotoDetails(id: String, group: DispatchGroup, completionHandler: @escaping (Result<PhotoDetailsEntity, Error>) -> Void) {
         group.enter()
         
-        if let photoDetailsCache = cachePostDetails.value(forKey: id) {
-            completionHandler(.success(photoDetailsCache))
+        if let details = setOfObjects[id] {
+            completionHandler(.success(details))
             group.leave()
             return
         }
         
         network.getPhotoById(for: id) { [weak self] result in
             completionHandler(result.map {
-                self?.cachePostDetails.insert($0, forKey: id)
+                self?.setOfObjects[id] = $0
                 group.leave()
                 return $0
             })
