@@ -34,8 +34,7 @@ public class CoreDataManager {
         }
             
         objects.forEach {
-            let object = self.registerNewObject(object: $0)
-            context.insert(object)
+            _ = self.registerNewObject(object: $0)
         }
         
         try self.commitUnsavedChanges()

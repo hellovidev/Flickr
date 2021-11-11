@@ -104,7 +104,7 @@ class HomeViewController: UIViewController {
     @objc private func refreshTable() {        
         activityIndicator.stopAnimating()
         viewModel.refresh()
-        tableView.reloadData()
+        //tableView.reloadData()
         requestTableData()
     }
     
@@ -130,7 +130,7 @@ class HomeViewController: UIViewController {
     }
     
     private func requestTableData() {
-        viewModel.requestPhotoDetailsIds { [weak self] result in
+        viewModel.loadData() { [weak self] result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.refreshControl.endRefreshing()
             }
@@ -157,7 +157,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfIds
+        return viewModel.elementCount//idsOfDomainEntities.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

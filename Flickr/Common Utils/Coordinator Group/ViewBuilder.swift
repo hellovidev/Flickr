@@ -30,7 +30,7 @@ class ViewBuilder {
         let network: Network = dependencyContainer.retrive()
         let database: CoreDataManager = dependencyContainer.retrive()
         let connection: InternetConnectivity = dependencyContainer.retrive()
-        let storage: StorageService = .init(network: network, database: database, connection: connection)
+        let storage: HomeDataManager = .init(network: network, database: database, connection: connection)
         homeViewController.viewModel = .init(coordinator: coordinator, storage: storage)
         return homeViewController
     }

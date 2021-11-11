@@ -29,7 +29,7 @@ enum NetworkManagerError: Error {
 
 // MARK: - Network
 
-class Network: NSObject, DependencyProtocol {
+public class Network: NSObject, DependencyProtocol {
     
     private lazy var uploadAlert: UploadProgressViewController = .init(delegate: self)
     private lazy var session: URLSession = .init(configuration: .default, delegate: self, delegateQueue: .main)
@@ -263,13 +263,13 @@ class Network: NSObject, DependencyProtocol {
 
 extension Network: URLSessionTaskDelegate {
     
-    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         let rootViewController = returnCurrentViewController()
         guard let viewController = rootViewController else { return }
         viewController.showAlert(title: "Upload Error", message: "Uploading image complete with failure.", button: "OK")
     }
     
-    func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         let uploadProgress: Float = Float(totalBytesSent) / Float(totalBytesExpectedToSend)
         self.uploadProgress = uploadProgress
     }

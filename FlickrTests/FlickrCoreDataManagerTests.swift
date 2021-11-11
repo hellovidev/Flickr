@@ -14,7 +14,8 @@ class FlickrCoreDataManagerTests: XCTestCase {
     func test_save_entityArraySuccess() {
         let sut = CoreDataManager(context: mockPersistentContainer.viewContext)
         
-        var object = DomainPhotoDetails(details: .init())
+        var object = DomainPhotoDetails()
+        object.details = .init()
         object.details?.id = UUID().uuidString
         object.details?.owner?.nsid = UUID().uuidString
         
@@ -39,7 +40,8 @@ class FlickrCoreDataManagerTests: XCTestCase {
     func test_save_entity() {
         let sut = CoreDataManager(context: mockPersistentContainer.viewContext)
         
-        var object = DomainPhotoDetails(details: .init())
+        var object = DomainPhotoDetails()
+        object.details = .init()
         object.details?.id = UUID().uuidString
         object.details?.owner?.nsid = UUID().uuidString
         
