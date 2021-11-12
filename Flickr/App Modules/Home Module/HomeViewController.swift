@@ -23,7 +23,7 @@ class HomeViewController: UIViewController {
     private var filterButtons: [UIButton] = .init()
     
     var viewModel: HomeViewModel!
-    
+
     // MARK: - UIViewController Life Cycle Methods
     
     override func viewDidLoad() {
@@ -42,22 +42,25 @@ class HomeViewController: UIViewController {
         
         registerTableReusableCell()
         
-        viewModel.waitOnlineData = {
-            let alert = UIAlertController(title: "New photos", message: "", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: { _ in
-                self.viewModel.switchToOnlineData()
-                self.tableView.reloadData()
-            }))
-            
-            alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { _ in
-                //alert.dismiss(animated: true, completion: nil)
-            }))
-            self.present(alert, animated: true, completion: nil)
+         let banner = ViewBanner(title: "New photos ready")
+        
+        viewModel.waitOnlineData = { [weak self] in
+            banner.show()
+            banner.onPressed = {
+                banner.hide()
+                
+                let indexPath: IndexPath = .init(row: 0, section: 0)
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                 self?.viewModel.switchToOnlineData()
+                   self?.tableView.reloadData()
+                }
+            }
         }
         
         requestTableData()
-        
-        
     }
     
     // MARK: - Setup UI Methods
@@ -119,8 +122,22 @@ class HomeViewController: UIViewController {
     @objc private func refreshTable() {        
         activityIndicator.stopAnimating()
         viewModel.refresh()
-        //tableView.reloadData()
-        requestTableData()
+        
+        viewModel.loadOnlineData { [weak self] result in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self?.refreshControl.endRefreshing()
+            }
+            self?.activityIndicator.stopAnimating()
+            switch result {
+            case .success:
+                self?.viewModel.switchToOnlineData()
+                self?.tableView.reloadData()
+            case .failure(let error):
+                self?.tableView.tableFooterView?.isHidden = true
+                self?.showAlert(title: "Home Error", message: "Something went wrong. Please try again.", button: "OK")
+                print("Photos download failed: \(error)")
+            }
+        }
     }
     
     @objc private func filter(_ sender: UIButton) {
@@ -145,7 +162,7 @@ class HomeViewController: UIViewController {
     }
     
     private func requestTableData() {
-        viewModel.loadData() { [weak self] result in
+        viewModel.loadData { [weak self] result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.refreshControl.endRefreshing()
             }
@@ -172,33 +189,75 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.elementCount//idsOfDomainEntities.count
+        return viewModel.currentObjects.count//idsOfDomainEntities.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ReuseIdentifier.homeCell.rawValue, for: indexPath) as! PhotoDetailsTableViewCell
         cell.isUserInteractionEnabled = false
         
-        viewModel.requestPhotoDetailsCell(indexPath: indexPath) { details, buddyicon, image  in
-            //tableView.beginUpdates()
-            cell.configuration(details: details, buddyicon: buddyicon, image: image)
-            cell.isUserInteractionEnabled = true
-            //tableView.endUpdates()
+        viewModel.requestCellDetails(indexPath: indexPath) { [weak self] result in
+            switch result {
+            case .success(let cellDetails):
+                cell.configureCellDetails(cellDetails)
+                cell.isUserInteractionEnabled = true
+                
+                self?.viewModel.requestCellImage(details: cellDetails) { result in
+                    switch result {
+                    case .success(let cellImage):
+                        cell.configureCellImage(cellImage)
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+                
+                self?.viewModel.requestCellBuddyicon(details: cellDetails) { result in
+                    switch result {
+                    case .success(let cellBuddyicon):
+                        cell.configureCellBuddyicon(cellBuddyicon)
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+            case .failure(let error):
+                print(error)
+            }
         }
+        
+//        viewModel.requestPhotoDetailsCell(indexPath: indexPath) { details, buddyicon, image  in
+//            //tableView.beginUpdates()
+//            cell.configuration(details: details, buddyicon: buddyicon, image: image)
+//            cell.isUserInteractionEnabled = true
+//            //tableView.endUpdates()
+//        }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if connectivity.isReachable {
             let lastSectionIndex = tableView.numberOfSections - 1
             let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
             
             if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
                 activityIndicator.startAnimating()
-                requestTableData()
+                
+                viewModel.loadOnlineData { [weak self] result in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        self?.refreshControl.endRefreshing()
+                    }
+                    self?.activityIndicator.stopAnimating()
+                    switch result {
+                    case .success:
+                        self?.viewModel.switchToOnlineData()
+                        self?.tableView.reloadData()
+                    case .failure(let error):
+                        self?.tableView.tableFooterView?.isHidden = true
+                        self?.showAlert(title: "Home Error", message: "Something went wrong. Please try again.", button: "OK")
+                        print("Photos download failed: \(error)")
+                    }
+                }
+                //requestTableData()
             }
-        }
     }
     
 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 // MARK: - HomeViewModel
 
@@ -17,33 +18,25 @@ class HomeViewModel {
     
     private let router: Observable<HomeRoute>
     
-    private let dataManager: HomeDataManager
+    private let homeDataManager: HomeDataManager
     
     init(coordinator: HomeCoordinator, storage: HomeDataManager) {
         self.coordinator = coordinator
         self.router = .init()
-        self.dataManager = storage
+        self.homeDataManager = storage
         
         self.router.addObserver { [weak self] router in
             self?.show(router)
         }
     }
-    
+        
     // MARK: - Variables Helpers
-    
-    var idsOfDomainEntities = [String]()
-    
+        
     let filters: [String] = ["50", "100", "200", "400"]
     
     private var page: Int = 1
     
     private var perPage: Int = 20
-    
-    private var arrayOfDomainEntities = [DomainPhotoDetails]()
-    
-    var elementCount: Int {
-        arrayOfDomainEntities.count
-    }
     
     private enum HomeRoute {
         case openPost(id: String)
@@ -62,8 +55,6 @@ class HomeViewModel {
     
     func refresh() {
         page = 1
-        //idsOfDomainEntities.removeAll()
-        //dataManager.refreshStorage()
     }
     
     func filter(by filterType: FilterType?, completionHandler: @escaping () -> Void) {
@@ -83,15 +74,69 @@ class HomeViewModel {
             perPage = 400
         }
     }
+
     
-    // MARK: - Reuests Details
+    func loadData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        loadOfflineData(completionHandler: { result in
+            completionHandler(result.map {
+                self.loadOnlineData { result in
+                    switch result {
+                    case .success():
+                        self.waitOnlineData?()
+                    case .failure(_):
+                        print("Online loading failed!")
+                    }
+                }
+            })
+        })
+    }
+
+    // MARK: - General Requests
     
-    func requestPhotoDetailsIds(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        dataManager.requestArrayPhotoDetailsIds(page: page, per: perPage) { [weak self] result in
+    var currentObjects = [PhotoDetailsEntity]()
+    var onlineSession = [PhotoDetailsEntity]()
+    var currentIds = [String]()
+    var waitOnlineData: (() -> Void)?
+    
+    func switchToOnlineData() {
+        currentObjects = onlineSession
+    }
+    
+    func loadOnlineData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        homeDataManager.requestEntityIds(page: page, per: perPage) { [weak self] result in
             switch result {
-            case .success(let ids):
-                self?.page += 1
-                self?.idsOfDomainEntities = ids.uniques
+            case .success(let pageIds):
+                if self?.page == 1 {
+                    self?.currentIds.removeAll()
+                }
+                
+                var newIds = [String]()
+                if let common = self?.currentIds.filter(pageIds.contains) {
+                    newIds = pageIds.subtracting(common)
+                }
+                self?.currentIds += newIds
+                
+                self?.homeDataManager.loadOnlineData(page: self!.page, pageIds: newIds, completionHandler: { result in
+                    switch result {
+                    case .success(let onlineSession):
+                        self?.onlineSession = onlineSession
+                        self?.page += 1
+                        completionHandler(.success(()))
+                    case .failure(let error):
+                        completionHandler(.failure(error))
+                    }
+                })
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    func loadOfflineData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        homeDataManager.loadOfflineData() { [weak self] result in
+            switch result {
+            case .success(let offlineSession):
+                self?.currentObjects = offlineSession
                 completionHandler(.success(()))
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -99,155 +144,90 @@ class HomeViewModel {
         }
     }
     
-    var currentEnities = [DomainPhotoDetails]()
-    var offlineEntities = [DomainPhotoDetails]()
-    var onlineEntities = [DomainPhotoDetails]()
-    var waitOnlineData: (() -> Void)?
+    // MARK: - Parts of Photo Request
     
-    func switchToOnlineData() {
-        currentEnities = onlineEntities
+    func requestCellDetails(indexPath: IndexPath, completionHandler: @escaping (Result<PhotoDetailsEntity, Error>) -> Void) {
+        completionHandler(.success(self.currentObjects[indexPath.row]))
+        //if let object =  {
+            
+        //}
+        //homeDataManager.requestPhotoDetails(id: currentIds[indexPath.row], completionHandler: completionHandler)
     }
     
-    func loadData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        loadOfflineData(completionHandler: completionHandler)
-        loadOnlineData()
-    }
-    
-    func loadOfflineData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        dataManager.loadOfflineData() { [weak self] result in
+    func requestCellImage(details: PhotoDetailsEntity, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        guard
+            let id = details.id,
+            let secret = details.secret,
+            let server = details.server
+        else {
+            completionHandler(.failure(NetworkManagerError.invalidParameters))
+            return
+        }
+        
+        let uniqIdentifier = id + secret + server
+        
+        if let imageData = try? self.homeDataManager.imageDataManager.fetchImageData(forKey: uniqIdentifier) {
+            if let image = UIImage(data: imageData) {
+                completionHandler(.success(image))
+                return
+            }
+        }
+        
+        homeDataManager.requestImage(id: id, secret: secret, server: server) { result in
             switch result {
-            case .success(let offline):
-                self?.offlineEntities = offline
-                self?.currentEnities = offline
-                self?.arrayOfDomainEntities = offline //??
+            case .success(let imageData):
+                if let image = UIImage(data: imageData) {
+                    completionHandler(.success(image))
+                } else {
+                    completionHandler(.failure(ImageError.couldNotInit))
+                }
             case .failure(let error):
                 completionHandler(.failure(error))
             }
         }
     }
     
-    func loadOnlineData() {
-        dataManager.requestArrayPhotoDetailsIds(page: page, per: perPage) { [weak self] result in
-            switch result {
-            case .success(let ids):
-                let uniqs = ids.uniques
-                if self?.page == 1 {
-                    self?.idsOfDomainEntities = uniqs
-                } else {
-                    self?.idsOfDomainEntities += uniqs
-                    if let realUniqIds = self?.idsOfDomainEntities.uniques {
-                        self?.idsOfDomainEntities = realUniqIds
-                    }
-                }
-                self?.dataManager.loadOnlineData(page: self!.page, ids: uniqs) { arrayNetwork in
-                    if self?.page == 1 {
-                        self?.arrayOfDomainEntities = arrayNetwork
-                    } else {
-                        self?.arrayOfDomainEntities += arrayNetwork
-                        if let realUniqObjects = self?.arrayOfDomainEntities.uniques {
-                            self?.arrayOfDomainEntities = realUniqObjects
-                        }
-                    }
-                    self?.page += 1
-                    self?.waitOnlineData?()
-                    //completionHandler(.success(()))
-                }
-                
-            case .failure(let error):
-                print(error)
-                //completionHandler(.failure(error))
+    func requestCellBuddyicon(details: PhotoDetailsEntity, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        guard
+            let farm = details.owner?.iconFarm,
+            let server = details.owner?.iconServer,
+            let nsid = details.owner?.nsid
+        else {
+            completionHandler(.failure(NetworkManagerError.invalidParameters))
+            return
+        }
+        
+        let uniqIdentifier = String(farm) + server + nsid
+        
+        if let buddyiconData = try? self.homeDataManager.imageDataManager.fetchImageData(forKey: uniqIdentifier) {
+            if let buddyicon = UIImage(data: buddyiconData) {
+                completionHandler(.success(buddyicon))
+                return
             }
         }
-    }
-    
-    
-    
-    
-    
-    
-    
-    //        if dataManager.connection.isReachable {
-    //            dataManager.requestArrayPhotoDetailsIds(page: page, per: perPage) { [weak self] result in
-    //                switch result {
-    //                case .success(let ids):
-    //                    let uniqs = ids.uniques
-    //                    if self?.page == 1 {
-    //                        self?.idsOfDomainEntities = uniqs
-    //                    } else {
-    //                        self?.idsOfDomainEntities += uniqs
-    //                        if let realUniqIds = self?.idsOfDomainEntities.uniques {
-    //                            self?.idsOfDomainEntities = realUniqIds
-    //                        }
-    //                    }
-    //                    self?.dataManager.loadOnlineData(page: self!.page, ids: uniqs) { arrayNetwork in
-    //                        if arrayNetwork.isEmpty {
-    //                            self?.dataManager.loadOfflineData { result in
-    //                                switch result {
-    //                                case .success(let arrayCoreData):
-    //                                    self?.arrayOfDomainEntities = arrayCoreData
-    //                                    completionHandler(.success(()))
-    //                                case .failure(let error):
-    //                                    completionHandler(.failure(error))
-    //                                }
-    //                            }
-    //                        } else {
-    //                            if self?.page == 1 {
-    //                                self?.arrayOfDomainEntities = arrayNetwork
-    //                            } else {
-    //                                self?.arrayOfDomainEntities += arrayNetwork
-    //                                if let realUniqObjects = self?.arrayOfDomainEntities.uniques {
-    //                                    self?.arrayOfDomainEntities = realUniqObjects
-    //                                }
-    //                            }
-    //                            self?.page += 1
-    //                            completionHandler(.success(()))
-    //                        }
-    //                    }
-    //
-    //                case .failure(_):
-    //                    self?.dataManager.loadOfflineData { result in
-    //                        switch result {
-    //                        case .success(let arrayCoreData):
-    //                            self?.arrayOfDomainEntities = arrayCoreData
-    //                            completionHandler(.success(()))
-    //                        case .failure(let error):
-    //                            completionHandler(.failure(error))
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        } else {
-    //            self.dataManager.loadOfflineData { result in
-    //                switch result {
-    //                case .success(let arrayCoreData):
-    //                    self.arrayOfDomainEntities = arrayCoreData
-    //                    completionHandler(.success(()))
-    //                case .failure(let error):
-    //                    completionHandler(.failure(error))
-    //                }
-    //            }
-    ////        }
-    //    }
-    
-    func requestPhotoDetailsCell(indexPath: IndexPath, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
-        let domainEntity = arrayOfDomainEntities[indexPath.row]
         
-        var buddyicon: UIImage?
-        var image: UIImage?
-        
-        if let imagePath = domainEntity.imagePath, let imageData = try? self.dataManager.imageDataManager.fetchImageData(filePath: imagePath) {
-            image = UIImage(data: imageData)
+        homeDataManager.requestBuddyicon(farm: farm, server: server, nsid: nsid) { result in
+            switch result {
+            case .success(let buddyiconData):
+                if let buddyicon = UIImage(data: buddyiconData) {
+                    completionHandler(.success(buddyicon))
+                } else {
+                    completionHandler(.failure(ImageError.couldNotInit))
+                }
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
         }
-        
-        if let buddyiconPath = domainEntity.buddyiconPath, let buddyiconData = try? self.dataManager.imageDataManager.fetchImageData(filePath: buddyiconPath) {
-            buddyicon = UIImage(data: buddyiconData)
-        }
-        
-        completionHandler(domainEntity.details, buddyicon, image)
     }
     
     deinit {
         print("\(type(of: self)) deinited.")
     }
     
+}
+
+extension Array where Element: Equatable {
+    func subtracting(_ array: Array<Element>) -> Array<Element> {
+        self.filter { !array.contains($0) }
+    }
 }

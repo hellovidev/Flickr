@@ -22,13 +22,13 @@ public class CoreDataManager {
     
     // MARK: - Save Methods
     
-    public func saveObject(object: DomainPhotoDetails) throws {
+    public func saveObject(object: PhotoDetailsEntity) throws {
         _ = self.registerNewObject(object: object)
         
         try self.commitUnsavedChanges()
     }
     
-    public func saveSetOfObjects(objects: [DomainPhotoDetails]) throws {
+    public func saveSetOfObjects(objects: [PhotoDetailsEntity]) throws {
         if objects.isEmpty {
             throw CoreDataManagerError.emptyArray
         }
@@ -60,7 +60,7 @@ public class CoreDataManager {
         return ids
     }
     
-    public func fetchObjectById(id: String) throws -> DomainPhotoDetails {
+    public func fetchObjectById(id: String) throws -> PhotoDetailsEntity {
         let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id)
         guard let objectFromDatabase = try context.fetch(request).first else { throw CoreDataManagerError.objectDoesNotExists }
@@ -69,7 +69,7 @@ public class CoreDataManager {
         return objectAsDomainVersion
     }
     
-    public func fetchSetOfObjects() throws -> [DomainPhotoDetails] {
+    public func fetchSetOfObjects() throws -> [PhotoDetailsEntity] {
         let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
         let objectsFromDatabase = try context.fetch(request)
         
@@ -101,36 +101,38 @@ public class CoreDataManager {
         }
     }
     
-    private func registerNewObject(object: DomainPhotoDetails) -> PhotoDetailsCoreEntity {
+    private func registerNewObject(object: PhotoDetailsEntity) -> PhotoDetailsCoreEntity {
         let dbEntity = PhotoDetailsCoreEntity(context: context)
         
         // Register main object information
-        dbEntity.id = object.details?.id
-        dbEntity.title = object.details?.title?.content
-        dbEntity.descriptionContent = object.details?.description?.content
-        dbEntity.publishedAt = object.details?.dateUploaded
-        dbEntity.imagePath = object.imagePath
+        dbEntity.id = object.id
+        dbEntity.secret = object.secret
+        dbEntity.server = object.server
+        dbEntity.title = object.title?.content
+        dbEntity.descriptionContent = object.description?.content
+        dbEntity.publishedAt = object.dateUploaded
         
         // Register owner object informatin
-        dbEntity.ownerId = object.details?.owner?.nsid
-        dbEntity.ownerName = object.details?.owner?.realName
-        dbEntity.ownerUsername = object.details?.owner?.username
-        dbEntity.ownerLocation = object.details?.owner?.location
-        dbEntity.ownerAvatarPath = object.buddyiconPath
+        dbEntity.ownerId = object.owner?.nsid
+        dbEntity.ownerIconFarm = Int32((object.owner?.iconFarm)!)
+        dbEntity.ownerIconServer = object.owner?.iconServer
+        dbEntity.ownerName = object.owner?.realName
+        dbEntity.ownerUsername = object.owner?.username
+        dbEntity.ownerLocation = object.owner?.location
         
         return dbEntity
     }
     
-    private func mapDatabaseObjectToDomainVersion(object: PhotoDetailsCoreEntity) -> DomainPhotoDetails {
-        var details = PhotoDetailsEntity()
-        details.id = object.id
-        details.title = .init(content: object.title)
-        details.description = .init(content: object.descriptionContent)
-        details.owner = .init(nsid: object.ownerId, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation)
-        details.dateUploaded = object.publishedAt
+    private func mapDatabaseObjectToDomainVersion(object: PhotoDetailsCoreEntity) -> PhotoDetailsEntity {
+        var objectAsDomainVersion = PhotoDetailsEntity()
+        objectAsDomainVersion.id = object.id
+        objectAsDomainVersion.secret = object.secret
+        objectAsDomainVersion.server = object.server
+        objectAsDomainVersion.title = .init(content: object.title)
+        objectAsDomainVersion.description = .init(content: object.descriptionContent)
+        objectAsDomainVersion.owner = .init(nsid: object.ownerId, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation, iconServer: object.ownerIconServer, iconFarm: Int(object.ownerIconFarm))
+        objectAsDomainVersion.dateUploaded = object.publishedAt
         
-        // Create result object
-        let objectAsDomainVersion = DomainPhotoDetails(details: details, imagePath: object.imagePath, buddyiconPath: object.ownerAvatarPath)
         return objectAsDomainVersion
     }
     

@@ -34,9 +34,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let dependencyContainer: DependencyContainer = .init()
         
         let coreDataManager: CoreDataManager = .init(context: persistentContainer.viewContext)
-        let connection: InternetConnectivity = .init()
+        //let connection: InternetConnectivity = .init()
         
-        dependencyContainer.register(connection)
+        //dependencyContainer.register(connection)
         dependencyContainer.register(coreDataManager)
         
         let viewBuilder: ViewBuilder = .init(dependencyContainer: dependencyContainer)

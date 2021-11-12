@@ -29,8 +29,8 @@ class ViewBuilder {
         let homeViewController: HomeViewController = Storyboard.general.instantiateViewController()
         let network: Network = dependencyContainer.retrive()
         let database: CoreDataManager = dependencyContainer.retrive()
-        let connection: InternetConnectivity = dependencyContainer.retrive()
-        let storage: HomeDataManager = .init(network: network, database: database, connection: connection)
+        //let connection: InternetConnectivity = dependencyContainer.retrive()
+        let storage: HomeDataManager = .init(network: network, database: database)
         homeViewController.viewModel = .init(coordinator: coordinator, storage: storage)
         return homeViewController
     }

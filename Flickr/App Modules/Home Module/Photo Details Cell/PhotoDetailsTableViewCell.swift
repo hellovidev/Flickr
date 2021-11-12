@@ -55,6 +55,39 @@ class PhotoDetailsTableViewCell: UITableViewCell {
         postPublishedDate.text = date
         
         skeletonAnimation.stopAllAnimations()
+        
+    }
+    
+    func configureCellDetails(_ cellDetails: PhotoDetailsEntity) {
+        photoDetailsId = cellDetails.id
+                
+        let ownerAccountName = PrepareTextFormatter.prepareUserAccountName(name: cellDetails.owner?.realName, username: cellDetails.owner?.username)
+        accountView.ownerAccountName.text = ownerAccountName
+        
+        let ownerLocation = PrepareTextFormatter.prepareTextField(cellDetails.owner?.location, placeholder: .location)
+        accountView.ownerLocation.text = ownerLocation
+                        
+        let description = NSMutableAttributedString.prepareContent(username: cellDetails.owner?.username, content: cellDetails.title?.content)
+        postDescription.attributedText = description
+
+        let dateAsString = cellDetails.dateUploaded?.prepareStringAsDate()
+        let date = PrepareTextFormatter.prepareTextField(dateAsString, placeholder: .date)
+        postPublishedDate.text = date
+        
+        skeletonAnimation.stopAllAnimations()
+        
+        skeletonAnimation.startAnimationFor(view: accountView.ownerAvatar)
+        skeletonAnimation.startAnimationFor(view: postImage)
+    }
+    
+    func configureCellImage(_ cellImage: UIImage) {
+        postImage.image = cellImage
+        skeletonAnimation.stopAllAnimations()
+    }
+    
+    func configureCellBuddyicon(_ cellBuddyicon: UIImage) {
+        accountView.ownerAvatar.image = cellBuddyicon
+        skeletonAnimation.stopAllAnimations()
     }
     
     override func prepareForReuse() {
