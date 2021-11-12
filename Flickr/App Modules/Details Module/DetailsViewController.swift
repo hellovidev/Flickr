@@ -119,6 +119,7 @@ class DetailsViewController: UITableViewController {
     }
     
     private func requestDetails() {
+        //setupSkeletonAnimation()
         viewModel.requestDetails { [weak self] result in
             self?.stopAnimations()
             
@@ -151,6 +152,7 @@ class DetailsViewController: UITableViewController {
                 self?.skeletonAnimation.stopAllAnimations()
                 self?.tableView.reloadData()
             case .failure(let error):
+                self?.skeletonAnimation.stopAllAnimations()
                 self?.showAlert(
                     title: "Refresh Error",
                     message: "Loading details about post failed.\nTry to check your internet connection and pull to refresh.",

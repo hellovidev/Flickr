@@ -39,10 +39,10 @@ class HomeViewModel {
     
     private var perPage: Int = 20
     
-    private var dictionaryOfDomainEntities = [DomainPhotoDetails]()
+    private var arrayOfDomainEntities = [DomainPhotoDetails]()
     
     var elementCount: Int {
-        dictionaryOfDomainEntities.count
+        arrayOfDomainEntities.count
     }
     
     private enum HomeRoute {
@@ -59,7 +59,7 @@ class HomeViewModel {
     func openDetails(id: String) {
         router.send(.openPost(id: id))
     }
-
+    
     func refresh() {
         page = 1
         //idsOfDomainEntities.removeAll()
@@ -99,74 +99,138 @@ class HomeViewModel {
         }
     }
     
+    var currentEnities = [DomainPhotoDetails]()
+    var offlineEntities = [DomainPhotoDetails]()
+    var onlineEntities = [DomainPhotoDetails]()
+    var waitOnlineData: (() -> Void)?
     
+    func switchToOnlineData() {
+        currentEnities = onlineEntities
+    }
     
     func loadData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        if dataManager.connection.isReachable {
-            dataManager.requestArrayPhotoDetailsIds(page: page, per: perPage) { [weak self] result in
-                switch result {
-                case .success(let ids):
-                    let uniqs = ids.uniques
-                    if self?.page == 1 {
-                        self?.idsOfDomainEntities = uniqs
-                    } else {
-                        self?.idsOfDomainEntities += uniqs
-                        if let realUniqIds = self?.idsOfDomainEntities.uniques {
-                            self?.idsOfDomainEntities = realUniqIds
-                        }
-                    }
-                    self?.dataManager.loadOnlineData(page: self!.page, ids: uniqs) { arrayNetwork in
-                        if arrayNetwork.isEmpty {
-                            self?.dataManager.loadOfflineData { result in
-                                switch result {
-                                case .success(let arrayCoreData):
-                                    self?.dictionaryOfDomainEntities = arrayCoreData
-                                    completionHandler(.success(()))
-                                case .failure(let error):
-                                    completionHandler(.failure(error))
-                                }
-                            }
-                        } else {
-                            if self?.page == 1 {
-                                self?.dictionaryOfDomainEntities = arrayNetwork
-                            } else {
-                                self?.dictionaryOfDomainEntities += arrayNetwork
-                                if let realUniqObjects = self?.dictionaryOfDomainEntities.uniques {
-                                    self?.dictionaryOfDomainEntities = realUniqObjects
-                                }
-                            }
-                            self?.page += 1
-                            completionHandler(.success(()))
-                        }
-                    }
-                    
-                case .failure(_):
-                    self?.dataManager.loadOfflineData { result in
-                        switch result {
-                        case .success(let arrayCoreData):
-                            self?.dictionaryOfDomainEntities = arrayCoreData
-                            completionHandler(.success(()))
-                        case .failure(let error):
-                            completionHandler(.failure(error))
-                        }
-                    }
-                }
-            }
-        } else {
-            self.dataManager.loadOfflineData { result in
-                switch result {
-                case .success(let arrayCoreData):
-                    self.dictionaryOfDomainEntities = arrayCoreData
-                    completionHandler(.success(()))
-                case .failure(let error):
-                    completionHandler(.failure(error))
-                }
+        loadOfflineData(completionHandler: completionHandler)
+        loadOnlineData()
+    }
+    
+    func loadOfflineData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        dataManager.loadOfflineData() { [weak self] result in
+            switch result {
+            case .success(let offline):
+                self?.offlineEntities = offline
+                self?.currentEnities = offline
+                self?.arrayOfDomainEntities = offline //??
+            case .failure(let error):
+                completionHandler(.failure(error))
             }
         }
     }
     
+    func loadOnlineData() {
+        dataManager.requestArrayPhotoDetailsIds(page: page, per: perPage) { [weak self] result in
+            switch result {
+            case .success(let ids):
+                let uniqs = ids.uniques
+                if self?.page == 1 {
+                    self?.idsOfDomainEntities = uniqs
+                } else {
+                    self?.idsOfDomainEntities += uniqs
+                    if let realUniqIds = self?.idsOfDomainEntities.uniques {
+                        self?.idsOfDomainEntities = realUniqIds
+                    }
+                }
+                self?.dataManager.loadOnlineData(page: self!.page, ids: uniqs) { arrayNetwork in
+                    if self?.page == 1 {
+                        self?.arrayOfDomainEntities = arrayNetwork
+                    } else {
+                        self?.arrayOfDomainEntities += arrayNetwork
+                        if let realUniqObjects = self?.arrayOfDomainEntities.uniques {
+                            self?.arrayOfDomainEntities = realUniqObjects
+                        }
+                    }
+                    self?.page += 1
+                    self?.waitOnlineData?()
+                    //completionHandler(.success(()))
+                }
+                
+            case .failure(let error):
+                print(error)
+                //completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    //        if dataManager.connection.isReachable {
+    //            dataManager.requestArrayPhotoDetailsIds(page: page, per: perPage) { [weak self] result in
+    //                switch result {
+    //                case .success(let ids):
+    //                    let uniqs = ids.uniques
+    //                    if self?.page == 1 {
+    //                        self?.idsOfDomainEntities = uniqs
+    //                    } else {
+    //                        self?.idsOfDomainEntities += uniqs
+    //                        if let realUniqIds = self?.idsOfDomainEntities.uniques {
+    //                            self?.idsOfDomainEntities = realUniqIds
+    //                        }
+    //                    }
+    //                    self?.dataManager.loadOnlineData(page: self!.page, ids: uniqs) { arrayNetwork in
+    //                        if arrayNetwork.isEmpty {
+    //                            self?.dataManager.loadOfflineData { result in
+    //                                switch result {
+    //                                case .success(let arrayCoreData):
+    //                                    self?.arrayOfDomainEntities = arrayCoreData
+    //                                    completionHandler(.success(()))
+    //                                case .failure(let error):
+    //                                    completionHandler(.failure(error))
+    //                                }
+    //                            }
+    //                        } else {
+    //                            if self?.page == 1 {
+    //                                self?.arrayOfDomainEntities = arrayNetwork
+    //                            } else {
+    //                                self?.arrayOfDomainEntities += arrayNetwork
+    //                                if let realUniqObjects = self?.arrayOfDomainEntities.uniques {
+    //                                    self?.arrayOfDomainEntities = realUniqObjects
+    //                                }
+    //                            }
+    //                            self?.page += 1
+    //                            completionHandler(.success(()))
+    //                        }
+    //                    }
+    //
+    //                case .failure(_):
+    //                    self?.dataManager.loadOfflineData { result in
+    //                        switch result {
+    //                        case .success(let arrayCoreData):
+    //                            self?.arrayOfDomainEntities = arrayCoreData
+    //                            completionHandler(.success(()))
+    //                        case .failure(let error):
+    //                            completionHandler(.failure(error))
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        } else {
+    //            self.dataManager.loadOfflineData { result in
+    //                switch result {
+    //                case .success(let arrayCoreData):
+    //                    self.arrayOfDomainEntities = arrayCoreData
+    //                    completionHandler(.success(()))
+    //                case .failure(let error):
+    //                    completionHandler(.failure(error))
+    //                }
+    //            }
+    ////        }
+    //    }
+    
     func requestPhotoDetailsCell(indexPath: IndexPath, completionHandler: @escaping (_ details: PhotoDetailsEntity?, _ buddyicon: UIImage?, _ image: UIImage?) -> Void) {
-        let domainEntity = dictionaryOfDomainEntities[indexPath.row]
+        let domainEntity = arrayOfDomainEntities[indexPath.row]
         
         var buddyicon: UIImage?
         var image: UIImage?

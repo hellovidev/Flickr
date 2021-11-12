@@ -42,7 +42,22 @@ class HomeViewController: UIViewController {
         
         registerTableReusableCell()
         
+        viewModel.waitOnlineData = {
+            let alert = UIAlertController(title: "New photos", message: "", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: { _ in
+                self.viewModel.switchToOnlineData()
+                self.tableView.reloadData()
+            }))
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { _ in
+                //alert.dismiss(animated: true, completion: nil)
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+        
         requestTableData()
+        
+        
     }
     
     // MARK: - Setup UI Methods
@@ -165,10 +180,10 @@ extension HomeViewController: UITableViewDataSource {
         cell.isUserInteractionEnabled = false
         
         viewModel.requestPhotoDetailsCell(indexPath: indexPath) { details, buddyicon, image  in
-            tableView.beginUpdates()
+            //tableView.beginUpdates()
             cell.configuration(details: details, buddyicon: buddyicon, image: image)
             cell.isUserInteractionEnabled = true
-            tableView.endUpdates()
+            //tableView.endUpdates()
         }
         
         return cell

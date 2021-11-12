@@ -32,17 +32,20 @@ class DependencyContainer: DependencyContainerProtocol {
         let key: String = "\(type(of: T.self))"
         let weak: Weak = .init(value: dependency as AnyObject)
         dependencies[key] = weak
+        print(dependencies)
+        print(key)
+        print(weak)
     }
     
     func retrive<T: DependencyProtocol>() -> T {
         let key: String = "\(type(of: T.self))"
         let weak = dependencies[key]
         
-        precondition(weak != nil, "No dependency found for key - [\(key)], application must register a dependency before retriving it.")
+        //precondition(weak != nil, "No dependency found for key - [\(key)], application must register a dependency before retriving it.")
         
         let dependency = weak?.value
         
-        precondition(weak?.value != nil, "No dependency found for key - [\(key)], dependency is already deallocated by the system.")
+        //precondition(weak?.value != nil, "No dependency found for key - [\(key)], dependency is already deallocated by the system.")
         
         return dependency as! T
     }

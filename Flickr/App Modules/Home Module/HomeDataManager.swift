@@ -48,20 +48,18 @@ public class HomeDataManager {
     
     // MARK: - Update Methods
     
-//    public func refreshStorage() {
-//        do {
-//            try coreDataManager.clearDatabase()
-//            try imageDataManager.deleteAllImageData()
-//            //setOfObjects.removeAll()
-//        } catch {
-//            print("Refresh failed")
-//        }
-//    }
+    //    public func refreshStorage() {
+    //        do {
+    //            try coreDataManager.clearDatabase()
+    //            try imageDataManager.deleteAllImageData()
+    //            //setOfObjects.removeAll()
+    //        } catch {
+    //            print("Refresh failed")
+    //        }
+    //    }
     
     // MARK: - Request Methods
     
-    
-        
     func loadOfflineData(completionHandler: @escaping (Result<[DomainPhotoDetails], Error>) -> Void) {
         do {
             let domainObjects = try coreDataManager.fetchSetOfObjects()
@@ -72,21 +70,20 @@ public class HomeDataManager {
     }
     
     public func loadOnlineData(page: Int, ids: [String], completionHandler: @escaping ([DomainPhotoDetails]) -> Void) {
-        if page == 1 {
-            try? self.coreDataManager.clearDatabase()
-            try? self.imageDataManager.deleteAllImageData()
-        }
-        
         var temporaryDictionaryOfObjects = [DomainPhotoDetails]()
+        
         let loadListGroup = DispatchGroup()
-
+        //let dispatchSemaphore = DispatchSemaphore(value: ids.count)
+        
         for id in ids {
             loadListGroup.enter()
             let group = DispatchGroup()
             
-            networkRequestPhotoDetails(id: id, group: group) { [weak self] result in
+            self.networkRequestPhotoDetails(id: id, group: group) { [weak self] result in
                 switch result {
                 case .success(let details):
+                    
+                    
                     self?.networkGroupRequestImagesOfPhotoDetails(details: details, group: group) { imageData, buddyiconData in
                         var imagePath: String?
                         if let imageData = imageData, let secret = details.secret, let server = details.server {
@@ -102,24 +99,50 @@ public class HomeDataManager {
                         
                         let domainEntity = DomainPhotoDetails(details: details, imagePath: imagePath, buddyiconPath: buddyiconPath)
                         temporaryDictionaryOfObjects.append(domainEntity)
+                        //dispatchSemaphore.signal()
+                        loadListGroup.leave()
                     }
                 case .failure(let error):
+                    //dispatchSemaphore.signal()
+                    loadListGroup.leave()
                     print("Download photo details error: \(error)")
                 }
-                loadListGroup.leave()
+                
             }
+            
+            //dispatchSemaphore.wait()
         }
         
+        
         loadListGroup.notify(queue: .main) {
-            self.dict += temporaryDictionaryOfObjects
-            self.dict = self.dict.uniques
+            
+            
+            if page == 1 {
+                if let objs = try? self.coreDataManager.fetchSetOfObjects() {
+                    objs.forEach {
+                        if let imagePath = $0.imagePath {
+                            try? self.imageDataManager.deleteImageData(filePath: imagePath)
+                        }
+                        
+                        if let buddyiconPath = $0.buddyiconPath {
+                            try? self.imageDataManager.deleteImageData(filePath: buddyiconPath)
+                        }
+                    }
+                    
+                    
+                }
+            }
+            self.arrayOfObjects += temporaryDictionaryOfObjects
+            self.arrayOfObjects = self.arrayOfObjects.uniques
+            
             try? self.coreDataManager.clearDatabase()
-            try? self.coreDataManager.saveSetOfObjects(objects: self.dict)
+            try? self.coreDataManager.saveSetOfObjects(objects: self.arrayOfObjects)
+            
             completionHandler(temporaryDictionaryOfObjects)
         }
     }
     
-    private var dict = [DomainPhotoDetails]()
+    private var arrayOfObjects = [DomainPhotoDetails]()
     
     public func requestArrayPhotoDetailsIds(page: Int, per: Int, completionHandler: @escaping (Result<[String], Error>) -> Void) {
         if connection.isReachable {
@@ -149,57 +172,6 @@ public class HomeDataManager {
             }
         }
     }
-    
-//    public func requestPhotoDetailsById(id: String, completionHandler: @escaping (DomainPhotoDetails) -> Void) {
-//        if connection.isReachable {
-//            let group = DispatchGroup()
-//
-//            var domainEntity: DomainPhotoDetails = .init(details: .init(), imagePath: <#T##String?#>, buddyiconPath: <#T##String?#>)
-//
-//            networkRequestPhotoDetails(id: id, group: group) { [weak self] result in
-//                switch result {
-//                case .success(let photoDetails):
-//                    details = photoDetails
-//
-//                    self?.networkGroupRequestImagesOfPhotoDetails(details: photoDetails, group: group) { photo, avatar in
-//                        buddyicon = avatar
-//                        image = photo
-//
-//                        DispatchQueue.main.async {
-//                            if let photoDetails = details {
-//                                let imagePath = try! self?.imageDataManager.saveImageData(data: image!.pngData()!, forKey: details!.id!)
-//                                let buddyiconPath = try! self?.imageDataManager.saveImageData(data: image!.pngData()!, forKey: details!.owner!.nsid!)
-//                                let domainEntity = DomainPhotoDetails(details: details, imagePath: imagePath, buddyiconPath: buddyiconPath)
-//                                try! self?.database.saveObject(object: domainEntity)
-//                            }
-//                            completionHandler(details, buddyicon, image)
-//                        }
-//                    }
-//                case .failure(let error):
-//                    DispatchQueue.main.async {
-//                        completionHandler(details, image, buddyicon)
-//                    }
-//                    print("Download photo details cell in \(#function) has error: \(error)")
-//                }
-//            }
-//        } else {
-//
-//            let object = postArray.first(where: {
-//                $0.details?.id == id
-//            })
-//
-//            do {
-//                //let object = try database.fetchObjectById(id: id)
-//                let imageData = try imageDataManager.fetchImageData(filePath: object!.imagePath!)
-//                let buddyiconData = try imageDataManager.fetchImageData(filePath: object!.buddyiconPath!)
-//
-//                completionHandler(object?.details, buddyicon, image)
-//            } catch {
-//                print(error)
-//                completionHandler(nil, nil, nil)
-//            }
-//        }
-//    }
     
     // MARK: - Request Group Helpers
     
@@ -251,12 +223,12 @@ public class HomeDataManager {
             return
         }
         
-//        let imageIdentifier = id + secret + server
-//        if let imageData = try? imageDataManager.fetchImageData(forKey: imageIdentifier) {
-//            completionHandler(.success(imageData))
-//            group.leave()
-//            return
-//        }
+        //        let imageIdentifier = id + secret + server
+        //        if let imageData = try? imageDataManager.fetchImageData(forKey: imageIdentifier) {
+        //            completionHandler(.success(imageData))
+        //            group.leave()
+        //            return
+        //        }
         
         network.image(id: id, secret: secret, server: server) { result in
             group.leave()
@@ -287,12 +259,12 @@ public class HomeDataManager {
             return
         }
         
-//        let buddyiconIdentifier = String(farm) + server + nsid
-//        if let buddyiconData = try? imageDataManager.fetchImageData(forKey: buddyiconIdentifier) {
-//            completionHandler(.success(buddyiconData))
-//            group.leave()
-//            return
-//        }
+        //        let buddyiconIdentifier = String(farm) + server + nsid
+        //        if let buddyiconData = try? imageDataManager.fetchImageData(forKey: buddyiconIdentifier) {
+        //            completionHandler(.success(buddyiconData))
+        //            group.leave()
+        //            return
+        //        }
         
         network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid) { result in
             completionHandler(result.map {
@@ -309,11 +281,11 @@ public class HomeDataManager {
     ) {
         group.enter()
         
-//        if let details = setOfObjects[id] {
-//            completionHandler(.success(details))
-//            group.leave()
-//            return
-//        }
+        //        if let details = setOfObjects[id] {
+        //            completionHandler(.success(details))
+        //            group.leave()
+        //            return
+        //        }
         
         network.getPhotoById(for: id) { [weak self] result in
             completionHandler(result.map {

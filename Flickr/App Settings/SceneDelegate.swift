@@ -36,12 +36,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let coreDataManager: CoreDataManager = .init(context: persistentContainer.viewContext)
         let connection: InternetConnectivity = .init()
         
-//        connectivity.startMonitoring()
-//
-//        if connectivity.isReachable {
-//            coreDataManager.deleteAllData()
-//        }
-        
         dependencyContainer.register(connection)
         dependencyContainer.register(coreDataManager)
         
