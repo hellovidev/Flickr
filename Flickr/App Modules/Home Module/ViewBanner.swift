@@ -9,19 +9,11 @@ import UIKit
 
 class ViewBanner {
     
-    // MARK: - Constants
-    
     private var bannerButton = UIButton(type: .system)
-    private let greenColor = UIColor(red: 63, green: 161, blue: 81, alpha: 1)
-    private let warningColor = UIColor(red: 252, green: 140, blue: 38, alpha: 1)
-    private let errorColor = UIColor(red: 252, green: 66, blue: 54, alpha: 1)
     
-    private var window: UIWindow?
-        
     init(title: String) {
         let window = UIApplication.shared.windows.first { $0.isKeyWindow }
         guard let mainWindow = window else { return }
-        self.window = mainWindow
         
         bannerButton.frame = CGRect(x: mainWindow.center.x / 1.6, y: 120, width: 150, height: 45)
         bannerButton.layer.cornerRadius = bannerButton.frame.height / 2
@@ -38,26 +30,25 @@ class ViewBanner {
         bannerButton.addTarget(self, action: #selector(onClick), for: .touchUpInside)
         
         mainWindow.addSubview(bannerButton)
-        
-        bannerButton.isHidden = true
+        hide()
     }
-
+    
     func show() {
         bannerButton.isHidden = false
         
-        UIView.animate(withDuration: 1, delay: 0.3, options: [.autoreverse, .repeat, .allowUserInteraction], animations: {
-            self.bannerButton.frame.origin.y -= 3
+        UIView.animate(withDuration: 1, delay: 0.3, options: [.autoreverse, .repeat, .allowUserInteraction], animations: { [weak self] in
+            self?.bannerButton.frame.origin.y -= 3
         })
     }
     
     func hide() {
         bannerButton.isHidden = true
     }
-
+    
     var onPressed: (() -> ())?
     
     @objc func onClick() {
-        self.onPressed?()
+        onPressed?()
     }
+    
 }
-

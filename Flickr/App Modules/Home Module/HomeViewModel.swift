@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import AVFoundation
 
 // MARK: - HomeViewModel
 
@@ -29,9 +28,9 @@ class HomeViewModel {
             self?.show(router)
         }
     }
-        
+    
     // MARK: - Variables Helpers
-        
+    
     let filters: [String] = ["50", "100", "200", "400"]
     
     private var page: Int = 1
@@ -64,17 +63,12 @@ class HomeViewModel {
         }
         
         switch filterType {
-        case .per50:
-            perPage = 50
-        case .per100:
-            perPage = 100
-        case .per200:
-            perPage = 200
-        case .per400:
-            perPage = 400
+        case .per50: perPage = 50
+        case .per100: perPage = 100
+        case .per200: perPage = 200
+        case .per400: perPage = 400
         }
     }
-
     
     func loadData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
         loadOfflineData(completionHandler: { result in
@@ -83,14 +77,14 @@ class HomeViewModel {
                     switch result {
                     case .success():
                         self.waitOnlineData?()
-                    case .failure(_):
-                        print("Online loading failed!")
+                    case .failure(let error):
+                        print(error)
                     }
                 }
             })
         })
     }
-
+    
     // MARK: - General Requests
     
     var currentObjects = [PhotoDetailsEntity]()
@@ -148,10 +142,6 @@ class HomeViewModel {
     
     func requestCellDetails(indexPath: IndexPath, completionHandler: @escaping (Result<PhotoDetailsEntity, Error>) -> Void) {
         completionHandler(.success(self.currentObjects[indexPath.row]))
-        //if let object =  {
-            
-        //}
-        //homeDataManager.requestPhotoDetails(id: currentIds[indexPath.row], completionHandler: completionHandler)
     }
     
     func requestCellImage(details: PhotoDetailsEntity, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {

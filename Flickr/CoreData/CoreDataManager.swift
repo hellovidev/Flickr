@@ -23,7 +23,7 @@ public class CoreDataManager {
     // MARK: - Save Methods
     
     public func saveObject(object: PhotoDetailsEntity) throws {
-        _ = self.registerNewObject(object: object)
+        _ = self.registerNewObject(object: object, position: 0)
         
         try self.commitUnsavedChanges()
     }
@@ -32,9 +32,11 @@ public class CoreDataManager {
         if objects.isEmpty {
             throw CoreDataManagerError.emptyArray
         }
-            
-        objects.forEach {
-            _ = self.registerNewObject(object: $0)
+        
+        var position = 0
+        for object in objects {
+            _ = self.registerNewObject(object: object, position: position)
+            position += 1
         }
         
         try self.commitUnsavedChanges()
@@ -71,6 +73,9 @@ public class CoreDataManager {
     
     public func fetchSetOfObjects() throws -> [PhotoDetailsEntity] {
         let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+        let positionSort = NSSortDescriptor(key: "position", ascending: true)
+
+        request.sortDescriptors = [positionSort]
         let objectsFromDatabase = try context.fetch(request)
         
         let objectsAsDomainVersion = objectsFromDatabase.map { object in
@@ -101,8 +106,9 @@ public class CoreDataManager {
         }
     }
     
-    private func registerNewObject(object: PhotoDetailsEntity) -> PhotoDetailsCoreEntity {
+    private func registerNewObject(object: PhotoDetailsEntity, position: Int) -> PhotoDetailsCoreEntity {
         let dbEntity = PhotoDetailsCoreEntity(context: context)
+        dbEntity.position = Int32(position)
         
         // Register main object information
         dbEntity.id = object.id

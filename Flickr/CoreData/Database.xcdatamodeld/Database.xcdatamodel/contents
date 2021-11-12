@@ -11,12 +11,13 @@
         <attribute name="ownerLocation" optional="YES" attributeType="String"/>
         <attribute name="ownerName" optional="YES" attributeType="String"/>
         <attribute name="ownerUsername" optional="YES" attributeType="String"/>
+        <attribute name="position" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="publishedAt" optional="YES" attributeType="String"/>
         <attribute name="secret" optional="YES" attributeType="String"/>
         <attribute name="server" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="PhotoDetailsCoreEntity" positionX="-63" positionY="-18" width="128" height="239"/>
+        <element name="PhotoDetailsCoreEntity" positionX="-63" positionY="-18" width="128" height="254"/>
     </elements>
 </model>

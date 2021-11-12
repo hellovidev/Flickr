@@ -317,8 +317,8 @@
 				5F7F996F26D7816800482485 /* PhotoDetailsEntity.swift */,
 				5FA9B2F126E4B1020060DAE8 /* HomeViewController.swift */,
 				5F4A774426FCEA6800D1EB00 /* HomeViewModel.swift */,
-				29C93632273ED66700B4B26A /* ViewBanner.swift */,
 				295088D1273A83EA0067401E /* HomeDataManager.swift */,
+				29C93632273ED66700B4B26A /* ViewBanner.swift */,
 				5F4A774626FCEAFB00D1EB00 /* Observable.swift */,
 			);
 			path = "Home Module";

@@ -14,7 +14,7 @@ public class HomeDataManager {
     private let coreDataManager: CoreDataManager
     
     let imageDataManager: ImageDataManager
-        
+    
     public init(network: Network, database: CoreDataManager) {
         self.network = network
         self.coreDataManager = database
@@ -68,7 +68,7 @@ public class HomeDataManager {
                     try? self.deleteImagesOfObjects(databaseObjects)
                 }
             }
-                       
+            
             self.currentObjects += temporaryObjects
             try? self.coreDataManager.clearDatabase()
             try? self.coreDataManager.saveSetOfObjects(objects: self.currentObjects)
@@ -85,9 +85,9 @@ public class HomeDataManager {
             completionHandler(.failure(error))
         }
     }
-        
+    
     // MARK: - Parts of Photo Request
-
+    
     func requestPhotoDetails(id: String, completionHandler: @escaping (Result<PhotoDetailsEntity, Error>) -> Void) {
         network.getPhotoById(for: id, completionHandler: completionHandler)
     }
