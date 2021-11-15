@@ -42,7 +42,7 @@ class HomeViewController: UIViewController {
         
         registerTableReusableCell()
         
-         let banner = ViewBanner(title: "New photos ready")
+        let banner = ViewBanner(view: self.view, title: "New photos ready")
         
         viewModel.waitOnlineData = { [weak self] in
             banner.show()

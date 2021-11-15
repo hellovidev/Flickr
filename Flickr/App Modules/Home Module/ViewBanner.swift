@@ -11,11 +11,11 @@ class ViewBanner {
     
     private var bannerButton = UIButton(type: .system)
     
-    init(title: String) {
-        let window = UIApplication.shared.windows.first { $0.isKeyWindow }
-        guard let mainWindow = window else { return }
+    init(view: UIView, title: String) {
+        //let window = UIApplication.shared.windows.first { $0.isKeyWindow }
+        //guard let mainWindow = window else { return }
         
-        bannerButton.frame = CGRect(x: mainWindow.center.x / 1.6, y: 120, width: 150, height: 45)
+        bannerButton.frame = CGRect(x: view.center.x - 75, y: 120, width: 150, height: 45)
         bannerButton.layer.cornerRadius = bannerButton.frame.height / 2
         bannerButton.backgroundColor = .systemGray6
         bannerButton.setTitle(title, for: .normal)
@@ -29,12 +29,17 @@ class ViewBanner {
         
         bannerButton.addTarget(self, action: #selector(onClick), for: .touchUpInside)
         
-        mainWindow.addSubview(bannerButton)
+        view.addSubview(bannerButton)
         hide()
     }
     
     func show() {
+        bannerButton.frame.origin.y -= 200
         bannerButton.isHidden = false
+        
+        UIView.animate(withDuration: 0.5, delay: 0.3, options: [.curveEaseIn], animations: { [weak self] in
+            self?.bannerButton.frame.origin.y += 200
+        })
         
         UIView.animate(withDuration: 1, delay: 0.3, options: [.autoreverse, .repeat, .allowUserInteraction], animations: { [weak self] in
             self?.bannerButton.frame.origin.y -= 3
