@@ -11,10 +11,7 @@ class ViewBanner {
     
     private var bannerButton = UIButton(type: .system)
     
-    init(view: UIView, title: String) {
-        //let window = UIApplication.shared.windows.first { $0.isKeyWindow }
-        //guard let mainWindow = window else { return }
-        
+    init(view: UIView, title: String) {       
         bannerButton.frame = CGRect(x: view.center.x - 75, y: 120, width: 150, height: 45)
         bannerButton.layer.cornerRadius = bannerButton.frame.height / 2
         bannerButton.backgroundColor = .systemGray6

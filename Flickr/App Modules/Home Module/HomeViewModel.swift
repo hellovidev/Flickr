@@ -35,7 +35,7 @@ class HomeViewModel {
     
     private var page: Int = 1
     
-    private var perPage: Int = 20
+    private var perPage: Int = 8
     
     private enum HomeRoute {
         case openPost(id: String)
@@ -52,13 +52,20 @@ class HomeViewModel {
         router.send(.openPost(id: id))
     }
     
-    func refresh() {
+    func refreshData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
         page = 1
+        
+        loadMore(completionHandler: { [weak self] result in
+            completionHandler(result.map {
+                self?.switchToLoadedData()
+                return $0
+            })
+        })
     }
     
     func filter(by filterType: FilterType?, completionHandler: @escaping () -> Void) {
         guard let filterType = filterType else {
-            perPage = 20
+            perPage = 8
             return
         }
         
@@ -73,10 +80,10 @@ class HomeViewModel {
     func loadData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
         loadOfflineData(completionHandler: { result in
             completionHandler(result.map {
-                self.loadOnlineData { result in
+                self.loadMore { result in
                     switch result {
                     case .success():
-                        self.waitOnlineData?()
+                        self.dataReadyToUpdate?()
                     case .failure(let error):
                         print(error)
                     }
@@ -90,13 +97,13 @@ class HomeViewModel {
     var currentObjects = [PhotoDetailsEntity]()
     var onlineSession = [PhotoDetailsEntity]()
     var currentIds = [String]()
-    var waitOnlineData: (() -> Void)?
+    var dataReadyToUpdate: (() -> Void)?
     
-    func switchToOnlineData() {
+    func switchToLoadedData() {
         currentObjects = onlineSession
     }
     
-    func loadOnlineData(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func loadMore(completionHandler: @escaping (Result<Void, Error>) -> Void) {
         homeDataManager.requestEntityIds(page: page, per: perPage) { [weak self] result in
             switch result {
             case .success(let pageIds):

@@ -16,6 +16,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var filterStackView: UIStackView!
     
+    private var banner: ViewBanner!
     private let refreshControl: UIRefreshControl = .init()
     private let activityIndicator: UIActivityIndicatorView = .init(style: .medium)
     
@@ -23,7 +24,7 @@ class HomeViewController: UIViewController {
     private var filterButtons: [UIButton] = .init()
     
     var viewModel: HomeViewModel!
-
+    
     // MARK: - UIViewController Life Cycle Methods
     
     override func viewDidLoad() {
@@ -42,25 +43,25 @@ class HomeViewController: UIViewController {
         
         registerTableReusableCell()
         
-        let banner = ViewBanner(view: self.view, title: "New photos ready")
+        banner = ViewBanner(view: self.view, title: "New photos ready")
         
-        viewModel.waitOnlineData = { [weak self] in
-            banner.show()
-            banner.onPressed = {
-                banner.hide()
+        viewModel.dataReadyToUpdate = { [weak self] in
+            self?.banner.show()
+            self?.banner.onPressed = {
+                self?.banner.hide()
                 
+                // Scroll to top
                 let indexPath: IndexPath = .init(row: 0, section: 0)
                 self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
                 
-                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                 self?.viewModel.switchToOnlineData()
-                   self?.tableView.reloadData()
+                    self?.viewModel.switchToLoadedData()
+                    self?.tableView.reloadData()
                 }
             }
         }
         
-        requestTableData()
+        retriveData()
     }
     
     // MARK: - Setup UI Methods
@@ -119,18 +120,17 @@ class HomeViewController: UIViewController {
         }
     }
     
-    @objc private func refreshTable() {        
+    @objc private func refreshTable() {
+        banner.hide()
         activityIndicator.stopAnimating()
-        viewModel.refresh()
         
-        viewModel.loadOnlineData { [weak self] result in
+        viewModel.refreshData { [weak self] result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.refreshControl.endRefreshing()
             }
             self?.activityIndicator.stopAnimating()
             switch result {
             case .success:
-                self?.viewModel.switchToOnlineData()
                 self?.tableView.reloadData()
             case .failure(let error):
                 self?.tableView.tableFooterView?.isHidden = true
@@ -161,7 +161,7 @@ class HomeViewController: UIViewController {
         }
     }
     
-    private func requestTableData() {
+    private func retriveData() {
         viewModel.loadData { [weak self] result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.refreshControl.endRefreshing()
@@ -189,7 +189,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.currentObjects.count//idsOfDomainEntities.count
+        return viewModel.currentObjects.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -224,40 +224,32 @@ extension HomeViewController: UITableViewDataSource {
             }
         }
         
-//        viewModel.requestPhotoDetailsCell(indexPath: indexPath) { details, buddyicon, image  in
-//            //tableView.beginUpdates()
-//            cell.configuration(details: details, buddyicon: buddyicon, image: image)
-//            cell.isUserInteractionEnabled = true
-//            //tableView.endUpdates()
-//        }
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-            let lastSectionIndex = tableView.numberOfSections - 1
-            let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
+        let lastSectionIndex = tableView.numberOfSections - 1
+        let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
+        
+        if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
+            activityIndicator.startAnimating()
             
-            if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
-                activityIndicator.startAnimating()
-                
-                viewModel.loadOnlineData { [weak self] result in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        self?.refreshControl.endRefreshing()
-                    }
-                    self?.activityIndicator.stopAnimating()
-                    switch result {
-                    case .success:
-                        self?.viewModel.switchToOnlineData()
-                        self?.tableView.reloadData()
-                    case .failure(let error):
-                        self?.tableView.tableFooterView?.isHidden = true
-                        self?.showAlert(title: "Home Error", message: "Something went wrong. Please try again.", button: "OK")
-                        print("Photos download failed: \(error)")
-                    }
+            viewModel.loadMore { [weak self] result in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self?.refreshControl.endRefreshing()
                 }
-                //requestTableData()
+                self?.activityIndicator.stopAnimating()
+                switch result {
+                case .success:
+                    self?.viewModel.switchToLoadedData()
+                    self?.tableView.reloadData()
+                case .failure(let error):
+                    self?.tableView.tableFooterView?.isHidden = true
+                    self?.showAlert(title: "Home Error", message: "Something went wrong. Please try again.", button: "OK")
+                    print("Photos download failed: \(error)")
+                }
             }
+        }
     }
     
 }
