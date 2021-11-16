@@ -14,11 +14,34 @@ private enum CoreDataManagerError: Error {
 
 public class CoreDataManager {
     
-    private let context: NSManagedObjectContext
+    let context: NSManagedObjectContext
     
     public init(context: NSManagedObjectContext) {
         self.context = context
     }
+    
+    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<PhotoDetailsCoreEntity> = {
+        // Initialize Fetch Request
+        let fetchRequest: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+
+        // Add Sort Descriptors
+        let sortDescriptor = NSSortDescriptor(key: "position", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+
+        // Initialize Fetched Results Controller
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.context, sectionNameKeyPath: nil, cacheName: nil)
+
+        // Configure Fetched Results Controller
+        //fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print(error)
+        }
+        
+        return fetchedResultsController
+    }()
     
     // MARK: - Save Methods
     
@@ -45,21 +68,43 @@ public class CoreDataManager {
     // MARK: - Fetch Methods
     
     public func fetchObjectsIds() throws -> [String] {
-        let request: NSFetchRequest<NSDictionary> = .init(entityName: "PhotoDetailsCoreEntity")
-        request.resultType = .dictionaryResultType
-        request.returnsDistinctResults = true
-        request.propertiesToFetch = ["id"]
+//        let request: NSFetchRequest<NSDictionary> = .init(entityName: "PhotoDetailsCoreEntity")
+//        request.resultType = .dictionaryResultType
+//        request.returnsDistinctResults = true
+//        request.propertiesToFetch = ["id"]
         
-        let dictionaries: [NSDictionary] = try context.fetch(request)
+        guard let objects = fetchedResultsController.fetchedObjects else {
+            fatalError()
+        }
         
         var ids = [String]()
-        for dictionary in dictionaries {
-            if let id = dictionary.value(forKey: "id") as? String {
+        for object in objects {
+            if let id = object.id {
                 ids.append(id)
             }
         }
 
+        
+//        let dictionaries: [NSDictionary] = try context.fetch(request)
+//
+//        var ids = [String]()
+//        for dictionary in dictionaries {
+//            if let id = dictionary.value(forKey: "id") as? String {
+//                ids.append(id)
+//            }
+//        }
+
         return ids
+    }
+    
+    public func fetchObjects() throws -> [PhotoDetailsEntity] {
+        guard let objects = fetchedResultsController.fetchedObjects else { fatalError() }
+        
+        let objectsAsDomainVersion = objects.map { object in
+            self.mapDatabaseObjectToDomainVersion(object: object)
+        }
+        
+        return objectsAsDomainVersion
     }
     
     public func fetchObjectById(id: String) throws -> PhotoDetailsEntity {

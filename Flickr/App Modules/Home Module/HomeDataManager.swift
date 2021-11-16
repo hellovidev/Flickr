@@ -11,7 +11,7 @@ public class HomeDataManager {
     
     private let network: Network
     
-    private let coreDataManager: CoreDataManager
+    let coreDataManager: CoreDataManager
     
     let imageDataManager: ImageDataManager
     
@@ -85,7 +85,7 @@ public class HomeDataManager {
             completionHandler(.failure(error))
         }
     }
-    
+        
     // MARK: - Parts of Photo Request
     
     func requestPhotoDetails(id: String, completionHandler: @escaping (Result<PhotoDetailsEntity, Error>) -> Void) {

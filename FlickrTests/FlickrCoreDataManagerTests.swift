@@ -11,25 +11,25 @@ import Flickr
 
 class FlickrCoreDataManagerTests: XCTestCase {
     
-    func test_save_entityArraySuccess() {
-        let sut = CoreDataManager(context: mockPersistentContainer.viewContext)
-        
-        var object = DomainPhotoDetails()
-        object.details = .init()
-        object.details?.id = UUID().uuidString
-        object.details?.owner?.nsid = UUID().uuidString
-        
-        object.imagePath = UUID().uuidString
-        object.buddyiconPath = UUID().uuidString
-        
-        var setOfbjects = [DomainPhotoDetails]()
-        
-        for _ in 1...5 {
-            setOfbjects.append(object)
-        }
-        
-        XCTAssertNoThrow(try sut.saveSetOfObjects(objects: setOfbjects))
-    }
+//    func test_save_entityArraySuccess() {
+//        let sut = CoreDataManager(context: mockPersistentContainer.viewContext)
+//        
+//        var object = DomainPhotoDetails()
+//        object.details = .init()
+//        object.details?.id = UUID().uuidString
+//        object.details?.owner?.nsid = UUID().uuidString
+//        
+//        object.imagePath = UUID().uuidString
+//        object.buddyiconPath = UUID().uuidString
+//        
+//        var setOfbjects = [DomainPhotoDetails]()
+//        
+//        for _ in 1...5 {
+//            setOfbjects.append(object)
+//        }
+//        
+//        XCTAssertNoThrow(try sut.saveSetOfObjects(objects: setOfbjects))
+//    }
     
     func test_save_entityArrayFailed() {
         let sut = CoreDataManager(context: mockPersistentContainer.viewContext)
@@ -37,19 +37,19 @@ class FlickrCoreDataManagerTests: XCTestCase {
         XCTAssertThrowsError(try sut.saveSetOfObjects(objects: []))
     }
     
-    func test_save_entity() {
-        let sut = CoreDataManager(context: mockPersistentContainer.viewContext)
-        
-        var object = DomainPhotoDetails()
-        object.details = .init()
-        object.details?.id = UUID().uuidString
-        object.details?.owner?.nsid = UUID().uuidString
-        
-        object.imagePath = UUID().uuidString
-        object.buddyiconPath = UUID().uuidString
-        
-        XCTAssertNoThrow(try sut.saveObject(object: object))
-    }
+//    func test_save_entity() {
+//        let sut = CoreDataManager(context: mockPersistentContainer.viewContext)
+//
+//        var object = DomainPhotoDetails()
+//        object.details = .init()
+//        object.details?.id = UUID().uuidString
+//        object.details?.owner?.nsid = UUID().uuidString
+//
+//        object.imagePath = UUID().uuidString
+//        object.buddyiconPath = UUID().uuidString
+//
+//        XCTAssertNoThrow(try sut.saveObject(object: object))
+//    }
     
     // MARK: - Core Data
     

@@ -17,7 +17,7 @@ class HomeViewModel {
     
     private let router: Observable<HomeRoute>
     
-    private let homeDataManager: HomeDataManager
+    let homeDataManager: HomeDataManager
     
     init(coordinator: HomeCoordinator, storage: HomeDataManager) {
         self.coordinator = coordinator

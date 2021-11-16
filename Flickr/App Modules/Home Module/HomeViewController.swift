@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 // MARK: - HomeViewController
 
@@ -201,7 +202,7 @@ extension HomeViewController: UITableViewDataSource {
             case .success(let cellDetails):
                 cell.configureCellDetails(cellDetails)
                 cell.isUserInteractionEnabled = true
-                
+
                 self?.viewModel.requestCellImage(details: cellDetails) { result in
                     switch result {
                     case .success(let cellImage):
@@ -210,7 +211,7 @@ extension HomeViewController: UITableViewDataSource {
                         print(error)
                     }
                 }
-                
+
                 self?.viewModel.requestCellBuddyicon(details: cellDetails) { result in
                     switch result {
                     case .success(let cellBuddyicon):
@@ -264,6 +265,25 @@ extension HomeViewController: UITableViewDelegate {
         
         viewModel.openDetails(id: id)
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+}
+
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension HomeViewController {
+    
+    private func mapDatabaseObjectToDomainVersion(object: PhotoDetailsCoreEntity) -> PhotoDetailsEntity {
+        var objectAsDomainVersion = PhotoDetailsEntity()
+        objectAsDomainVersion.id = object.id
+        objectAsDomainVersion.secret = object.secret
+        objectAsDomainVersion.server = object.server
+        objectAsDomainVersion.title = .init(content: object.title)
+        objectAsDomainVersion.description = .init(content: object.descriptionContent)
+        objectAsDomainVersion.owner = .init(nsid: object.ownerId, username: object.ownerUsername, realName: object.ownerName, location: object.ownerLocation, iconServer: object.ownerIconServer, iconFarm: Int(object.ownerIconFarm))
+        objectAsDomainVersion.dateUploaded = object.publishedAt
+        
+        return objectAsDomainVersion
     }
     
 }
