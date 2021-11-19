@@ -29,6 +29,8 @@ struct PhotoEntity: Decodable, Hashable {
     
     var isFamily: Int?
     
+    var dateUpload: String?
+    
     enum CodingKeys: String, CodingKey {
         case id = "id"
         case title = "title"
@@ -39,6 +41,7 @@ struct PhotoEntity: Decodable, Hashable {
         case isFriend = "isfriend"
         case farm = "farm"
         case isFamily = "isfamily"
+        case dateUpload = "dateupload"
     }
     
 }

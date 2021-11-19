@@ -34,6 +34,7 @@ class GalleryViewController: UIViewController {
     
     @objc private func refreshCollectionView() {
         self.collectionView.reloadData()
+        self.collectionView.refreshControl?.endRefreshing()
         //viewModel.refresh()
         //requestPhotos()
     }

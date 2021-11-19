@@ -87,7 +87,7 @@ class GalleryRepository {
                     try? self.localStorage.save()
                 } else {
                     self.uploadNewOfflinePhotosToServer(uniqs) { result in
-                        
+                        self.gallery = onlinePhotos
                     }
                 }
                 
@@ -189,7 +189,11 @@ class GalleryRepository {
             
             let entity = PhotoEntity(id: object.id, secret: object.secret, server: object.server, farm: Int(object.farm))
             self.gallery.insert(entity, at: 0)
-            self.uploadNewOfflinePhotosToServer([entity], completionHandler: completionHandler)
+            DispatchQueue.main.async {
+                completionHandler(.success(()))
+            }
+            
+            self.uploadNewOfflinePhotosToServer([entity]) {result in}//, completionHandler: completionHandler)
         } catch {
             completionHandler(.failure(error))
         }

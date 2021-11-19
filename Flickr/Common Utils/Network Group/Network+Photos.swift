@@ -31,7 +31,8 @@ extension Network {
         let parameters: [String: String] = [
             "user_id": id,
             "privacy_filter": "1",
-            "per_page": "100"
+            "per_page": "100",
+            "extras": "date_upload"
         ]
         
         request(
