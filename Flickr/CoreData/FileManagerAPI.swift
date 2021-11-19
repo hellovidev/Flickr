@@ -96,6 +96,15 @@ public class FileManagerAPI {
         try self.fileManager.removeItem(at: url)
     }
     
+    // MARK: - Rename Methods
+    
+    public func rename(atKey: String, toKey: String) throws {
+        let fileAtPath = self.makeFilePath(for: atKey)
+        let fileToPath = self.makeFilePath(for: toKey)
+        
+        try self.fileManager.moveItem(atPath: fileAtPath, toPath: fileToPath)
+    }
+    
 }
 
 // MARK: - File System Helpers
