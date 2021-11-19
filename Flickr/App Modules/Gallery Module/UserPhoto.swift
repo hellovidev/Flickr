@@ -7,12 +7,17 @@
 
 import Foundation
 
-struct UserPhoto {
+protocol UserPhotoProtocol {
+    var id: String? { get set }
+}
+
+struct UserPhoto: UserPhotoProtocol {
     var id: String?
     var farm: Int?
     var secret: String?
     var server: String?
     var dateUploaded: String?
+    var isUploaded: Bool
 }
 
 extension UserPhoto {
@@ -35,6 +40,8 @@ extension UserPhoto {
         if let dateUpload = coreDataEntity.dateUploaded {
             self.dateUploaded = dateUpload
         }
+        
+        self.isUploaded = coreDataEntity.isUploaded
     }
     
     init(_ remoteEntity: PhotoEntity) {
@@ -57,6 +64,8 @@ extension UserPhoto {
         if let dateUpload = remoteEntity.dateUpload {
             self.dateUploaded = dateUpload
         }
+        
+        self.isUploaded = true
     }
     
 }

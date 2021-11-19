@@ -45,3 +45,5 @@ struct PhotoEntity: Decodable, Hashable {
     }
     
 }
+
+extension PhotoEntity: UserPhotoProtocol {}
