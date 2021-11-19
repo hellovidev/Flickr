@@ -18,7 +18,7 @@ class GalleryRepository {
     
     private let localStorage: CoreDataUserPhoto<UserPhotoCoreEntity>
     
-    private let imageDataManager: ImageDataManager
+    private let imageDataManager: FileManagerAPI
     
     private var gallery = [PhotoEntity]()
         
@@ -147,7 +147,7 @@ class GalleryRepository {
             return
         }
         
-        if let imageData = try? imageDataManager.fetchImageData(forKey: id) {
+        if let imageData = try? imageDataManager.fetch(forKey: id) {
             let image = UIImage(data: imageData)!
             completionHandler(.success(image))
             return
@@ -164,7 +164,7 @@ class GalleryRepository {
         network.image(id: id, secret: secret, server: server) { result in
             completionHandler(result.map { [weak self] in
                 let image = UIImage(data: $0)!
-                _ = try? self?.imageDataManager.saveImageData(data: $0, forKey: id)
+                _ = try? self?.imageDataManager.save(fileData: $0, forKey: id)
                 return image
             })
         }
@@ -184,7 +184,7 @@ class GalleryRepository {
             object.id = id
             object.position = Int32(position)
             position -= 1
-            _ = try imageDataManager.saveImageData(data: data, forKey: id)
+            _ = try imageDataManager.save(fileData: data, forKey: id)
             try localStorage.save()
             
             let entity = PhotoEntity(id: object.id, secret: object.secret, server: object.server, farm: Int(object.farm))
@@ -212,12 +212,12 @@ class GalleryRepository {
         for element in array {
             guard let elementId = element.id else { continue }
             do {
-                let imageData = try imageDataManager.fetchImageData(forKey: elementId)
+                let imageData = try imageDataManager.fetch(forKey: elementId)
                 uploadPhotoToServer(data: imageData) { [weak self] result in
                     switch result {
                     case .success(let uploadElementId):
                         do {
-                            if let photo = try self?.localStorage.fetchById(elementId), let imageData = try self?.imageDataManager.fetchImageData(forKey: elementId), let _ = try self?.imageDataManager.deleteImageData(forKey: elementId) {
+                            if let photo = try self?.localStorage.fetchById(elementId), let imageData = try self?.imageDataManager.fetch(forKey: elementId), let _ = try self?.imageDataManager.delete(forKey: elementId) {
                                 
                                 self?.gallery[0].id = uploadElementId
                                 photo.id = uploadElementId
@@ -241,7 +241,7 @@ class GalleryRepository {
                                         print(error)
                                     }
                                 }
-                                _ = try self?.imageDataManager.saveImageData(data: imageData, forKey: uploadElementId)
+                                _ = try self?.imageDataManager.save(fileData: imageData, forKey: uploadElementId)
                                 try self?.localStorage.save()
                                 
                                 let objects = try! self!.localStorage.fetchAll()
@@ -278,7 +278,7 @@ class GalleryRepository {
             switch result {
             case .success:
                 self?.gallery.remove(at: index)
-                try? self?.imageDataManager.deleteImageData(forKey: id)
+                try? self?.imageDataManager.delete(forKey: id)
                 try? self?.localStorage.delete(id)
                 completionHandler(.success(Void()))
             case .failure(let error):

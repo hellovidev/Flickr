@@ -13,7 +13,7 @@ public class HomeDataManager {
     
     let coreDataManager: CoreDataManager
     
-    let imageDataManager: ImageDataManager
+    let imageDataManager: FileManagerAPI
     
     public init(network: Network, database: CoreDataManager) {
         self.network = network
@@ -96,7 +96,7 @@ public class HomeDataManager {
         network.image(id: id, secret: secret, server: server, completionHandler: { [weak self] result in
             completionHandler(result.map {
                 let imageIdentifier = id + secret + server
-                _ = try? self?.imageDataManager.saveImageData(data: $0, forKey: imageIdentifier)
+                _ = try? self?.imageDataManager.save(fileData: $0, forKey: imageIdentifier)
                 return $0
             })
         })
@@ -106,7 +106,7 @@ public class HomeDataManager {
         network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid, completionHandler: { [weak self] result in
             completionHandler(result.map {
                 let buddyiconIdentifier = String(farm) + server + nsid
-                _ = try? self?.imageDataManager.saveImageData(data: $0, forKey: buddyiconIdentifier)
+                _ = try? self?.imageDataManager.save(fileData: $0, forKey: buddyiconIdentifier)
                 return $0
             })
         })
@@ -135,8 +135,8 @@ public class HomeDataManager {
             let imageIdentifier = id + secret + serverImage
             let buddyiconIdentifier = String(farm) + serverBuddyicon + nsid
             
-            try self.imageDataManager.deleteImageData(forKey: imageIdentifier)
-            try self.imageDataManager.deleteImageData(forKey: buddyiconIdentifier)
+            try self.imageDataManager.delete(forKey: imageIdentifier)
+            try self.imageDataManager.delete(forKey: buddyiconIdentifier)
         }
     }
     

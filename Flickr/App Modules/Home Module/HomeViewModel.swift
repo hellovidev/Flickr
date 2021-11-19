@@ -163,7 +163,7 @@ class HomeViewModel {
         
         let uniqIdentifier = id + secret + server
         
-        if let imageData = try? self.homeDataManager.imageDataManager.fetchImageData(forKey: uniqIdentifier) {
+        if let imageData = try? self.homeDataManager.imageDataManager.fetch(forKey: uniqIdentifier) {
             if let image = UIImage(data: imageData) {
                 completionHandler(.success(image))
                 return
@@ -196,7 +196,7 @@ class HomeViewModel {
         
         let uniqIdentifier = String(farm) + server + nsid
         
-        if let buddyiconData = try? self.homeDataManager.imageDataManager.fetchImageData(forKey: uniqIdentifier) {
+        if let buddyiconData = try? self.homeDataManager.imageDataManager.fetch(forKey: uniqIdentifier) {
             if let buddyicon = UIImage(data: buddyiconData) {
                 completionHandler(.success(buddyicon))
                 return

@@ -11,32 +11,64 @@ public class GalleryDataProvider {
     
     // MARK: - Services
     
+    private let userId: String
     private let remoteAPI: Network
     private let localAPI: UserPhotoCoreData
+    private let fileManager: FileManagerAPI
     
     // MARK: - Variables
     
-    private var galleryPhotos = [PhotoEntity]()
+    private var galleryPhotos = [UserPhoto]()
+    public var loadDataNeedUpdate: (() -> Void)?
     
-    init(userId: String, network: Network, database: UserPhotoCoreData) {
+    public init(userId: String, network: Network, database: UserPhotoCoreData, fileManager: FileManagerAPI) {
+        self.userId = userId
         self.remoteAPI = network
         self.localAPI = database
+        self.fileManager = fileManager
     }
     
     // MARK: - Fetch Methods+
     
-    func fetch(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    public func fetch(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter()
         localAPI.fetchFullBatch { [weak self] result in
             switch result {
-            case .success(let batch):
-                self?.galleryPhotos
+            case .success(let localBatch):
+                let domainEntities = localBatch.map {
+                    return UserPhoto($0)
+                }
+                self?.galleryPhotos = domainEntities
+                DispatchQueue.main.async {
+                    completionHandler(.success(()))
+                }
             case .failure(let error):
-                completionHandler(.failure(error))
+                DispatchQueue.main.async {
+                    completionHandler(.failure(error))
+                }
+            }
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            if let userId = self?.userId {
+                self?.remoteAPI.getUserPhotos(for: userId) { result in
+                    switch result {
+                    case .success(let remoteBatch):
+                        if let isNeedUpdate = self?.synchronize(remoteBatch) {
+                            if isNeedUpdate {
+                                self?.loadDataNeedUpdate?()
+                            }
+                        }
+                    case .failure(let error):
+                        print("Loading user photos error.", error)
+                    }
+                }
             }
         }
     }
-    
-    
     
     // MARK: - Save Methods
     
@@ -46,79 +78,32 @@ public class GalleryDataProvider {
     
     // MARK: - Delete Methods
     
-    func detele(id: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func detele(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        guard
+            let id = galleryPhotos[index].id
+        else {
+            completionHandler(.failure(NetworkManagerError.invalidParameters))
+            return
+        }
         
+        remoteAPI.deletePhotoById(id) { [weak self] result in
+            switch result {
+            case .success:
+                self?.galleryPhotos.remove(at: index)
+                try? self?.fileManager.delete(forKey: id)
+                try? self?.localAPI.delete(id)
+                completionHandler(.success(Void()))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
     }
     
     // MARK: - Helpers
     
-}
-
-public class UserPhotoCovertor {
-    
-    public func toUserPhotoCoreEntity() -> UserPhotoCoreEntity {
-        
+    /// Function synchronizing local and remote stores. Method returns `true` if after synchronizing local store updates and `false` if local and remote stores alredy similar.
+    private func synchronize(_ array: [PhotoEntity]) -> Bool {
+        return false
     }
-    
-    public func toPhotoEntity(_ coreDataObject: UserPhotoCoreEntity) -> PhotoEntity {
-        let photoEntity = PhotoEntity(id: coreDataObject.id, title: <#T##String?#>, owner: <#T##String?#>, isPublic: <#T##Int?#>, isFriend: <#T##Int?#>, secret: coreDataObject.id, server: <#T##String?#>, farm: <#T##Int?#>, isFamily: <#T##Int?#>)
-        return
-    }
-    
-}
-
-struct UserPhoto {
-    var id: String
-    var farm: Int
-    var secret: String
-    var server: String
-    var dateUpload: String
-}
-
-extension UserPhoto {
-    init(_ coreDataEntity: UserPhotoCoreEntity) {
-        if let id = coreDataEntity.id {
-            self.id = id
-        }
-        
-        if let farm = coreDataEntity.farm {
-            self.farm = Int(farm)
-        }
-        
-        if let secret = coreDataEntity.secret {
-            self.secret = secret
-        }
-        
-        if let server = coreDataEntity.server {
-            self.server = server
-        }
-        
-        if let dateUpload = coreDataEntity.dateUpload {
-            self.dateUpload = dateUpload
-        }
-    }
-    
-    init(_ remoteEntity: PhotoEntity) {
-        if let id = remoteEntity.id {
-            self.id = id
-        }
-        
-        if let farm = remoteEntity.farm {
-            self.farm = Int(farm)
-        }
-        
-        if let secret = remoteEntity.secret {
-            self.secret = secret
-        }
-        
-        if let server = remoteEntity.server {
-            self.server = server
-        }
-                
-        if let dateUpload = remoteEntity.dateUpload {
-            self.dateUpload = dateUpload
-        }
-    }
-    
     
 }

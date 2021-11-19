@@ -17,7 +17,7 @@ class FlickrImageDataManagerTests: XCTestCase {
         let key: String = "GDFK-63HJU"
         if let imageData = UIImage(named: "FlickrLogotype")?.pngData() {
             do {
-                let path = try sut.saveImageData(data: imageData, forKey: key)
+                let path = try sut.save(fileData: imageData, forKey: key)
                 XCTAssertNotNil(path)
             } catch {
                 XCTFail("Save image data error: \(error)")
@@ -33,7 +33,7 @@ class FlickrImageDataManagerTests: XCTestCase {
         let result = XCTWaiter.wait(for: [exp], timeout: 3.0)
         if result == XCTWaiter.Result.timedOut {
             do {
-                let imageData = try sut.fetchImageData(forKey: key)
+                let imageData = try sut.fetch(forKey: key)
                 XCTAssertNotNil(imageData)
             } catch {
                 XCTFail("Fetch image data error: \(error)")
@@ -50,7 +50,7 @@ class FlickrImageDataManagerTests: XCTestCase {
         let exp = expectation(description: "Test after 3 seconds")
         let result = XCTWaiter.wait(for: [exp], timeout: 3.0)
         if result == XCTWaiter.Result.timedOut {
-            XCTAssertNoThrow(try sut.deleteImageData(forKey: key))
+            XCTAssertNoThrow(try sut.delete(forKey: key))
         } else {
             XCTFail("Delay interrupted")
         }
@@ -62,7 +62,7 @@ class FlickrImageDataManagerTests: XCTestCase {
         let exp = expectation(description: "Test after 3 seconds")
         let result = XCTWaiter.wait(for: [exp], timeout: 3.0)
         if result == XCTWaiter.Result.timedOut {
-            XCTAssertNoThrow(try sut.deleteAllImageData())
+            XCTAssertNoThrow(try sut.deleteAllFiles())
         } else {
             XCTFail("Delay interrupted")
         }
@@ -74,7 +74,7 @@ class FlickrImageDataManagerTests: XCTestCase {
         let exp = expectation(description: "Test after 3 seconds")
         let result = XCTWaiter.wait(for: [exp], timeout: 3.0)
         if result == XCTWaiter.Result.timedOut {
-            XCTAssertNoThrow(try sut.deleteDirectory())
+            XCTAssertNoThrow(try sut.deleteFolder())
         } else {
             XCTFail("Delay interrupted")
         }
@@ -84,7 +84,7 @@ class FlickrImageDataManagerTests: XCTestCase {
     
     class SystemUnderTestContainer {
         
-        let imageDataManager: ImageDataManager
+        let imageDataManager: FileManagerAPI
         
         init() {
             imageDataManager = try! .init(name: "TestFolder")

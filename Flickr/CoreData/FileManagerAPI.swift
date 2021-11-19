@@ -1,5 +1,5 @@
 //
-//  ImageDataManager.swift
+//  FileManagerAPI.swift
 //  Flickr
 //
 //  Created by Siarhei Ramanchuk on 11/9/21.
@@ -9,14 +9,17 @@ import Foundation
 
 // MARK: - Error
 
-private enum ImageDataManagerError: Error {
+private enum FileManagerAPIError: Error {
+    case fileDoesNotExists
     case filePathDoesNotExists
+    case fileKeyDoesNotExists
 }
 
-public class ImageDataManager {
+// MARK: - General Class `FileManagerAPI`
+
+public class FileManagerAPI {
     
     private let fileManager: FileManager
-    
     private let folderPath: String
     
     public init(name: String, fileManager: FileManager = FileManager.default) throws {
@@ -25,56 +28,61 @@ public class ImageDataManager {
         let url = try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let folderPath = url.appendingPathComponent(name, isDirectory: true).path
         self.folderPath = folderPath
-                
+        print(folderPath)
+
         try initDirectoryIfNeeded()
         try setDirectoryAttributes([.protectionKey: FileProtectionType.complete])
     }
     
     // MARK: - Save Methods
     
-    public func saveImageData(data imageData: Data, forKey key: String) throws -> String {
+    public func save(fileData data: Data, forKey key: String) throws -> String {
         let filePath = self.makeFilePath(for: key)
-        print(filePath)
-        self.fileManager.createFile(atPath: filePath, contents: imageData, attributes: nil)
+        self.fileManager.createFile(atPath: filePath, contents: data, attributes: nil)
         return filePath
+    }
+    
+    public func save(fileData data: Data, forKey key: String) throws {
+        let filePath = self.makeFilePath(for: key)
+        self.fileManager.createFile(atPath: filePath, contents: data, attributes: nil)
     }
     
     // MARK: - Fetch Methods
     
-    public func fetchImageData(forKey key: String) throws -> Data {
-        let filePath = self.makeFilePath(for: key)
-        let url = URL(fileURLWithPath: filePath)
-        let imageData = try Data(contentsOf: url)
-        return imageData
+    public func fetch(filePath path: String) throws -> Data {
+        let url = URL(fileURLWithPath: path)
+        let fileData = try Data(contentsOf: url)
+        return fileData
     }
     
-    public func fetchImageData(filePath path: String) throws -> Data {
-        let url = URL(fileURLWithPath: path)
-        let imageData = try Data(contentsOf: url)
-        return imageData
+    public func fetch(forKey key: String) throws -> Data {
+        let filePath = self.makeFilePath(for: key)
+        let url = URL(fileURLWithPath: filePath)
+        let fileData = try Data(contentsOf: url)
+        return fileData
     }
     
     // MARK: - Delete Methods
     
-    public func deleteImageData(filePath path: String) throws {
+    public func delete(filePath path: String) throws {
         if self.fileManager.fileExists(atPath: path) {
             try self.fileManager.removeItem(atPath: path)
         } else {
-            throw ImageDataManagerError.filePathDoesNotExists
+            throw FileManagerAPIError.filePathDoesNotExists
         }
     }
     
-    public func deleteImageData(forKey key: String) throws {
+    public func delete(forKey key: String) throws {
         let filePath = self.makeFilePath(for: key)
         
         if self.fileManager.fileExists(atPath: filePath) {
             try self.fileManager.removeItem(atPath: filePath)
         } else {
-            throw ImageDataManagerError.filePathDoesNotExists
+            throw FileManagerAPIError.fileKeyDoesNotExists
         }
     }
     
-    public func deleteAllImageData() throws {
+    public func deleteAllFiles() throws {
         let url = URL(fileURLWithPath: folderPath)
         let fileURLs = try self.fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
         
@@ -83,7 +91,7 @@ public class ImageDataManager {
         }
     }
     
-    public func deleteDirectory() throws {
+    public func deleteFolder() throws {
         let url = URL(fileURLWithPath: self.folderPath)
         try self.fileManager.removeItem(at: url)
     }
@@ -92,7 +100,7 @@ public class ImageDataManager {
 
 // MARK: - File System Helpers
 
-private extension ImageDataManager {
+private extension FileManagerAPI {
 
     private func setDirectoryAttributes(_ attributes: [FileAttributeKey: Any]) throws {
         try self.fileManager.setAttributes(attributes, ofItemAtPath: self.folderPath)
