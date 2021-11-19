@@ -11,7 +11,7 @@ import Foundation
 
 extension Network {
     
-    func uploadImage(_ data: Data, title: String, description: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func uploadImage(_ data: Data, title: String, description: String, completionHandler: @escaping (Result<String, Error>) -> Void) {
         let parameters: [String: String] = [
             "title": title,
             "description": description,
@@ -22,7 +22,7 @@ extension Network {
         upload(
             parameters: parameters,
             file: data,
-            parser: VoidDeserializer(),
+            parser: XMLStringDeserializer(),
             completionHandler: completionHandler
         )
     }

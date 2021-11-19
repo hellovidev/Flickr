@@ -14,34 +14,27 @@ private enum CoreDataManagerError: Error {
 
 public class CoreDataManager {
     
-    let context: NSManagedObjectContext
+    private let fetchedResultsController: NSFetchedResultsController<PhotoDetailsCoreEntity>
+    //private let context: NSManagedObjectContext
     
     public init(context: NSManagedObjectContext) {
-        self.context = context
-    }
-    
-    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<PhotoDetailsCoreEntity> = {
-        // Initialize Fetch Request
+        //self.context = context
+        
         let fetchRequest: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
-
+        
         // Add Sort Descriptors
         let sortDescriptor = NSSortDescriptor(key: "position", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
-
+        
         // Initialize Fetched Results Controller
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.context, sectionNameKeyPath: nil, cacheName: nil)
-
-        // Configure Fetched Results Controller
-        //fetchedResultsController.delegate = self
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         
         do {
             try fetchedResultsController.performFetch()
         } catch {
             print(error)
         }
-        
-        return fetchedResultsController
-    }()
+    }
     
     // MARK: - Save Methods
     
@@ -68,10 +61,10 @@ public class CoreDataManager {
     // MARK: - Fetch Methods
     
     public func fetchObjectsIds() throws -> [String] {
-//        let request: NSFetchRequest<NSDictionary> = .init(entityName: "PhotoDetailsCoreEntity")
-//        request.resultType = .dictionaryResultType
-//        request.returnsDistinctResults = true
-//        request.propertiesToFetch = ["id"]
+        //        let request: NSFetchRequest<NSDictionary> = .init(entityName: "PhotoDetailsCoreEntity")
+        //        request.resultType = .dictionaryResultType
+        //        request.returnsDistinctResults = true
+        //        request.propertiesToFetch = ["id"]
         
         guard let objects = fetchedResultsController.fetchedObjects else {
             fatalError()
@@ -83,17 +76,17 @@ public class CoreDataManager {
                 ids.append(id)
             }
         }
-
         
-//        let dictionaries: [NSDictionary] = try context.fetch(request)
-//
-//        var ids = [String]()
-//        for dictionary in dictionaries {
-//            if let id = dictionary.value(forKey: "id") as? String {
-//                ids.append(id)
-//            }
-//        }
-
+        
+        //        let dictionaries: [NSDictionary] = try context.fetch(request)
+        //
+        //        var ids = [String]()
+        //        for dictionary in dictionaries {
+        //            if let id = dictionary.value(forKey: "id") as? String {
+        //                ids.append(id)
+        //            }
+        //        }
+        
         return ids
     }
     
@@ -107,37 +100,36 @@ public class CoreDataManager {
         return objectsAsDomainVersion
     }
     
-    public func fetchObjectById(id: String) throws -> PhotoDetailsEntity {
-        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id)
-        guard let objectFromDatabase = try context.fetch(request).first else { throw CoreDataManagerError.objectDoesNotExists }
-        let objectAsDomainVersion = self.mapDatabaseObjectToDomainVersion(object: objectFromDatabase)
-        
-        return objectAsDomainVersion
-    }
-    
-    public func fetchSetOfObjects() throws -> [PhotoDetailsEntity] {
-        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
-        let positionSort = NSSortDescriptor(key: "position", ascending: true)
-
-        request.sortDescriptors = [positionSort]
-        let objectsFromDatabase = try context.fetch(request)
-        
-        let objectsAsDomainVersion = objectsFromDatabase.map { object in
-            self.mapDatabaseObjectToDomainVersion(object: object)
-        }
-        
-        return objectsAsDomainVersion
-    }
+    //    public func fetchObjectById(id: String) throws -> PhotoDetailsEntity {
+    //        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+    //        request.predicate = NSPredicate(format: "id == %@", id)
+    //        guard let objectFromDatabase = try context.fetch(request).first else { throw CoreDataManagerError.objectDoesNotExists }
+    //        let objectAsDomainVersion = self.mapDatabaseObjectToDomainVersion(object: objectFromDatabase)
+    //
+    //        return objectAsDomainVersion
+    //    }
+    //
+    //    public func fetchSetOfObjects() throws -> [PhotoDetailsEntity] {
+    //        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
+    //        let positionSort = NSSortDescriptor(key: "position", ascending: true)
+    //
+    //        request.sortDescriptors = [positionSort]
+    //        let objectsFromDatabase = try context.fetch(request)
+    //
+    //        let objectsAsDomainVersion = objectsFromDatabase.map { object in
+    //            self.mapDatabaseObjectToDomainVersion(object: object)
+    //        }
+    //
+    //        return objectsAsDomainVersion
+    //    }
     
     // MARK: - Delete Methods
     
     public func clearDatabase() throws {
-        let request: NSFetchRequest<PhotoDetailsCoreEntity> = PhotoDetailsCoreEntity.fetchRequest()
-        let objects = try context.fetch(request)
-        
-        objects.forEach {
-            context.delete($0)
+        if let objects = fetchedResultsController.fetchedObjects {
+            objects.forEach {
+                fetchedResultsController.managedObjectContext.delete($0)
+            }
         }
         
         try self.commitUnsavedChanges()
@@ -146,13 +138,13 @@ public class CoreDataManager {
     // MARK: - Helper
     
     private func commitUnsavedChanges() throws {
-        if context.hasChanges {
-            try context.save()
+        if fetchedResultsController.managedObjectContext.hasChanges {
+            try fetchedResultsController.managedObjectContext.save()
         }
     }
     
     private func registerNewObject(object: PhotoDetailsEntity, position: Int) -> PhotoDetailsCoreEntity {
-        let dbEntity = PhotoDetailsCoreEntity(context: context)
+        let dbEntity = PhotoDetailsCoreEntity(context: fetchedResultsController.managedObjectContext)
         dbEntity.position = Int32(position)
         
         // Register main object information
@@ -190,3 +182,124 @@ public class CoreDataManager {
 }
 
 extension CoreDataManager: DependencyProtocol {}
+
+
+
+
+// MARK: - Photo Entity
+
+public class CoreDataPhotoEntity: NSObject, NSFetchedResultsControllerDelegate {
+    
+    let context: NSManagedObjectContext
+    
+    fileprivate lazy var fetchedResultscontroller: NSFetchedResultsController<UserPhotoCoreEntity> = { [weak self] in
+        let fetchRequest = UserPhotoCoreEntity.fetchRequest()
+        
+        let sortDescriptor = NSSortDescriptor(key: "position", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        let controller = NSFetchedResultsController<UserPhotoCoreEntity>(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        controller.delegate = self
+        
+        return controller
+    }()
+    
+    init(context: NSManagedObjectContext) {
+        self.context = context
+        
+        super.init()
+        
+        do {
+            try self.fetchedResultscontroller.performFetch()
+        } catch {
+            fatalError("Can't execute the controller’s fetch request")
+        }
+    }
+    
+    func delete(_ id: String) throws {
+        if let objects = fetchedResultscontroller.fetchedObjects {
+            for object in objects {
+                if object.id == id {
+                    fetchedResultscontroller.managedObjectContext.delete(object)
+                    break
+                }
+            }
+        }
+                
+        try save()
+    }
+    
+    func fetchById(_ id: String) throws -> PhotoEntity {
+        guard
+            let objects = fetchedResultscontroller.fetchedObjects
+        else {
+            throw CoreDataManagerError.emptyArray
+        }
+        
+        guard
+            let object = objects.first(where: { $0.id == id })
+        else {
+            throw CoreDataManagerError.objectDoesNotExists
+        }
+        
+        let result = mapCoreEntityToDomainEntity([object])
+        
+        return result[0]
+    }
+    
+    func fetchAll() throws -> [PhotoEntity] {
+        guard
+            let objects = fetchedResultscontroller.fetchedObjects
+        else {
+            throw CoreDataManagerError.emptyArray
+        }
+        let result = mapCoreEntityToDomainEntity(objects)
+        return result
+    }
+    
+    func save() throws {
+        if fetchedResultscontroller.managedObjectContext.hasChanges {
+            try fetchedResultscontroller.managedObjectContext.save()
+        }
+    }
+    
+    private func mapCoreEntityToDomainEntity(_ objects: [UserPhotoCoreEntity]) -> [PhotoEntity] {
+        var result = [PhotoEntity]()
+        
+        for object in objects {
+            let entity = PhotoEntity(id: object.id, secret: object.secret, server: object.server, farm: Int(object.farm))
+            result.append(entity)
+        }
+        
+        return result
+    }
+        
+    // MARK: - NSFetchedResultsControllerDelegate Methods
+    
+    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("will")
+    }
+
+    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            print("insert")
+            didChange?()
+        case .delete:
+            print("delete")
+        case .move:
+            print("move")
+        case .update:
+            print("update")
+        @unknown default:
+            print("unknown")
+        }
+    }
+
+    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("did")
+    }
+    
+    var didChange: (() -> ())?
+    
+}

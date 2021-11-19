@@ -49,3 +49,35 @@ struct ModelDeserializer<T: Decodable>: Deserializer {
     }
     
 }
+
+// MARK: - XMLDeserializer
+
+class XMLStringDeserializer: NSObject, Deserializer, XMLParserDelegate {
+    
+    typealias Response = String
+    
+    var object: Response = .init()
+    var currentElement: Bool = false
+    
+    func parse(data: Data) throws -> String {
+        let parser = XMLParser(data: data)
+        parser.delegate = self
+        parser.parse()
+        
+        return object
+    }
+    
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
+        if elementName == "photoid" {
+            currentElement = true
+        }
+    }
+    
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
+        if currentElement {
+            object += string
+            currentElement = false
+        }
+    }
+    
+}

@@ -40,21 +40,31 @@ class GalleryViewModel {
         repository.refresh()
     }
     
+    func initialPhotosLoading(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    }
+    
     func uploadLibraryPhoto(data: Data, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        repository.uploadLibraryPhoto(data: data, completionHandler: completionHandler)
+        repository.uploadPhoto(data: data, completionHandler: completionHandler) // not only local saver
     }
     
     func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         repository.removePhotoAt(index: index, completionHandler: completionHandler)
     }
     
-    func requestPhotoLinkInfoArray(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        repository.requestPhotoLinkInfoArray(completionHandler: completionHandler)
+    func initialFetchPhotos(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        repository.fetchUserPhotoArray { [weak self] result in
+            switch result {
+            case .success():
+                self?.repository.requestServerUserPhotoArray(completionHandler: completionHandler)
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
     }
     
     
     func requestPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
-        repository.requestPhoto(index: index, completionHandler: completionHandler)
+        repository.requestUserPhoto(index: index, completionHandler: completionHandler)
     }
     
     deinit {

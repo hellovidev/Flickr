@@ -64,7 +64,7 @@ public class HomeDataManager {
         group.notify(queue: .main) {
             if page == 1 {
                 self.currentObjects.removeAll()
-                if let databaseObjects = try? self.coreDataManager.fetchSetOfObjects() {
+                if let databaseObjects = try? self.coreDataManager.fetchObjects(){//fetchSetOfObjects() {
                     try? self.deleteImagesOfObjects(databaseObjects)
                 }
             }
@@ -78,7 +78,7 @@ public class HomeDataManager {
     
     func loadOfflineData(completionHandler: @escaping (Result<[PhotoDetailsEntity], Error>) -> Void) {
         do {
-            let domainObjects = try coreDataManager.fetchSetOfObjects()
+            let domainObjects = try coreDataManager.fetchObjects()//fetchSetOfObjects()
             self.currentObjects = domainObjects
             completionHandler(.success(self.currentObjects))
         } catch {

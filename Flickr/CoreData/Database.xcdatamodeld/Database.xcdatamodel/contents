@@ -17,7 +17,15 @@
         <attribute name="server" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="UserPhotoCoreEntity" representedClassName=".UserPhotoCoreEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="farm" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="position" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="secret" optional="YES" attributeType="String"/>
+        <attribute name="server" optional="YES" attributeType="String"/>
+    </entity>
     <elements>
         <element name="PhotoDetailsCoreEntity" positionX="-63" positionY="-18" width="128" height="254"/>
+        <element name="UserPhotoCoreEntity" positionX="-303.2261962890625" positionY="0.498016357421875" width="128" height="104"/>
     </elements>
 </model>

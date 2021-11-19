@@ -11,19 +11,29 @@ import UIKit
 
 class GalleryRepository {
     
-    private var gallery: [PhotoEntity]
-    
     private var network: Network
-    
-    private let cacheImages: CacheStorageService<NSString, UIImage>
-    
+
     @UserDefaultsBacked(key: UserDefaults.Keys.nsid.rawValue)
     private var nsid: String!
     
+    private let localStorage: CoreDataPhotoEntity<UserPhotoCoreEntity>
+    
+    private let imageDataManager: ImageDataManager
+    
+    private var gallery = [PhotoEntity]()
+        
     init(network: Network) {
         self.network = network
-        self.cacheImages = .init()
-        self.gallery = .init()
+        
+        guard let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { fatalError() }
+
+        self.localStorage = .init(context: scene.persistentContainer.viewContext)
+        
+        do {
+            self.imageDataManager = try .init(name: "UserImages")
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
     
     var gallaryCount: Int {
@@ -31,16 +41,185 @@ class GalleryRepository {
     }
     
     func refresh() {
-        cacheImages.removeAll()
+        //cacheImages.removeAll()
+    }
+
+    
+
+    func refresh(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        self.fetchUserPhotoArray(completionHandler: completionHandler)
     }
     
-    func uploadLibraryPhoto(
+    
+    
+    func requestServerUserPhotoArray(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        network.getUserPhotos(for: nsid) { result in
+            switch result {
+            case .success(let onlinePhotos):
+                let uniqs = self.uniqObjects(self.gallery, onlinePhotos)
+                
+                if uniqs.isEmpty {
+                    if self.gallery.isEmpty {
+                        self.gallery = onlinePhotos
+                        var index = 0
+                        for photo in onlinePhotos {
+                            let object = UserPhotoCoreEntity(context: self.localStorage.context)
+                            object.position = Int32(index)
+                            object.id = photo.id
+                            object.server = photo.server
+                            object.secret = photo.secret
+                            object.farm = Int32(photo.farm!)
+                            index += 1
+                        }
+                    } else {
+                        let enities = try! self.localStorage.fetchAll()
+                        var index = 0
+                        for entity in enities {
+                            entity.position = Int32(index)
+                            entity.id = onlinePhotos[index].id
+                            entity.server = onlinePhotos[index].server
+                            entity.secret = onlinePhotos[index].secret
+                            entity.farm = Int32(onlinePhotos[index].farm!)
+                            index += 1
+                        }
+                    }
+
+                    try? self.localStorage.save()
+                } else {
+                    self.uploadNewOfflinePhotosToServer(uniqs)
+                }
+                
+                completionHandler(.success(()))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+
+    private func uniqObjects(_ whereArray: [PhotoEntity], _ compareArray: [PhotoEntity]) -> [PhotoEntity] {
+        var uniqs = [PhotoEntity]()
+        
+        var uniq: Bool = true
+        for element in whereArray {
+            uniq = true
+            for photo in compareArray {
+                if element.id == photo.id {
+                    uniq = false
+                    break
+                }
+            }
+            
+            if uniq {
+                uniqs.append(element)
+            }
+        }
+    
+        return uniqs
+    }
+    
+
+    
+    // MARK: - Methods
+    
+    func fetchUserPhotoArray(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            let photos = try localStorage.fetchAll()
+            var offlineGallery = [PhotoEntity]()
+            for photo in photos {
+                let entity = PhotoEntity(id: photo.id, secret: photo.secret, server: photo.server, farm: Int(photo.farm))
+                offlineGallery.append(entity)
+            }
+            gallery = offlineGallery
+            completionHandler(.success(()))
+        } catch {
+            completionHandler(.failure(error))
+        }
+    }
+    
+    func requestUserPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        guard
+            let id = gallery[index].id,
+            let secret = gallery[index].secret,
+            let server = gallery[index].server
+        else {
+            completionHandler(.failure(NetworkManagerError.invalidParameters))
+            return
+        }
+        
+        if let imageData = try? imageDataManager.fetchImageData(forKey: id) {
+            let image = UIImage(data: imageData)!
+            completionHandler(.success(image))
+            return
+        }
+        
+        network.image(id: id, secret: secret, server: server) { result in
+            completionHandler(result.map { [weak self] in
+                let image = UIImage(data: $0)!
+                _ = try? self?.imageDataManager.saveImageData(data: $0, forKey: id)
+                return image
+            })
+        }
+    }
+    
+    func uploadPhoto(data: Data, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            let id = UUID().uuidString
+            
+            let object = UserPhotoCoreEntity(context: self.localStorage.context)
+
+            
+//            localStorage.didChange = { [weak self] in
+//
+//            }
+            
+            object.id = id
+            object.position = Int32(gallery.count)
+            _ = try imageDataManager.saveImageData(data: data, forKey: id)
+            try localStorage.save()
+            
+            let entity = PhotoEntity(id: object.id, secret: object.secret, server: object.server, farm: Int(object.farm))
+            self.gallery.append(entity)
+            self.uploadNewOfflinePhotosToServer([entity])
+        } catch {
+            completionHandler(.failure(error))
+        }
+    }
+    
+    func uploadPhotoToServer(
         data: Data,
         title: String = "Image",
         description: String = "This image uploaded from iOS application.",
-        completionHandler: @escaping (Result<Void, Error>) -> Void
+        completionHandler: @escaping (Result<String, Error>) -> Void
     ) {
         network.uploadImage(data, title: title, description: description, completionHandler: completionHandler)
+    }
+    
+    func uploadNewOfflinePhotosToServer(_ array: [PhotoEntity]) {
+        for element in array {
+            guard let elementId = element.id else { continue }
+            do {
+                let imageData = try imageDataManager.fetchImageData(forKey: elementId)
+                uploadPhotoToServer(data: imageData) { [weak self] result in
+                    switch result {
+                    case .success(let uploadElementId):
+                        do {
+                            if let photo = try self?.localStorage.fetchById(elementId), let imageData = try self?.imageDataManager.fetchImageData(forKey: elementId), let _ = try self?.imageDataManager.deleteImageData(forKey: elementId) {
+                                photo.id = uploadElementId
+                                _ = try self?.imageDataManager.saveImageData(data: imageData, forKey: uploadElementId)
+                                try self?.localStorage.save()
+                            }
+                        } catch {
+                            print(error)
+                        }
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+            } catch {
+                print(error)
+            }
+        }
     }
     
     func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
@@ -55,6 +234,8 @@ class GalleryRepository {
             switch result {
             case .success:
                 self?.gallery.remove(at: index)
+                try? self?.imageDataManager.deleteImageData(forKey: id)
+                try? self?.localStorage.delete(id)
                 completionHandler(.success(Void()))
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -62,42 +243,7 @@ class GalleryRepository {
         }
     }
     
-    func requestPhotoLinkInfoArray(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        network.getUserPhotos(for: nsid) { [weak self] result in
-            switch result {
-            case .success(let photoArray):
-                self?.gallery = photoArray
-                completionHandler(.success(Void()))
-            case .failure(let error):
-                completionHandler(.failure(error))
-            }
-        }
-    }
-    
-    func requestPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
-        guard
-            let id = gallery[index].id,
-            let secret = gallery[index].secret,
-            let server = gallery[index].server
-        else {
-            completionHandler(.failure(NetworkManagerError.invalidParameters))
-            return
-        }
-        
-        let cacheImageIdentifier = id + secret + server as NSString
-        if let imageCache = try? cacheImages.get(for: cacheImageIdentifier) {
-            completionHandler(.success(imageCache))
-            return
-        }
-        
-        network.image(id: id, secret: secret, server: server) { result in
-            completionHandler(result.map { [weak self] in
-                let image = UIImage(data: $0)!
-                self?.cacheImages.set(for: image, with: cacheImageIdentifier)
-                return image
-            })
-        }
-    }
+    // MARK: - Database Methods
     
     deinit {
         print("\(type(of: self)) deinited.")

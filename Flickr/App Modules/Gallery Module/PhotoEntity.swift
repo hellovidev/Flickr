@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - PhotoEntity
 
-struct PhotoEntity: Decodable {
+struct PhotoEntity: Decodable, Hashable {
     
     let id: String?
     

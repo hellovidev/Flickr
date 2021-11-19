@@ -33,13 +33,14 @@ class GalleryViewController: UIViewController {
     }
     
     @objc private func refreshCollectionView() {
+        self.collectionView.reloadData()
         viewModel.refresh()
-        requestPhotos()
+        //requestPhotos()
     }
     
     private func requestPhotos() {
         collectionView.refreshControl?.beginRefreshing()
-        viewModel.requestPhotoLinkInfoArray { [weak self] result in
+        viewModel.initialFetchPhotos { [weak self] result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.collectionView.refreshControl?.endRefreshing()
             }
