@@ -188,18 +188,24 @@ extension CoreDataManager: DependencyProtocol {}
 
 // MARK: - Photo Entity
 
-public class CoreDataPhotoEntity: NSObject, NSFetchedResultsControllerDelegate {
+public class CoreDataUserPhoto<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
     
     let context: NSManagedObjectContext
     
-    fileprivate lazy var fetchedResultscontroller: NSFetchedResultsController<UserPhotoCoreEntity> = { [weak self] in
-        let fetchRequest = UserPhotoCoreEntity.fetchRequest()
+    fileprivate lazy var fetchedResultscontroller: NSFetchedResultsController<T> = { [weak self] in
+        guard let this = self else {
+            fatalError("lazy property has been called after object has been descructed")
+        }
+        
+        guard let fetchRequest = T.fetchRequest() as? NSFetchRequest<T> else {
+            fatalError("Can't set up NSFetchRequest")
+        }
         
         let sortDescriptor = NSSortDescriptor(key: "position", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
-        let controller = NSFetchedResultsController<UserPhotoCoreEntity>(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-        controller.delegate = self
+        let controller = NSFetchedResultsController<T>(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        controller.delegate = this
         
         return controller
     }()
@@ -216,45 +222,17 @@ public class CoreDataPhotoEntity: NSObject, NSFetchedResultsControllerDelegate {
         }
     }
     
-    func delete(_ id: String) throws {
-        if let objects = fetchedResultscontroller.fetchedObjects {
-            for object in objects {
-                if object.id == id {
-                    fetchedResultscontroller.managedObjectContext.delete(object)
-                    break
-                }
-            }
-        }
-                
-        try save()
+    func fetchById(_ id: String) throws -> T {
+        let objects = try fetchAll()
+        guard let object = objects.first(where: {
+            ($0 as! UserPhotoCoreEntity).id == id
+        }) else { throw CoreDataManagerError.objectDoesNotExists }
+        return object
     }
     
-    func fetchById(_ id: String) throws -> PhotoEntity {
-        guard
-            let objects = fetchedResultscontroller.fetchedObjects
-        else {
-            throw CoreDataManagerError.emptyArray
-        }
-        
-        guard
-            let object = objects.first(where: { $0.id == id })
-        else {
-            throw CoreDataManagerError.objectDoesNotExists
-        }
-        
-        let result = mapCoreEntityToDomainEntity([object])
-        
-        return result[0]
-    }
-    
-    func fetchAll() throws -> [PhotoEntity] {
-        guard
-            let objects = fetchedResultscontroller.fetchedObjects
-        else {
-            throw CoreDataManagerError.emptyArray
-        }
-        let result = mapCoreEntityToDomainEntity(objects)
-        return result
+    func fetchAll() throws -> [T] {
+        guard let objects = fetchedResultscontroller.fetchedObjects else { throw CoreDataManagerError.emptyArray }
+        return objects
     }
     
     func save() throws {
@@ -263,15 +241,17 @@ public class CoreDataPhotoEntity: NSObject, NSFetchedResultsControllerDelegate {
         }
     }
     
-    private func mapCoreEntityToDomainEntity(_ objects: [UserPhotoCoreEntity]) -> [PhotoEntity] {
-        var result = [PhotoEntity]()
-        
-        for object in objects {
-            let entity = PhotoEntity(id: object.id, secret: object.secret, server: object.server, farm: Int(object.farm))
-            result.append(entity)
+    func delete(_ id: String) throws {
+        if let objects = fetchedResultscontroller.fetchedObjects {
+            for object in objects {
+                if (object as! UserPhotoCoreEntity).id == id {
+                    fetchedResultscontroller.managedObjectContext.delete(object)
+                    break
+                }
+            }
         }
-        
-        return result
+                
+        try save()
     }
         
     // MARK: - NSFetchedResultsControllerDelegate Methods

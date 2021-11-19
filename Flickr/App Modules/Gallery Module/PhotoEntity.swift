@@ -11,7 +11,7 @@ import Foundation
 
 struct PhotoEntity: Decodable, Hashable {
     
-    let id: String?
+    var id: String?
     
     var title: String?
     

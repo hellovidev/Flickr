@@ -16,7 +16,7 @@ class GalleryRepository {
     @UserDefaultsBacked(key: UserDefaults.Keys.nsid.rawValue)
     private var nsid: String!
     
-    private let localStorage: CoreDataPhotoEntity<UserPhotoCoreEntity>
+    private let localStorage: CoreDataUserPhoto<UserPhotoCoreEntity>
     
     private let imageDataManager: ImageDataManager
     
@@ -86,7 +86,9 @@ class GalleryRepository {
 
                     try? self.localStorage.save()
                 } else {
-                    self.uploadNewOfflinePhotosToServer(uniqs)
+                    self.uploadNewOfflinePhotosToServer(uniqs) { result in
+                        
+                    }
                 }
                 
                 completionHandler(.success(()))
@@ -139,9 +141,7 @@ class GalleryRepository {
     
     func requestUserPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
         guard
-            let id = gallery[index].id,
-            let secret = gallery[index].secret,
-            let server = gallery[index].server
+            let id = gallery[index].id
         else {
             completionHandler(.failure(NetworkManagerError.invalidParameters))
             return
@@ -153,6 +153,14 @@ class GalleryRepository {
             return
         }
         
+        guard
+            let secret = gallery[index].secret,
+            let server = gallery[index].server
+        else {
+            completionHandler(.failure(NetworkManagerError.invalidParameters))
+            return
+        }
+        
         network.image(id: id, secret: secret, server: server) { result in
             completionHandler(result.map { [weak self] in
                 let image = UIImage(data: $0)!
@@ -161,7 +169,7 @@ class GalleryRepository {
             })
         }
     }
-    
+    private var position: Int = -1
     func uploadPhoto(data: Data, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         do {
             let id = UUID().uuidString
@@ -174,13 +182,14 @@ class GalleryRepository {
 //            }
             
             object.id = id
-            object.position = Int32(gallery.count)
+            object.position = Int32(position)
+            position -= 1
             _ = try imageDataManager.saveImageData(data: data, forKey: id)
             try localStorage.save()
             
             let entity = PhotoEntity(id: object.id, secret: object.secret, server: object.server, farm: Int(object.farm))
-            self.gallery.append(entity)
-            self.uploadNewOfflinePhotosToServer([entity])
+            self.gallery.insert(entity, at: 0)
+            self.uploadNewOfflinePhotosToServer([entity], completionHandler: completionHandler)
         } catch {
             completionHandler(.failure(error))
         }
@@ -195,7 +204,7 @@ class GalleryRepository {
         network.uploadImage(data, title: title, description: description, completionHandler: completionHandler)
     }
     
-    func uploadNewOfflinePhotosToServer(_ array: [PhotoEntity]) {
+    func uploadNewOfflinePhotosToServer(_ array: [PhotoEntity], completionHandler: @escaping (Result<Void, Error>) -> Void) {
         for element in array {
             guard let elementId = element.id else { continue }
             do {
@@ -205,8 +214,38 @@ class GalleryRepository {
                     case .success(let uploadElementId):
                         do {
                             if let photo = try self?.localStorage.fetchById(elementId), let imageData = try self?.imageDataManager.fetchImageData(forKey: elementId), let _ = try self?.imageDataManager.deleteImageData(forKey: elementId) {
+                                
+                                self?.gallery[0].id = uploadElementId
                                 photo.id = uploadElementId
+                                
+                                self?.network.getPhotoById(for: uploadElementId) { result in
+                                    switch result {
+                                        
+                                    case .success(let details):
+                                        photo.server = details.server
+                                        photo.farm = Int32(details.farm!)
+                                        photo.secret = details.secret
+                                        
+                                        self?.gallery[0].server = details.server
+                                        self?.gallery[0].farm = details.farm
+                                        self?.gallery[0].secret = details.secret
+                                        
+                                        try? self?.localStorage.save()
+                                        completionHandler(.success(()))
+                                    case .failure(let error):
+                                        
+                                        print(error)
+                                    }
+                                }
                                 _ = try self?.imageDataManager.saveImageData(data: imageData, forKey: uploadElementId)
+                                try self?.localStorage.save()
+                                
+                                let objects = try! self!.localStorage.fetchAll()
+                                var newIndex = 0
+                                for obj in objects {
+                                    obj.position = Int32(newIndex)
+                                    newIndex += 1
+                                }
                                 try self?.localStorage.save()
                             }
                         } catch {
@@ -217,6 +256,7 @@ class GalleryRepository {
                     }
                 }
             } catch {
+                completionHandler(.failure(error))
                 print(error)
             }
         }
