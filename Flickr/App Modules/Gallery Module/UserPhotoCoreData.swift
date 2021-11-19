@@ -20,7 +20,7 @@ public class UserPhotoCoreData: NSObject, NSFetchedResultsControllerDelegate {
             fatalError("Can't set up NSFetchRequest")
         }
         
-        let sortDescriptor = NSSortDescriptor(key: "position", ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "dateUpload", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
         let controller = NSFetchedResultsController<UserPhotoCoreEntity>(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)

@@ -24,12 +24,13 @@ public class FileManagerAPI {
     
     public init(name: String, fileManager: FileManager = FileManager.default) throws {
         self.fileManager = fileManager
-
+        
         let url = try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let folderPath = url.appendingPathComponent(name, isDirectory: true).path
         self.folderPath = folderPath
+        
         print(folderPath)
-
+        
         try initDirectoryIfNeeded()
         try setDirectoryAttributes([.protectionKey: FileProtectionType.complete])
     }
@@ -42,7 +43,7 @@ public class FileManagerAPI {
         return filePath
     }
     
-    public func save(fileData data: Data, forKey key: String) throws {
+    public func justSave(fileData data: Data, forKey key: String) throws {
         let filePath = self.makeFilePath(for: key)
         self.fileManager.createFile(atPath: filePath, contents: data, attributes: nil)
     }
@@ -110,7 +111,7 @@ public class FileManagerAPI {
 // MARK: - File System Helpers
 
 private extension FileManagerAPI {
-
+    
     private func setDirectoryAttributes(_ attributes: [FileAttributeKey: Any]) throws {
         try self.fileManager.setAttributes(attributes, ofItemAtPath: self.folderPath)
     }
@@ -119,7 +120,7 @@ private extension FileManagerAPI {
         let fileExtension = URL(fileURLWithPath: key).pathExtension
         return fileExtension.isEmpty ? key : "\(key).\(fileExtension)"
     }
-
+    
     private func makeFilePath(for key: String) -> String {
         return "\(self.folderPath)/\(self.makeFileName(for: key))"
     }

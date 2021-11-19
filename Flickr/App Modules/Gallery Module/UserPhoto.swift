@@ -12,7 +12,7 @@ struct UserPhoto {
     var farm: Int?
     var secret: String?
     var server: String?
-    var dateUpload: String?
+    var dateUploaded: String?
 }
 
 extension UserPhoto {
@@ -32,8 +32,8 @@ extension UserPhoto {
             self.server = server
         }
         
-        if let dateUpload = coreDataEntity.dateUpload {
-            self.dateUpload = dateUpload
+        if let dateUpload = coreDataEntity.dateUploaded {
+            self.dateUploaded = dateUpload
         }
     }
     
@@ -55,7 +55,7 @@ extension UserPhoto {
         }
                 
         if let dateUpload = remoteEntity.dateUpload {
-            self.dateUpload = dateUpload
+            self.dateUploaded = dateUpload
         }
     }
     

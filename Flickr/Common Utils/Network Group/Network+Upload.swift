@@ -11,7 +11,7 @@ import Foundation
 
 extension Network {
     
-    func uploadImage(_ data: Data, title: String, description: String, completionHandler: @escaping (Result<String, Error>) -> Void) {
+    func uploadImage(_ data: Data, title: String = "New photo from iOS.", description: String = "Wow! This photo really uploaded from iOS!", completionHandler: @escaping (Result<String, Error>) -> Void) {
         let parameters: [String: String] = [
             "title": title,
             "description": description,
