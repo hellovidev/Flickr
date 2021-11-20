@@ -12,6 +12,7 @@ import Foundation
 private enum GalleryDataProviderError: Error {
     case emptyId
     case emptyAdditionalImageParameters
+    case galleryPhotosStorageDoesNotexists
 }
 
 // MARK: - General Class `GalleryDataProvider`
@@ -37,7 +38,7 @@ public class GalleryDataProvider {
         self.fileManager = fileManager
     }
     
-    // MARK: - Fetch Methods+
+    // MARK: - Fetch Methods
     
     public func fetch(completionHandler: @escaping (Result<Void, Error>) -> Void) {
         let dispatchGroup = DispatchGroup()
@@ -70,15 +71,15 @@ public class GalleryDataProvider {
                 // If entities from database haven't been upload try to do it
                 for needUploadElement in needUploadEntities {
                     dispatchGroup.enter()
-
+                    
                     if let id = needUploadElement.id,
                        let imageData = try? self?.fileManager.fetch(forKey: id) {
-
+                        
                         // Upload attempt
                         self?.remoteAPI.uploadImage(imageData) { result in
                             switch result {
                             case .success(let uploadPhotoId):
-
+                                
                                 // When uploading completed with success update information in database and localy in `galleryPhotos`
                                 self?.configure(updatedId: uploadPhotoId, previousId: id, localEntity: needUploadElement) { result in
                                     switch result {
@@ -114,46 +115,14 @@ public class GalleryDataProvider {
                 self?.remoteAPI.getUserPhotos(for: userId) { result in
                     switch result {
                     case .success(let remoteBatch):
-                        
-                        // MARK: - ---
-                        // if photos upload correctly cool if not upload some get them and add remote
-                        
-                        if let notUploaded = self?.galleryPhotos.filter({ $0.isUploaded == false }) {
-                            let ids = notUploaded.map { $0.id! } //??
-                            
-                            if notUploaded.isEmpty {
-                                try? self?.localAPI.deleteAll()
-                            } else {
-                                try? self?.localAPI.deleteAllExcept(ids: ids)
+                        self?.synchronize(remoteBatch, completionHandler: { result in
+                            switch result {
+                            case .success:
+                                self?.loadDataNeedUpdate?()
+                            case .failure(let error):
+                                print("Synchronizing user photos error.", error)
                             }
-                            
-                            self?.galleryPhotos = notUploaded + remoteBatch.map {
-                                return UserPhoto($0)
-                            }
-                        }
-                        
-                        for remoteElement in remoteBatch {
-                            let localEntity = UserPhotoCoreEntity(context: self!.localAPI.context) //??
-                            localEntity.id = remoteElement.id
-                            if let farm = remoteElement.farm {
-                                localEntity.farm = Int32(farm)
-                            }
-                            localEntity.server = remoteElement.server
-                            localEntity.secret = remoteElement.secret
-                            localEntity.dateUploaded = remoteElement.dateUpload
-                            localEntity.isUploaded = true
-                        }
-                        
-                        try? self?.localAPI.save()
-                        self?.loadDataNeedUpdate?()
-                        
-                        //                        if let isNeedUpdate = self?.synchronize(remoteBatch) {
-                        //                            if isNeedUpdate {
-                        //                                self?.loadDataNeedUpdate?()
-                        //                            }
-                        //                        }
-                        
-                        // MARK: - ----
+                        })
                     case .failure(let error):
                         print("Loading user photos error.", error)
                     }
@@ -264,8 +233,46 @@ public class GalleryDataProvider {
     // MARK: - Helpers
     
     /// Function synchronizing local and remote stores. Method returns `true` if after synchronizing local store updates and `false` if local and remote stores alredy similar.
-    private func synchronize(_ remoteEnities: [PhotoEntity]) -> Bool {
-        return true
+    private func synchronize(_ remoteEnities: [PhotoEntity], completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            let notUploaded = self.galleryPhotos.filter({ $0.isUploaded == false })
+            let ids = notUploaded.map { object -> String in
+                guard
+                    let id = object.id
+                else {
+                    fatalError("\(GalleryDataProviderError.emptyId)")
+                }
+                
+                return id
+            }
+            
+            if notUploaded.isEmpty {
+                try self.localAPI.deleteAll()
+            } else {
+                try self.localAPI.deleteAllExcept(ids: ids)
+            }
+            
+            self.galleryPhotos = notUploaded + remoteEnities.map {
+                return UserPhoto($0)
+            }
+            
+            for remoteElement in remoteEnities {
+                let localEntity = UserPhotoCoreEntity(context: self.localAPI.context)
+                localEntity.id = remoteElement.id
+                if let farm = remoteElement.farm {
+                    localEntity.farm = Int32(farm)
+                }
+                localEntity.server = remoteElement.server
+                localEntity.secret = remoteElement.secret
+                localEntity.dateUploaded = remoteElement.dateUpload
+                localEntity.isUploaded = true
+            }
+            
+            try self.localAPI.save()
+            completionHandler(.success(()))
+        } catch {
+            completionHandler(.failure(error))
+        }
     }
     
     /// Function replace old information about user photo with server information.
@@ -273,6 +280,24 @@ public class GalleryDataProvider {
         let dispatchGroup = DispatchGroup()
         var detailsEntity = PhotoDetailsEntity()
         
+        // Pre configuration
+        guard
+            let index = galleryPhotos.firstIndex(where: { $0.id == previousId })
+        else {
+            completionHandler(.failure(GalleryDataProviderError.galleryPhotosStorageDoesNotexists))
+            return
+        }
+        
+        galleryPhotos[index].id = updatedId
+        galleryPhotos[index].isUploaded = true
+        
+        localEntity.id = updatedId
+        localEntity.dateUploaded = galleryPhotos[index].dateUploaded
+        localEntity.isUploaded = true
+        try? localAPI.save()
+        try? fileManager.rename(atKey: previousId, toKey: updatedId)
+        
+        // Detail configuration
         dispatchGroup.enter()
         remoteAPI.getPhotoById(for: updatedId) { result in
             switch result {
@@ -287,32 +312,18 @@ public class GalleryDataProvider {
         }
         
         dispatchGroup.notify(queue: .main) { [weak self] in
-            guard let photos = self?.galleryPhotos else { fatalError() } // ??
-            
-            var index = 0
-            for photo in photos {
-                if photo.id == previousId {
-                    break
-                }
-                index += 1
-            }
-            
             // Update `Gallery Photos`
-            self?.galleryPhotos[index].id = detailsEntity.id
             self?.galleryPhotos[index].server = detailsEntity.server
             self?.galleryPhotos[index].farm = detailsEntity.farm
             self?.galleryPhotos[index].secret = detailsEntity.secret
-            self?.galleryPhotos[index].isUploaded = true
             
             // Update local storage
-            localEntity.id = detailsEntity.id
             localEntity.server = detailsEntity.server
             if let farm = detailsEntity.farm {
                 localEntity.farm = Int32(farm)
             }
             localEntity.secret = detailsEntity.secret
             localEntity.dateUploaded = detailsEntity.dateUploaded
-            localEntity.isUploaded = true
             
             do {
                 try self?.localAPI.save()
@@ -322,28 +333,6 @@ public class GalleryDataProvider {
                 completionHandler(.failure(error))
             }
         }
-    }
-    
-    /// Function compare two arrays and returns elements which are uniqs in `findInArray`
-    private func uniqElements<T: UserPhotoProtocol, Y: UserPhotoProtocol>(_ findInArray: [T], _ compareWithArray: [Y]) -> [T] {
-        var uniqElements = [T]()
-        var isUniq: Bool
-        
-        for findInElement in findInArray {
-            isUniq = true
-            for compareWithElement in compareWithArray {
-                if findInElement.id == compareWithElement.id {
-                    isUniq = false
-                    break
-                }
-            }
-            
-            if isUniq {
-                uniqElements.append(findInElement)
-            }
-        }
-        
-        return uniqElements
     }
     
     public var numberOfElements: Int {
@@ -357,80 +346,3 @@ public class GalleryDataProvider {
     }
     
 }
-
-
-/*
- if galleryPhotos.isEmpty {
- galleryPhotos = remoteEnities.map {
- return UserPhoto($0)
- }
- 
- for remoteElement in remoteEnities {
- let localEntity = UserPhotoCoreEntity(context: localAPI.context)
- localEntity.id = remoteElement.id
- if let farm = remoteElement.farm {
- localEntity.farm = Int32(farm)
- }
- localEntity.server = remoteElement.server
- localEntity.secret = remoteElement.secret
- localEntity.dateUploaded = remoteElement.dateUpload
- }
- try? localAPI.save()
- 
- return true
- } else {
- let uniqEntities = uniqElements(galleryPhotos, remoteEnities)
- 
- if uniqEntities.isEmpty && galleryPhotos.count == remoteEnities.count {
- galleryPhotos = remoteEnities.map {
- return UserPhoto($0)
- }
- 
- localAPI.fetchFullBatch { [weak self] result in
- switch result {
- case .success(let localEnities):
- var index = 0
- for localElement in localEnities {
- localElement.id = remoteEnities[index].id
- if let farm = remoteEnities[index].farm {
- localElement.farm = Int32(farm)
- }
- localElement.server = remoteEnities[index].server
- localElement.secret = remoteEnities[index].secret
- localElement.dateUploaded = remoteEnities[index].dateUpload
- index += 1
- }
- 
- try? self?.localAPI.save()
- case .failure(let error):
- print("Fetch local entities error.", error)
- }
- }
- 
- return false
- } else if uniqEntities.isEmpty && galleryPhotos.count != remoteEnities.count {
- if galleryPhotos.count > remoteEnities.count {
- 
- } else {
- 
- }
- } else if !uniqEntities.isEmpty && galleryPhotos.count == remoteEnities.count {
- 
- } else if !uniqEntities.isEmpty && galleryPhotos.count != remoteEnities.count {
- if galleryPhotos.count > remoteEnities.count {
- 
- } else {
- let uniqLocalEntities = uniqElements(remoteEnities, galleryPhotos)
- 
- save uniqs
- 
- self.uploadNewOfflinePhotosToServer(uniqs) { result in
- self.gallery = onlinePhotos
- 
- вычислить совпадающие элементы
- }
- }
- }
- }
- 
- */
