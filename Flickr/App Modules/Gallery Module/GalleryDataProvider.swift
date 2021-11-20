@@ -46,25 +46,39 @@ public class GalleryDataProvider {
         localAPI.fetchFullBatch { [weak self] result in
             switch result {
             case .success(let localBatch):
-                // Set entities from database to `galleryPhotos`
-                let domainEntities = localBatch.map {
-                    return UserPhoto($0)
+                // Find not upload elements and update them `dateUpload` to track right position if somebody delete or upload some elements from another device
+                let needUploadEntities = localBatch.filter { $0.isUploaded == false }
+                needUploadEntities.reversed().forEach {
+                    $0.dateUploaded = String(NSDate().timeIntervalSince1970)
                 }
+                try? self?.localAPI.save()
+                
+                // Set entities from database to `galleryPhotos`
+                var domainEntities = [UserPhoto]()
+                for localElement in localBatch {
+                    var result = UserPhoto(localElement)
+                    for needUploadElement in needUploadEntities {
+                        if localElement.id == needUploadElement.id {
+                            result.dateUploaded = needUploadElement.dateUploaded
+                        }
+                    }
+                    domainEntities.append(result)
+                }
+                
                 self?.galleryPhotos = domainEntities
                 
                 // If entities from database haven't been upload try to do it
-                let needUploadEntities = localBatch.filter { $0.isUploaded == false }
                 for needUploadElement in needUploadEntities {
                     dispatchGroup.enter()
-                    
+
                     if let id = needUploadElement.id,
                        let imageData = try? self?.fileManager.fetch(forKey: id) {
-                        
+
                         // Upload attempt
                         self?.remoteAPI.uploadImage(imageData) { result in
                             switch result {
                             case .success(let uploadPhotoId):
-                                
+
                                 // When uploading completed with success update information in database and localy in `galleryPhotos`
                                 self?.configure(updatedId: uploadPhotoId, previousId: id, localEntity: needUploadElement) { result in
                                     switch result {
@@ -104,8 +118,18 @@ public class GalleryDataProvider {
                         // MARK: - ---
                         // if photos upload correctly cool if not upload some get them and add remote
                         
-                        self?.galleryPhotos = remoteBatch.map {
-                            return UserPhoto($0)
+                        if let notUploaded = self?.galleryPhotos.filter({ $0.isUploaded == false }) {
+                            let ids = notUploaded.map { $0.id! } //??
+                            
+                            if notUploaded.isEmpty {
+                                try? self?.localAPI.deleteAll()
+                            } else {
+                                try? self?.localAPI.deleteAllExcept(ids: ids)
+                            }
+                            
+                            self?.galleryPhotos = notUploaded + remoteBatch.map {
+                                return UserPhoto($0)
+                            }
                         }
                         
                         for remoteElement in remoteBatch {
@@ -119,7 +143,7 @@ public class GalleryDataProvider {
                             localEntity.dateUploaded = remoteElement.dateUpload
                             localEntity.isUploaded = true
                         }
-                        try? self?.localAPI.deleteAll()
+                        
                         try? self?.localAPI.save()
                         self?.loadDataNeedUpdate?()
                         

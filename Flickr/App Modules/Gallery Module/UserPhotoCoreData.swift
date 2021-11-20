@@ -117,6 +117,31 @@ public class UserPhotoCoreData: NSObject, NSFetchedResultsControllerDelegate {
         try save()
     }
     
+    public func deleteAllExcept(ids: [String]) throws {
+        guard
+            let fetchedObjects = fetchedResultscontroller.fetchedObjects
+        else {
+            throw CoreDataError.isEmpty
+        }
+        
+        var isExcept = false
+        for fetchedObject in fetchedObjects {
+            isExcept = false
+            
+            for id in ids {
+                if fetchedObject.id == id {
+                    isExcept = true
+                }
+            }
+            
+            if !isExcept {
+                fetchedResultscontroller.managedObjectContext.delete(fetchedObject)
+            }
+        }
+        
+        try save()
+    }
+    
     // MARK: - NSFetchedResultsControllerDelegate Methods
     
     public var contentDidChange: (() -> ())?
