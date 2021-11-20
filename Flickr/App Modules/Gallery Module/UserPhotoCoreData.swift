@@ -7,212 +7,142 @@
 
 import CoreData
 
-public class UserPhotoCoreData: NSObject, NSFetchedResultsControllerDelegate {
-    
-    let context: NSManagedObjectContext
-    
-    fileprivate lazy var fetchedResultscontroller: NSFetchedResultsController<UserPhotoCoreEntity> = { [weak self] in
-        guard let this = self else {
-            fatalError("lazy property has been called after object has been descructed")
-        }
-        
-        guard let fetchRequest = UserPhotoCoreEntity.fetchRequest() as? NSFetchRequest<UserPhotoCoreEntity> else {
-            fatalError("Can't set up NSFetchRequest")
-        }
-        
-        let sortDescriptor = NSSortDescriptor(key: "dateUpload", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        let controller = NSFetchedResultsController<UserPhotoCoreEntity>(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-        controller.delegate = this
-        
-        return controller
-    }()
-    
-    init(context: NSManagedObjectContext) {
-        self.context = context
-        
-        super.init()
-        
-        do {
-            try self.fetchedResultscontroller.performFetch()
-        } catch {
-            fatalError("Can't execute the controller’s fetch request")
-        }
-    }
-    
-//    func fetchById(_ id: String) throws -> UserPhotoCoreEntity {
-//        let objects = try fetchAll()
-//        guard let object = objects.first(where: {
-//            ($0 as! UserPhotoCoreEntity).id == id
-//        }) else { throw CoreDataManagerError.objectDoesNotExists }
-//        return object
-//    }
-    
-    func fetchFullBatch(completionHandler: @escaping (Result<[UserPhotoCoreEntity], Error>) -> Void) {
-        guard
-            let batch = fetchedResultscontroller.fetchedObjects
-        else {
-            completionHandler(.failure(CoreDataError.isEmpty))
-            return
-        }
-        
-        completionHandler(.success(batch))
-    }
-    
-    func save() throws {
-        if fetchedResultscontroller.managedObjectContext.hasChanges {
-            try fetchedResultscontroller.managedObjectContext.save()
-        }
-    }
-    
-    func delete(_ id: String) throws {
-        if let objects = fetchedResultscontroller.fetchedObjects {
-            for object in objects {
-                if (object as! UserPhotoCoreEntity).id == id {
-                    fetchedResultscontroller.managedObjectContext.delete(object)
-                    break
-                }
-            }
-        }
-                
-        try save()
-    }
-        
-    // MARK: - NSFetchedResultsControllerDelegate Methods
-    
-    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("will")
-    }
-
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        switch type {
-        case .insert:
-            print("insert")
-            didChange?()
-        case .delete:
-            print("delete")
-        case .move:
-            print("move")
-        case .update:
-            print("update")
-        @unknown default:
-            print("unknown")
-        }
-    }
-
-    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("did")
-    }
-    
-    var didChange: (() -> ())?
-    
-}
+// MARK: - Error
 
 public enum CoreDataError: Error {
     case isEmpty
     case objectDoesNotExists
 }
 
+// MARK: - General Class `UserPhotoCoreData`
 
-
-
-
-
-// MARK: - Photo Entity
-
-public class CoreDataUserPhoto<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
+public class UserPhotoCoreData: NSObject, NSFetchedResultsControllerDelegate {
     
-    let context: NSManagedObjectContext
+    private let context: NSManagedObjectContext
     
-    fileprivate lazy var fetchedResultscontroller: NSFetchedResultsController<T> = { [weak self] in
+    fileprivate lazy var fetchedResultscontroller: NSFetchedResultsController<UserPhotoCoreEntity> = { [weak self] in
         guard let this = self else {
             fatalError("lazy property has been called after object has been descructed")
         }
         
-        guard let fetchRequest = T.fetchRequest() as? NSFetchRequest<T> else {
-            fatalError("Can't set up NSFetchRequest")
-        }
+        let fetchRequest = UserPhotoCoreEntity.fetchRequest()
         
-        let sortDescriptor = NSSortDescriptor(key: "position", ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "dateUploaded", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
-        let controller = NSFetchedResultsController<T>(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        let controller = NSFetchedResultsController<UserPhotoCoreEntity>(fetchRequest: fetchRequest, managedObjectContext: this.context, sectionNameKeyPath: nil, cacheName: nil)
         controller.delegate = this
         
         return controller
     }()
     
-    init(context: NSManagedObjectContext) {
+    public init(context: NSManagedObjectContext) {
         self.context = context
         
         super.init()
         
         do {
-            try self.fetchedResultscontroller.performFetch()
+            try fetchedResultscontroller.performFetch()
         } catch {
             fatalError("Can't execute the controller’s fetch request")
         }
     }
     
-    func fetchById(_ id: String) throws -> T {
-        let objects = try fetchAll()
-        guard let object = objects.first(where: {
-            ($0 as! UserPhotoCoreEntity).id == id
-        }) else { throw CoreDataManagerError.objectDoesNotExists }
-        return object
-    }
+    // MARK: - Save Methods
     
-    func fetchAll() throws -> [T] {
-        guard let objects = fetchedResultscontroller.fetchedObjects else { throw CoreDataManagerError.emptyArray }
-        return objects
-    }
-    
-    func save() throws {
+    public func save() throws {
         if fetchedResultscontroller.managedObjectContext.hasChanges {
             try fetchedResultscontroller.managedObjectContext.save()
         }
     }
     
-    func delete(_ id: String) throws {
-        if let objects = fetchedResultscontroller.fetchedObjects {
-            for object in objects {
-                if (object as! UserPhotoCoreEntity).id == id {
-                    fetchedResultscontroller.managedObjectContext.delete(object)
-                    break
-                }
+    // MARK: - Fetch Methods
+    
+    public func fetchById(_ id: String) throws -> UserPhotoCoreEntity {
+        guard
+            let fetchedObjects = fetchedResultscontroller.fetchedObjects
+        else {
+            throw CoreDataError.isEmpty
+        }
+        
+        guard
+            let result = fetchedObjects.first(where: { $0.id == id })
+        else {
+            throw CoreDataError.objectDoesNotExists
+        }
+        
+        return result
+    }
+    
+    public func fetchFullBatch(completionHandler: @escaping (Result<[UserPhotoCoreEntity], Error>) -> Void) {
+        guard
+            let result = fetchedResultscontroller.fetchedObjects
+        else {
+            completionHandler(.failure(CoreDataError.isEmpty))
+            return
+        }
+        
+        completionHandler(.success(result))
+    }
+    
+    // MARK: - Delete Methods
+    
+    public func deleteById(_ id: String) throws {
+        guard
+            let fetchedObjects = fetchedResultscontroller.fetchedObjects
+        else {
+            throw CoreDataError.isEmpty
+        }
+        
+        for fetchedObject in fetchedObjects {
+            if fetchedObject.id == id {
+                fetchedResultscontroller.managedObjectContext.delete(fetchedObject)
+                try save()
+                break
             }
         }
-                
+    }
+    
+    public func deleteAll() throws {
+        guard
+            let fetchedObjects = fetchedResultscontroller.fetchedObjects
+        else {
+            throw CoreDataError.isEmpty
+        }
+        
+        for fetchedObject in fetchedObjects {
+            fetchedResultscontroller.managedObjectContext.delete(fetchedObject)
+        }
+        
         try save()
     }
-        
+    
     // MARK: - NSFetchedResultsControllerDelegate Methods
     
+    public var contentDidChange: (() -> ())?
+    
     public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("will")
+        print("Content will change")
     }
-
+    
     public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
-            print("insert")
-            didChange?()
+            contentDidChange?()
+            print("Core Data using `insert` method")
         case .delete:
-            print("delete")
+            print("Core Data using `delete` method")
         case .move:
-            print("move")
+            print("Core Data using `move` method")
         case .update:
-            print("update")
+            print("Core Data using `update` method")
         @unknown default:
-            print("unknown")
+            print("Unknown Core Data method")
         }
     }
-
-    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("did")
-    }
     
-    var didChange: (() -> ())?
+    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("Content did change")
+    }
     
 }

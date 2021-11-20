@@ -32,7 +32,7 @@ class FlickrCoreDataManagerTests: XCTestCase {
 //    }
     
     func test_save_entityArrayFailed() {
-        let sut = CoreDataManager(context: mockPersistentContainer.viewContext)
+        let sut = PhotoDetailsCoreData(context: mockPersistentContainer.viewContext)
         
         XCTAssertThrowsError(try sut.saveSetOfObjects(objects: []))
     }

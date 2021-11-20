@@ -11,8 +11,11 @@ class ViewBuilder {
     
     private let dependencyContainer: DependencyContainer
     
-    init(dependencyContainer: DependencyContainer) {
+    private let coreDataContextProvider: CoreDataContextProvider
+    
+    init(dependencyContainer: DependencyContainer, coreDataContextProvider: CoreDataContextProvider) {
         self.dependencyContainer = dependencyContainer
+        self.coreDataContextProvider = coreDataContextProvider
     }
     
     func registerNewDependency<T: DependencyProtocol>(_ dependency: T) {
@@ -28,9 +31,7 @@ class ViewBuilder {
     func createHomeViewController(coordinator: HomeCoordinator) -> HomeViewController {
         let homeViewController: HomeViewController = Storyboard.general.instantiateViewController()
         let network: Network = dependencyContainer.retrive()
-        let database: CoreDataManager = dependencyContainer.retrive()
-        //let connection: InternetConnectivity = dependencyContainer.retrive()
-        let storage: HomeDataManager = .init(network: network, database: database)
+        let storage: HomeDataManager = .init(network: network, contextProvider: coreDataContextProvider)
         homeViewController.viewModel = .init(coordinator: coordinator, storage: storage)
         return homeViewController
     }
@@ -38,7 +39,7 @@ class ViewBuilder {
     func createGalleryViewController(coordinator: GeneralCoordinator) -> GalleryViewController {
         let galleryViewController: GalleryViewController = Storyboard.general.instantiateViewController()
         let network: Network = dependencyContainer.retrive()
-        galleryViewController.viewModel = .init(coordinator: coordinator, network: network)
+        galleryViewController.viewModel = .init(coordinator: coordinator, network: network, contextProvider: coreDataContextProvider)
         return galleryViewController
     }
     

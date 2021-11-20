@@ -11,16 +11,16 @@ public class HomeDataManager {
     
     private let network: Network
     
-    let coreDataManager: CoreDataManager
+    let localAPI: PhotoDetailsCoreData
     
-    let imageDataManager: FileManagerAPI
+    let fileManager: FileManagerAPI
     
-    public init(network: Network, database: CoreDataManager) {
+    public init(network: Network, contextProvider: CoreDataContextProvider) {
         self.network = network
-        self.coreDataManager = database
+        self.localAPI = .init(context: contextProvider.viewContext)
         
         do {
-            self.imageDataManager = try .init(name: "FlickrImages")
+            self.fileManager = try .init(name: "FlickrImages")
         } catch {
             fatalError(error.localizedDescription)
         }
@@ -64,21 +64,21 @@ public class HomeDataManager {
         group.notify(queue: .main) {
             if page == 1 {
                 self.currentObjects.removeAll()
-                if let databaseObjects = try? self.coreDataManager.fetchObjects(){//fetchSetOfObjects() {
+                if let databaseObjects = try? self.localAPI.fetchObjects(){//fetchSetOfObjects() {
                     try? self.deleteImagesOfObjects(databaseObjects)
                 }
             }
             
             self.currentObjects += temporaryObjects
-            try? self.coreDataManager.clearDatabase()
-            try? self.coreDataManager.saveSetOfObjects(objects: self.currentObjects)
+            try? self.localAPI.clearDatabase()
+            try? self.localAPI.saveSetOfObjects(objects: self.currentObjects)
             completionHandler(.success(self.currentObjects))
         }
     }
     
     func loadOfflineData(completionHandler: @escaping (Result<[PhotoDetailsEntity], Error>) -> Void) {
         do {
-            let domainObjects = try coreDataManager.fetchObjects()//fetchSetOfObjects()
+            let domainObjects = try localAPI.fetchObjects()//fetchSetOfObjects()
             self.currentObjects = domainObjects
             completionHandler(.success(self.currentObjects))
         } catch {
@@ -96,7 +96,7 @@ public class HomeDataManager {
         network.image(id: id, secret: secret, server: server, completionHandler: { [weak self] result in
             completionHandler(result.map {
                 let imageIdentifier = id + secret + server
-                _ = try? self?.imageDataManager.save(fileData: $0, forKey: imageIdentifier)
+                _ = try? self?.fileManager.save(fileData: $0, forKey: imageIdentifier)
                 return $0
             })
         })
@@ -106,7 +106,7 @@ public class HomeDataManager {
         network.buddyicon(iconFarm: farm, iconServer: server, nsid: nsid, completionHandler: { [weak self] result in
             completionHandler(result.map {
                 let buddyiconIdentifier = String(farm) + server + nsid
-                _ = try? self?.imageDataManager.save(fileData: $0, forKey: buddyiconIdentifier)
+                _ = try? self?.fileManager.save(fileData: $0, forKey: buddyiconIdentifier)
                 return $0
             })
         })
@@ -135,8 +135,8 @@ public class HomeDataManager {
             let imageIdentifier = id + secret + serverImage
             let buddyiconIdentifier = String(farm) + serverBuddyicon + nsid
             
-            try self.imageDataManager.delete(forKey: imageIdentifier)
-            try self.imageDataManager.delete(forKey: buddyiconIdentifier)
+            try self.fileManager.delete(forKey: imageIdentifier)
+            try self.fileManager.delete(forKey: buddyiconIdentifier)
         }
     }
     

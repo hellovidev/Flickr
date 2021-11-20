@@ -1,5 +1,5 @@
 //
-//  CoreDataManager.swift
+//  PhotoDetailsCoreData.swift
 //  Flickr
 //
 //  Created by Siarhei Ramanchuk on 11/8/21.
@@ -12,7 +12,7 @@ public enum CoreDataManagerError: Error {
     case emptyArray
 }
 
-public class CoreDataManager {
+public class PhotoDetailsCoreData {
     
     private let fetchedResultsController: NSFetchedResultsController<PhotoDetailsCoreEntity>
     //private let context: NSManagedObjectContext
@@ -181,4 +181,4 @@ public class CoreDataManager {
     
 }
 
-extension CoreDataManager: DependencyProtocol {}
+extension PhotoDetailsCoreData: DependencyProtocol {}

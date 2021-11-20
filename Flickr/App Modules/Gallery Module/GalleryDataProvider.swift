@@ -81,6 +81,7 @@ public class GalleryDataProvider {
                 
                 DispatchQueue.main.async {
                     completionHandler(.success(()))
+                    dispatchGroup.leave()
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -96,11 +97,31 @@ public class GalleryDataProvider {
                     switch result {
                     case .success(let remoteBatch):
                         // if photos upload correctly cool if not upload some get them and add remote
-                        if let isNeedUpdate = self?.synchronize(remoteBatch) {
-                            if isNeedUpdate {
-                                self?.loadDataNeedUpdate?()
-                            }
+                        
+                        self?.galleryPhotos = remoteBatch.map {
+                            return UserPhoto($0)
                         }
+                        
+                        for remoteElement in remoteBatch {
+                            let localEntity = UserPhotoCoreEntity(context: self!.localAPI.context) //??
+                            localEntity.id = remoteElement.id
+                            if let farm = remoteElement.farm {
+                                localEntity.farm = Int32(farm)
+                            }
+                            localEntity.server = remoteElement.server
+                            localEntity.secret = remoteElement.secret
+                            localEntity.dateUploaded = remoteElement.dateUpload
+                            localEntity.isUploaded = true
+                        }
+                        try? self?.localAPI.deleteAll()
+                        try? self?.localAPI.save()
+                        self?.loadDataNeedUpdate?()
+                        
+//                        if let isNeedUpdate = self?.synchronize(remoteBatch) {
+//                            if isNeedUpdate {
+//                                self?.loadDataNeedUpdate?()
+//                            }
+//                        }
                     case .failure(let error):
                         print("Loading user photos error.", error)
                     }
@@ -149,8 +170,9 @@ public class GalleryDataProvider {
             localEntity.id = generatedId
             localEntity.isUploaded = false
             localEntity.dateUploaded = String(Int(NSDate().timeIntervalSince1970))
-            try localAPI.save()
             
+            try? localAPI.save()
+                
             let domainEntity = UserPhoto(localEntity)
             galleryPhotos.insert(domainEntity, at: 0)
             
@@ -284,6 +306,10 @@ public class GalleryDataProvider {
         }
         
         return uniqElements
+    }
+    
+    public var numberOfElements: Int {
+        galleryPhotos.count
     }
     
     // MARK: - Deinit

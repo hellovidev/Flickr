@@ -29,6 +29,10 @@ class GalleryViewController: UIViewController {
         setupNavigationTitle()
         setupCollectionRefreshIndicator()
         
+        viewModel.needUpdate = {
+            self.collectionView.reloadData()
+        }
+        
         requestPhotos()
     }
     
