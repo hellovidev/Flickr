@@ -215,7 +215,7 @@ public class GalleryDataProvider {
             case .success:
                 self?.galleryPhotos.remove(at: index)
                 try? self?.fileManager.delete(forKey: id)
-                try? self?.localAPI.delete(id)
+                try? self?.localAPI.deleteById(id)
                 completionHandler(.success(()))
             case .failure(let error):
                 completionHandler(.failure(error))

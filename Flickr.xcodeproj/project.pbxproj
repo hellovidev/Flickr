@@ -356,10 +356,10 @@
 			children = (
 				5F090BFE2705C05700843515 /* Upload Button View */,
 				5F7F996B26D6CBC700482485 /* PhotoEntity.swift */,
+				5F73C388270996FF00CDFC8F /* GalleryRepository.swift */,
 				297ADEF427480426009483D4 /* UserPhoto.swift */,
 				5FA9B2F326E4B1180060DAE8 /* GalleryViewController.swift */,
 				5F8A441526FF4EA80027217F /* GalleryViewModel.swift */,
-				5F73C388270996FF00CDFC8F /* GalleryRepository.swift */,
 				297ADEF02747E5E4009483D4 /* GalleryDataProvider.swift */,
 				297ADEF22747E7D3009483D4 /* UserPhotoCoreData.swift */,
 			);

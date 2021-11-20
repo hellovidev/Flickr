@@ -29,7 +29,7 @@ class GalleryViewController: UIViewController {
         setupNavigationTitle()
         setupCollectionRefreshIndicator()
         
-        viewModel.needUpdate = {
+        viewModel.updateWithLoadedData = {
             self.collectionView.reloadData()
         }
         
@@ -45,7 +45,7 @@ class GalleryViewController: UIViewController {
     
     private func requestPhotos() {
         collectionView.refreshControl?.beginRefreshing()
-        viewModel.initialFetchPhotos { [weak self] result in
+        viewModel.initialRetriveUserPhotos { [weak self] result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.collectionView.refreshControl?.endRefreshing()
             }
@@ -135,7 +135,7 @@ extension GalleryViewController: UICollectionViewDataSource {
             let interaction = UIContextMenuInteraction(delegate: self)
             cell.interaction = interaction
             
-            self.viewModel.requestPhoto(index: index) { result in
+            self.viewModel.retriveUserPhoto(index: index) { result in
                 switch result {
                 case .success(let image):
                     let imageView: UIImageView = .init(image: image)
@@ -261,7 +261,7 @@ extension GalleryViewController: UIContextMenuInteractionDelegate {
             case .uploadPhoto:
                 break
             case .galleryPhoto(index: let index):
-                self?.viewModel.removePhotoAt(index: index) { [weak self] result in
+                self?.viewModel.deleteUserPhoto(index: index) { [weak self] result in
                     switch result {
                     case .success:
                         self?.collectionView.deleteItems(at: [indexPath])
@@ -301,7 +301,7 @@ extension GalleryViewController: UIImagePickerControllerDelegate, UINavigationCo
             let selectedImage = info[.originalImage] as? UIImage,
             let data = selectedImage.pngData()
         {
-            self.viewModel.uploadLibraryPhoto(data: data) { [weak self] result in
+            self.viewModel.uploadUserPhoto(data: data) { [weak self] result in
                 switch result {
                 case .success:
                     self?.refreshCollectionView()
@@ -335,7 +335,7 @@ extension GalleryViewController: PHPickerViewControllerDelegate {
                     return
                 }
                 
-                self?.viewModel.uploadLibraryPhoto(data: data) { [weak self] result in
+                self?.viewModel.uploadUserPhoto(data: data) { [weak self] result in
                     switch result {
                     case .success:
                         self?.refreshCollectionView()

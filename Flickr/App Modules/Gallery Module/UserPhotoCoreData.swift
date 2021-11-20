@@ -18,7 +18,7 @@ public enum CoreDataError: Error {
 
 public class UserPhotoCoreData: NSObject, NSFetchedResultsControllerDelegate {
     
-    private let context: NSManagedObjectContext
+    public let context: NSManagedObjectContext
     
     fileprivate lazy var fetchedResultscontroller: NSFetchedResultsController<UserPhotoCoreEntity> = { [weak self] in
         guard let this = self else {
@@ -143,6 +143,12 @@ public class UserPhotoCoreData: NSObject, NSFetchedResultsControllerDelegate {
     
     public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         print("Content did change")
+    }
+    
+    // MARK: - Deinit
+    
+    deinit {
+        print("\(type(of: self)) deinited.")
     }
     
 }

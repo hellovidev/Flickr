@@ -11,100 +11,83 @@ import UIKit
 
 class GalleryViewModel {
     
-    // MARK: - TEST
+    // MARK: - Variables
     
-    private lazy var dataProvider: GalleryDataProvider = .init(userId: nsid, network: network, database: database, fileManager: fileManager)
-    private var fileManager: FileManagerAPI
-    @UserDefaultsBacked(key: UserDefaults.Keys.nsid.rawValue)
-    private var nsid: String!
-    private var database: UserPhotoCoreData
-    private var network: Network
-    
-    // ------
-    
+    private var dataProvider: GalleryDataProvider
     private weak var coordinator: GeneralCoordinator?
-    
-    //private let repository: GalleryRepository
-    
-    init(coordinator: GeneralCoordinator, network: Network, contextProvider: CoreDataContextProvider) {
+        
+    public init(coordinator: GeneralCoordinator, userId: String, network: Network, contextProvider: CoreDataContextProvider) {
         self.coordinator = coordinator
-        //self.repository = .init(network: network)
-        
-        
-        self.network = network
-
-        database = .init(context: contextProvider.viewContext)
         
         do {
-            self.fileManager = try .init(name: "UserImages")
+            let fileManager = try FileManagerAPI(name: "UserImages")
+            let database = UserPhotoCoreData(context: contextProvider.viewContext)
+            dataProvider = .init(userId: userId, network: network, database: database, fileManager: fileManager)
         } catch {
-            fatalError(error.localizedDescription)
+            fatalError("Unresolved error: \(error)")
         }
         
-        //dataProvider = .init(userId: nsid, network: network, database: database, fileManager: fileManager)
-        
-        dataProvider.loadDataNeedUpdate = {
-            self.needUpdate?()
+        dataProvider.loadDataNeedUpdate = { [weak self] in
+            self?.updateWithLoadedData?()
         }
     }
     
-    var numberOfItems: Int {
-        //repository.gallaryCount + 1
+    // MARK: - Helpers
+    
+    public var updateWithLoadedData: (() -> ())?
+    
+    public var numberOfItems: Int {
         dataProvider.numberOfElements + 1
     }
     
-    enum DataSourceItem {
+    // MARK: - Element Controler
+    
+    public enum DataSourceItem {
         case uploadPhoto
         case galleryPhoto(index: Int)
     }
     
-    func itemAt(indexPath: IndexPath) -> DataSourceItem {
+    public func itemAt(indexPath: IndexPath) -> DataSourceItem {
         if indexPath.row == 0 {
             return .uploadPhoto
         }
+        
         return .galleryPhoto(index: indexPath.row - 1)
     }
     
-    func refresh() {
-        //repository.refresh()
+    // MARK: - Refresh Methods
+    
+    public func refreshGallery(completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        // code
     }
     
-    func initialPhotosLoading(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-    }
+    // MARK: - Upload Methods
     
-    func uploadLibraryPhoto(data: Data, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        //repository.uploadPhoto(data: data, completionHandler: completionHandler) // not only local saver
+    public func uploadUserPhoto(data: Data, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         dataProvider.save(data: data, completionHandler: completionHandler)
     }
     
-    func removePhotoAt(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        //repository.removePhotoAt(index: index, completionHandler: completionHandler)
-        dataProvider.detele(index: index, completionHandler: completionHandler)
-    }
+    // MARK: - Retrive Methods
     
-    func initialFetchPhotos(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        
+    public func initialRetriveUserPhotos(completionHandler: @escaping (Result<Void, Error>) -> Void) {
         dataProvider.fetch(completionHandler: completionHandler)
-        /*repository.fetchUserPhotoArray { [weak self] result in
-            switch result {
-            case .success():
-                self?.repository.requestServerUserPhotoArray(completionHandler: completionHandler)
-            case .failure(let error):
-                completionHandler(.failure(error))
-            }
-        }*/
     }
     
-    var needUpdate: (() -> ())?
-    
-    func requestPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
-        //repository.requestUserPhoto(index: index, completionHandler: completionHandler)
-        dataProvider.fetchImage(index: index, completionHandler: { result in
+    public func retriveUserPhoto(index: Int, completionHandler: @escaping (Result<UIImage, Error>) -> Void) {
+        dataProvider.fetchImage(index: index) { result in
             completionHandler(result.map {
                 return UIImage(data: $0)!
             })
-        })
+        }
     }
+    
+    // MARK: - Delete Methods
+    
+    public func deleteUserPhoto(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        dataProvider.detele(index: index, completionHandler: completionHandler)
+    }
+    
+    // MARK: - Deinit
     
     deinit {
         print("\(type(of: self)) deinited.")

@@ -13,6 +13,9 @@ class ViewBuilder {
     
     private let coreDataContextProvider: CoreDataContextProvider
     
+    @UserDefaultsBacked(key: UserDefaults.Keys.nsid.rawValue)
+    private var nsid: String!
+    
     init(dependencyContainer: DependencyContainer, coreDataContextProvider: CoreDataContextProvider) {
         self.dependencyContainer = dependencyContainer
         self.coreDataContextProvider = coreDataContextProvider
@@ -39,7 +42,7 @@ class ViewBuilder {
     func createGalleryViewController(coordinator: GeneralCoordinator) -> GalleryViewController {
         let galleryViewController: GalleryViewController = Storyboard.general.instantiateViewController()
         let network: Network = dependencyContainer.retrive()
-        galleryViewController.viewModel = .init(coordinator: coordinator, network: network, contextProvider: coreDataContextProvider)
+        galleryViewController.viewModel = .init(coordinator: coordinator, userId: nsid, network: network, contextProvider: coreDataContextProvider)
         return galleryViewController
     }
     
