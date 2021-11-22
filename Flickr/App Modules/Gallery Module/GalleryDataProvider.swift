@@ -97,17 +97,22 @@ public class GalleryDataProvider {
                         }
                     }
                 }
-                
+                /*
                 DispatchQueue.main.async {
                     completionHandler(.success(()))
                     dispatchGroup.leave()
                 }
+                 */
             case .failure(let error):
+                /*
                 DispatchQueue.main.async {
                     completionHandler(.failure(error))
                     dispatchGroup.leave()
                 }
+                 */
+                print(error)
             }
+            dispatchGroup.leave() //??
         }
         
         dispatchGroup.notify(queue: .main) { [weak self] in
@@ -118,13 +123,22 @@ public class GalleryDataProvider {
                         self?.synchronize(remoteBatch, completionHandler: { result in
                             switch result {
                             case .success:
-                                self?.loadDataNeedUpdate?()
+                                DispatchQueue.main.async {
+                                    completionHandler(.success(()))
+                                } //??
+                                //self?.loadDataNeedUpdate?()
                             case .failure(let error):
                                 print("Synchronizing user photos error.", error)
+                                DispatchQueue.main.async {
+                                    completionHandler(.failure(error))
+                                }
                             }
                         })
                     case .failure(let error):
                         print("Loading user photos error.", error)
+                        DispatchQueue.main.async {
+                            completionHandler(.failure(error))
+                        }
                     }
                 }
             }

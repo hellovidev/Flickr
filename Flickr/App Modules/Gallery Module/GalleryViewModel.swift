@@ -58,7 +58,7 @@ class GalleryViewModel {
     // MARK: - Refresh Methods
     
     public func refreshGallery(completionHandler: @escaping (Result<Void, Error>) -> Void) {
-        // code
+        dataProvider.fetch(completionHandler: completionHandler)
     }
     
     // MARK: - Upload Methods

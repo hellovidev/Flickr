@@ -153,7 +153,6 @@ public class UserPhotoCoreData: NSObject, NSFetchedResultsControllerDelegate {
     public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
-            contentDidChange?()
             print("Core Data using `insert` method")
         case .delete:
             print("Core Data using `delete` method")

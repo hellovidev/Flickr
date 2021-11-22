@@ -37,10 +37,22 @@ class GalleryViewController: UIViewController {
     }
     
     @objc private func refreshCollectionView() {
-        self.collectionView.reloadData()
-        self.collectionView.refreshControl?.endRefreshing()
-        //viewModel.refresh()
-        //requestPhotos()
+        viewModel.refreshGallery { [weak self] result in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self?.collectionView.refreshControl?.endRefreshing()
+            }
+            switch result {
+            case .success:
+                self?.collectionView.reloadData()
+            case .failure(let error):
+                self?.showAlert(
+                    title: "Gallery Error",
+                    message: "Refresh gallery photos failed.\nTry to check your internet connection and pull to refresh.",
+                    button: "OK"
+                )
+                print("Refresh gallery error: \(error)")
+            }
+        }
     }
     
     private func requestPhotos() {
