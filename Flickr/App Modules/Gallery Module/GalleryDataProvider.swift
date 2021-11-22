@@ -97,22 +97,10 @@ public class GalleryDataProvider {
                         }
                     }
                 }
-                /*
-                DispatchQueue.main.async {
-                    completionHandler(.success(()))
-                    dispatchGroup.leave()
-                }
-                 */
             case .failure(let error):
-                /*
-                DispatchQueue.main.async {
-                    completionHandler(.failure(error))
-                    dispatchGroup.leave()
-                }
-                 */
-                print(error)
+                print("Fetch local data error", error)
             }
-            dispatchGroup.leave() //??
+            dispatchGroup.leave()
         }
         
         dispatchGroup.notify(queue: .main) { [weak self] in
@@ -125,8 +113,7 @@ public class GalleryDataProvider {
                             case .success:
                                 DispatchQueue.main.async {
                                     completionHandler(.success(()))
-                                } //??
-                                //self?.loadDataNeedUpdate?()
+                                }
                             case .failure(let error):
                                 print("Synchronizing user photos error.", error)
                                 DispatchQueue.main.async {
@@ -141,11 +128,15 @@ public class GalleryDataProvider {
                         }
                     }
                 }
+            } else {
+                DispatchQueue.main.async {
+                    completionHandler(.failure(GalleryDataProviderError.emptyId))
+                }
             }
         }
     }
     
-    func fetchImage(index: Int, completionHandler: @escaping (Result<Data, Error>) -> Void) {
+    public func fetchImage(index: Int, completionHandler: @escaping (Result<Data, Error>) -> Void) {
         guard
             let id = galleryPhotos[index].id
         else {
@@ -176,7 +167,7 @@ public class GalleryDataProvider {
     
     // MARK: - Save Methods
     
-    func save(data: Data, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    public func save(data: Data, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         do {
             let generatedId = UUID().uuidString
             try fileManager.justSave(fileData: data, forKey: generatedId)
@@ -219,7 +210,7 @@ public class GalleryDataProvider {
     
     // MARK: - Delete Methods
     
-    func detele(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    public func detele(index: Int, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         guard
             let id = galleryPhotos[index].id
         else {
