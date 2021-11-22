@@ -29,7 +29,6 @@ public class GalleryDataProvider {
     // MARK: - Variables
     
     private var galleryPhotos = [UserPhoto]()
-    public var loadDataNeedUpdate: (() -> ())?
     
     public init(userId: String, network: Network, database: UserPhotoCoreData, fileManager: FileManagerAPI) {
         self.userId = userId

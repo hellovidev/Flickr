@@ -15,7 +15,7 @@ class GalleryViewModel {
     
     private var dataProvider: GalleryDataProvider
     private weak var coordinator: GeneralCoordinator?
-        
+    
     public init(coordinator: GeneralCoordinator, userId: String, network: Network, contextProvider: CoreDataContextProvider) {
         self.coordinator = coordinator
         
@@ -26,15 +26,9 @@ class GalleryViewModel {
         } catch {
             fatalError("Unresolved error: \(error)")
         }
-        
-        dataProvider.loadDataNeedUpdate = { [weak self] in
-            self?.updateWithLoadedData?()
-        }
     }
     
     // MARK: - Helpers
-    
-    public var updateWithLoadedData: (() -> ())?
     
     public var numberOfItems: Int {
         dataProvider.numberOfElements + 1
